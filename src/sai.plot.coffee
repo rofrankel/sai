@@ -21,6 +21,8 @@ class Sai.LinePlot extends Sai.Plot
   constructor: (r, x, y, w, h, data) ->
     super(r, x, y, w, h, data)
     this.denormalizedData = this.denormalize(dnPoint) for dnPoint in this.data
+    return this
   
   render: () ->
-    return this.line: r.sai.prim.line(this.denormalizedData)
+    this.line: r.sai.prim.line(this.denormalizedData)
+    return this

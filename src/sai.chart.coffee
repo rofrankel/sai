@@ -28,10 +28,10 @@ class Sai.Chart
     
     for group of groups
       ndata[group] = {}
-      max = Math.max.apply(Math, Math.max.apply(Math, data[series]) for series in groups[group])
-      min = Math.min.apply(Math, Math.min.apply(Math, data[series]) for series in groups[group])
+      max = Math.max.apply(Math, Math.max.apply(Math, data[series]) for series in groups[group]) * 1.1
+      min = Math.min.apply(Math, Math.min.apply(Math, data[series]) for series in groups[group]) - (0.1 * max)
       for series in groups[group]
-        ndata[group][series] = ((val-min) / (max-min)) for val in data[series]
+        ndata[group][series] = [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] for i in [0..data[series].length]
         ndata[group].__MAX__ = max
         ndata[group].__MIN__ = min
     
@@ -39,9 +39,12 @@ class Sai.Chart
   
   # padding should contain left, right, top, and bottom values
   addAxes: (group, padding, vticks) ->
-    origin = [this.x + padding.left, this.y - padding.bottom]
-    hlen = this.w - padding.left - padding.right
-    vlen = this.h - padding.bottom - padding.top
+    
+    this.axisPadding = padding
+    
+    this.pOrigin = origin = [this.x + padding.left, this.y - padding.bottom]
+    this.pw = hlen = this.w - padding.left - padding.right
+    this.ph = vlen = this.h - padding.bottom - padding.top
     vmin = this.ndata[group].__MIN__
     vmax = this.ndata[group].__MAX__
     
@@ -55,6 +58,16 @@ class Sai.Chart
   render: () ->
     this.plot ?= new Sai.Plot(this.r)
     this.plot.render()
+    return this
   
 
+class Sai.LineChart extends Sai.Chart
 
+  render: () ->
+    this.addAxes('all', {left: 10, right: 0, top: 0, bottom: 10})
+    
+    this.plots = this.r.set()
+    for series of this.ndata['all']
+      this.plots.push((new Sai.LinePlot(this.r, this.pOrigin[0], this.pOrigin[1], this.pw, this.ph, this.ndata['all'][series])).render())
+    
+    return this
