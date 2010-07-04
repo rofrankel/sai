@@ -39,16 +39,16 @@ class Sai.Chart
   
   # padding should contain left, right, top, and bottom values
   addAxes: (group, padding, vticks) ->
-    vticks ?= 10
-    
     origin = [this.x + padding.left, this.y - padding.bottom]
     hlen = this.w - padding.left - padding.right
     vlen = this.h - padding.bottom - padding.top
     vmin = this.ndata[group].__MIN__
     vmax = this.ndata[group].__MAX__
     
+    vticks ?= Math.floor(vlen / 15.0)
+    
     haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], origin[0], origin[1], hlen)
-    vaxis = this.r.sai.prim.vaxis(vmin + ((vmax - vmin) * dy / (vticks-1)) for dy in [0..vticks-1], origin[0], origin[1], vlen)
+    vaxis = this.r.sai.prim.vaxis((vmin + ((vmax - vmin) * dy / (vticks-1))).toFixed(2) for dy in [0..vticks-1], origin[0], origin[1], vlen)
     
     return this.r.set().push()
   

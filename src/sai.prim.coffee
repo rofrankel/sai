@@ -28,7 +28,7 @@ Raphael.fn.sai.prim.line: (coords, width, color) ->
 
 
 Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklen, width, color) ->
-  ticklen ?= 2
+  ticklen ?= 10
   width ?= 1
   color ?= '#000'
   
@@ -49,7 +49,7 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklen, width, color) ->
   return this.set().push(line, ticks, labels)
 
 Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklen, width, color) ->
-  ticklen ?= 2
+  ticklen ?= 10
   width ?= 1
   color ?= '#000'
   
