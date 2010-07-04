@@ -15,8 +15,6 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
 
 
 Raphael.fn.sai.prim.line: (coords, width, color) ->
-  alert coords  
-  
   color ?= '#000'
   width ?= 1
   
