@@ -28,8 +28,9 @@ Raphael.fn.sai.prim.line: (coords, width, color) ->
 
 
 Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklen, width, color) ->
-  color ?= '#000'
+  ticklen ?= 2
   width ?= 1
+  color ?= '#000'
   
   line: this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
   ticks: this.set()
@@ -45,11 +46,12 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklen, width, color) ->
     labels.push(label)
     xpos += dx
   
-  return this.set(line, ticks, labels)
+  return this.set().push(line, ticks, labels)
 
 Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklen, width, color) ->
-  color ?= '#000'
+  ticklen ?= 2
   width ?= 1
+  color ?= '#000'
   
   line: this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
   ticks: this.set()
@@ -65,4 +67,4 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklen, width, color) ->
     labels.push(label)
     ypos -= dy
   
-  return this.set(line, ticks, labels)
+  return this.set().push(line, ticks, labels)
