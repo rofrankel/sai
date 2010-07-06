@@ -23,12 +23,12 @@ class Sai.Chart
     {'all': seriesName for seriesName of data when this.caresAbout(seriesName)}
   
   getYAxisVals: (min, max) ->
-    mag: Math.floor((Math.log(max - min) / Math.LN10) - 0.5)
+    mag: Math.floor((Math.log(max - min) / Math.LN10) - 0.33)
     step: Math.pow(10, mag)
-    bottom: Sai.util.round(min - (1.1 * step), mag)
+    bottom: Sai.util.round(min - (step / 1.9), mag)
     bottom: 0 if bottom < 0 and min > 0
-    top: Sai.util.round(max + (1.1 * step), mag)
-    return Sai.util.range(bottom, top + 1, step)
+    top: Sai.util.round(max + (step / 1.9), mag)
+    return Sai.util.range(bottom, top + step, step)
   
   normalize: (data) ->
     groups = this.dataGroups(data)

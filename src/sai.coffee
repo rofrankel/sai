@@ -20,8 +20,8 @@ Sai.util.range: (start, stop, inc) ->
 
 Sai.util.round: (x, mag) ->
   mag ?= 0
-  mag = 0 if mag < 0
-  return parseFloat(x.toFixed(mag))
+  target: Math.pow(10, mag)
+  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)))
 
 
 Raphael.fn.sai ?= {}
