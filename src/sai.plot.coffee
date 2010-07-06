@@ -7,6 +7,7 @@ class Sai.Plot
     this.w = w or 640
     this.h = h or 480
     this.data = data
+    this.denormalizedData = this.denormalize(dnPoint) for dnPoint in this.data
   
   denormalize: (point) ->
     return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
@@ -18,11 +19,7 @@ class Sai.Plot
 
 
 class Sai.LinePlot extends Sai.Plot
-  constructor: (r, x, y, w, h, data) ->
-    super(r, x, y, w, h, data)
-    this.denormalizedData = this.denormalize(dnPoint) for dnPoint in this.data
-    return this
   
-  render: () ->
-    this.line: r.sai.prim.line(this.denormalizedData)
+  render: (color, width) ->
+    this.line: r.sai.prim.line(this.denormalizedData, color or 'black', width or 1)
     return this

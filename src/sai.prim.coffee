@@ -14,7 +14,7 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
   return this.set().push(body, shadow)
 
 
-Raphael.fn.sai.prim.line: (coords, width, color) ->
+Raphael.fn.sai.prim.line: (coords, color, width) ->
   color ?= '#000'
   width ?= 1
   
@@ -62,7 +62,7 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklen, width, color) ->
   
   for val in vals
     ticks.push(this.path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
-    label: this.text(x - ticklen - 2, ypos, val)
+    label: this.text(x - ticklen - 2, ypos, String(val))
     label.attr('x', label.attr('x') - (label.getBBox().width / 2.0))
     labels.push(label)
     ypos -= dy
