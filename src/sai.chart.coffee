@@ -81,7 +81,21 @@ class Sai.Chart
     this.colors ?= {}
     this.colors[series] = color
     return this
-
+  
+  # for efficiency, returns the normalized height of the baseline if it should be drawn
+  # else, returns false
+  shouldDrawBaseline: () ->
+    ymin: this.ndata['all'].__YVALS__[0]
+    ymax: this.ndata['all'].__YVALS__[this.ndata['all'].__YVALS__.length - 1]
+    return ymin < 0 and ymax > 0 and Math.abs(ymin) / (Math.abs(ymin) + ymax)
+  
+  drawBaseLine: (nh) ->
+    this.baseline: (new Sai.LinePlot(this.r,
+                                     this.pOrigin[0],
+                                     this.pOrigin[1],
+                                     this.pw, this.ph,
+                                     [[0, nh], [1, nh]]))
+    .render('#ddd')
 
 
 class Sai.LineChart extends Sai.Chart
@@ -89,17 +103,7 @@ class Sai.LineChart extends Sai.Chart
   render: () ->
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
-    ymin: this.ndata['all'].__YVALS__[0]
-    ymax: this.ndata['all'].__YVALS__[this.ndata['all'].__YVALS__.length - 1]
-    if ymin < 0 and ymax > 0
-      h: Math.abs(ymin) / (Math.abs(ymin) + ymax)
-      this.baseline: (new Sai.LinePlot(this.r,
-                                       this.pOrigin[0],
-                                       this.pOrigin[1],
-                                       this.pw, this.ph,
-                                       [[0, h], [1, h]]))
-      .render('grey')
-    
+    if (nh: this.shouldDrawBaseline()) then this.drawBaseLine(nh)
     
     this.plots = this.r.set()
     for series of this.ndata['all']
@@ -114,5 +118,18 @@ class Sai.LineChart extends Sai.Chart
                           this.ndata['all'][series]))
         .render(this.colors and this.colors[series] or 'black')
       )
+    
+    return this
+
+
+# Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
+class Sai.StockChart extends Sai.Chart
+  
+  render: () ->
+    this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    
+    if (nh: this.shouldDrawBaseline()) then this.drawBaseLine(nh)
+    
+    
     
     return this
