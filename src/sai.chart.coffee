@@ -28,7 +28,7 @@ class Sai.Chart
     bottom: Sai.util.round(min - (step / 1.9), mag)
     bottom: 0 if bottom < 0 and min > 0
     top: Sai.util.round(max + (step / 1.9), mag)
-    return Sai.util.range(bottom, top + step, step)
+    return Sai.util.round(i, mag) for i in [bottom..top] by step
   
   normalize: (data) ->
     groups = this.dataGroups(data)
@@ -87,7 +87,19 @@ class Sai.Chart
 class Sai.LineChart extends Sai.Chart
   
   render: () ->
-    this.addAxes('all', {left: 10, right: 0, top: 0, bottom: 10})
+    this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    
+    ymin: this.ndata['all'].__YVALS__[0]
+    ymax: this.ndata['all'].__YVALS__[this.ndata['all'].__YVALS__.length - 1]
+    if ymin < 0 and ymax > 0
+      h: Math.abs(ymin) / (Math.abs(ymin) + ymax)
+      this.baseline: (new Sai.LinePlot(this.r,
+                                       this.pOrigin[0],
+                                       this.pOrigin[1],
+                                       this.pw, this.ph,
+                                       [[0, h], [1, h]]))
+      .render('grey')
+    
     
     this.plots = this.r.set()
     for series of this.ndata['all']

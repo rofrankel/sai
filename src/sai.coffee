@@ -1,6 +1,7 @@
 Sai ?= {}
 Sai.util ?= {}
 
+###
 Sai.util.range: (start, stop, inc) ->
   inc: or 1 # we don't want an inc of 0...
   x: start
@@ -17,6 +18,7 @@ Sai.util.range: (start, stop, inc) ->
     x: Sai.util.round(x + inc, mag)
   
   return result
+###
 
 Sai.util.round: (x, mag) ->
   mag ?= 0
@@ -28,7 +30,7 @@ Raphael.fn.sai ?= {}
 
 Raphael.fn.sai.chart: (x, y, w, h, type, data) ->
   type = {
-    # todo
+    'line': Sai.LineChart
   }[type] or type
   
   type ?= Sai.Chart

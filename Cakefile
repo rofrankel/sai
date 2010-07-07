@@ -1,4 +1,6 @@
 exec: require('child_process').exec
+fs: require('fs')
+coffee: require('./coffee-script')
 
 task 'build', 'build all of the source files', ->
 
@@ -10,4 +12,7 @@ task 'build', 'build all of the source files', ->
   
   for src in sourceFiles
     puts 'compiling ' + src
-    exec(['coffee -c src/' + src])
+    try
+      exec(['coffee -c src/' + src])
+    catch error
+      puts 'build error: ' + error
