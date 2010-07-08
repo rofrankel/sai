@@ -32,6 +32,7 @@ class Sai.LinePlot extends Sai.Plot
 class Sai.CandlestickPlot extends Sai.Plot
   
   setDenormalizedData: () ->
+    this.dndata ?= {}
     this.dndata['open']: this.denormalize(dnPoint) for dnPoint in this.data['open']
     this.dndata['close']: this.denormalize(dnPoint) for dnPoint in this.data['close']
     this.dndata['high']: this.denormalize(dnPoint) for dnPoint in this.data['high']
@@ -40,16 +41,18 @@ class Sai.CandlestickPlot extends Sai.Plot
   render: (colors, body_width) ->
     cup: colors and colors['up'] or 'black'
     cdown: colors and colors['down'] or 'red'
+    body_width ?= 5
     
     this.candlesticks: r.set()
-    for i in [0..this.dndata['open'].length]
+    for i in [0...this.dndata['open'].length]
       this.candlesticks.push(
-        r.sai.prim.candlestick(this.dndata['open'][i][0]
-                               this.dndata['close'][i][1],
-                               this.dndata['open'][i][1],
-                               this.dndata['low'][i][1],
+        r.sai.prim.candlestick(this.dndata['open'][i][0],
+                               Math.min(this.dndata['open'][i][1], this.dndata['close'][i][1]), # max/min and high/low are sort of backwards, because Y coords are inverted
+                               Math.max(this.dndata['open'][i][1], this.dndata['close'][i][1]),
                                this.dndata['high'][i][1],
-                               body_width or 3,
-                               this.dndata['open'] > this.dndata['close'] and cup or cdown))
+                               this.dndata['low'][i][1],
+                               body_width or 5,
+                               (this.dndata['open'][i][1] > this.dndata['close'][i][1]) and cup or cdown)
+      )
     
     return this

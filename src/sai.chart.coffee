@@ -130,6 +130,22 @@ class Sai.StockChart extends Sai.Chart
     
     if (nh: this.shouldDrawBaseline()) then this.drawBaseLine(nh)
     
+    this.plots = this.r.set()
     
+    for group of this.ndata
+      continue unless 'open' of this.ndata[group] and 'close' of this.ndata[group] and 'high' of this.ndata[group] and 'low' of this.ndata[group]
+      
+      this.plots.push(
+        (new Sai.CandlestickPlot(this.r,
+                                 this.pOrigin[0],
+                                 this.pOrigin[1],
+                                 this.pw, this.ph
+                                 {'open': this.ndata[group]['open'],
+                                  'close': this.ndata[group]['close'],
+                                  'high': this.ndata[group]['high'],
+                                  'low': this.ndata[group]['low']
+                                 }))
+        .render(this.colors, Math.min(5, (this.pw / this.ndata[group]['open'].length) - 2))
+      )
     
     return this
