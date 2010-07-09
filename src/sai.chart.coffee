@@ -23,17 +23,17 @@ class Sai.Chart
     {'all': seriesName for seriesName of data when this.caresAbout(seriesName)}
   
   getYAxisVals: (min, max) ->
-    mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.33)
+    mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.35)
     step: Math.pow(10, mag)
     if rawmag % 1 > 0.7
       step *= 4
-    else if rawmag % 1 > 0.5
+    else if rawmag % 1 > 0.35
       step *= 2
     
-    bottom: Sai.util.roundToMag(min - (step / 1.9), mag)
+    bottom: Sai.util.round(min - (step / 1.9), step)
     bottom: 0 if bottom < 0 and min >= 0
     top: Sai.util.round(max + (step / 1.9), step)
-    return Sai.util.roundToMag(i, mag) for i in [bottom..top] by step
+    return Sai.util.round(i, step) for i in [bottom..top] by step
   
   # takes e.g. groups[group], not just a group name
   getMax: (data, group) ->
@@ -95,15 +95,12 @@ class Sai.Chart
     this.colors[series] = color
     return this
   
-  # for efficiency, returns the normalized height of the baseline if it should be drawn
-  # else, returns false
-  shouldDrawBaseline: () ->
+  drawGuideline: (h) ->
     ymin: this.ndata['all'].__YVALS__[0]
     ymax: this.ndata['all'].__YVALS__[this.ndata['all'].__YVALS__.length - 1]
-    return ymin < 0 and ymax > 0 and Math.abs(ymin) / (Math.abs(ymin) + ymax)
-  
-  drawBaseLine: (nh) ->
-    this.baseline: (new Sai.LinePlot(this.r,
+    return unless h > ymin 
+    nh: (h - ymin) / (ymax - ymin)
+    this.guideline: (new Sai.LinePlot(this.r,
                                      this.pOrigin[0],
                                      this.pOrigin[1],
                                      this.pw, this.ph,
@@ -116,7 +113,7 @@ class Sai.LineChart extends Sai.Chart
   render: () ->
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
-    if (nh: this.shouldDrawBaseline()) then this.drawBaseLine(nh)
+    this.drawGuideline(0)
     
     this.plots = this.r.set()
     for series of this.ndata['all']
@@ -140,7 +137,7 @@ class Sai.BarChart extends Sai.Chart
   render: () ->
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
-    if (nh: this.shouldDrawBaseline()) then this.drawBaseLine(nh)
+    this.drawGuideline(0)
     
     this.plots = this.r.set()
     data: {}
@@ -179,7 +176,7 @@ class Sai.StockChart extends Sai.Chart
   render: () ->
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
-    if (nh: this.shouldDrawBaseline()) then this.drawBaseLine(nh)
+    this.drawGuideline(0)
     
     this.plots = this.r.set()
     
