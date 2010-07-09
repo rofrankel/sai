@@ -31,7 +31,7 @@ class Sai.Chart
       step *= 2
     
     bottom: Sai.util.round(min - (step / 1.9), step)
-    bottom: 0 if bottom < 0 and min >= 0
+    bottom: 0 if bottom < 0 <= min
     top: Sai.util.round(max + (step / 1.9), step)
     return Sai.util.round(i, step) for i in [bottom..top] by step
   
@@ -55,6 +55,7 @@ class Sai.Chart
       min: yvals[0]
       max: yvals[yvals.length - 1]
       for series in groups[group]
+        continue unless data[series]
         ndata[group][series] = [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] for i in [0...data[series].length]
         ndata[group].__YVALS__ = yvals
     
@@ -95,9 +96,10 @@ class Sai.Chart
     this.colors[series] = color
     return this
   
-  drawGuideline: (h) ->
-    ymin: this.ndata['all'].__YVALS__[0]
-    ymax: this.ndata['all'].__YVALS__[this.ndata['all'].__YVALS__.length - 1]
+  drawGuideline: (h, group) ->
+    group ?= 'all'
+    ymin: this.ndata[group].__YVALS__[0]
+    ymax: this.ndata[group].__YVALS__[this.ndata[group].__YVALS__.length - 1]
     return unless h > ymin 
     nh: (h - ymin) / (ymax - ymin)
     this.guideline: (new Sai.LinePlot(this.r,
@@ -105,7 +107,7 @@ class Sai.Chart
                                      this.pOrigin[1],
                                      this.pw, this.ph,
                                      [[0, nh], [1, nh]]))
-    .render('#ddd')
+    .render('#ccc')
 
 
 class Sai.LineChart extends Sai.Chart
@@ -158,6 +160,7 @@ class Sai.BarChart extends Sai.Chart
     
     return this
 
+
 class Sai.StackedBarChart extends Sai.BarChart
 
   constructor: (r, x, y, w, h, data) ->
@@ -175,10 +178,16 @@ class Sai.StackedBarChart extends Sai.BarChart
 
 class Sai.StockChart extends Sai.Chart
   
+  dataGroups: (data) ->
+    {
+      'candlesticks': ['open', 'close', 'high', 'low']
+      'volume': ['volume']
+    }
+
   render: () ->
-    this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    this.addAxes('candlesticks', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
-    this.drawGuideline(0)
+    this.drawGuideline(0, 'candlesticks')
     
     this.plots = this.r.set()
     

@@ -31,6 +31,7 @@ Raphael.fn.sai.prim.line: (coords, color, width) ->
 
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
+  width *= .67
   stack: this.set()
   h: baseline
   for i in [0...coords.length]
@@ -41,9 +42,29 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
                 width,
                 baseline - coords[i][1])
       .attr('fill', colors and colors[i] or 'black')
+      .attr('stroke', colors and colors[i] or 'black')
     )
   
   return stack
+
+
+# colors is a list parallel to coords
+Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline) ->
+  group: this.set()
+  barwidth: width / (coords.length + 1)
+  x: coords[0][0] - ((width - barwidth) / 2)
+  for i in [0...coords.length]
+    group.push(
+      this.rect(x,
+                coords[i][1],
+                barwidth,
+                baseline - coords[i][1])
+      .attr('fill', colors and colors[i] or 'black')
+      .attr('stroke', colors and colors[i] or 'black')
+    )
+    x += barwidth
+  
+  return group
 
 
 

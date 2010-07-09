@@ -64,8 +64,7 @@ class Sai.BarPlot extends Sai.Plot
   
   # if stacked, graph is rendered stacked...else, grouped
   # colors maps from series name to color string
-  render: (stacked, colors, padding) ->
-    padding ?= 0.5
+  render: (stacked, colors) ->
     len: 0
     colorArray: []
     barfunc: if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
@@ -73,8 +72,6 @@ class Sai.BarPlot extends Sai.Plot
     for column of this.dndata
       len: this.dndata[column].length
       colorArray.push(colors and colors[column] or 'black')
-    
-    barwidth: (this.w / len) * padding
     
     this.bars: this.r.set()
     
@@ -84,7 +81,7 @@ class Sai.BarPlot extends Sai.Plot
         bardata.push(this.dndata[column][i])
       
       this.bars.push(
-        barfunc(bardata, colorArray, barwidth, this.y)
+        barfunc(bardata, colorArray, this.w / len, this.y)
       )
     
     
