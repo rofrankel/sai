@@ -80,8 +80,6 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
   dx: len / (vals.length - 1)
   xpos: x
   
-  alert 'vals ' + vals
-  
   for val in vals
     unless val is null
       ticklen: ticklens[if String(val) then 0 else 1]

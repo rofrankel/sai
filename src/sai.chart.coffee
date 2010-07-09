@@ -14,7 +14,10 @@ class Sai.Chart
     return []
   
   setData: (data) ->
-    this.data = data
+    this.data = {}
+    
+    for series of data
+      this.data[series] = data[series].slice(0)
     
     for series in this.seriesToNullPad()
       if series of this.data
@@ -145,6 +148,9 @@ class Sai.LineChart extends Sai.Chart
 
 
 class Sai.BarChart extends Sai.Chart
+  
+  seriesToNullPad: () ->
+    return series for series of this.data
   
   render: () ->
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
