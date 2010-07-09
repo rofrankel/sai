@@ -197,22 +197,23 @@ class Sai.StockChart extends Sai.Chart
       'down': []
     }
     
-    for i in [0...this.ndata['volume']['volume'].length]
-      if i and (this.ndata['candlesticks']['close'][i][1] < this.ndata['candlesticks']['close'][i-1][1])
-        vol.down.push(this.ndata['volume']['volume'][i])
-        vol.up.push([this.ndata['volume']['volume'][i][0], 0])
-      else
-        vol.up.push(this.ndata['volume']['volume'][i])
-        vol.down.push([this.ndata['volume']['volume'][i][0], 0])
-    
-    this.plots.push(
-      (new Sai.BarPlot(this.r
-                       this.pOrigin[0],
-                       this.pOrigin[1],
-                       this.pw, this.ph * 0.2,
-                       vol))
-      .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'})
-    )
+    if 'volume' of this.ndata.volume
+      for i in [0...this.ndata['volume']['volume'].length]
+        if i and (this.ndata['candlesticks']['close'][i][1] < this.ndata['candlesticks']['close'][i-1][1])
+          vol.down.push(this.ndata['volume']['volume'][i])
+          vol.up.push([this.ndata['volume']['volume'][i][0], 0])
+        else
+          vol.up.push(this.ndata['volume']['volume'][i])
+          vol.down.push([this.ndata['volume']['volume'][i][0], 0])
+      
+      this.plots.push(
+        (new Sai.BarPlot(this.r
+                         this.pOrigin[0],
+                         this.pOrigin[1],
+                         this.pw, this.ph * 0.2,
+                         vol))
+        .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'})
+      )
     
     this.plots.push(
       (new Sai.CandlestickPlot(this.r,
