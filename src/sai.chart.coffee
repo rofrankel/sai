@@ -7,11 +7,20 @@ class Sai.Chart
     this.y = y or 0
     this.w = w or 640
     this.h = h or 480
+    
     this.setData(data)
+  
+  seriesToNullPad: () ->
+    return []
   
   setData: (data) ->
     this.data = data
-    this.ndata  = this.normalize(data)
+    
+    for series in this.seriesToNullPad()
+      if series of this.data
+        this.data[series] = [null].concat(this.data[series].concat([null]))
+    
+    this.ndata = this.normalize(this.data)
   
   # a line chart plots everything, but a stock chart only cares about e.g. high low open close avg vol
   caresAbout: (seriesName) ->
@@ -37,11 +46,11 @@ class Sai.Chart
   
   # takes e.g. groups[group], not just a group name
   getMax: (data, group) ->
-    return Math.max.apply(Math, Math.max.apply(Math, data[series]) for series in group)
+    return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d isnt null) for series in group)
   
   # takes e.g. groups[group], not just a group name
   getMin: (data, group) ->
-    return Math.min.apply(Math, Math.min.apply(Math, data[series]) for series in group)
+    return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d isnt null) for series in group)
   
   normalize: (data) ->
     groups = this.dataGroups(data)
@@ -64,18 +73,19 @@ class Sai.Chart
   # padding should contain left, right, top, and bottom values
   addAxes: (group, padding, vticks) ->
     
-    this.axisPadding = padding
+    this.axisPadding: padding
+    this.axisWidth: 1
     
-    this.pOrigin = origin = [this.x + padding.left, this.y - padding.bottom]
-    this.pw = hlen = this.w - padding.left - padding.right
-    this.ph = vlen = this.h - padding.bottom - padding.top
+    this.pOrigin = origin = [this.x + padding.left + this.axisWidth, this.y - padding.bottom - this.axisWidth]
+    this.pw = hlen = this.w - padding.left - padding.right - this.axisWidth
+    this.ph = vlen = this.h - padding.bottom - padding.top - this.axisWidth
     vmin = this.ndata[group].__YVALS__[0]
     vmax = this.ndata[group].__YVALS__[this.ndata[group].__YVALS__.length - 1]
     
     vticks ?= Math.floor(vlen / 15.0)
     
-    haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], origin[0], origin[1], hlen)
-    vaxis = this.r.sai.prim.vaxis(this.ndata[group].__YVALS__, origin[0], origin[1], vlen)
+    haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], origin[0] - this.axisWidth, origin[1] + this.axisWidth, hlen, this.axisWidth)
+    vaxis = this.r.sai.prim.vaxis(this.ndata[group].__YVALS__, origin[0] - this.axisWidth, origin[1] + this.axisWidth, vlen, this.axisWidth)
     
     return this.r.set().push(haxis).push(vaxis)
   
@@ -177,6 +187,9 @@ class Sai.StackedBarChart extends Sai.BarChart
 
 
 class Sai.StockChart extends Sai.Chart
+  
+  seriesToNullPad: () ->
+    return ['open', 'close', 'high', 'low', 'volume', '__LABELS__']
   
   dataGroups: (data) ->
     {

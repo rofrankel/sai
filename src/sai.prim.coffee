@@ -68,7 +68,7 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline) ->
 
 
 
-Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklens, width, color) ->
+Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000'
@@ -80,17 +80,20 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklens, width, color) ->
   dx: len / (vals.length - 1)
   xpos: x
   
+  alert 'vals ' + vals
+  
   for val in vals
-    ticklen: ticklens[if String(val) then 0 else 1]
-    ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
-    label: this.text(xpos, y + ticklen + 2, String(val))
-    label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
-    labels.push(label)
+    unless val is null
+      ticklen: ticklens[if String(val) then 0 else 1]
+      ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
+      label: this.text(xpos, y + ticklen + 2, String(val))
+      label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
+      labels.push(label)
     xpos += dx
   
   return this.set().push(line, ticks, labels)
 
-Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklens, width, color) ->
+Raphael.fn.sai.prim.vaxis: (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000'
@@ -103,11 +106,12 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklens, width, color) ->
   ypos: y
   
   for val in vals
-    ticklen: ticklens[if String(val) then 0 else 1]
-    ticks.push(this.path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
-    label: this.text(x - ticklen - 2, ypos, String(val))
-    label.attr('x', label.attr('x') - (label.getBBox().width / 2.0))
-    labels.push(label)
+    unless val is null
+      ticklen: ticklens[if String(val) then 0 else 1]
+      ticks.push(this.path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
+      label: this.text(x - ticklen - 2, ypos, String(val))
+      label.attr('x', label.attr('x') - (label.getBBox().width / 2.0))
+      labels.push(label)
     ypos -= dy
   
   return this.set().push(line, ticks, labels)
