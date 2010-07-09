@@ -29,6 +29,24 @@ Raphael.fn.sai.prim.line: (coords, color, width) ->
   return this.path(path).attr({'stroke': color, 'stroke-width': width})
 
 
+# colors is a list parallel to coords
+Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
+  stack: this.set()
+  h: baseline
+  for i in [0...coords.length]
+    h: coords[i][1] - (baseline - h)
+    stack.push(
+      this.rect(coords[i][0] - (width / 2.0),
+                h,
+                width,
+                baseline - coords[i][1])
+      .attr('fill', colors and colors[i] or 'black')
+    )
+  
+  return stack
+
+
+
 Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklens, width, color) ->
   ticklens ?= [10, 5]
   width ?= 1

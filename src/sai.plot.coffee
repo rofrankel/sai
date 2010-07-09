@@ -10,7 +10,12 @@ class Sai.Plot
     this.setDenormalizedData()
   
   setDenormalizedData: () ->
-    this.dndata: this.denormalize(dnPoint) for dnPoint in this.data
+    if this.data instanceof Array
+      this.dndata: this.denormalize(dnPoint) for dnPoint in this.data
+    else
+      this.dndata ?= {}
+      for column of this.data
+        this.dndata[column]: this.denormalize(dnPoint) for dnPoint in this.data[column]
   
   denormalize: (point) ->
     return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
@@ -24,47 +29,63 @@ class Sai.Plot
 class Sai.LinePlot extends Sai.Plot
   
   render: (color, width) ->
-    this.line: r.sai.prim.line(this.dndata, color or 'black', width or 1)
+    this.line: this.r.sai.prim.line(this.dndata, color or 'black', width or 1)
     return this
 
 
 # Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
 class Sai.CandlestickPlot extends Sai.Plot
-  
-  setDenormalizedData: () ->
-    this.dndata ?= {}
-    this.dndata['open']: this.denormalize(dnPoint) for dnPoint in this.data['open']
-    this.dndata['close']: this.denormalize(dnPoint) for dnPoint in this.data['close']
-    this.dndata['high']: this.denormalize(dnPoint) for dnPoint in this.data['high']
-    this.dndata['low']: this.denormalize(dnPoint) for dnPoint in this.data['low']
 
   render: (colors, body_width) ->
     cup: colors and colors['up'] or 'black'
     cdown: colors and colors['down'] or 'red'
     body_width ?= 5
     
-    this.candlesticks: r.set()
+    this.candlesticks: this.r.set()
     for i in [0...this.dndata['open'].length]
       
       # Y coords are inverted, which makes a lot of stuff seem backwards...
       upDay: this.dndata['close'][i][1] < this.dndata['open'][i][1]
       
       this.candlesticks.push(
-        r.sai.prim.candlestick(this.dndata['open'][i][0],
-                               upDay and this.dndata['close'][i][1] or this.dndata['open'][i][1]
-                               upDay and this.dndata['open'][i][1] or this.dndata['close'][i][1]
-                               this.dndata['high'][i][1],
-                               this.dndata['low'][i][1],
-                               body_width or 5,
-                               (i and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
-                               not upDay)
+        this.r.sai.prim.candlestick(this.dndata['open'][i][0],
+                                    upDay and this.dndata['close'][i][1] or this.dndata['open'][i][1]
+                                    upDay and this.dndata['open'][i][1] or this.dndata['close'][i][1]
+                                    this.dndata['high'][i][1],
+                                    this.dndata['low'][i][1],
+                                    body_width or 5,
+                                    (i and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
+                                    not upDay)
       )
     
     return this
 
 class Sai.BarPlot extends Sai.Plot
   
-  render: () ->
+  # if stacked, graph is rendered stacked...else, grouped
+  # colors maps from series name to color string
+  render: (stacked, colors, padding) ->
+    padding ?= 0.5
+    len: 0
+    colorArray: []
+    barfunc: if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
+    
+    for column of this.dndata
+      len: this.dndata[column].length
+      colorArray.push(colors and colors[column] or 'black')
+    
+    barwidth: (this.w / len) * padding
+    
+    this.bars: this.r.set()
+    
+    for i in [0...len]
+      bardata = []
+      for column of this.dndata
+        bardata.push(this.dndata[column][i])
+      
+      this.bars.push(
+        barfunc(bardata, colorArray, barwidth, this.y)
+      )
     
     
     return this

@@ -23,12 +23,25 @@ class Sai.Chart
     {'all': seriesName for seriesName of data when this.caresAbout(seriesName)}
   
   getYAxisVals: (min, max) ->
-    mag: Math.floor((Math.log(max - min) / Math.LN10) - 0.33)
+    mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.33)
     step: Math.pow(10, mag)
-    bottom: Sai.util.round(min - (step / 1.9), mag)
-    bottom: 0 if bottom < 0 and min > 0
-    top: Sai.util.round(max + (step / 1.9), mag)
-    return Sai.util.round(i, mag) for i in [bottom..top] by step
+    if rawmag % 1 > 0.7
+      step *= 4
+    else if rawmag % 1 > 0.5
+      step *= 2
+    
+    bottom: Sai.util.roundToMag(min - (step / 1.9), mag)
+    bottom: 0 if bottom < 0 and min >= 0
+    top: Sai.util.round(max + (step / 1.9), step)
+    return Sai.util.roundToMag(i, mag) for i in [bottom..top] by step
+  
+  # takes e.g. groups[group], not just a group name
+  getMax: (data, group) ->
+    return Math.max.apply(Math, Math.max.apply(Math, data[series]) for series in group)
+  
+  # takes e.g. groups[group], not just a group name
+  getMin: (data, group) ->
+    return Math.min.apply(Math, Math.min.apply(Math, data[series]) for series in group)
   
   normalize: (data) ->
     groups = this.dataGroups(data)
@@ -36,8 +49,8 @@ class Sai.Chart
     
     for group of groups
       ndata[group]: {}
-      max: Math.max.apply(Math, Math.max.apply(Math, data[series]) for series in groups[group])
-      min: Math.min.apply(Math, Math.min.apply(Math, data[series]) for series in groups[group])
+      max: this.getMax(data, groups[group])
+      min: this.getMin(data, groups[group])
       yvals: this.getYAxisVals(min, max)
       min: yvals[0]
       max: yvals[yvals.length - 1]
@@ -122,7 +135,45 @@ class Sai.LineChart extends Sai.Chart
     return this
 
 
-# Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
+class Sai.BarChart extends Sai.Chart
+  
+  render: () ->
+    this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    
+    if (nh: this.shouldDrawBaseline()) then this.drawBaseLine(nh)
+    
+    this.plots = this.r.set()
+    data: {}
+    for series of this.ndata['all']
+      unless series is '__YVALS__'
+        data[series] = this.ndata['all'][series]
+    
+    this.plots.push(
+      (new Sai.BarPlot(this.r,
+                       this.pOrigin[0],
+                       this.pOrigin[1],
+                       this.pw, this.ph,
+                       data))
+      .render(this.stacked?, this.colors)
+    )
+    
+    return this
+
+class Sai.StackedBarChart extends Sai.BarChart
+
+  constructor: (r, x, y, w, h, data) ->
+    super(r, x, y, w, h, data)
+    this.stacked: true
+  
+  getMax: (data, group) ->
+    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...this.data['__LABELS__'].length])
+  
+  # bar charts always have a 0 baseline
+  getMin: (data, group) ->
+    return 0
+
+
+
 class Sai.StockChart extends Sai.Chart
   
   render: () ->
