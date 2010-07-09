@@ -5,7 +5,7 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill
   body_width++ unless body_width % 2
   bx: x - (body_width / 2.0)
   
-  body: this.rect(bx, by0, body_width, by1-by0).attr('stroke', color)
+  body: this.rect(bx, by0, body_width, by1-by0 or 1).attr('stroke', color)
   shadow: this.path("M" + x + " " + sy0 +
                     "L" + x + " " + by0 +
                     "M" + x + " " + by1 +

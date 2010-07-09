@@ -64,3 +64,7 @@ class Sai.CandlestickPlot extends Sai.Plot
 
 class Sai.BarPlot extends Sai.Plot
   
+  render: () ->
+    
+    
+    return this
