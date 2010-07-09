@@ -182,6 +182,7 @@ class Sai.StockChart extends Sai.Chart
     {
       'candlesticks': ['open', 'close', 'high', 'low']
       'volume': ['volume']
+      'averages': seriesName for seriesName of data when this.caresAbout(seriesName) and seriesName not in ['open', 'close', 'high', 'low', 'volume']
     }
 
   render: () ->
@@ -191,31 +192,50 @@ class Sai.StockChart extends Sai.Chart
     
     this.plots = this.r.set()
     
-    for group of this.ndata
-      continue unless this.ndata[group]['open'] and this.ndata[group]['close'] and this.ndata[group]['high'] and this.ndata[group]['low']
-      
+    vol: {
+      'up': []
+      'down': []
+    }
+    
+    for i in [0...this.ndata['volume']['volume'].length]
+      if i and (this.ndata['candlesticks']['close'][i][1] < this.ndata['candlesticks']['close'][i-1][1])
+        vol.down.push(this.ndata['volume']['volume'][i])
+        vol.up.push([this.ndata['volume']['volume'][i][0], 0])
+      else
+        vol.up.push(this.ndata['volume']['volume'][i])
+        vol.down.push([this.ndata['volume']['volume'][i][0], 0])
+    
+    this.plots.push(
+      (new Sai.BarPlot(this.r
+                       this.pOrigin[0],
+                       this.pOrigin[1],
+                       this.pw, this.ph * 0.2,
+                       vol))
+      .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'})
+    )
+    
+    this.plots.push(
+      (new Sai.CandlestickPlot(this.r,
+                               this.pOrigin[0],
+                               this.pOrigin[1],
+                               this.pw, this.ph
+                               {'open': this.ndata['candlesticks']['open'],
+                                'close': this.ndata['candlesticks']['close'],
+                                'high': this.ndata['candlesticks']['high'],
+                                'low': this.ndata['candlesticks']['low']
+                               }))
+      .render(this.colors, Math.min(5, (this.pw / this.ndata['candlesticks']['open'].length) - 2))
+    )
+    
+    for series of this.ndata['averages']
+      continue if series in ['open', 'close', 'high', 'low', 'volume', '__YVALS__']
       this.plots.push(
-        (new Sai.CandlestickPlot(this.r,
-                                 this.pOrigin[0],
-                                 this.pOrigin[1],
-                                 this.pw, this.ph
-                                 {'open': this.ndata[group]['open'],
-                                  'close': this.ndata[group]['close'],
-                                  'high': this.ndata[group]['high'],
-                                  'low': this.ndata[group]['low']
-                                 }))
-        .render(this.colors, Math.min(5, (this.pw / this.ndata[group]['open'].length) - 2))
+        (new Sai.LinePlot(this.r,
+                          this.pOrigin[0],
+                          this.pOrigin[1],
+                          this.pw, this.ph,
+                          this.ndata['averages'][series]))
+        .render(this.colors and this.colors[series] or 'black')
       )
-      
-      for series of this.ndata[group]
-        continue if series in ['open', 'close', 'high', 'low', '__YVALS__']
-        this.plots.push(
-          (new Sai.LinePlot(this.r,
-                            this.pOrigin[0],
-                            this.pOrigin[1],
-                            this.pw, this.ph,
-                            this.ndata[group][series]))
-          .render(this.colors and this.colors[series] or 'black')
-        )
     
     return this
