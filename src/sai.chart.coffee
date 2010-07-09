@@ -137,7 +137,9 @@ class Sai.BarChart extends Sai.Chart
   render: () ->
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
-    this.drawGuideline(0)
+    this.guidelines = this.r.set()
+    for yval in this.ndata['all']['__YVALS__']
+      this.drawGuideline(yval)
     
     this.plots = this.r.set()
     data: {}
