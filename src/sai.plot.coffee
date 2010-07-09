@@ -45,14 +45,22 @@ class Sai.CandlestickPlot extends Sai.Plot
     
     this.candlesticks: r.set()
     for i in [0...this.dndata['open'].length]
+      
+      # Y coords are inverted, which makes a lot of stuff seem backwards...
+      upDay: this.dndata['close'][i][1] < this.dndata['open'][i][1]
+      
       this.candlesticks.push(
         r.sai.prim.candlestick(this.dndata['open'][i][0],
-                               Math.min(this.dndata['open'][i][1], this.dndata['close'][i][1]), # max/min and high/low are sort of backwards, because Y coords are inverted
-                               Math.max(this.dndata['open'][i][1], this.dndata['close'][i][1]),
+                               upDay and this.dndata['close'][i][1] or this.dndata['open'][i][1]
+                               upDay and this.dndata['open'][i][1] or this.dndata['close'][i][1]
                                this.dndata['high'][i][1],
                                this.dndata['low'][i][1],
                                body_width or 5,
-                               (this.dndata['open'][i][1] > this.dndata['close'][i][1]) and cup or cdown)
+                               (i and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
+                               not upDay)
       )
     
     return this
+
+class Sai.BarPlot extends Sai.Plot
+  

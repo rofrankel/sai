@@ -1,6 +1,6 @@
 Raphael.fn.sai.prim ?= {}
 
-Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
+Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill) ->
   color ?= '#000'
   body_width++ unless body_width % 2
   bx: x - (body_width / 2.0)
@@ -10,6 +10,8 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
                     "L" + x + " " + by0 +
                     "M" + x + " " + by1 +
                     "L" + x + " " + sy1).attr('stroke', color)
+  
+  body.attr('fill', color) if fill
   
   return this.set().push(body, shadow)
 
@@ -27,8 +29,8 @@ Raphael.fn.sai.prim.line: (coords, color, width) ->
   return this.path(path).attr({'stroke': color, 'stroke-width': width})
 
 
-Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklen, width, color) ->
-  ticklen ?= 10
+Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklens, width, color) ->
+  ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000'
   
@@ -40,6 +42,7 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklen, width, color) ->
   xpos: x
   
   for val in vals
+    ticklen: ticklens[if val then 0 else 1]
     ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
     label: this.text(xpos, y + ticklen + 2, val)
     label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
@@ -48,8 +51,8 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, ticklen, width, color) ->
   
   return this.set().push(line, ticks, labels)
 
-Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklen, width, color) ->
-  ticklen ?= 10
+Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklens, width, color) ->
+  ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000'
   
@@ -61,6 +64,7 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, ticklen, width, color) ->
   ypos: y
   
   for val in vals
+    ticklen: ticklens[if val then 0 else 1]
     ticks.push(this.path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
     label: this.text(x - ticklen - 2, ypos, String(val))
     label.attr('x', label.attr('x') - (label.getBBox().width / 2.0))

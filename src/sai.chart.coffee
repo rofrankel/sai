@@ -133,7 +133,7 @@ class Sai.StockChart extends Sai.Chart
     this.plots = this.r.set()
     
     for group of this.ndata
-      continue unless 'open' of this.ndata[group] and 'close' of this.ndata[group] and 'high' of this.ndata[group] and 'low' of this.ndata[group]
+      continue unless this.ndata[group]['open'] and this.ndata[group]['close'] and this.ndata[group]['high'] and this.ndata[group]['low']
       
       this.plots.push(
         (new Sai.CandlestickPlot(this.r,
@@ -147,5 +147,16 @@ class Sai.StockChart extends Sai.Chart
                                  }))
         .render(this.colors, Math.min(5, (this.pw / this.ndata[group]['open'].length) - 2))
       )
+      
+      for series of this.ndata[group]
+        continue if series in ['open', 'close', 'high', 'low', '__YVALS__']
+        this.plots.push(
+          (new Sai.LinePlot(this.r,
+                            this.pOrigin[0],
+                            this.pOrigin[1],
+                            this.pw, this.ph,
+                            this.ndata[group][series]))
+          .render(this.colors and this.colors[series] or 'black')
+        )
     
     return this
