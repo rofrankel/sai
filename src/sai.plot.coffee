@@ -18,7 +18,8 @@ class Sai.Plot
         this.dndata[column]: this.denormalize(dnPoint) for dnPoint in this.data[column]
   
   denormalize: (point) ->
-    return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
+    unless point is null
+      return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
 
   render: () ->
     this.r.rect(20, 20, 20, 20).attr('fill', 'red')
@@ -44,6 +45,8 @@ class Sai.CandlestickPlot extends Sai.Plot
     this.candlesticks: this.r.set()
     for i in [0...this.dndata['open'].length]
       
+      continue unless this.dndata['close'][i]?
+      
       # Y coords are inverted, which makes a lot of stuff seem backwards...
       upDay: this.dndata['close'][i][1] < this.dndata['open'][i][1]
       
@@ -54,7 +57,7 @@ class Sai.CandlestickPlot extends Sai.Plot
                                     this.dndata['high'][i][1],
                                     this.dndata['low'][i][1],
                                     body_width or 5,
-                                    (i and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
+                                    (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
                                     not upDay)
       )
     

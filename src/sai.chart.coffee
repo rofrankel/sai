@@ -10,24 +10,33 @@ class Sai.Chart
     
     this.setData(data)
   
-  seriesToNullPad: () ->
+  groupsToNullPad: () ->
     return []
   
   setData: (data) ->
     this.data = {}
     
+    # deep copy
     for series of data
       this.data[series] = data[series].slice(0)
     
-    for series in this.seriesToNullPad()
-      if series of this.data
-        this.data[series] = [null].concat(this.data[series].concat([null]))
+    # do any necessary null padding
+    groups = this.dataGroups(data)
     
+    for group in this.groupsToNullPad()
+      for series in groups[group]
+        this.nullPad(series)
+    
+    # normalize data
     this.ndata = this.normalize(this.data)
+  
+  nullPad: (seriesName) ->
+    if seriesName of this.data
+      this.data[seriesName] = [null].concat(this.data[seriesName].concat([null]))
   
   # a line chart plots everything, but a stock chart only cares about e.g. high low open close avg vol
   caresAbout: (seriesName) ->
-    return seriesName isnt '__LABELS__'
+    return not seriesName.match("^__")
   
   # Used to determine whether a data series should be used to scale the overall chart.
   # For example, in a stock chart, volume doesn't scale the chart.
@@ -60,6 +69,7 @@ class Sai.Chart
     ndata = {}
     
     for group of groups
+      continue if group is '__META__'
       ndata[group]: {}
       max: this.getMax(data, groups[group])
       min: this.getMin(data, groups[group])
@@ -67,8 +77,8 @@ class Sai.Chart
       min: yvals[0]
       max: yvals[yvals.length - 1]
       for series in groups[group]
-        continue unless data[series]
-        ndata[group][series] = [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] for i in [0...data[series].length]
+        continue unless data[series]?
+        ndata[group][series] = (data[series][i]? and [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] or null) for i in [0...data[series].length]
         ndata[group].__YVALS__ = yvals
     
     return ndata
@@ -149,8 +159,9 @@ class Sai.LineChart extends Sai.Chart
 
 class Sai.BarChart extends Sai.Chart
   
-  seriesToNullPad: () ->
-    return series for series of this.data
+  groupsToNullPad: () ->
+    return group for group of this.dataGroups()
+
   
   render: () ->
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
@@ -194,20 +205,20 @@ class Sai.StackedBarChart extends Sai.BarChart
 
 class Sai.StockChart extends Sai.Chart
   
-  seriesToNullPad: () ->
-    return ['open', 'close', 'high', 'low', 'volume', '__LABELS__']
+  groupsToNullPad: () ->
+    return group for group of this.dataGroups()
   
   dataGroups: (data) ->
     {
-      'candlesticks': ['open', 'close', 'high', 'low']
+      '__META__': ['__LABELS__']
       'volume': ['volume']
-      'averages': seriesName for seriesName of data when this.caresAbout(seriesName) and seriesName not in ['open', 'close', 'high', 'low', 'volume']
+      'prices': seriesName for seriesName of data when this.caresAbout(seriesName) and seriesName not in ['__LABELS__', 'volume']
     }
 
   render: () ->
-    this.addAxes('candlesticks', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
-    this.drawGuideline(0, 'candlesticks')
+    this.drawGuideline(0, 'prices')
     
     this.plots = this.r.set()
     
@@ -218,12 +229,16 @@ class Sai.StockChart extends Sai.Chart
     
     if 'volume' of this.ndata.volume
       for i in [0...this.ndata['volume']['volume'].length]
-        if i and (this.ndata['candlesticks']['close'][i][1] < this.ndata['candlesticks']['close'][i-1][1])
-          vol.down.push(this.ndata['volume']['volume'][i])
-          vol.up.push([this.ndata['volume']['volume'][i][0], 0])
+        if this.ndata['volume']['volume'][i] isnt null
+          if i and this.ndata['prices']['close'][i-1] and (this.ndata['prices']['close'][i][1] < this.ndata['prices']['close'][i-1][1])
+            vol.down.push(this.ndata['volume']['volume'][i])
+            vol.up.push([this.ndata['volume']['volume'][i][0], 0])
+          else
+            vol.up.push(this.ndata['volume']['volume'][i])
+            vol.down.push([this.ndata['volume']['volume'][i][0], 0])
         else
-          vol.up.push(this.ndata['volume']['volume'][i])
-          vol.down.push([this.ndata['volume']['volume'][i][0], 0])
+          vol.up.push([0, 0])
+          vol.down.push([0, 0])
       
       this.plots.push(
         (new Sai.BarPlot(this.r
@@ -239,22 +254,23 @@ class Sai.StockChart extends Sai.Chart
                                this.pOrigin[0],
                                this.pOrigin[1],
                                this.pw, this.ph
-                               {'open': this.ndata['candlesticks']['open'],
-                                'close': this.ndata['candlesticks']['close'],
-                                'high': this.ndata['candlesticks']['high'],
-                                'low': this.ndata['candlesticks']['low']
+                               {'open': this.ndata['prices']['open'],
+                                'close': this.ndata['prices']['close'],
+                                'high': this.ndata['prices']['high'],
+                                'low': this.ndata['prices']['low']
                                }))
-      .render(this.colors, Math.min(5, (this.pw / this.ndata['candlesticks']['open'].length) - 2))
+      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2))
     )
     
-    for series of this.ndata['averages']
-      continue if series in ['open', 'close', 'high', 'low', 'volume', '__YVALS__']
+    for series of this.ndata['prices']
+      continue if (series in ['open', 'close', 'high', 'low']) or series.match("^__")
+      alert 'series ' + series
       this.plots.push(
         (new Sai.LinePlot(this.r,
                           this.pOrigin[0],
                           this.pOrigin[1],
                           this.pw, this.ph,
-                          this.ndata['averages'][series]))
+                          this.ndata['prices'][series]))
         .render(this.colors and this.colors[series] or 'black')
       )
     

@@ -21,6 +21,7 @@ Raphael.fn.sai.prim.line: (coords, color, width) ->
   width ?= 1
   
   for coord in coords
+    continue unless coord?
     if path?
       path += ("L" + coord[0] + " " + coord[1])
     else
@@ -35,6 +36,7 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
   stack: this.set()
   h: baseline
   for i in [0...coords.length]
+    continue unless coords[i]?
     h: coords[i][1] - (baseline - h)
     stack.push(
       this.rect(coords[i][0] - (width / 2.0),
@@ -51,9 +53,11 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline) ->
   group: this.set()
+  return group unless coords[0]?
   barwidth: width / (coords.length + 1)
   x: coords[0][0] - ((width - barwidth) / 2)
   for i in [0...coords.length]
+    continue unless coords[i]?
     group.push(
       this.rect(x,
                 coords[i][1],
