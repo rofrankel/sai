@@ -264,7 +264,6 @@ class Sai.StockChart extends Sai.Chart
     
     for series of this.ndata['prices']
       continue if (series in ['open', 'close', 'high', 'low']) or series.match("^__")
-      alert 'series ' + series
       this.plots.push(
         (new Sai.LinePlot(this.r,
                           this.pOrigin[0],
