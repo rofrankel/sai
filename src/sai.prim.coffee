@@ -13,7 +13,22 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill
   
   body.attr('fill', color) if fill
   
-  return this.set().push(body, shadow)
+  candlestick: this.set().push(body, shadow)
+  
+  ###
+  candlestick.hover(
+    () ->
+      alert 'hi'
+    ,
+    () ->
+      set: candlestick;
+      (() ->
+        set.attr('fill', 'green')
+        set.attr('stroke', 'green')
+      )()
+  )
+  ###
+  return candlestick
 
 
 Raphael.fn.sai.prim.line: (coords, color, width) ->
