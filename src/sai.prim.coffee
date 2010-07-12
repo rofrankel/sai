@@ -132,3 +132,50 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, width, color, ticklens) ->
     ypos -= dy
   
   return this.set().push(line, ticks, labels)
+
+
+# texts is a map that is displayed "key: value"
+# the __TITLE__ key is shown alone and centered at the top.
+# opts used to specify colors
+# width and height are inferred
+# text is 9px high, so leave 10 px each
+Raphael.fn.sai.prim.popup: (x, y, texts, opts) ->
+  TEXT_LINE_HEIGHT: 10
+  
+  set: this.set()
+  text_set: this.set()
+  max_width: 0
+  py: y + 5 + (TEXT_LINE_HEIGHT / 2)
+  
+  if '__HEAD__' of texts
+    head_text: this.text(x, py, texts['__HEAD__']).attr({'fill': '#cfc', 'font-size': '12', 'font-weight': 'bold'})
+    max_width: Math.max(max_width, head_text.getBBox().width)
+    text_set.push(head_text)
+    py += (TEXT_LINE_HEIGHT + 2) + 5
+  
+  # create text and find total height
+  for text of texts
+    continue if text is '__HEAD__'
+    t: this.text(x + 5, py, text + ": " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold'})
+    t.translate(t.getBBox().width / 2, 0)
+    max_width: Math.max(max_width, t.getBBox().width)
+    py += TEXT_LINE_HEIGHT
+    text_set.push(t)
+  
+  # find dimensions of box and decide where to draw it
+  bg_width: max_width + 10
+  rect: this.rect(x, y, bg_width, (py - y), 5).attr({'fill': 'black', 'fill-opacity': '.85', 'stroke': 'black'})
+  
+  head_text?.translate(bg_width / 2)
+  text_set.toFront()
+  
+  # create box, move text onto it
+
+
+Raphael.fn.sai.prim.key: (x, y, text, color) ->
+  t: this.text(x + 12, y, text)
+  t.translate(t.getBBox().width / 2, 6)
+  this.set().push(
+    t,
+    this.rect(x, y, 9, 9).attr({'fill': color})
+  )  

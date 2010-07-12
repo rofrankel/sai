@@ -41,7 +41,10 @@ class Sai.Chart
   # Used to determine whether a data series should be used to scale the overall chart.
   # For example, in a stock chart, volume doesn't scale the chart.
   dataGroups: (data) ->
-    {'all': seriesName for seriesName of data when this.caresAbout(seriesName)}
+    {
+      'all': seriesName for seriesName of data when this.caresAbout(seriesName)
+      '__META__': seriesName for seriesName of data when seriesName.match("^__")
+    }
   
   getYAxisVals: (min, max) ->
     mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.35)
