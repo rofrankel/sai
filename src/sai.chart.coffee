@@ -9,6 +9,13 @@ class Sai.Chart
     this.h = h or 480
     
     this.setData(data)
+    
+    this.padding: {
+      left: 0
+      right: 0
+      top: 0
+      bottom: 0
+    }
   
   groupsToNullPad: () ->
     return []
@@ -86,24 +93,45 @@ class Sai.Chart
     
     return ndata
   
-  # padding should contain left, right, top, and bottom values
-  addAxes: (group, padding, vticks) ->
+  addAxes: (group) ->
     
-    this.axisPadding: padding
-    this.axisWidth: 1
+    LINE_HEIGHT: 10
     
-    this.pOrigin = origin = [this.x + padding.left + this.axisWidth, this.y - padding.bottom - this.axisWidth]
-    this.pw = hlen = this.w - padding.left - padding.right - this.axisWidth
-    this.ph = vlen = this.h - padding.bottom - padding.top - this.axisWidth
-    vmin = this.ndata[group].__YVALS__[0]
-    vmax = this.ndata[group].__YVALS__[this.ndata[group].__YVALS__.length - 1]
+    this.axisWidth: 1.5
     
-    vticks ?= Math.floor(vlen / 15.0)
+    # height of text + space between ticks and text + height of tick + height of axis
+    haxis_height: LINE_HEIGHT + 2 + 10
     
-    haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], origin[0] - this.axisWidth, origin[1] + this.axisWidth, hlen, this.axisWidth)
-    vaxis = this.r.sai.prim.vaxis(this.ndata[group].__YVALS__, origin[0] - this.axisWidth, origin[1] + this.axisWidth, vlen, this.axisWidth)
+    # the 5 is for the half a text line at the top tick
+    this.padding.top += 5
+    # (over)estimate how much padding we need for the last label
+    if this.data['__LABELS__'][this.data['__LABELS__'].length - 1]?
+      this.padding.right += (this.data['__LABELS__'][this.data['__LABELS__'].length - 1].length / 2) * 5
     
-    return this.r.set().push(haxis).push(vaxis)
+    
+    vlen: this.h - (this.padding.bottom + haxis_height + this.padding.top)
+    this.vaxis = this.r.sai.prim.vaxis(this.ndata[group].__YVALS__, this.x + this.padding.left, this.y - (this.padding.bottom + haxis_height), vlen, this.axisWidth)
+    this.vaxis.translate(this.vaxis.getBBox().width, 0)
+    this.padding.left += this.vaxis.getBBox().width
+    
+    hlen: this.w - this.padding.left - this.padding.right
+    this.haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], this.x + this.padding.left, this.y - this.padding.bottom, hlen, this.axisWidth)
+    this.haxis.translate(0, -haxis_height)
+    this.padding.bottom += this.haxis.getBBox().height + this.axisWidth
+    
+    this.r.rect(this.x, this.y - this.h, this.w, this.h)
+    this.r.rect(this.vaxis.getBBox().x, this.vaxis.getBBox().y, this.vaxis.getBBox().width, this.vaxis.getBBox().height).attr('stroke', 'red')
+    this.r.rect(this.haxis.getBBox().x, this.haxis.getBBox().y, this.haxis.getBBox().width, this.haxis.getBBox().height).attr('stroke', 'blue')
+    
+    alert 'haxis y: ' + this.haxis.getBBox().y
+    alert 'haxis height: ' + this.haxis.getBBox().height
+    
+    this.pOrigin = origin = [this.x + this.padding.left, this.y - this.padding.bottom]
+    this.pw = hlen = this.w - this.padding.left - this.padding.right - this.axisWidth
+    this.ph = vlen = this.h - this.padding.bottom - this.padding.top - this.axisWidth
+    
+    
+    return this.r.set().push(this.haxis).push(this.vaxis)
   
   render: () ->
     this.plot ?= new Sai.Plot(this.r)
@@ -134,12 +162,27 @@ class Sai.Chart
                                      this.pw, this.ph,
                                      [[0, nh], [1, nh]]))
     .render('#ccc')
+  
+  drawLegend: () ->
+    if this.legendData
+      this.legend: this.r.sai.prim.legend(0, this.y - this.padding.bottom, this.w, colors)
+      this.padding.bottom += this.legend.getBBox().height
+      this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0)
+  
+  # takes a map from names to colors
+  setLegendData: (legendData) ->
+    this.legendData: legendData
+    
+    return this
+  
+  
 
 
 class Sai.LineChart extends Sai.Chart
   
   render: () ->
-    this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    this.drawLegend()
+    this.addAxes('all')
     
     this.drawGuideline(0)
     
@@ -167,6 +210,7 @@ class Sai.BarChart extends Sai.Chart
 
   
   render: () ->
+    this.drawLegend()
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
     this.guidelines = this.r.set()
@@ -219,6 +263,7 @@ class Sai.StockChart extends Sai.Chart
     }
 
   render: () ->
+    this.drawLegend()
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
     this.drawGuideline(0, 'prices')

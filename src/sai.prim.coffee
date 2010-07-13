@@ -92,6 +92,8 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
   width ?= 1
   color ?= '#000'
   
+  alert 'haxis created at ' + x + ", " + y
+  
   line: this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
   ticks: this.set()
   labels: this.set()
@@ -103,9 +105,12 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
     unless val is null
       ticklen: ticklens[if String(val) then 0 else 1]
       ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
-      label: this.text(xpos, y + ticklen + 2, String(val))
-      label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
-      labels.push(label)
+      alert "ticks size" + ticks.getBBox().width + "x" + ticks.getBBox().height
+      unless val is ''
+        label: this.text(xpos, y + ticklen + 2, String(val))
+        label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
+        labels.push(label)
+        alert "labels size!!! " + labels.getBBox().width + "x" + labels.getBBox().height
     xpos += dx
   
   return this.set().push(line, ticks, labels)
@@ -114,6 +119,8 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000'
+  
+  # alert 'vaxis created at ' + x + ", " + y
   
   line: this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
   ticks: this.set()
@@ -162,20 +169,41 @@ Raphael.fn.sai.prim.popup: (x, y, texts, opts) ->
     py += TEXT_LINE_HEIGHT
     text_set.push(t)
   
-  # find dimensions of box and decide where to draw it
   bg_width: max_width + 10
   rect: this.rect(x, y, bg_width, (py - y), 5).attr({'fill': 'black', 'fill-opacity': '.85', 'stroke': 'black'})
   
   head_text?.translate(bg_width / 2)
   text_set.toFront()
   
-  # create box, move text onto it
 
 
-Raphael.fn.sai.prim.key: (x, y, text, color) ->
-  t: this.text(x + 12, y, text)
-  t.translate(t.getBBox().width / 2, 6)
-  this.set().push(
-    t,
-    this.rect(x, y, 9, 9).attr({'fill': color})
-  )  
+# colors is a map from key names to colors
+Raphael.fn.sai.prim.legend: (x, y, max_width, colors) ->
+  spacing: 15
+  line_height: 14
+  
+  set: this.set()
+  
+  px: x
+  py: y
+  
+  for text of colors
+    t: this.text(px + 12, py, text)
+    t.translate(t.getBBox().width / 2, t.getBBox().height / 2 + 2)
+    r: this.rect(px, py, 9, 9).attr({'fill': colors[text]})
+    key: this.set().push(t, r)
+    
+    if (px - x) + spacing + key.getBBox().width > max_width
+      set.translate(0, -line_height)
+      key.translate(x - px, y - py)
+      px: x
+      py: y
+    
+    px += key.getBBox().width + spacing
+    
+    set.push(key)
+  
+  return set
+
+
+
