@@ -55,7 +55,7 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
     h: coords[i][1] - (baseline - h)
     stack.push(
       this.rect(coords[i][0] - (width / 2.0),
-                h,
+                h - (if i is 0 then 1 else 0), # visual hack to prevent bars being above x axis
                 width,
                 baseline - coords[i][1])
       .attr('fill', colors and colors[i] or 'black')
@@ -75,7 +75,7 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline) ->
     continue unless coords[i]?
     group.push(
       this.rect(x,
-                coords[i][1],
+                coords[i][1] - (if i is 0 then 1 else 0), # visual hack to prevent bars being above x axis
                 barwidth,
                 baseline - coords[i][1])
       .attr('fill', colors and colors[i] or 'black')

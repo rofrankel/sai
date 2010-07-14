@@ -162,9 +162,9 @@ class Sai.Chart
   
   drawLegend: () ->
     if this.legendData
-      this.legend: this.r.sai.prim.legend(0, this.y - this.padding.bottom, this.w, colors)
-      this.padding.bottom += this.legend.getBBox().height
-      this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0)
+      this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, colors)
+      this.padding.bottom += this.legend.getBBox().height + 8
+      this.legend.translate((this.w - this.legend.getBBox().width) / 2, - this.legend.getBBox().height)
   
   # takes a map from names to colors
   setLegendData: (legendData) ->
