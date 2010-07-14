@@ -154,22 +154,21 @@ class Sai.Chart
     return unless h > ymin 
     nh: (h - ymin) / (ymax - ymin)
     this.guideline: (new Sai.LinePlot(this.r,
-                                     this.pOrigin[0],
-                                     this.pOrigin[1],
-                                     this.pw, this.ph,
-                                     [[0, nh], [1, nh]]))
+                                      this.pOrigin[0],
+                                      this.pOrigin[1],
+                                      this.pw, this.ph,
+                                      [[0, nh], [1, nh]]))
     .render('#ccc')
   
   drawLegend: () ->
     if this.legendData
-      this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, colors)
+      this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, this.legendData)
       this.padding.bottom += this.legend.getBBox().height + 8
-      this.legend.translate((this.w - this.legend.getBBox().width) / 2, - this.legend.getBBox().height)
+      this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0)
   
   # takes a map from names to colors
   setLegendData: (legendData) ->
     this.legendData: legendData
-    
     return this
   
   

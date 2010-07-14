@@ -175,6 +175,7 @@ Raphael.fn.sai.prim.popup: (x, y, texts, opts) ->
 Raphael.fn.sai.prim.legend: (x, y, max_width, colors) ->
   spacing: 15
   line_height: 14
+  y -= line_height
   
   set: this.set()
   
