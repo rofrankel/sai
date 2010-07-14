@@ -92,8 +92,6 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
   width ?= 1
   color ?= '#000'
   
-  alert 'haxis created at ' + x + ", " + y
-  
   line: this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
   ticks: this.set()
   labels: this.set()
@@ -105,12 +103,10 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
     unless val is null
       ticklen: ticklens[if String(val) then 0 else 1]
       ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
-      alert "ticks size" + ticks.getBBox().width + "x" + ticks.getBBox().height
       unless val is ''
         label: this.text(xpos, y + ticklen + 2, String(val))
         label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
         labels.push(label)
-        alert "labels size!!! " + labels.getBBox().width + "x" + labels.getBBox().height
     xpos += dx
   
   return this.set().push(line, ticks, labels)
@@ -119,8 +115,6 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000'
-  
-  # alert 'vaxis created at ' + x + ", " + y
   
   line: this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
   ticks: this.set()

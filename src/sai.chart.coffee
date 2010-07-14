@@ -117,18 +117,15 @@ class Sai.Chart
     hlen: this.w - this.padding.left - this.padding.right
     this.haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], this.x + this.padding.left, this.y - this.padding.bottom, hlen, this.axisWidth)
     this.haxis.translate(0, -haxis_height)
-    this.padding.bottom += this.haxis.getBBox().height + this.axisWidth
+    this.padding.bottom += haxis_height
     
     this.r.rect(this.x, this.y - this.h, this.w, this.h)
-    this.r.rect(this.vaxis.getBBox().x, this.vaxis.getBBox().y, this.vaxis.getBBox().width, this.vaxis.getBBox().height).attr('stroke', 'red')
-    this.r.rect(this.haxis.getBBox().x, this.haxis.getBBox().y, this.haxis.getBBox().width, this.haxis.getBBox().height).attr('stroke', 'blue')
-    
-    alert 'haxis y: ' + this.haxis.getBBox().y
-    alert 'haxis height: ' + this.haxis.getBBox().height
+    # this.r.rect(this.vaxis.getBBox().x, this.vaxis.getBBox().y, this.vaxis.getBBox().width, this.vaxis.getBBox().height).attr('stroke', 'red')
+    # this.r.rect(this.haxis.getBBox().x, this.haxis.getBBox().y, this.haxis.getBBox().width, this.haxis.getBBox().height).attr('stroke', 'blue')
     
     this.pOrigin = origin = [this.x + this.padding.left, this.y - this.padding.bottom]
-    this.pw = hlen = this.w - this.padding.left - this.padding.right - this.axisWidth
-    this.ph = vlen = this.h - this.padding.bottom - this.padding.top - this.axisWidth
+    this.pw = hlen = this.w - this.padding.left - this.padding.right
+    this.ph = vlen = this.h - this.padding.bottom - this.padding.top
     
     
     return this.r.set().push(this.haxis).push(this.vaxis)
