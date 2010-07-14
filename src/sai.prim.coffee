@@ -184,7 +184,7 @@ Raphael.fn.sai.prim.legend: (x, y, max_width, colors) ->
   
   for text of colors
     t: this.text(px + 12, py, text)
-    t.translate(t.getBBox().width / 2, t.getBBox().height / 2 + 2)
+    t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
     r: this.rect(px, py, 9, 9).attr({'fill': colors[text]})
     key: this.set().push(t, r)
     

@@ -119,7 +119,7 @@ class Sai.Chart
     this.haxis.translate(0, -haxis_height)
     this.padding.bottom += haxis_height
     
-    this.r.rect(this.x, this.y - this.h, this.w, this.h)
+    # this.r.rect(this.x, this.y - this.h, this.w, this.h)
     # this.r.rect(this.vaxis.getBBox().x, this.vaxis.getBBox().y, this.vaxis.getBBox().width, this.vaxis.getBBox().height).attr('stroke', 'red')
     # this.r.rect(this.haxis.getBBox().x, this.haxis.getBBox().y, this.haxis.getBBox().width, this.haxis.getBBox().height).attr('stroke', 'blue')
     
@@ -139,7 +139,8 @@ class Sai.Chart
   setColors: (colors) ->
     this.colors ?= {}
     for series of colors
-      this.colors[series] = colors[series]
+      if series of this.data
+        this.colors[series] = colors[series]
     return this
   
   setColor: (series, color) ->
@@ -161,15 +162,10 @@ class Sai.Chart
     .render('#ccc')
   
   drawLegend: () ->
-    if this.legendData
-      this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, this.legendData)
+    if this.colors
+      this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, this.colors)
       this.padding.bottom += this.legend.getBBox().height + 8
       this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0)
-  
-  # takes a map from names to colors
-  setLegendData: (legendData) ->
-    this.legendData: legendData
-    return this
   
   
 
@@ -193,7 +189,7 @@ class Sai.LineChart extends Sai.Chart
                           this.pOrigin[1],
                           this.pw, this.ph,
                           this.ndata['all'][series]))
-        .render(this.colors and this.colors[series] or 'black')
+        .render(this.colors and this.colors[series] or 'black', 2)
       )
     
     return this
@@ -259,7 +255,6 @@ class Sai.StockChart extends Sai.Chart
     }
 
   render: () ->
-    this.drawLegend()
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
     this.drawGuideline(0, 'prices')
