@@ -1,7 +1,7 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
 
-  constructor: (r, x, y, w, h, data) ->
+  constructor: (r, x, y, w, h, data, title_text) ->
     this.r = r
     this.x = x or 0
     this.y = y or 0
@@ -10,11 +10,13 @@ class Sai.Chart
     
     this.setData(data)
     
+    this.title_text = title_text
+    
     this.padding: {
-      left: 0
-      right: 0
-      top: 0
-      bottom: 0
+      left: 2
+      right: 2
+      top: 2
+      bottom: 2
     }
   
   groupsToNullPad: () ->
@@ -54,7 +56,7 @@ class Sai.Chart
     }
   
   getYAxisVals: (min, max) ->
-    mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.35)
+    mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.4)
     step: Math.pow(10, mag)
     if rawmag % 1 > 0.7
       step *= 4
@@ -167,12 +169,17 @@ class Sai.Chart
       this.padding.bottom += this.legend.getBBox().height + 8
       this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0)
   
-  
+  drawTitle: () ->
+    if this.title_text?
+      this.title: this.r.text(this.x + (this.w / 2), this.y - this.h, this.title_text).attr({'font-size': 20})
+      this.title.translate(0, this.title.getBBox().height / 2)
+      this.padding.top += this.title.getBBox().height + 5
 
 
 class Sai.LineChart extends Sai.Chart
   
   render: () ->
+    this.drawTitle()
     this.drawLegend()
     this.addAxes('all')
     
@@ -189,7 +196,7 @@ class Sai.LineChart extends Sai.Chart
                           this.pOrigin[1],
                           this.pw, this.ph,
                           this.ndata['all'][series]))
-        .render(this.colors and this.colors[series] or 'black', 2)
+        .render(this.colors and this.colors[series] or 'black', 3)
       )
     
     return this
@@ -202,6 +209,7 @@ class Sai.BarChart extends Sai.Chart
 
   
   render: () ->
+    this.drawTitle()
     this.drawLegend()
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
@@ -255,6 +263,7 @@ class Sai.StockChart extends Sai.Chart
     }
 
   render: () ->
+    this.drawTitle()
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
     this.drawGuideline(0, 'prices')

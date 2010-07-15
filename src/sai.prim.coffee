@@ -11,23 +11,35 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill
                     "M" + x + " " + by1 +
                     "L" + x + " " + sy1).attr('stroke', color)
   
-  body.attr('fill', color) if fill
+  body.attr('fill', if fill then color else 'white')
   
   candlestick: this.set().push(body, shadow)
   
-  ###
+  
   candlestick.hover(
     () ->
-      alert 'hi'
+      set: candlestick;
+      cx: x
+      cy: by0 + (by1 - by0) / 2
+      (() ->
+        set.attr({
+          'fill-opacity': 0.5
+        })
+        set.scale(1.25, 1.25, cx, cy)
+      )()
     ,
     () ->
       set: candlestick;
+      cx: x
+      cy: by0 + (by1 - by0) / 2
       (() ->
-        set.attr('fill', 'green')
-        set.attr('stroke', 'green')
+        set.attr({
+          'fill-opacity': 1.0
+        })
+        set.scale(1.0, 1.0, cx, cy)
       )()
   )
-  ###
+  
   return candlestick
 
 
@@ -200,5 +212,6 @@ Raphael.fn.sai.prim.legend: (x, y, max_width, colors) ->
   
   return set
 
-
-
+# info is a map from labels to info, e.g. {'close': 123.45}
+Raphael.fn.sai.prim.info: (x, y, max_width, info) ->
+  true
