@@ -1,6 +1,6 @@
 Raphael.fn.sai.prim ?= {}
 
-Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill) ->
+Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill, info, fSetInfo) ->
   color ?= '#000'
   body_width++ unless body_width % 2
   bx: x - (body_width / 2.0)
@@ -18,25 +18,32 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill
   
   candlestick.hover(
     () ->
-      set: candlestick;
-      cx: x
-      cy: by0 + (by1 - by0) / 2
+      _set: candlestick;
+      _cx: x
+      _cy: by0 + (by1 - by0) / 2
+      _fSetInfo: fSetInfo
+      _info: info
       (() ->
-        set.attr({
+        _set.attr({
           'fill-opacity': 0.5
         })
-        set.scale(1.25, 1.25, cx, cy)
+        _set.scale(1.25, 1.25, _cx, _cy)
+        
+        _fSetInfo(_info)
       )()
     ,
     () ->
-      set: candlestick;
-      cx: x
-      cy: by0 + (by1 - by0) / 2
+      _set: candlestick;
+      _cx: x
+      _cy: by0 + (by1 - by0) / 2
+      _fSetInfo: fSetInfo
       (() ->
-        set.attr({
+        _set.attr({
           'fill-opacity': 1.0
         })
-        set.scale(1.0, 1.0, cx, cy)
+        _set.scale(1.0, 1.0, _cx, _cy)
+        
+        _fSetInfo({})
       )()
   )
   
@@ -182,7 +189,6 @@ Raphael.fn.sai.prim.popup: (x, y, texts, opts) ->
   text_set.toFront()
   
 
-
 # colors is a map from key names to colors
 Raphael.fn.sai.prim.legend: (x, y, max_width, colors) ->
   spacing: 15
@@ -195,7 +201,7 @@ Raphael.fn.sai.prim.legend: (x, y, max_width, colors) ->
   py: y
   
   for text of colors
-    t: this.text(px + 12, py, text)
+    t: this.text(px + 14, py, text)
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
     r: this.rect(px, py, 9, 9).attr({'fill': colors[text]})
     key: this.set().push(t, r)
@@ -212,6 +218,28 @@ Raphael.fn.sai.prim.legend: (x, y, max_width, colors) ->
   
   return set
 
+
 # info is a map from labels to info, e.g. {'close': 123.45}
 Raphael.fn.sai.prim.info: (x, y, max_width, info) ->
-  true
+  spacing: 15
+  line_height: 14
+  
+  set: this.set()
+  
+  px: x
+  py: y
+  
+  for label of info
+    t: this.text(px, py, label + ': ' + info[label])
+    t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
+    
+    if (px - x) + spacing + t.getBBox().width > max_width
+      t.translate(x - px, y - py)
+      px: x
+      py += line_height
+    
+    px += t.getBBox().width + spacing
+    
+    set.push(t)
+  
+  return set

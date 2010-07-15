@@ -1,6 +1,6 @@
 # A plot is a primitive visualization of data
 class Sai.Plot
-  constructor: (r, x, y, w, h, data) ->
+  constructor: (r, x, y, w, h, data, rawdata) ->
     this.r = r
     this.x = x or 0
     this.y = y or 0
@@ -8,6 +8,7 @@ class Sai.Plot
     this.h = h or 480
     this.data = data
     this.setDenormalizedData()
+    this.rawdata = rawdata
   
   setDenormalizedData: () ->
     if this.data instanceof Array
@@ -37,7 +38,7 @@ class Sai.LinePlot extends Sai.Plot
 # Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
 class Sai.CandlestickPlot extends Sai.Plot
 
-  render: (colors, body_width) ->
+  render: (colors, body_width, fSetInfo) ->
     cup: colors and colors['up'] or 'black'
     cdown: colors and colors['down'] or 'red'
     body_width ?= 5
@@ -51,14 +52,23 @@ class Sai.CandlestickPlot extends Sai.Plot
       upDay: this.dndata['close'][i][1] < this.dndata['open'][i][1]
       
       this.candlesticks.push(
-        this.r.sai.prim.candlestick(this.dndata['open'][i][0],
-                                    upDay and this.dndata['close'][i][1] or this.dndata['open'][i][1]
-                                    upDay and this.dndata['open'][i][1] or this.dndata['close'][i][1]
-                                    this.dndata['high'][i][1],
-                                    this.dndata['low'][i][1],
-                                    body_width or 5,
-                                    (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
-                                    not upDay)
+        this.r.sai.prim.candlestick(
+          this.dndata['open'][i][0],
+          upDay and this.dndata['close'][i][1] or this.dndata['open'][i][1]
+          upDay and this.dndata['open'][i][1] or this.dndata['close'][i][1]
+          this.dndata['high'][i][1],
+          this.dndata['low'][i][1],
+          body_width or 5,
+          (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
+          not upDay,
+          {
+            'open': this.rawdata['open'][i]
+            'close': this.rawdata['close'][i]
+            'high': this.rawdata['high'][i]
+            'low': this.rawdata['low'][i]
+          },
+          fSetInfo
+        )
       )
     
     return this

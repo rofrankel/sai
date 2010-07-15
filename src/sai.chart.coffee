@@ -166,7 +166,7 @@ class Sai.Chart
   drawLegend: () ->
     if this.colors
       this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, this.colors)
-      this.padding.bottom += this.legend.getBBox().height + 8
+      this.padding.bottom += this.legend.getBBox().height + 15
       this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0)
   
   drawTitle: () ->
@@ -174,12 +174,25 @@ class Sai.Chart
       this.title: this.r.text(this.x + (this.w / 2), this.y - this.h, this.title_text).attr({'font-size': 20})
       this.title.translate(0, this.title.getBBox().height / 2)
       this.padding.top += this.title.getBBox().height + 5
+  
+  # this reserves room for the info thing
+  setupInfoSpace: () ->
+    this.info_y = this.padding.top
+    this.padding.top += 20
+  
+  drawInfo: (info) =>
+    # clear out anything that already exists
+    if this.info
+      this.info.remove()
+    
+    this.info: this.r.sai.prim.info(this.x + this.w / 2, this.info_y, this.w - this.padding.left - this.padding.right, info)
 
 
 class Sai.LineChart extends Sai.Chart
   
   render: () ->
     this.drawTitle()
+    this.setupInfoSpace()
     this.drawLegend()
     this.addAxes('all')
     
@@ -264,6 +277,9 @@ class Sai.StockChart extends Sai.Chart
 
   render: () ->
     this.drawTitle()
+    
+    this.setupInfoSpace()
+    
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     
     this.drawGuideline(0, 'prices')
@@ -301,13 +317,14 @@ class Sai.StockChart extends Sai.Chart
       (new Sai.CandlestickPlot(this.r,
                                this.pOrigin[0],
                                this.pOrigin[1],
-                               this.pw, this.ph
+                               this.pw, this.ph,
                                {'open': this.ndata['prices']['open'],
                                 'close': this.ndata['prices']['close'],
                                 'high': this.ndata['prices']['high'],
                                 'low': this.ndata['prices']['low']
-                               }))
-      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2))
+                               },
+                               this.data))
+      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), this.drawInfo)
     )
     
     for series of this.ndata['prices']
