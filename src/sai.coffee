@@ -50,6 +50,17 @@ Sai.util.infoSetters: (fSetInfo, info) ->
   ]
 
 
+Sai.util.transformCoords: (event, canvas) ->
+  if canvas.getScreenCTM
+    svgPoint: canvas.createSVGPoint();
+    svgPoint.x: event.clientX
+    svgPoint.y: event.clientY
+    xformed: svgPoint.matrixTransform(canvas.getScreenCTM().inverse())
+    return {x: xformed.x, y: xformed.y}
+  else
+    {x: event.x, y: event.y}
+
+
 
 Raphael.fn.sai ?= {}
 

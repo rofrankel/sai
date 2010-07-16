@@ -1,7 +1,7 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
 
-  constructor: (r, x, y, w, h, data, title_text) ->
+  constructor: (r, x, y, w, h, data, title_text, interactive, bgcolor) ->
     this.r = r
     this.x = x or 0
     this.y = y or 0
@@ -11,6 +11,8 @@ class Sai.Chart
     this.setData(data)
     
     this.title_text = title_text
+    this.interactive = interactive
+    this.bgcolor = if bgcolor? then bgcolor else 'white'
     
     this.padding: {
       left: 2
@@ -125,12 +127,15 @@ class Sai.Chart
     # this.r.rect(this.vaxis.getBBox().x, this.vaxis.getBBox().y, this.vaxis.getBBox().width, this.vaxis.getBBox().height).attr('stroke', 'red')
     # this.r.rect(this.haxis.getBBox().x, this.haxis.getBBox().y, this.haxis.getBBox().width, this.haxis.getBBox().height).attr('stroke', 'blue')
     
-    this.pOrigin = origin = [this.x + this.padding.left, this.y - this.padding.bottom]
-    this.pw = hlen = this.w - this.padding.left - this.padding.right
-    this.ph = vlen = this.h - this.padding.bottom - this.padding.top
-    
+    this.px: this.x + this.padding.left
+    this.py: this.y - this.padding.bottom
+    this.pw: this.w - this.padding.left - this.padding.right
+    this.ph: this.h - this.padding.bottom - this.padding.top
     
     return this.r.set().push(this.haxis).push(this.vaxis)
+  
+  drawBG: () ->
+    this.bg: this.r.rect(this.px, this.py - this.ph, this.pw, this.ph).attr({fill: this.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
   
   render: () ->
     this.plot ?= new Sai.Plot(this.r)
@@ -157,8 +162,8 @@ class Sai.Chart
     return unless h > ymin 
     nh: (h - ymin) / (ymax - ymin)
     this.guideline: (new Sai.LinePlot(this.r,
-                                      this.pOrigin[0],
-                                      this.pOrigin[1],
+                                      this.px,
+                                      this.py,
                                       this.pw, this.ph,
                                       [[0, nh], [1, nh]]))
     .render('#ccc')
@@ -197,6 +202,7 @@ class Sai.LineChart extends Sai.Chart
     this.setupInfoSpace()
     this.drawLegend()
     this.addAxes('all')
+    this.drawBG()
     
     this.drawGuideline(0)
     
@@ -207,12 +213,30 @@ class Sai.LineChart extends Sai.Chart
       
       this.plots.push(
         (new Sai.LinePlot(this.r,
-                          this.pOrigin[0],
-                          this.pOrigin[1],
+                          this.px,
+                          this.py,
                           this.pw, this.ph,
                           this.ndata['all'][series]))
         .render(this.colors and this.colors[series] or 'black', 3)
+        .set
       )
+    
+    this.r.set().push(this.bg, this.plots).mousemove(
+      (event) =>
+        
+        tx: Sai.util.transformCoords(event, this.r.canvas).x
+        
+        idx: Math.round((this.data.__LABELS__.length - 1) * (tx - this.px) / this.pw)
+        
+        info: {}
+        for series of this.ndata['all']
+          if this.data[series]? then info[series]: this.data[series][idx]
+        this.drawInfo(info)
+    ).mouseout(
+      (event) =>
+        this.drawInfo({})
+    )
+    
     
     return this
 
@@ -240,8 +264,8 @@ class Sai.BarChart extends Sai.Chart
     
     this.plots.push(
       (new Sai.BarPlot(this.r,
-                       this.pOrigin[0],
-                       this.pOrigin[1],
+                       this.px,
+                       this.py,
                        this.pw, this.ph,
                        data))
       .render(this.stacked?, this.colors)
@@ -314,18 +338,18 @@ class Sai.StockChart extends Sai.Chart
       
       this.plots.push(
         (new Sai.BarPlot(this.r
-                         this.pOrigin[0],
-                         this.pOrigin[1],
+                         this.px,
+                         this.py,
                          this.pw, this.ph * 0.2,
                          vol,
                          rawdata))
-        .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'}, true, this.drawInfo)
+        .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'}, this.interactive, this.drawInfo)
       )
     
     this.plots.push(
       (new Sai.CandlestickPlot(this.r,
-                               this.pOrigin[0],
-                               this.pOrigin[1],
+                               this.px,
+                               this.py,
                                this.pw, this.ph,
                                {'open': this.ndata['prices']['open'],
                                 'close': this.ndata['prices']['close'],
@@ -333,15 +357,15 @@ class Sai.StockChart extends Sai.Chart
                                 'low': this.ndata['prices']['low']
                                },
                                rawdata))
-      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), true, this.drawInfo)
+      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), this.interactive, this.drawInfo)
     )
     
     for series of this.ndata['prices']
       continue if (series in ['open', 'close', 'high', 'low']) or series.match("^__")
       this.plots.push(
         (new Sai.LinePlot(this.r,
-                          this.pOrigin[0],
-                          this.pOrigin[1],
+                          this.px,
+                          this.py,
                           this.pw, this.ph,
                           this.ndata['prices'][series]))
         .render(this.colors and this.colors[series] or 'black')

@@ -9,6 +9,7 @@ class Sai.Plot
     this.data = data
     this.setDenormalizedData()
     this.rawdata = rawdata
+    this.set: this.r.set()
   
   setDenormalizedData: () ->
     if this.data instanceof Array
@@ -23,15 +24,19 @@ class Sai.Plot
       return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
 
   render: () ->
-    this.r.rect(20, 20, 20, 20).attr('fill', 'red')
-    this.r.circle(40, 40, 10).attr('fill', 'blue')
+    this.set.push(
+      this.r.rect(20, 20, 20, 20).attr('fill', 'red'),
+      this.r.circle(40, 40, 10).attr('fill', 'blue')
+    )
     return this
 
 
 class Sai.LinePlot extends Sai.Plot
   
   render: (color, width) ->
-    this.line: this.r.sai.prim.line(this.dndata, color or 'black', width or 1)
+    this.set.push(
+      this.line: this.r.sai.prim.line(this.dndata, color or 'black', width or 1)
+    )
     return this
 
 
@@ -43,7 +48,6 @@ class Sai.CandlestickPlot extends Sai.Plot
     cdown: colors and colors['down'] or 'red'
     body_width ?= 5
     
-    this.candlesticks: this.r.set()
     for i in [0...this.dndata['open'].length]
       
       continue unless this.dndata['close'][i]?
@@ -55,7 +59,7 @@ class Sai.CandlestickPlot extends Sai.Plot
       for p of this.rawdata
         info[p]: this.rawdata[p][i]
       
-      this.candlesticks.push(
+      this.set.push(
         this.r.sai.prim.candlestick(
           this.dndata['open'][i][0],
           upDay and this.dndata['close'][i][1] or this.dndata['open'][i][1]
@@ -85,8 +89,6 @@ class Sai.BarPlot extends Sai.Plot
       len: this.dndata[column].length
       colorArray.push(colors and colors[column] or 'black')
     
-    this.bars: this.r.set()
-    
     for i in [0...len]
       bardata = []
       for column of this.dndata
@@ -96,9 +98,8 @@ class Sai.BarPlot extends Sai.Plot
       for p of this.rawdata
         info[p]: this.rawdata[p][i]
       
-      this.bars.push(
+      this.set.push(
         barfunc(bardata, colorArray, this.w / len, this.y, shouldInteract, Sai.util.infoSetters(fSetInfo, info))
       )
-    
     
     return this
