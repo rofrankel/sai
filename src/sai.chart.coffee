@@ -293,6 +293,12 @@ class Sai.StockChart extends Sai.Chart
       'down': []
     }
     
+    rawdata: {}
+    for p of this.ndata['prices']
+      unless p.match('^__')
+        rawdata[p]: this.data[p]
+    if this.data['volume']? then rawdata['vol']: this.data['volume']
+    
     if 'volume' of this.ndata.volume
       for i in [0...this.ndata['volume']['volume'].length]
         if this.ndata['volume']['volume'][i] isnt null
@@ -311,15 +317,10 @@ class Sai.StockChart extends Sai.Chart
                          this.pOrigin[0],
                          this.pOrigin[1],
                          this.pw, this.ph * 0.2,
-                         vol))
-        .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'})
+                         vol,
+                         rawdata))
+        .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'}, true, this.drawInfo)
       )
-    
-    rawdata: {}
-    for p of this.ndata['prices']
-      unless p.match('^__')
-        rawdata[p]: this.data[p]
-    if this.data['volume']? then rawdata['vol']: this.data['volume']
     
     this.plots.push(
       (new Sai.CandlestickPlot(this.r,
@@ -332,7 +333,7 @@ class Sai.StockChart extends Sai.Chart
                                 'low': this.ndata['prices']['low']
                                },
                                rawdata))
-      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), this.drawInfo)
+      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), true, this.drawInfo)
     )
     
     for series of this.ndata['prices']

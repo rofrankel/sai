@@ -38,7 +38,7 @@ class Sai.LinePlot extends Sai.Plot
 # Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
 class Sai.CandlestickPlot extends Sai.Plot
 
-  render: (colors, body_width, fSetInfo) ->
+  render: (colors, body_width, shouldInteract, fSetInfo) ->
     cup: colors and colors['up'] or 'black'
     cdown: colors and colors['down'] or 'red'
     body_width ?= 5
@@ -65,7 +65,7 @@ class Sai.CandlestickPlot extends Sai.Plot
           body_width or 5,
           (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
           not upDay,
-          true,
+          shouldInteract,
           Sai.util.infoSetters(fSetInfo, info)
         )
       )
@@ -76,7 +76,7 @@ class Sai.BarPlot extends Sai.Plot
   
   # if stacked, graph is rendered stacked...else, grouped
   # colors maps from series name to color string
-  render: (stacked, colors) ->
+  render: (stacked, colors, shouldInteract, fSetInfo) ->
     len: 0
     colorArray: []
     barfunc: if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
@@ -92,8 +92,12 @@ class Sai.BarPlot extends Sai.Plot
       for column of this.dndata
         bardata.push(this.dndata[column][i])
       
+      info: {}
+      for p of this.rawdata
+        info[p]: this.rawdata[p][i]
+      
       this.bars.push(
-        barfunc(bardata, colorArray, this.w / len, this.y)
+        barfunc(bardata, colorArray, this.w / len, this.y, shouldInteract, Sai.util.infoSetters(fSetInfo, info))
       )
     
     

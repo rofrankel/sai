@@ -63,7 +63,7 @@ Raphael.fn.sai.prim.line: (coords, color, width) ->
 
 
 # colors is a list parallel to coords
-Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
+Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract, extras) ->
   width *= .67
   stack: this.set()
   h: baseline
@@ -72,18 +72,36 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline) ->
     h: coords[i][1] - (baseline - h)
     stack.push(
       this.rect(coords[i][0] - (width / 2.0),
-                h - (if i is 0 then 1 else 0), # visual hack to prevent bars being above x axis
+                h - (if i is 0 then 1 else 0), # visual hack to prevent bars covering x axis
                 width,
                 baseline - coords[i][1])
       .attr('fill', colors and colors[i] or 'black')
       .attr('stroke', colors and colors[i] or 'black')
     )
   
+  if shouldInteract
+    hoverfuncs: getHoverfuncs(
+      stack,
+      {
+        'fill-opacity': '0.5'
+      },
+      {
+        'fill-opacity': '1.0'
+      },
+      extras
+    )
+    
+    stack.hover(
+      hoverfuncs[0],
+      hoverfuncs[1]
+    )
+  
+  
   return stack
 
 
 # colors is a list parallel to coords
-Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline) ->
+Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract, extras) ->
   group: this.set()
   return group unless coords[0]?
   barwidth: width / (coords.length + 1)
@@ -92,7 +110,7 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline) ->
     continue unless coords[i]?
     group.push(
       this.rect(x,
-                coords[i][1] - (if i is 0 then 1 else 0), # visual hack to prevent bars being above x axis
+                coords[i][1] - (if i is 0 then 1 else 0), # visual hack to prevent bars covering x axis
                 barwidth,
                 baseline - coords[i][1])
       .attr('fill', colors and colors[i] or 'black')
