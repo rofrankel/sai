@@ -68,7 +68,7 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
   stack: this.set()
   h: baseline
   for i in [0...coords.length]
-    continue unless coords[i]?
+    continue unless coords[i]? and coords[i][1] isnt baseline
     h: coords[i][1] - (baseline - h)
     stack.push(
       this.rect(coords[i][0] - (width / 2.0),
