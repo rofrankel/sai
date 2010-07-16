@@ -1,6 +1,6 @@
 Raphael.fn.sai.prim ?= {}
 
-Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill, info, fSetInfo, hoverfuncs) ->
+Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill, hoverfuncs) ->
   color ?= '#000'
   body_width++ unless body_width % 2
   bx: x - (body_width / 2.0)
@@ -16,39 +16,39 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill
   candlestick: this.set().push(body, shadow)
   
   
-  if hoverfuncs
-    candlestick.hover(hoverfuncs[0], hoverfuncs[1])
-  else
-    candlestick.hover(
-      () ->
-        _set: candlestick;
-        _cx: x
-        _cy: by0 + (by1 - by0) / 2
-        _fSetInfo: fSetInfo
-        _info: info
-        (() ->
-          _set.attr({
-            'fill-opacity': 0.5
-          })
-          _set.scale(1.25, 1.25, _cx, _cy)
-          
-          _fSetInfo(_info)
-        )()
-      ,
-      () ->
-        _set: candlestick;
-        _cx: x
-        _cy: by0 + (by1 - by0) / 2
-        _fSetInfo: fSetInfo
-        (() ->
-          _set.attr({
-            'fill-opacity': 1.0
-          })
-          _set.scale(1.0, 1.0, _cx, _cy)
-          
-          _fSetInfo({})
-        )()
-    )
+  candlestick.hover(
+    () ->
+      _set: candlestick;
+      _cx: x
+      _cy: by0 + (by1 - by0) / 2
+      
+      if hoverfuncs then _extra: hoverfuncs[0]
+      
+      (() ->
+        _set.attr({
+          'fill-opacity': 0.5
+        })
+        _set.scale(1.25, 1.25, _cx, _cy)
+        
+        if _extra then _extra()
+      )()
+    ,
+    () ->
+      _set: candlestick;
+      _cx: x
+      _cy: by0 + (by1 - by0) / 2
+      
+      if hoverfuncs then _extra: hoverfuncs[1]
+      
+      (() ->
+        _set.attr({
+          'fill-opacity': 1.0
+        })
+        _set.scale(1.0, 1.0, _cx, _cy)
+        
+        if _extra then _extra()
+      )()
+  )
   
   return candlestick
 
