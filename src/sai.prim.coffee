@@ -118,6 +118,23 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract
     )
     x += barwidth
   
+  if shouldInteract
+    hoverfuncs: getHoverfuncs(
+      group,
+      {
+        'fill-opacity': '0.5'
+      },
+      {
+        'fill-opacity': '1.0'
+      },
+      extras
+    )
+    
+    group.hover(
+      hoverfuncs[0],
+      hoverfuncs[1]
+    )
+  
   return group
 
 

@@ -251,8 +251,10 @@ class Sai.BarChart extends Sai.Chart
   
   render: () ->
     this.drawTitle()
+    this.setupInfoSpace()
     this.drawLegend()
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    this.drawBG()
     
     this.guidelines = this.r.set()
     for yval in this.ndata['all']['__YVALS__']
@@ -260,17 +262,22 @@ class Sai.BarChart extends Sai.Chart
     
     this.plots = this.r.set()
     data: {}
+    rawdata: {}
     for series of this.ndata['all']
-      unless series is '__YVALS__'
+      unless series.match('^__')
         data[series] = this.ndata['all'][series]
+        rawdata[series] = this.data[series]
     
     this.plots.push(
       (new Sai.BarPlot(this.r,
                        this.px,
                        this.py,
-                       this.pw, this.ph,
-                       data))
-      .render(this.stacked?, this.colors)
+                       this.pw,
+                       this.ph,
+                       data,
+                       rawdata))
+      .render(this.stacked?, this.colors, this.interactive, this.drawInfo)
+      .set
     )
     
     return this
