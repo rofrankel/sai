@@ -33,12 +33,21 @@ Sai.util.prettystr: (x) ->
       suffix: 'k'
       x /= 1000
     else
-      return parseFloat(x.toFixed(2))
+      return x.toFixed(2)
     
     return parseFloat(x.toFixed(1)) + suffix
   
   return x
 
+
+Sai.util.infoSetters: (fSetInfo, info) ->
+  [
+    () ->
+      fSetInfo(info)
+    ,
+    () ->
+      fSetInfo({})
+  ]
 
 
 

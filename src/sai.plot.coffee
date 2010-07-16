@@ -69,16 +69,7 @@ class Sai.CandlestickPlot extends Sai.Plot
           body_width or 5,
           (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
           not upDay,
-          [
-            () ->
-              _info: info
-              (() ->
-                fSetInfo(_info)
-              )()
-            ,
-            () ->
-              fSetInfo({})
-          ]
+          Sai.util.infoSetters(fSetInfo, info)
         )
       )
     
