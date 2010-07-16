@@ -177,7 +177,9 @@ class Sai.Chart
   
   # this reserves room for the info thing
   setupInfoSpace: () ->
-    this.info_y = this.padding.top
+    this.info_y: this.y - this.h + this.padding.top
+    this.info_x: this.x + this.padding.left
+    this.info_w: this.w - this.padding.left - this.padding.right
     this.padding.top += 20
   
   drawInfo: (info) =>
@@ -185,7 +187,7 @@ class Sai.Chart
     if this.info
       this.info.remove()
     
-    this.info: this.r.sai.prim.info(this.x + this.padding.left, this.info_y, this.w - this.padding.left - this.padding.right, info)
+    this.info: this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, info)
 
 
 class Sai.LineChart extends Sai.Chart
