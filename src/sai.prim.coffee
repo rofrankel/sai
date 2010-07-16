@@ -1,6 +1,6 @@
 Raphael.fn.sai.prim ?= {}
 
-Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill, info, fSetInfo) ->
+Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill, info, fSetInfo, hoverfuncs) ->
   color ?= '#000'
   body_width++ unless body_width % 2
   bx: x - (body_width / 2.0)
@@ -16,36 +16,39 @@ Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color, fill
   candlestick: this.set().push(body, shadow)
   
   
-  candlestick.hover(
-    () ->
-      _set: candlestick;
-      _cx: x
-      _cy: by0 + (by1 - by0) / 2
-      _fSetInfo: fSetInfo
-      _info: info
-      (() ->
-        _set.attr({
-          'fill-opacity': 0.5
-        })
-        _set.scale(1.25, 1.25, _cx, _cy)
-        
-        _fSetInfo(_info)
-      )()
-    ,
-    () ->
-      _set: candlestick;
-      _cx: x
-      _cy: by0 + (by1 - by0) / 2
-      _fSetInfo: fSetInfo
-      (() ->
-        _set.attr({
-          'fill-opacity': 1.0
-        })
-        _set.scale(1.0, 1.0, _cx, _cy)
-        
-        _fSetInfo({})
-      )()
-  )
+  if hoverfuncs
+    candlestick.hover(hoverfuncs[0], hoverfuncs[1])
+  else
+    candlestick.hover(
+      () ->
+        _set: candlestick;
+        _cx: x
+        _cy: by0 + (by1 - by0) / 2
+        _fSetInfo: fSetInfo
+        _info: info
+        (() ->
+          _set.attr({
+            'fill-opacity': 0.5
+          })
+          _set.scale(1.25, 1.25, _cx, _cy)
+          
+          _fSetInfo(_info)
+        )()
+      ,
+      () ->
+        _set: candlestick;
+        _cx: x
+        _cy: by0 + (by1 - by0) / 2
+        _fSetInfo: fSetInfo
+        (() ->
+          _set.attr({
+            'fill-opacity': 1.0
+          })
+          _set.scale(1.0, 1.0, _cx, _cy)
+          
+          _fSetInfo({})
+        )()
+    )
   
   return candlestick
 
@@ -230,11 +233,11 @@ Raphael.fn.sai.prim.info: (x, y, max_width, info) ->
   py: y
   
   for label of info
-    t: this.text(px, py, label + ': ' + info[label])
+    t: this.text(px, py, label + ': ' + Sai.util.prettystr(info[label]))
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
     
     if (px - x) + spacing + t.getBBox().width > max_width
-      t.translate(x - px, y - py)
+      t.translate(x - px, line_height)
       px: x
       py += line_height
     

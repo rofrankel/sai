@@ -66,6 +66,7 @@ class Sai.CandlestickPlot extends Sai.Plot
             'close': this.rawdata['close'][i]
             'high': this.rawdata['high'][i]
             'low': this.rawdata['low'][i]
+            'vol': this.rawdata['volume'][i]
           },
           fSetInfo
         )

@@ -185,7 +185,7 @@ class Sai.Chart
     if this.info
       this.info.remove()
     
-    this.info: this.r.sai.prim.info(this.x + this.w / 2, this.info_y, this.w - this.padding.left - this.padding.right, info)
+    this.info: this.r.sai.prim.info(this.x + this.padding.left, this.info_y, this.w - this.padding.left - this.padding.right, info)
 
 
 class Sai.LineChart extends Sai.Chart

@@ -17,6 +17,29 @@ Sai.util.sumArray: (a) ->
   
   return sum
 
+Sai.util.prettystr: (x) ->
+  if typeof x is 'number'
+    suffix: ''
+    if x > 999999999999
+      suffix: 't'
+      x /= 1000000000000
+    else if x > 999999999
+      suffix: 'b'
+      x /= 1000000000
+    else if x > 999999
+      suffix: 'm'
+      x /= 1000000
+    else if x > 999
+      suffix: 'k'
+      x /= 1000
+    else
+      return parseFloat(x.toFixed(2))
+    
+    return parseFloat(x.toFixed(1)) + suffix
+  
+  return x
+
+
 
 
 Raphael.fn.sai ?= {}
