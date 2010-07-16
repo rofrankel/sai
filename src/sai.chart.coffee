@@ -193,6 +193,10 @@ class Sai.Chart
       this.info.remove()
     
     this.info: this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, info)
+  
+  getIndex: (mx, my) ->
+    tx: Sai.util.transformCoords({x: mx, y: my}, this.r.canvas).x
+    return Math.round((this.data.__LABELS__.length - 1) * (tx - this.px) / this.pw)
 
 
 class Sai.LineChart extends Sai.Chart
@@ -224,9 +228,7 @@ class Sai.LineChart extends Sai.Chart
     this.r.set().push(this.bg, this.plots).mousemove(
       (event) =>
         
-        tx: Sai.util.transformCoords(event, this.r.canvas).x
-        
-        idx: Math.round((this.data.__LABELS__.length - 1) * (tx - this.px) / this.pw)
+        idx: this.getIndex(event.clientX, event.clientY)
         
         info: {}
         for series of this.ndata['all']
@@ -303,10 +305,9 @@ class Sai.StockChart extends Sai.Chart
 
   render: () ->
     this.drawTitle()
-    
     this.setupInfoSpace()
-    
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    this.drawBG()
     
     this.drawGuideline(0, 'prices')
     
@@ -344,6 +345,7 @@ class Sai.StockChart extends Sai.Chart
                          vol,
                          rawdata))
         .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'}, this.interactive, this.drawInfo)
+        .set
       )
     
     this.plots.push(
@@ -358,6 +360,7 @@ class Sai.StockChart extends Sai.Chart
                                },
                                rawdata))
       .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), this.interactive, this.drawInfo)
+      .set
     )
     
     for series of this.ndata['prices']
@@ -369,6 +372,22 @@ class Sai.StockChart extends Sai.Chart
                           this.pw, this.ph,
                           this.ndata['prices'][series]))
         .render(this.colors and this.colors[series] or 'black')
+        .set
       )
     
+    
+    this.r.set().push(this.bg, this.plots).mousemove(
+      (event) =>
+        
+        idx: this.getIndex(event.clientX, event.clientY)
+        
+        info: {}
+        for series of this.ndata['prices']
+          if this.data[series]? then info[series]: this.data[series][idx]
+        this.drawInfo(info)
+    ).mouseout(
+      (event) =>
+        this.drawInfo({})
+    )
+
     return this
