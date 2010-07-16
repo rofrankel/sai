@@ -180,7 +180,7 @@ class Sai.Chart
     this.info_y: this.y - this.h + this.padding.top
     this.info_x: this.x + this.padding.left
     this.info_w: this.w - this.padding.left - this.padding.right
-    this.padding.top += 20
+    this.padding.top += 30
   
   drawInfo: (info) =>
     # clear out anything that already exists
@@ -315,6 +315,12 @@ class Sai.StockChart extends Sai.Chart
         .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'})
       )
     
+    rawdata: {}
+    for p of this.ndata['prices']
+      unless p.match('^__')
+        rawdata[p]: this.data[p]
+    if this.data['volume']? then rawdata['vol']: this.data['volume']
+    
     this.plots.push(
       (new Sai.CandlestickPlot(this.r,
                                this.pOrigin[0],
@@ -325,7 +331,7 @@ class Sai.StockChart extends Sai.Chart
                                 'high': this.ndata['prices']['high'],
                                 'low': this.ndata['prices']['low']
                                },
-                               this.data))
+                               rawdata))
       .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), this.drawInfo)
     )
     

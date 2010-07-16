@@ -51,13 +51,9 @@ class Sai.CandlestickPlot extends Sai.Plot
       # Y coords are inverted, which makes a lot of stuff seem backwards...
       upDay: this.dndata['close'][i][1] < this.dndata['open'][i][1]
       
-      info: {
-        'open': this.rawdata['open'][i]
-        'close': this.rawdata['close'][i]
-        'high': this.rawdata['high'][i]
-        'low': this.rawdata['low'][i]
-        'vol': this.rawdata['volume'][i]
-      }
+      info: {}
+      for p of this.rawdata
+        info[p]: this.rawdata[p][i]
       
       this.candlesticks.push(
         this.r.sai.prim.candlestick(
@@ -69,6 +65,7 @@ class Sai.CandlestickPlot extends Sai.Plot
           body_width or 5,
           (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
           not upDay,
+          true,
           Sai.util.infoSetters(fSetInfo, info)
         )
       )
