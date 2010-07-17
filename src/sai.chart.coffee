@@ -1,7 +1,7 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
 
-  constructor: (r, x, y, w, h, data, title_text, interactive, bgcolor) ->
+  constructor: (r, x, y, w, h, data, bgcolor, title_text, interactive) ->
     this.r = r
     this.x = x or 0
     this.y = y or 0
@@ -135,7 +135,10 @@ class Sai.Chart
     return this.r.set().push(this.haxis).push(this.vaxis)
   
   drawBG: () ->
-    this.bg: this.r.rect(this.px, this.py - this.ph, this.pw, this.ph).attr({fill: this.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
+    this.bg: this.r.rect(this.px? and this.px or this.x,
+                         this.py? and (this.py - this.ph) or (this.y - this.h),
+                         this.pw? and this.pw or this.w,
+                         this.ph? and this.ph or this.h).attr({fill: this.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
   
   render: () ->
     this.plot ?= new Sai.Plot(this.r)
@@ -239,6 +242,31 @@ class Sai.LineChart extends Sai.Chart
         this.drawInfo({})
     )
     
+    return this
+
+
+class Sai.Sparkline extends Sai.Chart
+  
+  dataGroups: (data) ->
+    {
+      'data': ['data']
+    }
+  
+  render: () ->
+    this.drawBG()
+    
+    this.plots = this.r.set()
+    
+    this.plots.push(
+      (new Sai.LinePlot(this.r,
+                        this.x,
+                        this.y,
+                        this.w,
+                        this.h,
+                        this.ndata['data']['data']))
+      .render(this.colors and this.colors[series] or 'black', 1)
+      .set
+    )
     
     return this
 
