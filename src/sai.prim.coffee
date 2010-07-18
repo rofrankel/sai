@@ -136,8 +136,6 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract
   
   return group
 
-
-
 Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1

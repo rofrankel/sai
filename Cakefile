@@ -1,21 +1,24 @@
-exec: require('child_process').exec
 fs: require('fs')
 coffee: require('./coffee-script')
 
+compile: (source, noWrap) ->
+  fs.readFile "$source\.coffee", (err, code) ->
+    try
+      js: coffee.compile(code.toString(), {source: "$source\.coffee", noWrap: noWrap or false})
+      fs.writeFile "$source\.js", js
+    catch err
+      console.log err
+
+
 task 'build', 'build all of the source files', ->
-
-  f: (error, stdout, stderr) ->
-    if stdout then puts "stdout: $stdout"
-    if stderr then puts "stderr: $stderr"
-    if error then puts "error: $error"
-
-  rootFile = 'sai.coffee'
-  exec("coffee -c --no-wrap src/$rootFile", f)
+  rootFile = 'src/sai'
+  sourceFiles: ['src/sai.chart', 'src/sai.plot', 'src/sai.prim']
   
-  sourceFiles: ['sai.chart.coffee', 'sai.plot.coffee', 'sai.prim.coffee']
+  compile(rootFile, true)
   
   for src in sourceFiles
     try
-      exec("coffee -c src/$src", f)
+      compile(src)
     catch error
       puts 'build error: ' + error
+
