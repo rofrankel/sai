@@ -49,7 +49,6 @@ Sai.util.infoSetters: (fSetInfo, info) ->
       fSetInfo({})
   ]
 
-
 Sai.util.transformCoords: (coords, canvas) ->
   if canvas.getScreenCTM
     svgPoint: canvas.createSVGPoint();
