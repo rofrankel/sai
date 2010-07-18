@@ -99,7 +99,6 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
   
   return stack
 
-
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract, extras) ->
   group: this.set()

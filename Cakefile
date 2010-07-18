@@ -13,6 +13,12 @@ task 'build', 'build all of the source files', ->
   for src in sourceFiles
     puts 'compiling ' + src
     try
-      exec(['coffee -c src/' + src])
+      exec(
+        'coffee -c src/' + src,
+        (error, stdout, stderr) ->
+          if stdout then puts 'stdout: ' + stdout
+          if stderr then puts 'stderr: ' + stderr
+          if error then puts 'error: ' + error
+      )
     catch error
       puts 'build error: ' + error
