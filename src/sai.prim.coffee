@@ -170,7 +170,7 @@ Raphael.fn.sai.prim.haxis: (vals, x, y, len, width, color, ticklens) ->
       ticklen: ticklens[if String(val) then 0 else 1]
       ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
       unless val is ''
-        label: this.text(xpos, y + ticklen + 2, String(val))
+        label: this.text(xpos, y + ticklen + 2, Sai.util.prettystr(val))
         label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
         labels.push(label)
     xpos += dx
@@ -193,7 +193,7 @@ Raphael.fn.sai.prim.vaxis: (vals, x, y, len, width, color, ticklens) ->
     unless val is null
       ticklen: ticklens[if String(val) then 0 else 1]
       ticks.push(this.path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
-      label: this.text(x - ticklen - 2, ypos, String(val))
+      label: this.text(x - ticklen - 2, ypos, Sai.util.prettystr(val))
       label.attr('x', label.attr('x') - (label.getBBox().width / 2.0))
       labels.push(label)
     ypos -= dy

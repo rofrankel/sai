@@ -35,7 +35,7 @@ Sai.util.prettystr: (x) ->
       suffix: 'k'
       x /= 1000
     else
-      return x.toFixed(2)
+      return String(parseFloat(x.toFixed(2)))
     
     return parseFloat(x.toFixed(1)) + suffix
   

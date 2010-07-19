@@ -15,13 +15,15 @@
         
         var orange = '#A8502C';
         var olive = '#615C3E';
-        var mauve = '#B3A4B7';
+        var lilac = '#B3A4B7';
+        var tea = '#E7ECE6';
+        var ceil = '#92A1CF';
         
         var colors = {
           'AAPL': orange,
           'AMZN': olive,
-          'GOOG': mauve,
-          'MSFT': 'black'
+          'GOOG': lilac,
+          'MSFT': ceil
         }
         
         var r = Raphael("abc", 1024, 1024);
@@ -51,15 +53,15 @@
         };
         
         var bardata = {
-          'AAPL': [1, 2, 3],
-          'AMZN': [2, 5, 4],
-          'GOOG': [3, 5, 1],
-          'MSFT': [5, 1, 4],
-          '__LABELS__': ['Q1', 'Q2', 'Q3']
+          'AAPL': [100000, 200000, 300000, 400000],
+          'AMZN': [200000, 500000, 400000, 400000],
+          'GOOG': [300000, 500000, 100000, 150000],
+          'MSFT': [500000, 100000, 400000, 350000],
+          '__LABELS__': ['Q1', 'Q2', 'Q3', 'Q4']
         };
         
-        var chart = new Sai.LineChart(r, 0, 350, 350, 350, data, '#e7ece6', "Monthly average adjusted close", true).setColors(colors).render();
-        var csp = new Sai.StockChart(r, 400, 350, 350, 350, msft_data, 'white', "MSFT (NASDAQ)").setColors(colors).render();
+        var chart = new Sai.LineChart(r, 0, 350, 350, 350, data, tea, "Monthly average adjusted close", true).setColors(colors).render();
+        var csp = new Sai.StockChart(r, 400, 350, 350, 350, msft_data, 'white', "MSFT (NASDAQ)").render();
         var barc = new Sai.BarChart(r, 0, 750, 350, 350, bardata, 'white', "Some titled bar chart", true).setColors(colors).render(true);
         var sbarc = new Sai.StackedBarChart(r, 400, 750, 350, 350, bardata, 'white', "", true).setColors(colors).render(true);
         

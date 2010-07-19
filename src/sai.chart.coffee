@@ -123,10 +123,6 @@ class Sai.Chart
     this.haxis.translate(0, -haxis_height)
     this.padding.bottom += haxis_height
     
-    # this.r.rect(this.x, this.y - this.h, this.w, this.h)
-    # this.r.rect(this.vaxis.getBBox().x, this.vaxis.getBBox().y, this.vaxis.getBBox().width, this.vaxis.getBBox().height).attr('stroke', 'red')
-    # this.r.rect(this.haxis.getBBox().x, this.haxis.getBBox().y, this.haxis.getBBox().width, this.haxis.getBBox().height).attr('stroke', 'blue')
-    
     this.px: this.x + this.padding.left
     this.py: this.y - this.padding.bottom
     this.pw: this.w - this.padding.left - this.padding.right
@@ -185,9 +181,10 @@ class Sai.Chart
                                       [[0, nh], [1, nh]]))
     .render('#ccc')
   
-  drawLegend: () ->
-    if this.colors
-      this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, this.colors)
+  drawLegend: (colors) ->
+    colors ?= this.colors
+    if colors
+      this.legend: this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, colors)
       this.padding.bottom += this.legend.getBBox().height + 15
       this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0)
   
@@ -375,6 +372,15 @@ class Sai.StockChart extends Sai.Chart
   render: () ->
     this.drawTitle()
     this.setupInfoSpace()
+    
+    this.colors ?= {}
+    this.colors['up'] ?= 'black'
+    this.colors['down'] ?= 'red'
+    this.colors['vol_up'] ?= '#666'
+    this.colors['vol_down'] ?= '#c66'
+    
+    this.drawLegend({up: this.colors.up, down: this.colors.down})
+    
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     this.drawLogo()
     this.drawBG()
@@ -414,7 +420,7 @@ class Sai.StockChart extends Sai.Chart
                          this.pw, this.ph * 0.2,
                          vol,
                          rawdata))
-        .render(true, {'up': this.colors and this.colors['vol_up'] or '#666', 'down': this.colors and this.colors['vol_down'] or '#c66'}, this.interactive, this.drawInfo)
+        .render(true, {'up': this.colors['vol_up'], 'down': this.colors['vol_down']}, this.interactive, this.drawInfo)
         .set
       )
     
@@ -429,7 +435,7 @@ class Sai.StockChart extends Sai.Chart
                                 'low': this.ndata['prices']['low']
                                },
                                rawdata))
-      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), this.interactive, this.drawInfo)
+      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), false, this.drawInfo)
       .set
     )
     
@@ -447,7 +453,7 @@ class Sai.StockChart extends Sai.Chart
     
     glow_width: this.pw / (this.data.__LABELS__.length - 1)
     this.glow: this.r.rect(this.px - (glow_width / 2), this.py - this.ph, glow_width, this.ph)
-                      .attr({fill: "0-$this.bgcolor-#edc-$this.bgcolor", 'stroke-width': 0, 'stroke-opacity': 0})
+                      .attr({fill: "0-$this.bgcolor-#DDAA99-$this.bgcolor", 'stroke-width': 0, 'stroke-opacity': 0})
                       .toBack()
                       .hide()
     
