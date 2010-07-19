@@ -144,8 +144,8 @@ class Sai.Chart
     w: 160
     h: 34
     [
-      this.px + this.pw - w,
-      this.py - this.ph,
+      this.px + this.pw - w - 5,
+      this.py - this.ph + 5,
       w,
       h
     ]
@@ -255,9 +255,9 @@ class Sai.LineChart extends Sai.Chart
       
       this.lines.push(line)
       this.plots.push(line.set)
-      this.dots.push(this.r.circle(0, 0, 4).attr({fill: color}).hide())
+      this.dots.push(this.r.circle(0, 0, 4).attr({'fill': color}).hide())
     
-    this.r.set().push(this.bg, this.plots, this.dots).mousemove(
+    this.r.set().push(this.bg, this.plots, this.dots, this.logo).mousemove(
       (event) =>
         
         idx: this.getIndex(event.clientX, event.clientY)
@@ -446,7 +446,7 @@ class Sai.StockChart extends Sai.Chart
       )
     
     
-    this.r.set().push(this.bg, this.plots).mousemove(
+    this.r.set().push(this.bg, this.plots, this.logo).mousemove(
       (event) =>
         
         idx: this.getIndex(event.clientX, event.clientY)

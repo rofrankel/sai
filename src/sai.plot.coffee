@@ -33,7 +33,7 @@ class Sai.Plot
 
 class Sai.LinePlot extends Sai.Plot
   
-  render: (color, width, shouldInteract, fSetInfo) ->
+  render: (color, width) ->
     this.set.push(
       this.line: this.r.sai.prim.line(this.dndata, color or 'black', width or 1)
     )
@@ -70,6 +70,7 @@ class Sai.CandlestickPlot extends Sai.Plot
           (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
           not upDay,
           shouldInteract,
+          fSetInfo,
           Sai.util.infoSetters(fSetInfo, info)
         )
       )
@@ -99,7 +100,15 @@ class Sai.BarPlot extends Sai.Plot
         info[p]: this.rawdata[p][i]
       
       this.set.push(
-        barfunc(bardata, colorArray, this.w / len, this.y, shouldInteract, Sai.util.infoSetters(fSetInfo, info))
+        barfunc(
+          bardata,
+          colorArray,
+          this.w / len,
+          this.y,
+          shouldInteract,
+          fSetInfo,
+          Sai.util.infoSetters(fSetInfo, info)
+        )
       )
     
     return this

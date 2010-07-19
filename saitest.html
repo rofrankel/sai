@@ -40,7 +40,6 @@
           '__LABELS__': ['t1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6']
         };
         
-        
         var msft_data = {
           'open': [26.78, 26.16, 25.78, 25.46, 25.05, 24.51, 24.13, 23.30, 23.09, 23.36, 23.27, 23.70, 23.82],
           'close': [25.95, 25.77, 25.31, 25.00, 24.53, 24.31, 23.31, 23.01, 23.16, 23.27, 23.27, 23.82, 24.30],
@@ -60,7 +59,7 @@
         };
         
         var chart = new Sai.LineChart(r, 0, 350, 350, 350, data, '#e7ece6', "Monthly average adjusted close", true).setColors(colors).render();
-        var csp = new Sai.StockChart(r, 400, 350, 350, 350, msft_data, 'white', "MSFT (NASDAQ)", true).setColors(colors).render();
+        var csp = new Sai.StockChart(r, 400, 350, 350, 350, msft_data, 'white', "MSFT (NASDAQ)").setColors(colors).render();
         var barc = new Sai.BarChart(r, 0, 750, 350, 350, bardata, 'white', "Some titled bar chart", true).setColors(colors).render(true);
         var sbarc = new Sai.StackedBarChart(r, 400, 750, 350, 350, bardata, 'white', "", true).setColors(colors).render(true);
         
