@@ -1,6 +1,8 @@
 Sai ?= {}
 Sai.util ?= {}
 
+Sai.imagePath ?= 'images/'
+
 Sai.util.roundToMag: (x, mag) ->
   mag ?= 0
   target: Math.pow(10, mag)

@@ -33,7 +33,7 @@ class Sai.Plot
 
 class Sai.LinePlot extends Sai.Plot
   
-  render: (color, width) ->
+  render: (color, width, shouldInteract, fSetInfo) ->
     this.set.push(
       this.line: this.r.sai.prim.line(this.dndata, color or 'black', width or 1)
     )

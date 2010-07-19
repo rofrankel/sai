@@ -71,30 +71,30 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
     continue unless coords[i]? and coords[i][1] isnt baseline
     h: coords[i][1] - (baseline - h)
     stack.push(
-      this.rect(coords[i][0] - (width / 2.0),
+      bar: this.rect(coords[i][0] - (width / 2.0),
                 h - (if i is 0 then 1 else 0), # visual hack to prevent bars covering x axis
                 width,
                 baseline - coords[i][1])
       .attr('fill', colors and colors[i] or 'black')
       .attr('stroke', colors and colors[i] or 'black')
     )
-  
-  if shouldInteract
-    hoverfuncs: getHoverfuncs(
-      stack,
-      {
-        'fill-opacity': '0.5'
-      },
-      {
-        'fill-opacity': '1.0'
-      },
-      extras
-    )
     
-    stack.hover(
-      hoverfuncs[0],
-      hoverfuncs[1]
-    )
+    if shouldInteract
+      hoverfuncs: getHoverfuncs(
+        bar,
+        {
+          'fill-opacity': '0.75'
+        },
+        {
+          'fill-opacity': '1.0'
+        },
+        extras
+      )
+      
+      bar.hover(
+        hoverfuncs[0],
+        hoverfuncs[1]
+      )
   
   
   return stack
@@ -121,7 +121,7 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract
     hoverfuncs: getHoverfuncs(
       group,
       {
-        'fill-opacity': '0.5'
+        'fill-opacity': '0.75'
       },
       {
         'fill-opacity': '1.0'

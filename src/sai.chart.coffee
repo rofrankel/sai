@@ -140,6 +140,20 @@ class Sai.Chart
                          this.pw? and this.pw or this.w,
                          this.ph? and this.ph or this.h).attr({fill: this.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
   
+  logoPos: () ->
+    w: 160
+    h: 34
+    [
+      this.px + this.pw - w,
+      this.py - this.ph,
+      w,
+      h
+    ]
+  
+  drawLogo: () ->
+    [x, y, w, h] = this.logoPos()
+    this.logo: this.r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25})
+  
   render: () ->
     this.plot ?= new Sai.Plot(this.r)
     this.plot.render()
@@ -190,12 +204,19 @@ class Sai.Chart
     this.info_w: this.w - this.padding.left - this.padding.right
     this.padding.top += 30
   
-  drawInfo: (info) =>
-    # clear out anything that already exists
-    if this.info
-      this.info.remove()
+  drawInfo: (info, clear) =>  
+    clear ?= true
     
-    this.info: this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, info)
+    # clear out anything that already exists
+    if clear
+      if this.info
+        this.info.remove()
+      this.info_data: {}
+    
+    for label of info
+      this.info_data[label]: info[label]
+    
+    this.info: this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data)
   
   getIndex: (mx, my) ->
     tx: Sai.util.transformCoords({x: mx, y: my}, this.r.canvas).x
@@ -210,25 +231,32 @@ class Sai.LineChart extends Sai.Chart
     this.drawLegend()
     this.addAxes('all')
     this.drawBG()
+    this.drawLogo()
     
     this.drawGuideline(0)
     
-    this.plots = this.r.set()
+    this.lines: []
+    this.dots: []
+    this.plots: this.r.set()
+    
     for series of this.ndata['all']
       if series is '__YVALS__'
         continue
       
-      this.plots.push(
-        (new Sai.LinePlot(this.r,
-                          this.px,
-                          this.py,
-                          this.pw, this.ph,
-                          this.ndata['all'][series]))
-        .render(this.colors and this.colors[series] or 'black', 3)
-        .set
-      )
+      color: this.colors and this.colors[series] or 'black'
+      
+      line: (new Sai.LinePlot(this.r,
+                              this.px,
+                              this.py,
+                              this.pw, this.ph,
+                              this.ndata['all'][series]))
+      .render(color, 3)
+      
+      this.lines.push(line)
+      this.plots.push(line.set)
+      this.dots.push(this.r.circle(0, 0, 4).attr({fill: color}).hide())
     
-    this.r.set().push(this.bg, this.plots).mousemove(
+    this.r.set().push(this.bg, this.plots, this.dots).mousemove(
       (event) =>
         
         idx: this.getIndex(event.clientX, event.clientY)
@@ -237,9 +265,15 @@ class Sai.LineChart extends Sai.Chart
         for series of this.ndata['all']
           if this.data[series]? then info[series]: this.data[series][idx]
         this.drawInfo(info)
+        
+        for i in [0...this.lines.length]
+          pos: this.lines[i].dndata[idx]
+          this.dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront()
+        
     ).mouseout(
       (event) =>
         this.drawInfo({})
+        d.hide() for d in this.dots
     )
     
     return this
@@ -282,6 +316,7 @@ class Sai.BarChart extends Sai.Chart
     this.setupInfoSpace()
     this.drawLegend()
     this.addAxes('all', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    this.drawLogo()
     this.drawBG()
     
     this.guidelines = this.r.set()
@@ -313,9 +348,7 @@ class Sai.BarChart extends Sai.Chart
 
 class Sai.StackedBarChart extends Sai.BarChart
 
-  constructor: (r, x, y, w, h, data) ->
-    super(r, x, y, w, h, data)
-    this.stacked: true
+  stacked: true
   
   getMax: (data, group) ->
     return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...this.data['__LABELS__'].length])
@@ -342,6 +375,7 @@ class Sai.StockChart extends Sai.Chart
     this.drawTitle()
     this.setupInfoSpace()
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
+    this.drawLogo()
     this.drawBG()
     
     this.drawGuideline(0, 'prices')
