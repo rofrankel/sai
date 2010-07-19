@@ -209,9 +209,10 @@ class Sai.Chart
     
     # clear out anything that already exists
     if clear
-      if this.info
-        this.info.remove()
       this.info_data: {}
+    
+    if this.info
+      this.info.remove()
     
     for label of info
       this.info_data[label]: info[label]
@@ -236,7 +237,7 @@ class Sai.LineChart extends Sai.Chart
     this.drawGuideline(0)
     
     this.lines: []
-    this.dots: []
+    this.dots: this.r.set()
     this.plots: this.r.set()
     
     for series of this.ndata['all']
@@ -273,7 +274,7 @@ class Sai.LineChart extends Sai.Chart
     ).mouseout(
       (event) =>
         this.drawInfo({})
-        d.hide() for d in this.dots
+        this.dots.hide()
     )
     
     return this
