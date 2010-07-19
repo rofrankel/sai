@@ -379,7 +379,7 @@ class Sai.StockChart extends Sai.Chart
     this.colors['vol_up'] ?= '#666'
     this.colors['vol_down'] ?= '#c66'
     
-    this.drawLegend({up: this.colors.up, down: this.colors.down})
+    # this.drawLegend({up: this.colors.up, down: this.colors.down})
     
     this.addAxes('prices', {left: 30, right: 0, top: 0, bottom: 20}) #todo: set axis padding intelligently
     this.drawLogo()

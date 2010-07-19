@@ -17,13 +17,13 @@
         var olive = '#615C3E';
         var lilac = '#B3A4B7';
         var tea = '#E7ECE6';
-        var ceil = '#92A1CF';
+        var ucla = '#536895';
         
         var colors = {
           'AAPL': orange,
           'AMZN': olive,
           'GOOG': lilac,
-          'MSFT': ceil
+          'MSFT': ucla
         }
         
         var r = Raphael("abc", 1024, 1024);
@@ -61,11 +61,11 @@
         };
         
         var chart = new Sai.LineChart(r, 0, 350, 350, 350, data, tea, "Monthly average adjusted close", true).setColors(colors).render();
-        var csp = new Sai.StockChart(r, 400, 350, 350, 350, msft_data, 'white', "MSFT (NASDAQ)").render();
-        var barc = new Sai.BarChart(r, 0, 750, 350, 350, bardata, 'white', "Some titled bar chart", true).setColors(colors).render(true);
-        var sbarc = new Sai.StackedBarChart(r, 400, 750, 350, 350, bardata, 'white', "", true).setColors(colors).render(true);
+        var csp = new Sai.StockChart(r, 400, 350, 350, 350, msft_data, tea, "MSFT (NASDAQ)").render();
+        var barc = new Sai.BarChart(r, 0, 750, 350, 350, bardata, tea, "Some titled bar chart", true).setColors(colors).render(true);
+        var sbarc = new Sai.StackedBarChart(r, 400, 750, 350, 350, bardata, tea, "", true).setColors(colors).render(true);
         
-        var sparkline = new Sai.Sparkline(r, 800, 100, 100, 23, {data: data.AMZN}, '#eef').render();
+        var sparkline = new Sai.Sparkline(r, 800, 100, 100, 23, {data: data.AMZN}, tea).render();
         
       </script>
     </div>
