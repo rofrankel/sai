@@ -100,8 +100,8 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
           ((_percent) ->
             () ->
               if extras[0] then extras[0]()
-              fSetInfo({'%': _percent}, false)
-          )(height /totalHeight)
+              fSetInfo({'(selected)': Sai.util.prettystr(_percent) + '%'}, false)
+          )(100 * height / totalHeight)
           ,
           extras[1]
         ]

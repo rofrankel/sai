@@ -445,19 +445,33 @@ class Sai.StockChart extends Sai.Chart
         .set
       )
     
+    glow_width: this.pw / (this.data.__LABELS__.length - 1)
+    this.glow: this.r.rect(this.px - (glow_width / 2), this.py - this.ph, glow_width, this.ph)
+                      .attr({fill: "0-$this.bgcolor-#edc-$this.bgcolor", 'stroke-width': 0, 'stroke-opacity': 0})
+                      .toBack()
+                      .hide()
     
-    this.r.set().push(this.bg, this.plots, this.logo).mousemove(
+    this.bg.toBack()
+    
+    this.r.set().push(this.bg, this.plots, this.logo, this.glow).mousemove(
       (event) =>
         
         idx: this.getIndex(event.clientX, event.clientY)
         
         info: {}
+        notNull: true
         for series of this.ndata['prices']
           if this.data[series]? then info[series]: this.data[series][idx]
+          if info[series] is null then notNull = false
         this.drawInfo(info)
+        
+        if notNull
+          this.glow.attr({x: this.px + (glow_width * (idx - 0.5))}).show()
+        
     ).mouseout(
       (event) =>
         this.drawInfo({})
+        this.glow.hide()
     )
 
     return this
