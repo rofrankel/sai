@@ -532,7 +532,7 @@ class Sai.GeoChart extends Sai.Chart
         histogram: this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white')
       )
       
-      histogram.click( () => this.rerenderPlot(series) )
+      histogram.click( () => this.renderPlot(series) )
       .hover(
         ((set) ->
           () -> set.attr({'fill-opacity': 0.75})
@@ -548,7 +548,7 @@ class Sai.GeoChart extends Sai.Chart
     
     this.padding.bottom += height + 5
   
-  rerenderPlot: (mainSeries) =>
+  renderPlot: (mainSeries) =>
     this.geoPlot?.set.remove()
     
     this.geoPlot: (new Sai.GeoPlot(
@@ -569,12 +569,6 @@ class Sai.GeoChart extends Sai.Chart
     this.drawLogo()
     this.drawBG()
     
-    this.geoPlot: (new Sai.GeoPlot(
-      this.r,
-      this.px, this.py, this.pw, this.ph,
-      this.ndata,
-      this.data
-    ))
-    .render(this.colors or {}, this.data['__MAP__'], this.data['__DEFAULT__'], this.bgcolor, this.interactive, this.drawInfo)
+    this.renderPlot(this.data['__DEFAULT__'])
     
     return this

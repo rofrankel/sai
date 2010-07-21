@@ -147,7 +147,7 @@ class Sai.GeoPlot extends Sai.Plot
       
       this.set.push(
         # fDraw, attrs, extras, hoverattrs
-        this.r.sai.prim.hoverShape(
+        hoverShape: this.r.sai.prim.hoverShape(
           ((path, scale, x, y) ->
             return (r) ->
               r.path(path).translate(x, y).scale(scale, scale, x, y)
@@ -160,5 +160,8 @@ class Sai.GeoPlot extends Sai.Plot
           Sai.util.infoSetters(fSetInfo, info)
         )
       )
+      
+    bbox: this.set.getBBox()
+    this.set.translate((this.w - bbox.width) / 2, -(this - bbox.height) / 2)
     
     return this
