@@ -66,27 +66,10 @@
         var barc = new Sai.BarChart(r, 0, 750, 350, 350, bardata, tea, "Some titled bar chart", true).setColors(colors).render(true);
         var sbarc = new Sai.StackedBarChart(r, 400, 750, 350, 350, bardata, tea, "", true).setColors(colors).render(true);
         var sparkline = new Sai.Sparkline(r, 800, 100, 100, 23, {data: data.AMZN}, tea).render();
-        /*
-        var us = r.set()
-        var US = Sai.data.map.us;
-        
-        for (var state in US.paths) {
-          us.push(r.path(US.paths[state]).attr({fill: '#' + Math.round(0xf * Math.random()).toString(16) + '00', 'stroke-opacity': 1, stroke: 'white', 'stroke-width': 0.75}));
-        }
-        
-        us.scale(0.4, 0.4, 0, 0).translate(800,300).hover(
-          function() {
-            this.attr({opacity: 0.5});
-          },
-          function() {
-            this.attr({opacity:1});
-          }
-        );
-        */
         
         var USdata = {
           '__REGION__': ['AL', 'AK', 'CA', 'TX', 'NY', 'NJ'],
-          'Consumer confidence': [10, 24, 8, 1, 16, 15],
+          'Consumer confidence': [10, 24, 23.9, 1, 16, 15],
           'Unemployment': [.6, .9, .8, .6, .4, .5],
           '__DEFAULT__': 'Consumer confidence',
           '__MAP__': Sai.data.map.us

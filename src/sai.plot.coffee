@@ -131,10 +131,6 @@ class Sai.GeoPlot extends Sai.Plot
     
     this.set.remove()
     
-    multiplyColor: (colorStr, coeff, bob) ->
-      rgb: Raphael.getRGB(colorStr)
-      return "rgb(${rgb.r * coeff}, ${rgb.g * coeff}, ${rgb.b * coeff})"
-    
     regions: this.rawdata.__REGION__
     ri: {}
     for i in [0...regions.length]
@@ -147,7 +143,7 @@ class Sai.GeoPlot extends Sai.Plot
       for series of this.rawdata
         info[series]: this.rawdata[series][ridx]
       
-      val: this.data[mainSeries][mainSeries][ridx] and this.data[mainSeries][mainSeries][ridx][1] or 0
+      val: this.data[mainSeries][ridx] and this.data[mainSeries][ridx][1] or 0
       
       this.set.push(
         # fDraw, attrs, extras, hoverattrs
@@ -157,7 +153,7 @@ class Sai.GeoPlot extends Sai.Plot
               r.path(path).translate(x, y).scale(scale, scale, x, y)
           )(map.paths[region], Math.min(this.w / map.width, this.h / map.height), this.x, this.y - this.h),
           {
-            'fill': multiplyColor(colors[mainSeries], val)
+            'fill': Sai.util.multiplyColor(colors[mainSeries], val)
             'stroke': bgcolor
             'stroke-width': 0.75
           }

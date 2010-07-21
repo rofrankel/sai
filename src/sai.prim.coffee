@@ -312,3 +312,54 @@ Raphael.fn.sai.prim.hoverShape: (fDraw, attrs, extras, hoverattrs) ->
   )
   
   return shape
+
+
+Raphael.fn.sai.prim.histogram: (x, y, w, h, data, low, high, label, color, bgcolor, numBuckets) ->
+  bgcolor ?= 'white'
+  numBuckets ?= 10
+  
+  set: this.set()
+  
+  set.push(
+    bg: this.rect(x, y-h, w, h).attr({
+      'stroke-width': 0
+      'stroke-opacity': 0
+      'fill': bgcolor
+    })
+  )
+  
+  bartop: y - (h - 12) # leave room for text at top
+  y -= 5 # text height / 2
+  
+  low ?= 0
+  high ?= 1
+  
+  set.push(lowLabel: this.text(x, y, Sai.util.prettystr(low)))
+  lowLabel.translate(lowLabel.getBBox().width / 2, 0)
+  set.push(highLabel: this.text(x + w, y, Sai.util.prettystr(high)))
+  highLabel.translate(-highLabel.getBBox().width / 2, 0)
+  
+  y -= 7 # rest of text, plus padding
+  
+  buckets = {}
+  maxBucket: 0
+  
+  for datum in data
+    idx: Math.min(numBuckets - 1, Math.floor(numBuckets * datum / 1))
+    if idx of buckets then buckets[idx] += 1 else buckets[idx] = 1
+    maxBucket: Math.max(maxBucket, buckets[idx])
+  
+  set.push(hrule: this.path("M$x,$y l$w, 0").attr('stroke', color))
+  y -= 1
+  
+  bw: w / numBuckets
+  for bucket of buckets
+    bh: (y - bartop) * (buckets[bucket] / maxBucket)
+    set.push(
+      this.rect(x + (bucket * bw) + 2, y - bh, bw - 4, bh).attr({'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets), 'stroke-width': 0, 'stroke-opacity': 0})
+    )
+  
+  set.push(lbl: this.text(x + w/2, bartop - 6, Sai.util.prettystr(label)))
+  
+  return set
+  

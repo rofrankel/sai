@@ -492,6 +492,19 @@ class Sai.StockChart extends Sai.Chart
 
 class Sai.GeoChart extends Sai.Chart
   
+  normalize: (data) ->
+    ndata = {}
+    
+    for series of data
+      continue if series.match('^__')
+      continue unless data[series]?
+      max: Math.max.apply(Math, data[series])
+      min: Math.min.apply(Math, data[series])
+      ndata[series] = (data[series][i]? and [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] or null) for i in [0...data[series].length]
+    
+    return ndata
+  
+  
   dataGroups: (data) ->
     groups: {
       '__META__': seriesName for seriesName of data when seriesName.match("^__")
@@ -504,25 +517,64 @@ class Sai.GeoChart extends Sai.Chart
     return groups
   
   
+  drawHistogramLegend: (seriesNames) ->
+    this.histogramLegend: this.r.set()
+    height: Math.max(0.1 * (this.h - this.padding.bottom - this.padding.top), 50)
+    width: Math.min(150, (this.w - this.padding.left - this.padding.right) / seriesNames.length)
+    
+    for i in [0...seriesNames.length]
+      series: seriesNames[i]
+      px: this.x + this.padding.left + ((i + .1) * width)
+      data: this.ndata[series][j][1] for j in [0...this.ndata[series].length]
+      minLabel: Math.min.apply(Math, this.data[series])
+      maxLabel: Math.max.apply(Math, this.data[series])
+      this.histogramLegend.push(
+        histogram: this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white')
+      )
+      
+      histogram.click( () => this.rerenderPlot(series) )
+      .hover(
+        ((set) ->
+          () -> set.attr({'fill-opacity': 0.75})
+        )(histogram)
+        ,
+        ((set) ->
+          () -> set.attr({'fill-opacity': 1.0})
+        )(histogram)
+      )
+
+    
+    this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0)
+    
+    this.padding.bottom += height + 5
+  
+  rerenderPlot: (mainSeries) =>
+    this.geoPlot?.set.remove()
+    
+    this.geoPlot: (new Sai.GeoPlot(
+      this.r,
+      this.px, this.py, this.pw, this.ph,
+      this.ndata,
+      this.data
+    ))
+    .render(this.colors or {}, this.data['__MAP__'], mainSeries, this.bgcolor, this.interactive, this.drawInfo)
+  
   render: () ->
     this.drawTitle()
     this.setupInfoSpace()
-    this.drawLegend()
+    this.drawHistogramLegend(['Unemployment', 'Consumer confidence'])
+    
     this.setPlotCoords()
     
     this.drawLogo()
     this.drawBG()
     
-    this.plots: this.r.set()
-    
-    this.plots.push(
-      (new Sai.GeoPlot(
-        this.r,
-        this.px, this.py, this.pw, this.ph,
-        this.ndata,
-        this.data
-      ))
-      .render(this.colors or {}, this.data['__MAP__'], this.data['__DEFAULT__'], this.bgcolor, this.interactive, this.drawInfo)
-    )
+    this.geoPlot: (new Sai.GeoPlot(
+      this.r,
+      this.px, this.py, this.pw, this.ph,
+      this.ndata,
+      this.data
+    ))
+    .render(this.colors or {}, this.data['__MAP__'], this.data['__DEFAULT__'], this.bgcolor, this.interactive, this.drawInfo)
     
     return this
