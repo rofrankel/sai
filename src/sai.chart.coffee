@@ -29,7 +29,10 @@ class Sai.Chart
     
     # deep copy
     for series of data
-      this.data[series] = data[series].slice(0)
+      if  data[series] instanceof Array
+        this.data[series] = data[series].slice(0)
+      else
+        this.data[series] = data[series]
     
     # do any necessary null padding
     groups = this.dataGroups(data)
@@ -83,7 +86,7 @@ class Sai.Chart
     ndata = {}
     
     for group of groups
-      continue if group is '__META__'
+      continue if group.match('^__')
       ndata[group]: {}
       max: this.getMax(data, groups[group])
       min: this.getMin(data, groups[group])
@@ -123,12 +126,15 @@ class Sai.Chart
     this.haxis.translate(0, -haxis_height)
     this.padding.bottom += haxis_height
     
+    this.setPlotCoords()
+    
+    return this.r.set().push(this.haxis).push(this.vaxis)
+
+  setPlotCoords: () ->
     this.px: this.x + this.padding.left
     this.py: this.y - this.padding.bottom
     this.pw: this.w - this.padding.left - this.padding.right
     this.ph: this.h - this.padding.bottom - this.padding.top
-    
-    return this.r.set().push(this.haxis).push(this.vaxis)
   
   drawBG: () ->
     this.bg: this.r.rect(this.px? and this.px or this.x,
@@ -212,7 +218,8 @@ class Sai.Chart
       this.info.remove()
     
     for label of info
-      this.info_data[label]: info[label]
+      unless label.match("^__")
+        this.info_data[label]: info[label] isnt 'undefined' and info[label] or '(no data)'
     
     this.info: this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data)
   
@@ -479,5 +486,43 @@ class Sai.StockChart extends Sai.Chart
         this.drawInfo({})
         this.glow.hide()
     )
+    
+    return this
 
+
+class Sai.GeoChart extends Sai.Chart
+  
+  dataGroups: (data) ->
+    groups: {
+      '__META__': seriesName for seriesName of data when seriesName.match("^__")
+    }
+    
+    for seriesName of data
+      unless seriesName.match("^__")
+        groups[seriesName]: [seriesName]
+    
+    return groups
+  
+  
+  render: () ->
+    this.drawTitle()
+    this.setupInfoSpace()
+    this.drawLegend()
+    this.setPlotCoords()
+    
+    this.drawLogo()
+    this.drawBG()
+    
+    this.plots: this.r.set()
+    
+    this.plots.push(
+      (new Sai.GeoPlot(
+        this.r,
+        this.px, this.py, this.pw, this.ph,
+        this.ndata,
+        this.data
+      ))
+      .render(this.colors or {}, this.data['__MAP__'], this.data['__DEFAULT__'], this.bgcolor, this.interactive, this.drawInfo)
+    )
+    
     return this

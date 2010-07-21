@@ -105,7 +105,6 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
           ,
           extras[1]
         ]
-        extras
       )
       
       bar.hover(
@@ -291,3 +290,25 @@ Raphael.fn.sai.prim.info: (x, y, max_width, info) ->
     set.push(t)
   
   return set
+
+
+Raphael.fn.sai.prim.hoverShape: (fDraw, attrs, extras, hoverattrs) ->
+  shape: fDraw(this).attr(attrs)
+  
+  hoverfuncs: getHoverfuncs(
+    shape,
+    hoverattrs and hoverattrs[0] or {
+      'fill-opacity': '0.75'
+    },
+    hoverattrs and hoverattrs[1] or {
+      'fill-opacity': '1.0'
+    },
+    extras
+  )
+  
+  shape.hover(
+    hoverfuncs[0],
+    hoverfuncs[1]
+  )
+  
+  return shape

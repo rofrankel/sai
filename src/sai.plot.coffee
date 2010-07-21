@@ -20,7 +20,7 @@ class Sai.Plot
         this.dndata[column]: this.denormalize(dnPoint) for dnPoint in this.data[column]
   
   denormalize: (point) ->
-    unless point is null
+    if point instanceof Array
       return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
 
   render: () ->
@@ -34,6 +34,9 @@ class Sai.Plot
 class Sai.LinePlot extends Sai.Plot
   
   render: (color, width) ->
+    
+    this.set.remove()
+    
     this.set.push(
       this.line: this.r.sai.prim.line(this.dndata, color or 'black', width or 1)
     )
@@ -44,6 +47,9 @@ class Sai.LinePlot extends Sai.Plot
 class Sai.CandlestickPlot extends Sai.Plot
 
   render: (colors, body_width, shouldInteract, fSetInfo) ->
+    
+    this.set.remove()
+    
     cup: colors and colors['up'] or 'black'
     cdown: colors and colors['down'] or 'red'
     body_width ?= 5
@@ -82,6 +88,9 @@ class Sai.BarPlot extends Sai.Plot
   # if stacked, graph is rendered stacked...else, grouped
   # colors maps from series name to color string
   render: (stacked, colors, shouldInteract, fSetInfo) ->
+    
+    this.set.remove()
+    
     len: 0
     colorArray: []
     barfunc: if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
@@ -107,6 +116,51 @@ class Sai.BarPlot extends Sai.Plot
           this.y,
           shouldInteract,
           fSetInfo,
+          Sai.util.infoSetters(fSetInfo, info)
+        )
+      )
+    
+    return this
+
+
+# map looks like {width: w, height: h, paths: {CODE: "...", CODE: "..."}}
+# data looks like {series: {series: [a, b, c]}, series2: {series2: [b, c, a]}, __META__: {__REGION__: [CODE, CODE, CODE]}}
+class Sai.GeoPlot extends Sai.Plot
+
+  render: (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
+    
+    this.set.remove()
+    
+    multiplyColor: (colorStr, coeff, bob) ->
+      rgb: Raphael.getRGB(colorStr)
+      return "rgb(${rgb.r * coeff}, ${rgb.g * coeff}, ${rgb.b * coeff})"
+    
+    regions: this.rawdata.__REGION__
+    ri: {}
+    for i in [0...regions.length]
+      ri[regions[i]]: i
+    
+    for region of map.paths
+      ridx: ri[region]
+      
+      info: {region}
+      for series of this.rawdata
+        info[series]: this.rawdata[series][ridx]
+      
+      val: this.data[mainSeries][mainSeries][ridx] and this.data[mainSeries][mainSeries][ridx][1] or 0
+      
+      this.set.push(
+        # fDraw, attrs, extras, hoverattrs
+        this.r.sai.prim.hoverShape(
+          ((path, scale, x, y) ->
+            return (r) ->
+              r.path(path).translate(x, y).scale(scale, scale, x, y)
+          )(map.paths[region], Math.min(this.w / map.width, this.h / map.height), this.x, this.y - this.h),
+          {
+            'fill': multiplyColor(colors[mainSeries], val)
+            'stroke': bgcolor
+            'stroke-width': 0.75
+          }
           Sai.util.infoSetters(fSetInfo, info)
         )
       )

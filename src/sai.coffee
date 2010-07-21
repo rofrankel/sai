@@ -62,6 +62,9 @@ Sai.util.transformCoords: (coords, canvas) ->
     {x: event.x, y: event.y}
 
 
+# for maps
+Sai.data ?= {}
+Sai.data.map ?= {}
 
 Raphael.fn.sai ?= {}
 
