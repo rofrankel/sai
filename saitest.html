@@ -67,15 +67,44 @@
         var sbarc = new Sai.StackedBarChart(r, 400, 750, 350, 350, bardata, tea, "", true).setColors(colors).render(true);
         var sparkline = new Sai.Sparkline(r, 800, 100, 100, 23, {data: data.AMZN}, tea).render();
         
+        var getRandomData = function (min, max, n, ints) {
+          var result = [];
+          for(i = 0; i < n; i++) {
+            var x = Math.random() * (max-min) + min;
+            if(ints) {
+              x = Math.round(x);
+            }
+            result.push(x);
+          }
+          
+          return result;
+        }
+        
+        var states = [];
+        for(state in Sai.data.map.us.paths) {
+          states.push(state);
+        }
+        
         var USdata = {
-          '__REGION__': ['AL', 'AK', 'CA', 'TX', 'NY', 'NJ'],
-          'Consumer confidence': [10, 24, 23.9, 1, 16, 15],
-          'Unemployment': [.6, .9, .8, .6, .4, .5],
+          '__REGION__': states,
+          'Consumer confidence': getRandomData(38.4, 38.7, states.length),
+          'Unemployment': getRandomData(0, 1, states.length),
+          'Dropped calls': getRandomData(50, 150, states.length, true),
+          'Oatmeal Index': getRandomData(14, 31, states.length, true),
+          'Math sightings': getRandomData(0, 100, states.length, true),
           '__DEFAULT__': 'Consumer confidence',
           '__MAP__': Sai.data.map.us
         }
         
-        var uschart = new Sai.GeoChart(r, 800, 800, 640, 480, USdata, tea, "MAP OF US").setColors({'Consumer confidence': lilac, 'Unemployment': orange}).render();
+        var UScolors = {
+          'Consumer confidence': orange,
+          'Unemployment': lilac,
+          'Dropped calls': olive,
+          'Oatmeal Index': ucla,
+          'Math sightings': 'green',
+        }
+        
+        var uschart = new Sai.GeoChart(r, 800, 800, 640, 480, USdata, tea, "MAP OF US").setColors(UScolors).render();
         
       </script>
     </div>

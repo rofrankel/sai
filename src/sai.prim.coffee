@@ -356,7 +356,7 @@ Raphael.fn.sai.prim.histogram: (x, y, w, h, data, low, high, label, color, bgcol
   for bucket of buckets
     bh: (y - bartop) * (buckets[bucket] / maxBucket)
     set.push(
-      this.rect(x + (bucket * bw) + 2, y - bh, bw - 4, bh).attr({'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets), 'stroke-width': 0, 'stroke-opacity': 0})
+      this.rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets), 'stroke-width': 0, 'stroke-opacity': 0})
     )
   
   set.push(lbl: this.text(x + w/2, bartop - 6, Sai.util.prettystr(label)))

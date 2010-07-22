@@ -524,7 +524,7 @@ class Sai.GeoChart extends Sai.Chart
     
     for i in [0...seriesNames.length]
       series: seriesNames[i]
-      px: this.x + this.padding.left + ((i + .1) * width)
+      px: this.x + this.padding.left + (i * width)
       data: this.ndata[series][j][1] for j in [0...this.ndata[series].length]
       minLabel: Math.min.apply(Math, this.data[series])
       maxLabel: Math.max.apply(Math, this.data[series])
@@ -542,7 +542,7 @@ class Sai.GeoChart extends Sai.Chart
           () -> set.attr({'fill-opacity': 1.0})
         )(histogram)
       )
-
+    
     
     this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0)
     
@@ -562,7 +562,7 @@ class Sai.GeoChart extends Sai.Chart
   render: () ->
     this.drawTitle()
     this.setupInfoSpace()
-    this.drawHistogramLegend(['Unemployment', 'Consumer confidence'])
+    this.drawHistogramLegend(series for series of this.data when not series.match('^__'))
     
     this.setPlotCoords()
     
