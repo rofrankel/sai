@@ -64,9 +64,9 @@ class Sai.Chart
     nopad ?= false
     mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.4)
     step: Math.pow(10, mag)
-    if rawmag % 1 > 0.7
+    if rawmag % 1 > 0.7 and not nopad
       step *= 4
-    else if rawmag % 1 > 0.35
+    else if rawmag % 1 > 0.35 and not nopad
       step *= 2
     
     bottom: Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.9)), step)
