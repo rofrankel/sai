@@ -526,20 +526,35 @@ class Sai.GeoChart extends Sai.Chart
       series: seriesNames[i]
       px: this.x + this.padding.left + (i * width)
       data: this.ndata[series][j][1] for j in [0...this.ndata[series].length]
-      minLabel: Math.min.apply(Math, this.data[series])
-      maxLabel: Math.max.apply(Math, this.data[series])
+      min: Math.min.apply(Math, this.data[series])
+      max: Math.max.apply(Math, this.data[series])
+      yvals: this.getYAxisVals(min, max)
+      minLabel: yvals[0]
+      maxLabel: yvals[yvals.length - 1]
       this.histogramLegend.push(
-        histogram: this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white')
+        histogram: this.r.sai.prim.histogram(
+            px,
+            this.y - this.padding.bottom,
+            width * 0.8, height,
+            data,
+            minLabel,
+            maxLabel,
+            series,
+            this.colors[series], 'white')
       )
       
       histogram.click( () => this.renderPlot(series) )
       .hover(
-        ((set) ->
-          () -> set.attr({'fill-opacity': 0.75})
+        ((set) =>
+          () =>
+            set.attr({'fill-opacity': 0.75})
+            this.drawInfo({'Click to display on map': series})
         )(histogram)
         ,
-        ((set) ->
-          () -> set.attr({'fill-opacity': 1.0})
+        ((set) =>
+          () =>
+            set.attr({'fill-opacity': 1.0})
+            this.drawInfo({})
         )(histogram)
       )
     
