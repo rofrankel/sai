@@ -60,7 +60,8 @@ class Sai.Chart
       '__META__': seriesName for seriesName of data when seriesName.match("^__")
     }
   
-  getYAxisVals: (min, max) ->
+  getYAxisVals: (min, max, nopad) ->
+    nopad ?= false
     mag: Math.floor(rawmag: (Math.log(max - min) / Math.LN10) - 0.4)
     step: Math.pow(10, mag)
     if rawmag % 1 > 0.7
@@ -68,9 +69,9 @@ class Sai.Chart
     else if rawmag % 1 > 0.35
       step *= 2
     
-    bottom: Sai.util.round(min - (step / 1.9), step)
+    bottom: Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.9)), step)
     bottom: 0 if bottom < 0 <= min
-    top: Sai.util.round(max + (step / 1.9), step)
+    top: Sai.util.round(max + (if nopad then (step / 2.1) else (step / 1.9)), step)
     return Sai.util.round(i, step) for i in [bottom..top] by step
   
   # takes e.g. groups[group], not just a group name
@@ -519,28 +520,30 @@ class Sai.GeoChart extends Sai.Chart
   
   drawHistogramLegend: (seriesNames) ->
     this.histogramLegend: this.r.set()
+    extrapadding: 20
     height: Math.max(0.1 * (this.h - this.padding.bottom - this.padding.top), 50)
-    width: Math.min(150, (this.w - this.padding.left - this.padding.right) / seriesNames.length)
+    width: Math.min(150, (this.w - this.padding.left - this.padding.right - extrapadding) / seriesNames.length)
     
     for i in [0...seriesNames.length]
       series: seriesNames[i]
-      px: this.x + this.padding.left + (i * width)
+      px: this.x + this.padding.left + (extrapadding / 2) + (i * width)
       data: this.ndata[series][j][1] for j in [0...this.ndata[series].length]
       min: Math.min.apply(Math, this.data[series])
       max: Math.max.apply(Math, this.data[series])
-      yvals: this.getYAxisVals(min, max)
+      yvals: this.getYAxisVals(min, max, true)
       minLabel: yvals[0]
       maxLabel: yvals[yvals.length - 1]
       this.histogramLegend.push(
         histogram: this.r.sai.prim.histogram(
-            px,
-            this.y - this.padding.bottom,
-            width * 0.8, height,
-            data,
-            minLabel,
-            maxLabel,
-            series,
-            this.colors[series], 'white')
+          px,
+          this.y - this.padding.bottom,
+          width * 0.8, height,
+          data,
+          minLabel,
+          maxLabel,
+          series,
+          this.colors[series], 'white'
+        )
       )
       
       histogram.click( () => this.renderPlot(series) )

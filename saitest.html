@@ -86,14 +86,14 @@
         }
         
         var USdata = {
-          '__REGION__': states,
+          '__MAP__': Sai.data.map.us,
+          '__REGION__': states, // parallel to data arrays
+          '__DEFAULT__': 'Consumer confidence',
           'Consumer confidence': getRandomData(38.4, 38.7, states.length),
           'Unemployment': getRandomData(0, 1, states.length),
           'Dropped calls': getRandomData(50, 150, states.length, true),
           'Oatmeal Index': getRandomData(14, 31, states.length, true),
           'Math sightings': getRandomData(0, 100, states.length, true),
-          '__DEFAULT__': 'Consumer confidence',
-          '__MAP__': Sai.data.map.us
         }
         
         var UScolors = {
@@ -104,7 +104,7 @@
           'Math sightings': 'green',
         }
         
-        var uschart = new Sai.GeoChart(r, 800, 800, 640, 480, USdata, tea, "MAP OF US").setColors(UScolors).render();
+        var uschart = new Sai.GeoChart(r, 800, 800, 480, 350, USdata, tea, "MAP OF US").setColors(UScolors).render();
         
       </script>
     </div>
