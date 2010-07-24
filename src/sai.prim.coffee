@@ -277,7 +277,7 @@ Raphael.fn.sai.prim.info: (x, y, max_width, info) ->
   
   for label of info
     continue if info[label] is null
-    t: this.text(px, py, label + ': ' + Sai.util.prettystr(info[label]))
+    t: this.text(px, py, label + (if label isnt '' then ': ' else '') + Sai.util.prettystr(info[label]))
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
     
     if (px - x) + spacing + t.getBBox().width > max_width

@@ -48,7 +48,7 @@ Sai.util.infoSetters: (fSetInfo, info) ->
       fSetInfo(info)
     ,
     () ->
-      fSetInfo({})
+      fSetInfo()
   ]
 
 Sai.util.transformCoords: (coords, canvas) ->

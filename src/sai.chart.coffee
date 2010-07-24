@@ -211,6 +211,8 @@ class Sai.Chart
   drawInfo: (info, clear) =>  
     clear ?= true
     
+    info ?= this.default_info
+    
     # clear out anything that already exists
     if clear
       this.info_data: {}
@@ -525,6 +527,7 @@ class Sai.GeoChart extends Sai.Chart
     
     return groups
   
+  default_info: {'': 'Click histogram below to change map display'}
   
   drawHistogramLegend: (seriesNames) ->
     this.histogramLegend: this.r.set()
@@ -565,7 +568,7 @@ class Sai.GeoChart extends Sai.Chart
         ((set) =>
           () =>
             set.attr({'fill-opacity': 1.0})
-            this.drawInfo({})
+            this.drawInfo()
         )(histogram)
       )
     
@@ -594,6 +597,7 @@ class Sai.GeoChart extends Sai.Chart
     
     this.drawLogo()
     this.drawBG()
+    this.drawInfo()
     
     this.renderPlot(this.data['__DEFAULT__'])
     
