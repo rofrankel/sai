@@ -162,6 +162,6 @@ class Sai.GeoPlot extends Sai.Plot
       )
       
     bbox: this.set.getBBox()
-    this.set.translate((this.w - bbox.width) / 2, -(this - bbox.height) / 2)
+    this.set.translate((this.w - bbox.width) / 2, (this.h - bbox.height) / 2)
     
     return this
