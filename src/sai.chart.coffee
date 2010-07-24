@@ -282,6 +282,8 @@ class Sai.LineChart extends Sai.Chart
         this.dots.hide()
     )
     
+    this.logo?.toFront()
+    
     return this
 
 
@@ -307,6 +309,8 @@ class Sai.Sparkline extends Sai.Chart
       .render(this.colors and this.colors[series] or 'black', 1)
       .set
     )
+    
+    this.logo?.toFront()
     
     return this
 
@@ -348,6 +352,8 @@ class Sai.BarChart extends Sai.Chart
       .render(this.stacked?, this.colors, this.interactive, this.drawInfo)
       .set
     )
+    
+    this.logo?.toFront()
     
     return this
 
@@ -488,6 +494,8 @@ class Sai.StockChart extends Sai.Chart
         this.glow.hide()
     )
     
+    this.logo?.toFront()
+    
     return this
 
 
@@ -588,5 +596,7 @@ class Sai.GeoChart extends Sai.Chart
     this.drawBG()
     
     this.renderPlot(this.data['__DEFAULT__'])
+    
+    this.logo?.toFront()
     
     return this
