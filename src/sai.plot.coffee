@@ -138,8 +138,9 @@ class Sai.GeoPlot extends Sai.Plot
     
     for region of map.paths
       ridx: ri[region]
+      name: map.name[region]
       
-      info: {region}
+      info: {region: if name? then name else region}
       for series of this.rawdata
         info[series]: this.rawdata[series][ridx]
       
