@@ -143,7 +143,7 @@ class Sai.GeoPlot extends Sai.Plot
       for series of this.rawdata
         info[series]: this.rawdata[series][ridx]
       
-      val: this.data[mainSeries][ridx] and this.data[mainSeries][ridx][1] or 0
+      val: if this.data[mainSeries][ridx]? then this.data[mainSeries][ridx][1] else null
       
       this.set.push(
         # fDraw, attrs, extras, hoverattrs
@@ -156,6 +156,7 @@ class Sai.GeoPlot extends Sai.Plot
             'fill': Sai.util.multiplyColor(colors[mainSeries], val)
             'stroke': bgcolor
             'stroke-width': 0.75
+            'opacity': if val isnt null then 1 else 0.25
           }
           Sai.util.infoSetters(fSetInfo, info)
         )

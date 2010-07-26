@@ -222,7 +222,7 @@ class Sai.Chart
     
     for label of info
       unless label.match("^__")
-        this.info_data[label]: info[label] isnt 'undefined' and info[label] or '(no data)'
+        this.info_data[label]: if info[label]? then info[label] else '(no data)'
     
     this.info: this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data)
   
