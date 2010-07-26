@@ -66,7 +66,7 @@
         var csp = new Sai.StockChart(r, 400, 350, 350, 350, msft_data, tea, "MSFT (NASDAQ)").render();
         var barc = new Sai.BarChart(r, 0, 750, 350, 350, bardata, tea, "Some titled bar chart", true).setColors(colors).render(true);
         var sbarc = new Sai.StackedBarChart(r, 400, 750, 350, 350, bardata, tea, "", true).setColors(colors).render(true);
-        var sparkline = new Sai.Sparkline(r, 800, 100, 100, 23, {data: data.AMZN}, tea).render();
+        var sparkline = new Sai.Sparkline(r, 800, 100, 50, 14, {data: data.AMZN}, tea).render();
         
         var getRandomData = function (min, max, n, ints) {
           var result = [];

@@ -587,6 +587,8 @@ class Sai.GeoChart extends Sai.Chart
       this.data
     ))
     .render(this.colors or {}, this.data['__MAP__'], mainSeries, this.bgcolor, this.interactive, this.drawInfo)
+    
+    this.logo?.toFront()
   
   render: () ->
     this.drawTitle()
@@ -600,7 +602,5 @@ class Sai.GeoChart extends Sai.Chart
     this.drawInfo()
     
     this.renderPlot(this.data['__DEFAULT__'])
-    
-    this.logo?.toFront()
     
     return this
