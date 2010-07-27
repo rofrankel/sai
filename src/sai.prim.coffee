@@ -77,12 +77,12 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
     continue unless coords[i]? and coords[i][1] isnt baseline
     _baseline: coords[i][1] - (baseline - _baseline)
     height: baseline - coords[i][1]
-    
+    axisClip: if i is 0 then 1 else 0 # visual hack to prevent bars covering x axis
     stack.push(
       bar: this.rect(coords[i][0] - (width / 2.0),
-                _baseline - (if i is 0 then 1 else 0), # visual hack to prevent bars covering x axis
+                _baseline,
                 width,
-                height)
+                height - axisClip)
       .attr('fill', colors and colors[i] or 'black')
       .attr('stroke', colors and colors[i] or 'black')
     )
@@ -121,13 +121,14 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract
   return group unless coords[0]?
   barwidth: width / (coords.length + 1)
   x: coords[0][0] - ((width - barwidth) / 2)
+  axisClip: 0.5  # visual hack to prevent bars covering x axis
   for i in [0...coords.length]
     continue unless coords[i]?
     group.push(
       this.rect(x,
-                coords[i][1] - (if i is 0 then 1 else 0), # visual hack to prevent bars covering x axis
-                barwidth,
-                baseline - coords[i][1])
+                coords[i][1],
+                barwidth - 1,
+                baseline - coords[i][1] - axisClip)
       .attr('fill', colors and colors[i] or 'black')
       .attr('stroke', colors and colors[i] or 'black')
     )

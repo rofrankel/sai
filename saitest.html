@@ -82,12 +82,12 @@
         }
         
         var states = [];
-        for(state in Sai.data.map.europe.paths) {
+        for(state in Sai.data.map.us.paths) {
           states.push(state);
         }
         
         var USdata = {
-          '__MAP__': Sai.data.map.europe,
+          '__MAP__': Sai.data.map.us,
           '__REGION__': states, // parallel to data arrays
           '__DEFAULT__': 'Confidence',
           'Confidence': [1, 2, 3, 4, 5], // getRandomData(38.4, 38.7, states.length),
