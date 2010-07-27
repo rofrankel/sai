@@ -181,12 +181,18 @@ class Sai.Chart
     ymax: this.ndata[group].__YVALS__[this.ndata[group].__YVALS__.length - 1]
     return unless h > ymin 
     nh: (h - ymin) / (ymax - ymin)
-    this.guideline: (new Sai.LinePlot(this.r,
-                                      this.px,
-                                      this.py,
-                                      this.pw, this.ph,
-                                      [[0, nh], [1, nh]]))
-    .render('#ccc')
+    
+    this.guidelines ?= this.r.set()
+    
+    guideline: new Sai.LinePlot(this.r,
+                                this.px,
+                                this.py,
+                                this.pw, this.ph,
+                                [[0, nh], [1, nh]])
+    
+    guideline.render('#ccc')
+    
+    this.guidelines.push(guideline.set)
   
   drawLegend: (colors) ->
     colors ?= this.colors
@@ -264,7 +270,7 @@ class Sai.LineChart extends Sai.Chart
       this.plots.push(line.set)
       this.dots.push(this.r.circle(0, 0, 4).attr({'fill': color}).hide())
     
-    this.r.set().push(this.bg, this.plots, this.dots, this.logo).mousemove(
+    this.r.set().push(this.bg, this.plots, this.dots, this.logo, this.guidelines).mousemove(
       (event) =>
         
         idx: this.getIndex(event.clientX, event.clientY)
@@ -475,7 +481,7 @@ class Sai.StockChart extends Sai.Chart
     
     this.bg.toBack()
     
-    this.r.set().push(this.bg, this.plots, this.logo, this.glow).mousemove(
+    this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove(
       (event) =>
         
         idx: this.getIndex(event.clientX, event.clientY)

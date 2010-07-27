@@ -112,8 +112,8 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
         hoverfuncs[1]
       )
   
-  
   return stack
+
 
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
