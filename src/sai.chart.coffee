@@ -544,7 +544,7 @@ class Sai.GeoChart extends Sai.Chart
     for i in [0...seriesNames.length]
       series: seriesNames[i]
       px: this.x + this.padding.left + (extrapadding / 2) + (i * width)
-      data: this.ndata[series][j][1] for j in [0...this.ndata[series].length]
+      data: (if this.ndata[series][j]? then this.ndata[series][j][1] else null) for j in [0...this.ndata[series].length]
       min: Math.min.apply(Math, this.data[series])
       max: Math.max.apply(Math, this.data[series])
       yvals: this.getYAxisVals(min, max, true)

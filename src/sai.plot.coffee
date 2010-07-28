@@ -124,14 +124,14 @@ class Sai.BarPlot extends Sai.Plot
 
 
 # map looks like {width: w, height: h, paths: {CODE: "...", CODE: "..."}}
-# data looks like {series: {series: [a, b, c]}, series2: {series2: [b, c, a]}, __META__: {__REGION__: [CODE, CODE, CODE]}}
+# data looks like {series: {series: [a, b, c]}, series2: {series2: [b, c, a]}, __META__: {__LABELS__: [CODE, CODE, CODE]}}
 class Sai.GeoPlot extends Sai.Plot
 
   render: (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
     this.set.remove()
     
-    regions: this.rawdata.__REGION__
+    regions: this.rawdata.__LABELS__
     ri: {}
     for i in [0...regions.length]
       ri[regions[i]]: i
