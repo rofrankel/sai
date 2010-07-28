@@ -76,11 +76,11 @@ class Sai.Chart
   
   # takes e.g. groups[group], not just a group name
   getMax: (data, group) ->
-    return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d isnt null) for series in group)
+    return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d?) for series in group)
   
   # takes e.g. groups[group], not just a group name
   getMin: (data, group) ->
-    return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d isnt null) for series in group)
+    return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d?) for series in group)
   
   normalize: (data) ->
     groups = this.dataGroups(data)
@@ -515,8 +515,9 @@ class Sai.GeoChart extends Sai.Chart
     for series of data
       continue if series.match('^__')
       continue unless data[series]?
-      max: Math.max.apply(Math, data[series])
-      min: Math.min.apply(Math, data[series])
+      dataWithoutNulls: d for d in data[series] when d?
+      max: Math.max.apply(Math, dataWithoutNulls)
+      min: Math.min.apply(Math, dataWithoutNulls)
       ndata[series] = (data[series][i]? and [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] or null) for i in [0...data[series].length]
     
     return ndata
@@ -544,9 +545,10 @@ class Sai.GeoChart extends Sai.Chart
     for i in [0...seriesNames.length]
       series: seriesNames[i]
       px: this.x + this.padding.left + (extrapadding / 2) + (i * width)
-      data: (if this.ndata[series][j]? then this.ndata[series][j][1] else null) for j in [0...this.ndata[series].length]
-      min: Math.min.apply(Math, this.data[series])
-      max: Math.max.apply(Math, this.data[series])
+      data: this.ndata[series][j][1] for j in [0...this.ndata[series].length] when this.ndata[series][j]?
+      dataWithoutNulls: x for x in this.data[series] when x?
+      min: Math.min.apply(Math, dataWithoutNulls)
+      max: Math.max.apply(Math, dataWithoutNulls)
       yvals: this.getYAxisVals(min, max, true)
       minLabel: yvals[0]
       maxLabel: yvals[yvals.length - 1]
