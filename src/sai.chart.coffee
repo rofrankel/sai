@@ -311,7 +311,7 @@ class Sai.LineChart extends Sai.Chart
         
         for i in [0...this.lines.length]
           pos: this.lines[i].dndata[idx]
-          this.dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront()
+          if pos? then this.dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else this.dots[i].hide()
         
     ).mouseout(
       (event) =>
