@@ -39,9 +39,10 @@ class Sai.Chart
     
     # do any necessary null padding
     groups = this.dataGroups(data)
+    nngroups: this.nonNegativeGroups()
     
-    for group in groups
-      if group in this.nonNegativeGroups()
+    for group of groups
+      if group in nngroups
         for series in groups[group]
           if this.data[series]?
             for i in [0...this.data[series].length]
@@ -338,6 +339,8 @@ class Sai.BarChart extends Sai.Chart
   groupsToNullPad: () ->
     return group for group of this.dataGroups()
 
+  nonNegativeGroups: () ->
+    return group for group of this.dataGroups()
   
   render: () ->
     this.drawTitle()
