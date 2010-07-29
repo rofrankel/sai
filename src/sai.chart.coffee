@@ -395,6 +395,11 @@ class Sai.StockChart extends Sai.Chart
     this.drawTitle()
     this.setupInfoSpace()
     
+    avgColors: {}
+    for series of this.ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not series.match('^__')
+      avgColors[series]: if this.colors? and this.colors[series]? then this.colors[series] else 'black'
+    this.drawLegend(avgColors)
+    
     this.colors ?= {}
     this.colors['up'] ?= 'black'
     this.colors['down'] ?= 'red'
