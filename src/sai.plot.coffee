@@ -33,26 +33,13 @@ class Sai.Plot
 
 class Sai.LinePlot extends Sai.Plot
   
-  render: (color, width) ->
-    
-    this.set.remove()
-    
-    this.set.push(
-      this.line: this.r.sai.prim.line(this.dndata, color or 'black', width or 1)
-    )
-    
-    return this
-
-
-class Sai.LinePlot2 extends Sai.Plot
-  
   render: (colors, width) ->
     
     this.set.remove()
     
-    for series of this.dndata
+    for series of this.dndata when not series.match('^__')
       this.set.push(
-        this.line: this.r.sai.prim.line(this.dndata[series], (if colors? then colors[series] else 'black'), width or 1)
+        this.r.sai.prim.line(this.dndata[series], (colors and colors[series] or 'black'), width or 1)
       )
     
     return this

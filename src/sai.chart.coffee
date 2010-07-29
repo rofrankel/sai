@@ -217,9 +217,9 @@ class Sai.Chart
                                 this.px,
                                 this.py,
                                 this.pw, this.ph,
-                                [[0, nh], [1, nh]])
+                                {'guideline': [[0, nh], [1, nh]]})
     
-    guideline.render('#ccc')
+    guideline.render({'guideline': '#ccc'})
     
     this.guidelines.push(guideline.set)
   
@@ -280,7 +280,13 @@ class Sai.LineChart extends Sai.Chart
     
     this.lines: []
     this.dots: this.r.set()
-    this.plots: this.r.set()
+    
+    this.plot: (new Sai.LinePlot(
+      this.r,
+      this.px, this.py, this.pw, this.ph,
+      this.ndata['all']
+    ))
+    .render(this.colors, 3)
     
     for series of this.ndata['all']
       if series is '__YVALS__'
@@ -288,18 +294,9 @@ class Sai.LineChart extends Sai.Chart
       
       color: this.colors and this.colors[series] or 'black'
       
-      line: (new Sai.LinePlot(this.r,
-                              this.px,
-                              this.py,
-                              this.pw, this.ph,
-                              this.ndata['all'][series]))
-      .render(color, 3)
-      
-      this.lines.push(line)
-      this.plots.push(line.set)
       this.dots.push(this.r.circle(0, 0, 4).attr({'fill': color}).hide())
     
-    this.r.set().push(this.bg, this.plots, this.dots, this.logo, this.guidelines).mousemove(
+    this.r.set().push(this.bg, this.plot.set, this.dots, this.logo, this.guidelines).mousemove(
       (event) =>
         
         idx: this.getIndex(event.clientX, event.clientY)
@@ -309,9 +306,11 @@ class Sai.LineChart extends Sai.Chart
           if this.data[series]? then info[series]: this.data[series][idx]
         this.drawInfo(info)
         
-        for i in [0...this.lines.length]
-          pos: this.lines[i].dndata[idx]
+        i: 0
+        for series of this.plot.dndata when not series.match('^__')
+          pos: this.plot.dndata[series][idx]
           if pos? then this.dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else this.dots[i].hide()
+          i++
         
     ).mouseout(
       (event) =>
@@ -342,12 +341,10 @@ class Sai.Sparkline extends Sai.Chart
                         this.y,
                         this.w,
                         this.h,
-                        this.ndata['data']['data']))
-      .render(this.colors and this.colors[series] or 'black', 1)
+                        this.ndata['data']))
+      .render({data: this.colors and this.colors[series] or 'black'}, 1)
       .set
     )
-    
-    this.logo?.toFront()
     
     return this
 
@@ -498,17 +495,21 @@ class Sai.StockChart extends Sai.Chart
       .set
     )
     
+    
+    avgNdata: {}
     for series of this.ndata['prices']
-      continue if (series in ['open', 'close', 'high', 'low']) or series.match("^__")
-      this.plots.push(
-        (new Sai.LinePlot(this.r,
-                          this.px,
-                          this.py,
-                          this.pw, this.ph,
-                          this.ndata['prices'][series]))
-        .render(this.colors and this.colors[series] or 'black')
-        .set
-      )
+      unless (series in ['open', 'close', 'high', 'low']) or series.match("^__")
+        avgNdata[series]: this.ndata['prices'][series]
+    
+    this.plots.push(
+      (new Sai.LinePlot(this.r,
+                        this.px, this.py, this.pw, this.ph,
+                        avgNdata))
+      .render(this.colors)
+      .set
+    )
+    
+    
     
     glow_width: this.pw / (this.data.__LABELS__.length - 1)
     this.glow: this.r.rect(this.px - (glow_width / 2), this.py - this.ph, glow_width, this.ph)
