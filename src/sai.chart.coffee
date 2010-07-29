@@ -76,11 +76,11 @@ class Sai.Chart
   
   # takes e.g. groups[group], not just a group name
   getMax: (data, group) ->
-    return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d?) for series in group)
+    return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d?) for series in group when data[series]?)
   
   # takes e.g. groups[group], not just a group name
   getMin: (data, group) ->
-    return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d?) for series in group)
+    return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d?) for series in group when data[series]?)
   
   normalize: (data) ->
     groups = this.dataGroups(data)
@@ -396,9 +396,11 @@ class Sai.StockChart extends Sai.Chart
     this.setupInfoSpace()
     
     avgColors: {}
+    shouldDrawLegend: false
     for series of this.ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not series.match('^__')
       avgColors[series]: if this.colors? and this.colors[series]? then this.colors[series] else 'black'
-    this.drawLegend(avgColors)
+      shouldDrawLegend: true
+    if shouldDrawLegend then this.drawLegend(avgColors)
     
     this.colors ?= {}
     this.colors['up'] ?= 'black'
