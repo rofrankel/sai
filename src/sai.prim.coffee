@@ -66,21 +66,18 @@ Raphael.fn.sai.prim.line: (coords, color, width) ->
 Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
 
   if shouldInteract and coords[coords.length - 1]?
-    totalHeight: 0
-    for i in [0...coords.length]
-      totalHeight += baseline - coords[i][1]
+    totalHeight = baseline - coords[coords.length - 1][1]
 
   width *= .67
   stack: this.set()
-  _baseline: baseline
+  prev: baseline
   for i in [0...coords.length]
     continue unless coords[i]? and coords[i][1] isnt baseline
-    _baseline: coords[i][1] - (baseline - _baseline)
-    height: baseline - coords[i][1]
+    height: prev - coords[i][1]
     axisClip: if i is 0 then 1 else 0 # visual hack to prevent bars covering x axis
     stack.push(
       bar: this.rect(coords[i][0] - (width / 2.0),
-                _baseline,
+                coords[i][1],
                 width,
                 height - axisClip)
       .attr('fill', colors and colors[i] or 'black')
@@ -111,6 +108,8 @@ Raphael.fn.sai.prim.stackedBar: (coords, colors, width, baseline, shouldInteract
         hoverfuncs[0],
         hoverfuncs[1]
       )
+    
+    prev: coords[i][1]
   
   return stack
 

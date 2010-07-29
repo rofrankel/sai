@@ -85,7 +85,7 @@ class Sai.CandlestickPlot extends Sai.Plot
 
 class Sai.BarPlot extends Sai.Plot
   
-  # if stacked, graph is rendered stacked...else, grouped
+  # if stacked, plot is rendered stacked...else, grouped
   # colors maps from series name to color string
   render: (stacked, colors, shouldInteract, fSetInfo) ->
     
@@ -95,14 +95,14 @@ class Sai.BarPlot extends Sai.Plot
     colorArray: []
     barfunc: if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
     
-    for column of this.dndata
-      len: this.dndata[column].length
-      colorArray.push(colors and colors[column] or 'black')
+    for series of this.dndata
+      len: this.dndata[series].length
+      colorArray.push(colors and colors[series] or 'black')
     
     for i in [0...len]
       bardata = []
-      for column of this.dndata
-        bardata.push(this.dndata[column][i])
+      for series of this.dndata
+        bardata.push(this.dndata[series][i])
       
       info: {}
       for p of this.rawdata

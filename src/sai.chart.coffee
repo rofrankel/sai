@@ -52,8 +52,7 @@ class Sai.Chart
       for series in groups[group]
         this.nullPad(series)
     
-    # normalize data
-    this.ndata = this.normalize(this.data)
+    this.normalize(this.data)
   
   nullPad: (seriesName) ->
     if seriesName of this.data
@@ -102,11 +101,15 @@ class Sai.Chart
   
   normalize: (data) ->
     groups = this.dataGroups(data)
-    ndata = {}
+    this.ndata: {}
+    if this.stacked? then this.stackedNdata: {}
     
     for group of groups
       continue if group.match('^__')
-      ndata[group]: {}
+      this.ndata[group]: {}
+      if this.stacked?
+        this.stackedNdata[group]: {}
+        baselines: {}
       maxf: if this.stacked? then this.getStackedMax else this.getMax
       minf: if this.stacked? then this.getStackedMin else this.getMin
       max: maxf(data, groups[group])
@@ -116,10 +119,16 @@ class Sai.Chart
       max: yvals[yvals.length - 1]
       for series in groups[group]
         continue unless data[series]?
-        ndata[group][series] = (data[series][i]? and [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] or null) for i in [0...data[series].length]
-        ndata[group].__YVALS__ = yvals
-    
-    return ndata
+        this.ndata[group][series] = (if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length]
+        if this.stacked?
+          this.stackedNdata[group][series]: []
+          for i in [0...data[series].length]
+            baseline: if baselines[i]? then baselines[i] else 0
+            stackedPoint: if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min)) + baseline] else null
+            this.stackedNdata[group][series].push(stackedPoint)
+            baselines[i] = stackedPoint[1] unless stackedPoint is null
+        
+        this.ndata[group].__YVALS__ = yvals
   
   addAxes: (group) ->
     
@@ -366,9 +375,12 @@ class Sai.BarChart extends Sai.Chart
     this.plots = this.r.set()
     data: {}
     rawdata: {}
-    for series of this.ndata['all']
+    
+    ndata: if this.stacked? then this.stackedNdata else this.ndata
+    
+    for series of ndata['all']
       unless series.match('^__')
-        data[series] = this.ndata['all'][series]
+        data[series] = ndata['all'][series]
         rawdata[series] = this.data[series]
     
     this.plots.push(
@@ -536,7 +548,7 @@ class Sai.StockChart extends Sai.Chart
 class Sai.GeoChart extends Sai.Chart
   
   normalize: (data) ->
-    ndata = {}
+    this.ndata = {}
     
     for series of data
       continue if series.match('^__')
@@ -544,9 +556,7 @@ class Sai.GeoChart extends Sai.Chart
       dataWithoutNulls: d for d in data[series] when d?
       max: Math.max.apply(Math, dataWithoutNulls)
       min: Math.min.apply(Math, dataWithoutNulls)
-      ndata[series] = (data[series][i]? and [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] or null) for i in [0...data[series].length]
-    
-    return ndata
+      this.ndata[series] = (data[series][i]? and [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] or null) for i in [0...data[series].length]
   
   
   dataGroups: (data) ->
