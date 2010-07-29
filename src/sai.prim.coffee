@@ -122,15 +122,16 @@ Raphael.fn.sai.prim.groupedBar: (coords, colors, width, baseline, shouldInteract
   x: coords[0][0] - ((width - barwidth) / 2)
   axisClip: 0.5  # visual hack to prevent bars covering x axis
   for i in [0...coords.length]
-    continue unless coords[i]?
-    group.push(
-      this.rect(x,
-                coords[i][1],
-                barwidth - 1,
-                baseline - coords[i][1] - axisClip)
-      .attr('fill', colors and colors[i] or 'black')
-      .attr('stroke', colors and colors[i] or 'black')
-    )
+    if coords[i]?
+      group.push(
+        this.rect(x,
+                  coords[i][1],
+                  barwidth - 1,
+                  baseline - coords[i][1] - axisClip)
+        .attr('fill', colors and colors[i] or 'black')
+        .attr('stroke', colors and colors[i] or 'black')
+      )
+    
     x += barwidth
   
   if shouldInteract
