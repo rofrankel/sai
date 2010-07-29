@@ -93,6 +93,13 @@ class Sai.Chart
   getMin: (data, group) ->
     return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d?) for series in group when data[series]?)
   
+  getStackedMax: (data, group) ->
+    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...this.data['__LABELS__'].length])
+  
+  # stacked charts generally have a 0 baseline
+  getStackedMin: (data, group) ->
+    return 0
+  
   normalize: (data) ->
     groups = this.dataGroups(data)
     ndata = {}
@@ -100,8 +107,10 @@ class Sai.Chart
     for group of groups
       continue if group.match('^__')
       ndata[group]: {}
-      max: this.getMax(data, groups[group])
-      min: this.getMin(data, groups[group])
+      maxf: if this.stacked? then this.getStackedMax else this.getMax
+      minf: if this.stacked? then this.getStackedMin else this.getMin
+      max: maxf(data, groups[group])
+      min: minf(data, groups[group])
       yvals: this.getYAxisVals(min, max)
       min: yvals[0]
       max: yvals[yvals.length - 1]
@@ -382,13 +391,6 @@ class Sai.BarChart extends Sai.Chart
 class Sai.StackedBarChart extends Sai.BarChart
 
   stacked: true
-  
-  getMax: (data, group) ->
-    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...this.data['__LABELS__'].length])
-  
-  # bar charts always have a 0 baseline
-  getMin: (data, group) ->
-    return 0
 
 
 
