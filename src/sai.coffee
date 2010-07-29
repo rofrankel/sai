@@ -22,16 +22,16 @@ Sai.util.sumArray: (a) ->
 Sai.util.prettystr: (x) ->
   if typeof x is 'number'
     suffix: ''
-    if x > 999999999999
+    if Math.abs(x) >= 1000000000000
       suffix: 't'
       x /= 1000000000000
-    else if x > 999999999
+    else if Math.abs(x) >= 1000000000
       suffix: 'b'
       x /= 1000000000
-    else if x > 999999
+    else if Math.abs(x) >= 1000000
       suffix: 'm'
       x /= 1000000
-    else if x > 999
+    else if Math.abs(x) >= 1000
       suffix: 'k'
       x /= 1000
     else

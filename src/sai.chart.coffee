@@ -1,6 +1,6 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
-
+  
   constructor: (r, x, y, w, h, data, bgcolor, title_text, interactive) ->
     this.r = r
     this.x = x or 0
@@ -24,6 +24,9 @@ class Sai.Chart
   groupsToNullPad: () ->
     return []
   
+  nonNegativeGroups: () ->
+    []
+  
   setData: (data) ->
     this.data = {}
     
@@ -36,6 +39,13 @@ class Sai.Chart
     
     # do any necessary null padding
     groups = this.dataGroups(data)
+    
+    for group in groups
+      if group in this.nonNegativeGroups()
+        for series in groups[group]
+          if this.data[series]?
+            for i in [0...this.data[series].length]
+              if this.data[series][i] < 0 then this.data[series][i] = 0
     
     for group in this.groupsToNullPad()
       for series in groups[group]
@@ -390,6 +400,9 @@ class Sai.StockChart extends Sai.Chart
       'volume': ['volume']
       'prices': seriesName for seriesName of data when this.caresAbout(seriesName) and seriesName not in ['__LABELS__', 'volume']
     }
+  
+  nonNegativeGroups: () ->
+    ['volume']
 
   render: () ->
     this.drawTitle()
@@ -449,7 +462,7 @@ class Sai.StockChart extends Sai.Chart
                          this.pw, this.ph * 0.2,
                          vol,
                          rawdata))
-        .render(true, {'up': this.colors['vol_up'], 'down': this.colors['vol_down']}, this.interactive, this.drawInfo)
+        .render(true, {'up': this.colors['vol_up'], 'down': this.colors['vol_down']})
         .set
       )
     
@@ -464,7 +477,7 @@ class Sai.StockChart extends Sai.Chart
                                 'low': this.ndata['prices']['low']
                                },
                                rawdata))
-      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2), false, this.drawInfo)
+      .render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2))
       .set
     )
     
@@ -498,6 +511,7 @@ class Sai.StockChart extends Sai.Chart
         for series of this.ndata['prices']
           if this.data[series]? then info[series]: this.data[series][idx]
           if info[series] is null then notNull = false
+        if this.data['volume']? then info['volume'] = this.data['volume'][idx]
         this.drawInfo(info)
         
         if notNull
