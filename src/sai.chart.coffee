@@ -8,6 +8,7 @@ class Sai.Chart
     @w = w or 640
     @h = h or 480
     @stacked = opts.stacked
+    @opts = opts
     
     @setData(data)
     
@@ -287,12 +288,14 @@ class Sai.LineChart extends Sai.Chart
     
     ndata = if @stacked? then @stackedNdata else @ndata
     
-    @plot = (new Sai.LinePlot(
+    plotType = if @opts.area then Sai.AreaPlot else Sai.LinePlot
+    
+    @plot = (new plotType(
       @r,
       @px, @py, @pw, @ph,
-      ndata['all']
+      ndata['all'],
     ))
-    .render(@colors, 2)
+    .render(@colors, 2, @stacked)
     
     for series of ndata['all']
       if series is '__YVALS__'

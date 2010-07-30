@@ -52,7 +52,7 @@ class Sai.AreaPlot extends Sai.Plot
     @set.remove()
     
     for series of @dndata when not series.match('^__')
-      baseline ?= (@denormalize([x[0], 0]) for x in @data[series])
+      baseline ?= [@denormalize([0, 0]),@denormalize([1, 0])]
       @set.push(
         @r.sai.prim.area(@dndata[series], colors?[series] or 'black', width or 1, baseline)
       )

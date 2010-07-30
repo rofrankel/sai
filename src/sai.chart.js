@@ -16,6 +16,7 @@
     this.w = w || 640;
     this.h = h || 480;
     this.stacked = opts.stacked;
+    this.opts = opts;
     this.setData(data);
     this.title_text = opts.title;
     this.interactive = opts.interactive;
@@ -379,7 +380,7 @@
     }
   };
   Sai.LineChart.prototype.render = function() {
-    var _a, _b, color, ndata, series;
+    var _a, _b, color, ndata, plotType, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawLegend();
@@ -390,7 +391,8 @@
     this.lines = [];
     this.dots = this.r.set();
     ndata = (typeof (_a = this.stacked) !== "undefined" && _a !== null) ? this.stackedNdata : this.ndata;
-    this.plot = (new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, 2);
+    plotType = this.opts.area ? Sai.AreaPlot : Sai.LinePlot;
+    this.plot = (new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, 2, this.stacked);
     _b = ndata['all'];
     for (series in _b) { if (__hasProp.call(_b, series)) {
       if (series === '__YVALS__') {

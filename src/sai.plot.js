@@ -75,27 +75,20 @@
   };
   __extends(Sai.AreaPlot, Sai.Plot);
   Sai.AreaPlot.prototype.render = function(colors, width, stacked) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, baseline, d, series, x;
+    var _a, _b, _c, _d, _e, baseline, d, series;
     this.set.remove();
     _a = this.dndata;
     for (series in _a) { if (__hasProp.call(_a, series)) {
       if (!series.match('^__')) {
-        baseline = (typeof baseline !== "undefined" && baseline !== null) ? baseline : (function() {
-          _b = []; _d = this.data[series];
-          for (_c = 0, _e = _d.length; _c < _e; _c++) {
-            x = _d[_c];
-            _b.push(this.denormalize([x[0], 0]));
-          }
-          return _b;
-        }).call(this);
+        baseline = (typeof baseline !== "undefined" && baseline !== null) ? baseline : [this.denormalize([0, 0]), this.denormalize([1, 0])];
         this.set.push(this.r.sai.prim.area(this.dndata[series], (colors == undefined ? undefined : colors[series]) || 'black', width || 1, baseline));
         stacked ? (baseline = (function() {
-          _f = []; _h = this.dndata[series];
-          for (_g = 0, _i = _h.length; _g < _i; _g++) {
-            d = _h[_g];
-            _f.push([d[0], d[1] - width / 2]);
+          _b = []; _d = this.dndata[series];
+          for (_c = 0, _e = _d.length; _c < _e; _c++) {
+            d = _d[_c];
+            _b.push([d[0], d[1] - width / 2]);
           }
-          return _f;
+          return _b;
         }).call(this)) : null;
       }
     }}
