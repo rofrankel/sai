@@ -124,7 +124,7 @@ class Sai.Chart
         if @stacked?
           @stackedNdata[group][series] = []
           for i in [0...data[series].length]
-            baseline = if baselines[i]? then baselines[i] else 0
+            baseline = baselines[i] or 0
             stackedPoint = [i / (data[series].length - 1), if data[series][i]? then ((data[series][i]-min) / (max-min)) + baseline else baseline]
             @stackedNdata[group][series].push(stackedPoint)
             baselines[i] = stackedPoint[1] unless stackedPoint is null
@@ -258,7 +258,7 @@ class Sai.Chart
     
     for label of info
       unless label.match("^__")
-        @info_data[label] = if info[label]? then info[label] else '(no data)'
+        @info_data[label] = info[label]? or '(no data)'
     
     @info = @r.sai.prim.info(@info_x, @info_y, @info_w, @info_data)
   
@@ -425,7 +425,7 @@ class Sai.StockChart extends Sai.Chart
     avgColors = {}
     shouldDrawLegend = false
     for series of @ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not series.match('^__')
-      avgColors[series] = if @colors? and @colors[series]? then @colors[series] else 'black'
+      avgColors[series] = @colors?[series] or 'black'
       shouldDrawLegend = true
     if shouldDrawLegend then @drawLegend(avgColors)
     

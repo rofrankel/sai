@@ -177,7 +177,7 @@
     return 0;
   };
   Sai.Chart.prototype.normalize = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, baseline, baselines, group, groups, i, max, maxf, min, minf, series, stackedPoint, yvals;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, baseline, baselines, group, groups, i, max, maxf, min, minf, series, stackedPoint, yvals;
     groups = this.dataGroups(data);
     this.ndata = {};
     (typeof (_a = this.stacked) !== "undefined" && _a !== null) ? (this.stackedNdata = {}) : null;
@@ -212,13 +212,13 @@
           }
           return _k;
         })();
-        if ((typeof (_q = this.stacked) !== "undefined" && _q !== null)) {
+        if ((typeof (_p = this.stacked) !== "undefined" && _p !== null)) {
           this.stackedNdata[group][series] = [];
           (_n = data[series].length);
 
           for (i = 0; i < _n; i += 1) {
-            baseline = (typeof (_o = baselines[i]) !== "undefined" && _o !== null) ? baselines[i] : 0;
-            stackedPoint = [i / (data[series].length - 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? ((data[series][i] - min) / (max - min)) + baseline : baseline];
+            baseline = baselines[i] || 0;
+            stackedPoint = [i / (data[series].length - 1), (typeof (_o = data[series][i]) !== "undefined" && _o !== null) ? ((data[series][i] - min) / (max - min)) + baseline : baseline];
             this.stackedNdata[group][series].push(stackedPoint);
             if (!(stackedPoint === null)) {
               baselines[i] = stackedPoint[1];
@@ -353,7 +353,7 @@
     this.info ? this.info.remove() : null;
     _a = info;
     for (label in _a) { if (__hasProp.call(_a, label)) {
-      !(label.match("^__")) ? (this.info_data[label] = (typeof (_b = info[label]) !== "undefined" && _b !== null) ? info[label] : '(no data)') : null;
+      !(label.match("^__")) ? (this.info_data[label] = (typeof (_b = info[label]) !== "undefined" && _b !== null) || '(no data)') : null;
     }}
     this.info = this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data);
     return this.info;
@@ -539,7 +539,7 @@
     return ['volume'];
   };
   Sai.StockChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, avgColors, avgNdata, glow_width, i, p, rawdata, series, shouldDrawLegend, vol;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, avgColors, avgNdata, glow_width, i, p, rawdata, series, shouldDrawLegend, vol;
     this.drawTitle();
     this.setupInfoSpace();
     avgColors = {};
@@ -547,16 +547,16 @@
     _a = this.ndata['prices'];
     for (series in _a) { if (__hasProp.call(_a, series)) {
       if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !series.match('^__')) {
-        avgColors[series] = (typeof (_b = this.colors) !== "undefined" && _b !== null) && (typeof (_c = this.colors[series]) !== "undefined" && _c !== null) ? this.colors[series] : 'black';
+        avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || 'black';
         shouldDrawLegend = true;
       }
     }}
     shouldDrawLegend ? this.drawLegend(avgColors) : null;
-    this.colors = (typeof (_d = this.colors) !== "undefined" && _d !== null) ? this.colors : {};
-    this.colors['up'] = (typeof (_e = this.colors['up']) !== "undefined" && _e !== null) ? this.colors['up'] : 'black';
-    this.colors['down'] = (typeof (_f = this.colors['down']) !== "undefined" && _f !== null) ? this.colors['down'] : 'red';
-    this.colors['vol_up'] = (typeof (_g = this.colors['vol_up']) !== "undefined" && _g !== null) ? this.colors['vol_up'] : '#666';
-    this.colors['vol_down'] = (typeof (_h = this.colors['vol_down']) !== "undefined" && _h !== null) ? this.colors['vol_down'] : '#c66';
+    this.colors = (typeof (_b = this.colors) !== "undefined" && _b !== null) ? this.colors : {};
+    this.colors['up'] = (typeof (_c = this.colors['up']) !== "undefined" && _c !== null) ? this.colors['up'] : 'black';
+    this.colors['down'] = (typeof (_d = this.colors['down']) !== "undefined" && _d !== null) ? this.colors['down'] : 'red';
+    this.colors['vol_up'] = (typeof (_e = this.colors['vol_up']) !== "undefined" && _e !== null) ? this.colors['vol_up'] : '#666';
+    this.colors['vol_down'] = (typeof (_f = this.colors['vol_down']) !== "undefined" && _f !== null) ? this.colors['vol_down'] : '#c66';
     this.addAxes('prices');
     this.drawLogo();
     this.drawBG();
@@ -567,15 +567,15 @@
       'down': []
     };
     rawdata = {};
-    _i = this.ndata['prices'];
-    for (p in _i) { if (__hasProp.call(_i, p)) {
+    _g = this.ndata['prices'];
+    for (p in _g) { if (__hasProp.call(_g, p)) {
       !(p.match('^__')) ? (rawdata[p] = this.data[p]) : null;
     }}
-    (typeof (_j = this.data['volume']) !== "undefined" && _j !== null) ? (rawdata['vol'] = this.data['volume']) : null;
+    (typeof (_h = this.data['volume']) !== "undefined" && _h !== null) ? (rawdata['vol'] = this.data['volume']) : null;
     if ('volume' in this.ndata.volume) {
-      (_k = this.ndata['volume']['volume'].length);
+      (_i = this.ndata['volume']['volume'].length);
 
-      for (i = 0; i < _k; i += 1) {
+      for (i = 0; i < _i; i += 1) {
         if (this.ndata['volume']['volume'][i] !== null) {
           if (i && this.ndata['prices']['close'][i - 1] && (this.ndata['prices']['close'][i][1] < this.ndata['prices']['close'][i - 1][1])) {
             vol.down.push(this.ndata['volume']['volume'][i]);
@@ -601,8 +601,8 @@
       'low': this.ndata['prices']['low']
     }, rawdata)).render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2)).set);
     avgNdata = {};
-    _l = this.ndata['prices'];
-    for (series in _l) { if (__hasProp.call(_l, series)) {
+    _j = this.ndata['prices'];
+    for (series in _j) { if (__hasProp.call(_j, series)) {
       !(('open' === series || 'close' === series || 'high' === series || 'low' === series) || series.match("^__")) ? (avgNdata[series] = this.ndata['prices'][series]) : null;
     }}
     this.plots.push((new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, avgNdata)).render(this.colors).set);
@@ -615,16 +615,16 @@
     this.bg.toBack();
     this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove((function(__this) {
       var __func = function(event) {
-        var _m, _n, _o, idx, info, notNull;
+        var _k, _l, _m, idx, info, notNull;
         idx = this.getIndex(event.clientX, event.clientY);
         info = {};
         notNull = true;
-        _m = this.ndata['prices'];
-        for (series in _m) { if (__hasProp.call(_m, series)) {
-          (typeof (_n = this.data[series]) !== "undefined" && _n !== null) ? (info[series] = this.data[series][idx]) : null;
+        _k = this.ndata['prices'];
+        for (series in _k) { if (__hasProp.call(_k, series)) {
+          (typeof (_l = this.data[series]) !== "undefined" && _l !== null) ? (info[series] = this.data[series][idx]) : null;
           info[series] === null ? (notNull = false) : null;
         }}
-        (typeof (_o = this.data['volume']) !== "undefined" && _o !== null) ? (info['volume'] = this.data['volume'][idx]) : null;
+        (typeof (_m = this.data['volume']) !== "undefined" && _m !== null) ? (info['volume'] = this.data['volume'][idx]) : null;
         this.drawInfo(info);
         if (notNull) {
           return this.glow.attr({
