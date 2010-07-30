@@ -57,6 +57,39 @@
       'stroke-width': width
     });
   };
+  Raphael.fn.sai.prim.area = function(coords, color, width, baseline) {
+    var _b, _c, _d, area, areaPath, coord, i, stroke, strokePath;
+    color = (typeof color !== "undefined" && color !== null) ? color : '#000';
+    width = (typeof width !== "undefined" && width !== null) ? width : 1;
+    _c = coords;
+    for (_b = 0, _d = _c.length; _b < _d; _b++) {
+      coord = _c[_b];
+      if (!(typeof coord !== "undefined" && coord !== null)) {
+        continue;
+      }
+      if (typeof strokePath !== "undefined" && strokePath !== null) {
+        strokePath += ("L" + coord[0] + " " + coord[1]);
+        areaPath += ("L" + coord[0] + " " + coord[1]);
+      } else {
+        strokePath = ("M" + coord[0] + " " + coord[1]);
+        areaPath = ("M" + coord[0] + " " + coord[1]);
+      }
+    }
+    for (i = baseline.length - 1; i >= 0; i += -1) {
+      areaPath += ("L" + (baseline[i][0]) + "," + (baseline[i][1]));
+    }
+    area = this.path(areaPath).attr({
+      'fill': color,
+      'stroke-width': 0,
+      'stroke-opacity': 0,
+      'fill-opacity': 0.35
+    });
+    stroke = this.path(strokePath).attr({
+      'stroke': color,
+      'stroke-width': width
+    });
+    return this.set().push(area, stroke);
+  };
   Raphael.fn.sai.prim.stackedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
     var _b, _c, _d, axisClip, bar, height, hoverfuncs, prev, stack, totalHeight;
     shouldInteract && (typeof (_b = coords[coords.length - 1]) !== "undefined" && _b !== null) ? (totalHeight = baseline - coords[coords.length - 1][1]) : null;
@@ -71,7 +104,7 @@
       }
       height = prev - coords[i][1];
       axisClip = i === 0 ? 1 : 0;
-      stack.push((bar = this.rect(coords[i][0] - (width / 2.0), coords[i][1], width, height - axisClip).attr('fill', colors && colors[i] || 'black').attr('stroke', colors && colors[i] || 'black')));
+      stack.push((bar = this.rect(coords[i][0] - (width / 2.0), coords[i][1], width, height - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || 'black').attr('stroke', (colors == undefined ? undefined : colors[i]) || 'black')));
       if (shouldInteract) {
         hoverfuncs = getHoverfuncs(bar, {
           'fill-opacity': '0.75'
@@ -105,7 +138,7 @@
     (_c = coords.length);
 
     for (i = 0; i < _c; i += 1) {
-      (typeof (_d = coords[i]) !== "undefined" && _d !== null) ? group.push(this.rect(x, coords[i][1], barwidth - 1, baseline - coords[i][1] - axisClip).attr('fill', colors && colors[i] || 'black').attr('stroke', colors && colors[i] || 'black')) : null;
+      (typeof (_d = coords[i]) !== "undefined" && _d !== null) ? group.push(this.rect(x, coords[i][1], barwidth - 1, baseline - coords[i][1] - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || 'black').attr('stroke', (colors == undefined ? undefined : colors[i]) || 'black')) : null;
       x += barwidth;
     }
     if (shouldInteract) {

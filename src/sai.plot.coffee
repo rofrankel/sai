@@ -39,11 +39,27 @@ class Sai.LinePlot extends Sai.Plot
     
     for series of @dndata when not series.match('^__')
       @set.push(
-        @r.sai.prim.line(@dndata[series], (colors and colors[series] or 'black'), width or 1)
+        @r.sai.prim.line(@dndata[series], (colors?[series] or 'black'), width or 1)
       )
     
     return this
 
+
+class Sai.AreaPlot extends Sai.Plot
+  
+  render = (colors, width) ->
+    
+    @set.remove()
+    
+    for series of @dndata when not series.match('^__')
+      prev ?= (@denormalize([x[0], 0]) for x in @data[series])
+      @set.push(
+        @r.sai.prim.area(@dndata[series], colors?[series] or 'black', width or 1, prev)
+      )
+      
+      prev = @dndata[series]
+    
+    return this
 
 # Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color) ->
 class Sai.CandlestickPlot extends Sai.Plot
@@ -52,8 +68,8 @@ class Sai.CandlestickPlot extends Sai.Plot
     
     @set.remove()
     
-    cup = colors and colors['up'] or 'black'
-    cdown = colors and colors['down'] or 'red'
+    cup = colors?['up'] or 'black'
+    cdown = colors?['down'] or 'red'
     body_width ?= 5
     
     for i in [0...@dndata['open'].length]
@@ -75,7 +91,7 @@ class Sai.CandlestickPlot extends Sai.Plot
           @dndata['high'][i][1],
           @dndata['low'][i][1],
           body_width or 5,
-          (i and @dndata['close'][i-1]? and (@dndata['close'][i-1][1] < @dndata['close'][i][1])) and cdown or cup,
+          if (i and @dndata['close'][i-1]? and (@dndata['close'][i-1][1] < @dndata['close'][i][1])) then cdown else cup,
           not upDay,
           shouldInteract,
           fSetInfo,
@@ -99,7 +115,7 @@ class Sai.BarPlot extends Sai.Plot
     
     for series of @dndata
       len = @dndata[series].length
-      colorArray.push(colors and colors[series] or 'black')
+      colorArray.push(colors?[series] or 'black')
     
     for i in [0...len]
       bardata = []

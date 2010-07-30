@@ -62,6 +62,28 @@ Raphael.fn.sai.prim.line = (coords, color, width) ->
   return @path(path).attr({'stroke': color, 'stroke-width': width})
 
 
+Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
+  color ?= '#000'
+  width ?= 1
+  
+  for coord in coords
+    continue unless coord?
+    if strokePath?
+      strokePath += ("L" + coord[0] + " " + coord[1])
+      areaPath += ("L" + coord[0] + " " + coord[1])
+    else
+      strokePath = ("M" + coord[0] + " " + coord[1])
+      areaPath = ("M" + coord[0] + " " + coord[1])
+  
+  for i in [baseline.length-1..0] by -1
+    areaPath += "L${baseline[i][0]},${baseline[i][1]}"
+  
+  area = @path(areaPath).attr({'fill': color, 'stroke-width': 0, 'stroke-opacity': 0, 'fill-opacity': 0.35})
+  stroke = @path(strokePath).attr({'stroke': color, 'stroke-width': width})
+  
+  return @set().push(area, stroke)
+
+
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
 
@@ -80,8 +102,8 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
                 coords[i][1],
                 width,
                 height - axisClip)
-      .attr('fill', colors and colors[i] or 'black')
-      .attr('stroke', colors and colors[i] or 'black')
+      .attr('fill', colors?[i] or 'black')
+      .attr('stroke', colors?[i] or 'black')
     )
     
     if shouldInteract
@@ -128,8 +150,8 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
                   coords[i][1],
                   barwidth - 1,
                   baseline - coords[i][1] - axisClip)
-        .attr('fill', colors and colors[i] or 'black')
-        .attr('stroke', colors and colors[i] or 'black')
+        .attr('fill', colors?[i] or 'black')
+        .attr('stroke', colors?[i] or 'black')
       )
     
     x += barwidth

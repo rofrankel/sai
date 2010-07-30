@@ -65,7 +65,32 @@
     this.set.remove();
     _a = this.dndata;
     for (series in _a) { if (__hasProp.call(_a, series)) {
-      !series.match('^__') ? this.set.push(this.r.sai.prim.line(this.dndata[series], (colors && colors[series] || 'black'), width || 1)) : null;
+      !series.match('^__') ? this.set.push(this.r.sai.prim.line(this.dndata[series], ((colors == undefined ? undefined : colors[series]) || 'black'), width || 1)) : null;
+    }}
+    return this;
+  };
+
+  Sai.AreaPlot = function() {
+    return Sai.Plot.apply(this, arguments);
+  };
+  __extends(Sai.AreaPlot, Sai.Plot);
+  Sai.AreaPlot.prototype.render = function(colors, width) {
+    var _a, _b, _c, _d, _e, prev, series, x;
+    this.set.remove();
+    _a = this.dndata;
+    for (series in _a) { if (__hasProp.call(_a, series)) {
+      if (!series.match('^__')) {
+        prev = (typeof prev !== "undefined" && prev !== null) ? prev : (function() {
+          _b = []; _d = this.data[series];
+          for (_c = 0, _e = _d.length; _c < _e; _c++) {
+            x = _d[_c];
+            _b.push(this.denormalize([x[0], 0]));
+          }
+          return _b;
+        }).call(this);
+        this.set.push(this.r.sai.prim.area(this.dndata[series], (colors == undefined ? undefined : colors[series]) || 'black', width || 1, prev));
+        prev = this.dndata[series];
+      }
     }}
     return this;
   };
@@ -77,8 +102,8 @@
   Sai.CandlestickPlot.prototype.render = function(colors, body_width, shouldInteract, fSetInfo) {
     var _a, _b, _c, _d, cdown, cup, i, info, p, upDay;
     this.set.remove();
-    cup = colors && colors['up'] || 'black';
-    cdown = colors && colors['down'] || 'red';
+    cup = (colors == undefined ? undefined : colors['up']) || 'black';
+    cdown = (colors == undefined ? undefined : colors['down']) || 'red';
     body_width = (typeof body_width !== "undefined" && body_width !== null) ? body_width : 5;
     (_a = this.dndata['open'].length);
 
@@ -92,7 +117,7 @@
       for (p in _c) { if (__hasProp.call(_c, p)) {
         info[p] = this.rawdata[p][i];
       }}
-      this.set.push(this.r.sai.prim.candlestick(this.dndata['open'][i][0], upDay && this.dndata['close'][i][1] || this.dndata['open'][i][1], upDay && this.dndata['open'][i][1] || this.dndata['close'][i][1], this.dndata['high'][i][1], this.dndata['low'][i][1], body_width || 5, (i && (typeof (_d = this.dndata['close'][i - 1]) !== "undefined" && _d !== null) && (this.dndata['close'][i - 1][1] < this.dndata['close'][i][1])) && cdown || cup, !upDay, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
+      this.set.push(this.r.sai.prim.candlestick(this.dndata['open'][i][0], upDay && this.dndata['close'][i][1] || this.dndata['open'][i][1], upDay && this.dndata['open'][i][1] || this.dndata['close'][i][1], this.dndata['high'][i][1], this.dndata['low'][i][1], body_width || 5, (i && (typeof (_d = this.dndata['close'][i - 1]) !== "undefined" && _d !== null) && (this.dndata['close'][i - 1][1] < this.dndata['close'][i][1])) ? cdown : cup, !upDay, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
     }
     return this;
   };
@@ -110,7 +135,7 @@
     _a = this.dndata;
     for (series in _a) { if (__hasProp.call(_a, series)) {
       len = this.dndata[series].length;
-      colorArray.push(colors && colors[series] || 'black');
+      colorArray.push((colors == undefined ? undefined : colors[series]) || 'black');
     }}
     for (i = 0; i < len; i += 1) {
       bardata = [];
