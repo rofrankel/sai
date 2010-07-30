@@ -6,7 +6,7 @@
     child.prototype = new ctor();
     child.prototype.constructor = child;
   };
-  Sai.Chart = function(r, x, y, w, h, data, bgcolor, title_text, interactive) {
+  Sai.Chart = function(r, x, y, w, h, data, bgcolor, title_text, interactive, stacked) {
     var _a;
     _a = this;
     this.drawInfo = function(){ return Sai.Chart.prototype.drawInfo.apply(_a, arguments); };
@@ -15,6 +15,7 @@
     this.y = y || 0;
     this.w = w || 640;
     this.h = h || 480;
+    this.stacked = stacked;
     this.setData(data);
     this.title_text = title_text;
     this.interactive = interactive;
@@ -499,12 +500,6 @@
     this.logo == undefined ? undefined : this.logo.toFront();
     return this;
   };
-
-  Sai.StackedBarChart = function() {
-    return Sai.BarChart.apply(this, arguments);
-  };
-  __extends(Sai.StackedBarChart, Sai.BarChart);
-  Sai.StackedBarChart.prototype.stacked = true;
 
   Sai.StockChart = function() {
     return Sai.Chart.apply(this, arguments);

@@ -1,12 +1,13 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
   
-  constructor = (r, x, y, w, h, data, bgcolor, title_text, interactive) ->
+  constructor = (r, x, y, w, h, data, bgcolor, title_text, interactive, stacked) ->
     @r = r
     @x = x or 0
     @y = y or 0
     @w = w or 640
     @h = h or 480
+    @stacked = stacked
     
     @setData(data)
     
@@ -395,12 +396,6 @@ class Sai.BarChart extends Sai.Chart
     @logo?.toFront()
     
     return this
-
-# todo - useless class now
-class Sai.StackedBarChart extends Sai.BarChart
-
-  stacked = true
-
 
 
 class Sai.StockChart extends Sai.Chart
