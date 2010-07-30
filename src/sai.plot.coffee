@@ -1,32 +1,32 @@
 # A plot is a primitive visualization of data
 class Sai.Plot
   constructor = (r, x, y, w, h, data, rawdata) ->
-    this.r = r
-    this.x = x or 0
-    this.y = y or 0
-    this.w = w or 640
-    this.h = h or 480
-    this.data = data
-    this.setDenormalizedData()
-    this.rawdata = rawdata
-    this.set = this.r.set()
+    @r = r
+    @x = x or 0
+    @y = y or 0
+    @w = w or 640
+    @h = h or 480
+    @data = data
+    @setDenormalizedData()
+    @rawdata = rawdata
+    @set = @r.set()
   
   setDenormalizedData = () ->
-    if this.data instanceof Array
-      this.dndata = this.denormalize(dnPoint) for dnPoint in this.data
+    if @data instanceof Array
+      @dndata = @denormalize(dnPoint) for dnPoint in @data
     else
-      this.dndata ?= {}
-      for column of this.data
-        this.dndata[column] = this.denormalize(dnPoint) for dnPoint in this.data[column]
+      @dndata ?= {}
+      for column of @data
+        @dndata[column] = @denormalize(dnPoint) for dnPoint in @data[column]
   
   denormalize = (point) ->
     if point instanceof Array
-      return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
+      return [@x + (@w * point[0]), @y - (@h * point[1])]
 
   render = () ->
-    this.set.push(
-      this.r.rect(20, 20, 20, 20).attr('fill', 'red'),
-      this.r.circle(40, 40, 10).attr('fill', 'blue')
+    @set.push(
+      @r.rect(20, 20, 20, 20).attr('fill', 'red'),
+      @r.circle(40, 40, 10).attr('fill', 'blue')
     )
     return this
 
@@ -35,11 +35,11 @@ class Sai.LinePlot extends Sai.Plot
   
   render = (colors, width) ->
     
-    this.set.remove()
+    @set.remove()
     
-    for series of this.dndata when not series.match('^__')
-      this.set.push(
-        this.r.sai.prim.line(this.dndata[series], (colors and colors[series] or 'black'), width or 1)
+    for series of @dndata when not series.match('^__')
+      @set.push(
+        @r.sai.prim.line(@dndata[series], (colors and colors[series] or 'black'), width or 1)
       )
     
     return this
@@ -50,32 +50,32 @@ class Sai.CandlestickPlot extends Sai.Plot
 
   render = (colors, body_width, shouldInteract, fSetInfo) ->
     
-    this.set.remove()
+    @set.remove()
     
     cup = colors and colors['up'] or 'black'
     cdown = colors and colors['down'] or 'red'
     body_width ?= 5
     
-    for i in [0...this.dndata['open'].length]
+    for i in [0...@dndata['open'].length]
       
-      continue unless this.dndata['close'][i]?
+      continue unless @dndata['close'][i]?
       
       # Y coords are inverted, which makes a lot of stuff seem backwards...
-      upDay = this.dndata['close'][i][1] < this.dndata['open'][i][1]
+      upDay = @dndata['close'][i][1] < @dndata['open'][i][1]
       
       info = {}
-      for p of this.rawdata
-        info[p] = this.rawdata[p][i]
+      for p of @rawdata
+        info[p] = @rawdata[p][i]
       
-      this.set.push(
-        this.r.sai.prim.candlestick(
-          this.dndata['open'][i][0],
-          upDay and this.dndata['close'][i][1] or this.dndata['open'][i][1]
-          upDay and this.dndata['open'][i][1] or this.dndata['close'][i][1]
-          this.dndata['high'][i][1],
-          this.dndata['low'][i][1],
+      @set.push(
+        @r.sai.prim.candlestick(
+          @dndata['open'][i][0],
+          upDay and @dndata['close'][i][1] or @dndata['open'][i][1]
+          upDay and @dndata['open'][i][1] or @dndata['close'][i][1]
+          @dndata['high'][i][1],
+          @dndata['low'][i][1],
           body_width or 5,
-          (i and this.dndata['close'][i-1]? and (this.dndata['close'][i-1][1] < this.dndata['close'][i][1])) and cdown or cup,
+          (i and @dndata['close'][i-1]? and (@dndata['close'][i-1][1] < @dndata['close'][i][1])) and cdown or cup,
           not upDay,
           shouldInteract,
           fSetInfo,
@@ -91,31 +91,31 @@ class Sai.BarPlot extends Sai.Plot
   # colors maps from series name to color string
   render = (stacked, colors, shouldInteract, fSetInfo) ->
     
-    this.set.remove()
+    @set.remove()
     
     len = 0
     colorArray = []
-    barfunc = if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
+    barfunc = if stacked then @r.sai.prim.stackedBar else @r.sai.prim.groupedBar
     
-    for series of this.dndata
-      len = this.dndata[series].length
+    for series of @dndata
+      len = @dndata[series].length
       colorArray.push(colors and colors[series] or 'black')
     
     for i in [0...len]
       bardata = []
-      for series of this.dndata
-        bardata.push(this.dndata[series][i])
+      for series of @dndata
+        bardata.push(@dndata[series][i])
       
       info = {}
-      for p of this.rawdata
-        info[p] = this.rawdata[p][i]
+      for p of @rawdata
+        info[p] = @rawdata[p][i]
       
-      this.set.push(
+      @set.push(
         barfunc(
           bardata,
           colorArray,
-          this.w / len,
-          this.y,
+          @w / len,
+          @y,
           shouldInteract,
           fSetInfo,
           Sai.util.infoSetters(fSetInfo, info)
@@ -131,9 +131,9 @@ class Sai.GeoPlot extends Sai.Plot
 
   render = (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
-    this.set.remove()
+    @set.remove()
     
-    regions = this.rawdata.__LABELS__
+    regions = @rawdata.__LABELS__
     ri = {}
     for i in [0...regions.length]
       ri[regions[i]] = i
@@ -143,18 +143,18 @@ class Sai.GeoPlot extends Sai.Plot
       name = map.name[region]
       
       info = {region: if name? then name else region}
-      for series of this.rawdata
-        info[series] = this.rawdata[series][ridx]
+      for series of @rawdata
+        info[series] = @rawdata[series][ridx]
       
-      val = if this.data[mainSeries][ridx]? then this.data[mainSeries][ridx][1] else null
+      val = if @data[mainSeries][ridx]? then @data[mainSeries][ridx][1] else null
       
-      this.set.push(
+      @set.push(
         # fDraw, attrs, extras, hoverattrs
-        hoverShape = this.r.sai.prim.hoverShape(
+        hoverShape = @r.sai.prim.hoverShape(
           ((path, scale, x, y) ->
             return (r) ->
               r.path(path).translate(x, y).scale(scale, scale, x, y)
-          )(map.paths[region], Math.min(this.w / map.width, this.h / map.height), this.x, this.y - this.h),
+          )(map.paths[region], Math.min(@w / map.width, @h / map.height), @x, @y - @h),
           {
             'fill': Sai.util.multiplyColor(colors[mainSeries], val)
             'stroke': bgcolor
@@ -165,7 +165,7 @@ class Sai.GeoPlot extends Sai.Plot
         )
       )
       
-    bbox = this.set.getBBox()
-    this.set.translate((this.w - bbox.width) / 2, (this.h - bbox.height) / 2)
+    bbox = @set.getBBox()
+    @set.translate((@w - bbox.width) / 2, (@h - bbox.height) / 2)
     
     return this

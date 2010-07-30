@@ -16,15 +16,15 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fil
   body_width++ unless body_width % 2
   bx = x - (body_width / 2.0)
   
-  body = this.rect(bx, by0, body_width, by1-by0 or 1).attr('stroke', color)
-  shadow = this.path("M" + x + " " + sy0 +
+  body = @rect(bx, by0, body_width, by1-by0 or 1).attr('stroke', color)
+  shadow = @path("M" + x + " " + sy0 +
                     "L" + x + " " + by0 +
                     "M" + x + " " + by1 +
                     "L" + x + " " + sy1).attr('stroke', color)
   
   body.attr('fill', if fill then color else 'white')
   
-  candlestick = this.set().push(body, shadow)
+  candlestick = @set().push(body, shadow)
   
   if shouldInteract
     hoverfuncs = getHoverfuncs(
@@ -59,7 +59,7 @@ Raphael.fn.sai.prim.line = (coords, color, width) ->
     else
       path = ("M" + coord[0] + " " + coord[1])
   
-  return this.path(path).attr({'stroke': color, 'stroke-width': width})
+  return @path(path).attr({'stroke': color, 'stroke-width': width})
 
 
 # colors is a list parallel to coords
@@ -69,14 +69,14 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
     totalHeight = baseline - coords[coords.length - 1][1]
 
   width *= .67
-  stack = this.set()
+  stack = @set()
   prev = baseline
   for i in [0...coords.length]
     continue unless coords[i]? and coords[i][1] isnt baseline
     height = prev - coords[i][1]
     axisClip = if i is 0 then 1 else 0 # visual hack to prevent bars covering x axis
     stack.push(
-      bar = this.rect(coords[i][0] - (width / 2.0),
+      bar = @rect(coords[i][0] - (width / 2.0),
                 coords[i][1],
                 width,
                 height - axisClip)
@@ -116,7 +116,7 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
 
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
-  group = this.set()
+  group = @set()
   return group unless coords[0]?
   barwidth = width / (coords.length + 1)
   x = coords[0][0] - ((width - barwidth) / 2)
@@ -124,7 +124,7 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
   for i in [0...coords.length]
     if coords[i]?
       group.push(
-        this.rect(x,
+        @rect(x,
                   coords[i][1],
                   barwidth - 1,
                   baseline - coords[i][1] - axisClip)
@@ -158,9 +158,9 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   width ?= 1
   color ?= '#000'
   
-  line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
-  ticks = this.set()
-  labels = this.set()
+  line = @path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
+  ticks = @set()
+  labels = @set()
   
   dx = len / (vals.length - 1)
   xpos = x
@@ -168,23 +168,23 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   for val in vals
     unless val is null
       ticklen = ticklens[if String(val) then 0 else 1]
-      ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
+      ticks.push(@path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
       unless val is ''
-        label = this.text(xpos, y + ticklen + 2, Sai.util.prettystr(val))
+        label = @text(xpos, y + ticklen + 2, Sai.util.prettystr(val))
         label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
         labels.push(label)
     xpos += dx
   
-  return this.set().push(line, ticks, labels)
+  return @set().push(line, ticks, labels)
 
 Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000'
   
-  line = this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
-  ticks = this.set()
-  labels = this.set()
+  line = @path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
+  ticks = @set()
+  labels = @set()
   
   dy = len / (vals.length - 1)
   ypos = y
@@ -192,13 +192,13 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
   for val in vals
     unless val is null
       ticklen = ticklens[if String(val) then 0 else 1]
-      ticks.push(this.path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
-      label = this.text(x - ticklen - 2, ypos, Sai.util.prettystr(val))
+      ticks.push(@path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
+      label = @text(x - ticklen - 2, ypos, Sai.util.prettystr(val))
       label.attr('x', label.attr('x') - (label.getBBox().width / 2.0))
       labels.push(label)
     ypos -= dy
   
-  return this.set().push(line, ticks, labels)
+  return @set().push(line, ticks, labels)
 
 
 # texts is a map that is displayed "key = value"
@@ -209,13 +209,13 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
 Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   TEXT_LINE_HEIGHT = 10
   
-  set = this.set()
-  text_set = this.set()
+  set = @set()
+  text_set = @set()
   max_width = 0
   py = y + 5 + (TEXT_LINE_HEIGHT / 2)
   
   if '__HEAD__' of texts
-    head_text = this.text(x, py, texts['__HEAD__']).attr({'fill': '#cfc', 'font-size': '12', 'font-weight': 'bold'})
+    head_text = @text(x, py, texts['__HEAD__']).attr({'fill': '#cfc', 'font-size': '12', 'font-weight': 'bold'})
     max_width = Math.max(max_width, head_text.getBBox().width)
     text_set.push(head_text)
     py += (TEXT_LINE_HEIGHT + 2) + 5
@@ -223,14 +223,14 @@ Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   # create text and find total height
   for text of texts
     continue if text is '__HEAD__'
-    t = this.text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold'})
+    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold'})
     t.translate(t.getBBox().width / 2, 0)
     max_width = Math.max(max_width, t.getBBox().width)
     py += TEXT_LINE_HEIGHT
     text_set.push(t)
   
   bg_width = max_width + 10
-  rect = this.rect(x, y, bg_width, (py - y), 5).attr({'fill': 'black', 'fill-opacity': '.85', 'stroke': 'black'})
+  rect = @rect(x, y, bg_width, (py - y), 5).attr({'fill': 'black', 'fill-opacity': '.85', 'stroke': 'black'})
   
   head_text?.translate(bg_width / 2)
   text_set.toFront()
@@ -242,16 +242,16 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, colors) ->
   line_height = 14
   y -= line_height
   
-  set = this.set()
+  set = @set()
   
   px = x
   py = y
   
   for text of colors
-    t = this.text(px + 14, py, text)
+    t = @text(px + 14, py, text)
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
-    r = this.rect(px, py, 9, 9).attr({'fill': if colors[text]? then colors[text] else 'black'})
-    key = this.set().push(t, r)
+    r = @rect(px, py, 9, 9).attr({'fill': if colors[text]? then colors[text] else 'black'})
+    key = @set().push(t, r)
     
     if (px - x) + spacing + key.getBBox().width > max_width
       set.translate(0, -line_height)
@@ -271,14 +271,14 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
   spacing = 15
   line_height = 14
   
-  set = this.set()
+  set = @set()
   
   px = x
   py = y
   
   for label of info
     continue if info[label] is null
-    t = this.text(px, py, label + (if label is '' then '' else ' = ') + Sai.util.prettystr(info[label]))
+    t = @text(px, py, label + (if label is '' then '' else ' = ') + Sai.util.prettystr(info[label]))
     tbbox = t.getBBox()
     t.translate(tbbox.width / 2, tbbox.height / 2)
     
@@ -320,10 +320,10 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
   bgcolor ?= 'white'
   numBuckets ?= 10
   
-  set = this.set()
+  set = @set()
   
   set.push(
-    bg = this.rect(x, y-h, w, h).attr({
+    bg = @rect(x, y-h, w, h).attr({
       'stroke-width': 0
       'stroke-opacity': 0
       'fill': bgcolor
@@ -336,9 +336,9 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
   low ?= 0
   high ?= 1
   
-  set.push(lowLabel = this.text(x, y, Sai.util.prettystr(low)))
+  set.push(lowLabel = @text(x, y, Sai.util.prettystr(low)))
   lowLabel.translate(lowLabel.getBBox().width / 2, 0)
-  set.push(highLabel = this.text(x + w, y, Sai.util.prettystr(high)))
+  set.push(highLabel = @text(x + w, y, Sai.util.prettystr(high)))
   highLabel.translate(-highLabel.getBBox().width / 2, 0)
   
   y -= 7 # rest of text, plus padding
@@ -351,17 +351,17 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
     if idx of buckets then buckets[idx] += 1 else buckets[idx] = 1
     maxBucket = Math.max(maxBucket, buckets[idx])
   
-  set.push(hrule = this.path("M$x,$y l$w, 0").attr('stroke', color))
+  set.push(hrule = @path("M$x,$y l$w, 0").attr('stroke', color))
   y -= 1
   
   bw = w / numBuckets
   for bucket of buckets
     bh = (y - bartop) * (buckets[bucket] / maxBucket)
     set.push(
-      this.rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets), 'stroke-width': 0, 'stroke-opacity': 0})
+      @rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets), 'stroke-width': 0, 'stroke-opacity': 0})
     )
   
-  set.push(lbl = this.text(x + w/2, bartop - 6, Sai.util.prettystr(label)))
+  set.push(lbl = @text(x + w/2, bartop - 6, Sai.util.prettystr(label)))
   
   return set
   
