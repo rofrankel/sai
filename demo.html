@@ -108,6 +108,8 @@
         
         var uschart = new Sai.GeoChart(r, 800, 750, 400, 350, USdata, {bgcolor: tea, title: "MAP OF US", interactive: true}).setColors(UScolors).render();
         
+        var ap = new Sai.AreaPlot(r, 1200, 200, 200, 100, {data: [[0, 0], [.5, .25], [1, .75]], d: [[0, .5], [.5, .3], [1, .85]]}).render({data: lilac, d: orange}, 2, true);
+        
       </script>
     </div>
   </body>

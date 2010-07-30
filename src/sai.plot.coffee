@@ -47,17 +47,17 @@ class Sai.LinePlot extends Sai.Plot
 
 class Sai.AreaPlot extends Sai.Plot
   
-  render = (colors, width) ->
+  render = (colors, width, stacked) ->
     
     @set.remove()
     
     for series of @dndata when not series.match('^__')
-      prev ?= (@denormalize([x[0], 0]) for x in @data[series])
+      baseline ?= (@denormalize([x[0], 0]) for x in @data[series])
       @set.push(
-        @r.sai.prim.area(@dndata[series], colors?[series] or 'black', width or 1, prev)
+        @r.sai.prim.area(@dndata[series], colors?[series] or 'black', width or 1, baseline)
       )
       
-      prev = @dndata[series]
+      if stacked then baseline = ([d[0], d[1] - width/2] for d in @dndata[series])
     
     return this
 

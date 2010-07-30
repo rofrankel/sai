@@ -615,16 +615,15 @@
     this.bg.toBack();
     this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove((function(__this) {
       var __func = function(event) {
-        var _k, _l, _m, idx, info, notNull;
+        var _k, _l, idx, info, notNull;
         idx = this.getIndex(event.clientX, event.clientY);
         info = {};
         notNull = true;
         _k = this.ndata['prices'];
         for (series in _k) { if (__hasProp.call(_k, series)) {
-          (typeof (_l = this.data[series]) !== "undefined" && _l !== null) ? (info[series] = this.data[series][idx]) : null;
-          info[series] === null ? (notNull = false) : null;
+          this.data[series] == undefined ? undefined : this.data[series][idx] ? (info[series] = this.data[series][idx]) : (notNull = false);
         }}
-        (typeof (_m = this.data['volume']) !== "undefined" && _m !== null) ? (info['volume'] = this.data['volume'][idx]) : null;
+        (typeof (_l = this.data['volume'] == undefined ? undefined : this.data['volume'][idx]) !== "undefined" && _l !== null) ? (info['volume'] = this.data['volume'][idx]) : (notNull = false);
         this.drawInfo(info);
         if (notNull) {
           return this.glow.attr({

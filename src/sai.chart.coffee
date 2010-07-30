@@ -527,9 +527,8 @@ class Sai.StockChart extends Sai.Chart
         info = {}
         notNull = true
         for series of @ndata['prices']
-          if @data[series]? then info[series] = @data[series][idx]
-          if info[series] is null then notNull = false
-        if @data['volume']? then info['volume'] = @data['volume'][idx]
+          if @data[series]?[idx] then info[series] = @data[series][idx] else notNull = false
+        if @data['volume']?[idx]? then info['volume'] = @data['volume'][idx] else notNull = false
         @drawInfo(info)
         
         if notNull
