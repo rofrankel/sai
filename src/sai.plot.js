@@ -166,7 +166,13 @@
           'stroke': bgcolor,
           'stroke-width': 0.75,
           'opacity': val !== null ? 1 : 0.25
-        }, Sai.util.infoSetters(fSetInfo, info))));
+        }, shouldInteract ? Sai.util.infoSetters(fSetInfo, info) : null, shouldInteract ? [
+          {
+            'fill-opacity': .75
+          }, {
+            'fill-opacity': 1
+          }
+        ] : null)));
       }).call(this);
     }}
     bbox = this.set.getBBox();

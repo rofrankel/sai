@@ -263,11 +263,7 @@
   Raphael.fn.sai.prim.hoverShape = function(fDraw, attrs, extras, hoverattrs) {
     var hoverfuncs, shape;
     shape = fDraw(this).attr(attrs);
-    hoverfuncs = getHoverfuncs(shape, hoverattrs && hoverattrs[0] || {
-      'fill-opacity': '0.75'
-    }, hoverattrs && hoverattrs[1] || {
-      'fill-opacity': '1.0'
-    }, extras);
+    hoverfuncs = getHoverfuncs(shape, hoverattrs && hoverattrs[0] || {}, hoverattrs && hoverattrs[1] || {}, extras);
     shape.hover(hoverfuncs[0], hoverfuncs[1]);
     return shape;
   };

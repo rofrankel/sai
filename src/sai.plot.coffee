@@ -161,7 +161,8 @@ class Sai.GeoPlot extends Sai.Plot
             'stroke-width': 0.75
             'opacity': if val isnt null then 1 else 0.25
           }
-          Sai.util.infoSetters(fSetInfo, info)
+          if shouldInteract then Sai.util.infoSetters(fSetInfo, info) else null,
+          if shouldInteract then [{'fill-opacity': .75}, {'fill-opacity': 1}] else null
         )
       )
       

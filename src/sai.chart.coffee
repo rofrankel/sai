@@ -1,19 +1,19 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
   
-  constructor = (r, x, y, w, h, data, bgcolor, title_text, interactive, stacked) ->
+  constructor = (r, x, y, w, h, data, opts) ->
     @r = r
     @x = x or 0
     @y = y or 0
     @w = w or 640
     @h = h or 480
-    @stacked = stacked
+    @stacked = opts.stacked
     
     @setData(data)
     
-    @title_text = title_text
-    @interactive = interactive
-    @bgcolor = if bgcolor? then bgcolor else 'white'
+    @title_text = opts.title
+    @interactive = opts.interactive
+    @bgcolor = opts.bgcolor or 'white'
     
     @padding = {
       left: 2
@@ -566,8 +566,6 @@ class Sai.GeoChart extends Sai.Chart
     
     return groups
   
-  default_info = {'': 'Click histogram below to change map display'}
-  
   drawHistogramLegend = (seriesNames) ->
     @histogramLegend = @r.set()
     extrapadding = 20
@@ -597,20 +595,21 @@ class Sai.GeoChart extends Sai.Chart
         )
       )
       
-      histogram.click( () => @renderPlot(series) )
-      .hover(
-        ((set) =>
-          () =>
-            set.attr({'fill-opacity': 0.75})
-            @drawInfo({'Click to display on map': series})
-        )(histogram)
-        ,
-        ((set) =>
-          () =>
-            set.attr({'fill-opacity': 1.0})
-            @drawInfo()
-        )(histogram)
-      )
+      if @interactive
+        histogram.click( () => @renderPlot(series) )
+        .hover(
+          ((set) =>
+            () =>
+              set.attr({'fill-opacity': 0.75})
+              @drawInfo({'Click to display on map': series})
+          )(histogram)
+          ,
+          ((set) =>
+            () =>
+              set.attr({'fill-opacity': 1.0})
+              @drawInfo()
+          )(histogram)
+        )
     
     
     @histogramLegend.translate((@w - @padding.left - @padding.right - @histogramLegend.getBBox().width) / 2, 0)
@@ -631,6 +630,8 @@ class Sai.GeoChart extends Sai.Chart
     @logo?.toFront()
   
   render = () ->
+    @default_info = {'': if @interactive then 'Click histogram below to change map display' else ''}
+    
     @drawTitle()
     @setupInfoSpace()
     @drawHistogramLegend(series for series of @data when not series.match('^__'))

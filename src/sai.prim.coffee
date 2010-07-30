@@ -299,12 +299,8 @@ Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
   
   hoverfuncs = getHoverfuncs(
     shape,
-    hoverattrs and hoverattrs[0] or {
-      'fill-opacity': '0.75'
-    },
-    hoverattrs and hoverattrs[1] or {
-      'fill-opacity': '1.0'
-    },
+    hoverattrs and hoverattrs[0] or {},
+    hoverattrs and hoverattrs[1] or {},
     extras
   )
   

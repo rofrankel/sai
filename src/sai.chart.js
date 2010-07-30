@@ -6,7 +6,7 @@
     child.prototype = new ctor();
     child.prototype.constructor = child;
   };
-  Sai.Chart = function(r, x, y, w, h, data, bgcolor, title_text, interactive, stacked) {
+  Sai.Chart = function(r, x, y, w, h, data, opts) {
     var _a;
     _a = this;
     this.drawInfo = function(){ return Sai.Chart.prototype.drawInfo.apply(_a, arguments); };
@@ -15,11 +15,11 @@
     this.y = y || 0;
     this.w = w || 640;
     this.h = h || 480;
-    this.stacked = stacked;
+    this.stacked = opts.stacked;
     this.setData(data);
-    this.title_text = title_text;
-    this.interactive = interactive;
-    this.bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : 'white';
+    this.title_text = opts.title;
+    this.interactive = opts.interactive;
+    this.bgcolor = opts.bgcolor || 'white';
     this.padding = {
       left: 2,
       right: 2,
@@ -696,9 +696,6 @@
     }}
     return groups;
   };
-  Sai.GeoChart.prototype.default_info = {
-    '': 'Click histogram below to change map display'
-  };
   Sai.GeoChart.prototype.drawHistogramLegend = function(seriesNames) {
     var _a, extrapadding, height, width;
     this.histogramLegend = this.r.set();
@@ -734,50 +731,52 @@
         minLabel = yvals[0];
         maxLabel = yvals[yvals.length - 1];
         this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white')));
-        return histogram.click((function(__this) {
-          var __func = function() {
-            return this.renderPlot(series);
-          };
-          return (function() {
-            return __func.apply(__this, arguments);
-          });
-        })(this)).hover(((function(__this) {
-          var __func = function(set) {
-            return (function(__this) {
-              var __func = function() {
-                set.attr({
-                  'fill-opacity': 0.75
+        if (this.interactive) {
+          return histogram.click((function(__this) {
+            var __func = function() {
+              return this.renderPlot(series);
+            };
+            return (function() {
+              return __func.apply(__this, arguments);
+            });
+          })(this)).hover(((function(__this) {
+            var __func = function(set) {
+              return (function(__this) {
+                var __func = function() {
+                  set.attr({
+                    'fill-opacity': 0.75
+                  });
+                  return this.drawInfo({
+                    'Click to display on map': series
+                  });
+                };
+                return (function() {
+                  return __func.apply(__this, arguments);
                 });
-                return this.drawInfo({
-                  'Click to display on map': series
+              })(this);
+            };
+            return (function() {
+              return __func.apply(__this, arguments);
+            });
+          })(this))(histogram), ((function(__this) {
+            var __func = function(set) {
+              return (function(__this) {
+                var __func = function() {
+                  set.attr({
+                    'fill-opacity': 1.0
+                  });
+                  return this.drawInfo();
+                };
+                return (function() {
+                  return __func.apply(__this, arguments);
                 });
-              };
-              return (function() {
-                return __func.apply(__this, arguments);
-              });
-            })(this);
-          };
-          return (function() {
-            return __func.apply(__this, arguments);
-          });
-        })(this))(histogram), ((function(__this) {
-          var __func = function(set) {
-            return (function(__this) {
-              var __func = function() {
-                set.attr({
-                  'fill-opacity': 1.0
-                });
-                return this.drawInfo();
-              };
-              return (function() {
-                return __func.apply(__this, arguments);
-              });
-            })(this);
-          };
-          return (function() {
-            return __func.apply(__this, arguments);
-          });
-        })(this))(histogram));
+              })(this);
+            };
+            return (function() {
+              return __func.apply(__this, arguments);
+            });
+          })(this))(histogram));
+        }
       }).call(this);
     }
     this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);
@@ -790,6 +789,9 @@
   };
   Sai.GeoChart.prototype.render = function() {
     var _a, _b, series;
+    this.default_info = {
+      '': this.interactive ? 'Click histogram below to change map display' : ''
+    };
     this.drawTitle();
     this.setupInfoSpace();
     this.drawHistogramLegend((function() {
