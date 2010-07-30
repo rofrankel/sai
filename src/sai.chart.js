@@ -346,14 +346,14 @@
     return this.padding.top += 30;
   };
   Sai.Chart.prototype.drawInfo = function(info, clear) {
-    var _a, _b, label;
+    var _a, label;
     clear = (typeof clear !== "undefined" && clear !== null) ? clear : true;
     info = (typeof info !== "undefined" && info !== null) ? info : this.default_info;
     clear ? (this.info_data = {}) : null;
     this.info ? this.info.remove() : null;
     _a = info;
     for (label in _a) { if (__hasProp.call(_a, label)) {
-      !(label.match("^__")) ? (this.info_data[label] = (typeof (_b = info[label]) !== "undefined" && _b !== null) || '(no data)') : null;
+      !(label.match("^__")) ? (this.info_data[label] = info[label] || '(no data)') : null;
     }}
     this.info = this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data);
     return this.info;
