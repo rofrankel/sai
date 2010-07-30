@@ -53,7 +53,7 @@
             (_f = this.data[series].length);
 
             for (i = 0; i < _f; i += 1) {
-              this.data[series][i] < 0 ? (this.data[series][i] = 0) : null;
+              this.data[series][i] < 0 ? this.data[series][i] *= -1 : null;
             }
           }
         }
@@ -218,7 +218,7 @@
 
           for (i = 0; i < _n; i += 1) {
             baseline = (typeof (_o = baselines[i]) !== "undefined" && _o !== null) ? baselines[i] : 0;
-            stackedPoint = (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min)) + baseline] : null;
+            stackedPoint = [i / (data[series].length - 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? ((data[series][i] - min) / (max - min)) + baseline : baseline];
             this.stackedNdata[group][series].push(stackedPoint);
             if (!(stackedPoint === null)) {
               baselines[i] = stackedPoint[1];
@@ -371,8 +371,15 @@
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.LineChart, Sai.Chart);
+  Sai.LineChart.prototype.nonNegativeGroups = function() {
+    if (this.stacked) {
+      return ['all'];
+    } else {
+      return [];
+    }
+  };
   Sai.LineChart.prototype.render = function() {
-    var _a, color, series;
+    var _a, _b, color, ndata, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawLegend();
@@ -382,9 +389,10 @@
     this.drawGuideline(0);
     this.lines = [];
     this.dots = this.r.set();
-    this.plot = (new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, this.ndata['all'])).render(this.colors, 3);
-    _a = this.ndata['all'];
-    for (series in _a) { if (__hasProp.call(_a, series)) {
+    ndata = (typeof (_a = this.stacked) !== "undefined" && _a !== null) ? this.stackedNdata : this.ndata;
+    this.plot = (new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, 2);
+    _b = ndata['all'];
+    for (series in _b) { if (__hasProp.call(_b, series)) {
       if (series === '__YVALS__') {
         continue;
       }
@@ -395,18 +403,18 @@
     }}
     this.r.set().push(this.bg, this.plot.set, this.dots, this.logo, this.guidelines).mousemove((function(__this) {
       var __func = function(event) {
-        var _b, _c, _d, _e, i, idx, info, pos;
+        var _c, _d, _e, _f, i, idx, info, pos;
         idx = this.getIndex(event.clientX, event.clientY);
         info = {};
-        _b = this.ndata['all'];
-        for (series in _b) { if (__hasProp.call(_b, series)) {
-          (typeof (_c = this.data[series]) !== "undefined" && _c !== null) ? (info[series] = this.data[series][idx]) : null;
+        _c = ndata['all'];
+        for (series in _c) { if (__hasProp.call(_c, series)) {
+          (typeof (_d = this.data[series]) !== "undefined" && _d !== null) ? (info[series] = this.data[series][idx]) : null;
         }}
         this.drawInfo(info);
         i = 0;
-        _d = []; _e = this.plot.dndata;
-        for (series in _e) { if (__hasProp.call(_e, series)) {
-          !series.match('^__') ? _d.push((function() {
+        _e = []; _f = this.plot.dndata;
+        for (series in _f) { if (__hasProp.call(_f, series)) {
+          !series.match('^__') ? _e.push((function() {
             pos = this.plot.dndata[series][idx];
             (typeof pos !== "undefined" && pos !== null) ? this.dots[i].attr({
               cx: pos[0],
@@ -415,7 +423,7 @@
             return i++;
           }).call(this)) : null;
         }}
-        return _d;
+        return _e;
       };
       return (function() {
         return __func.apply(__this, arguments);

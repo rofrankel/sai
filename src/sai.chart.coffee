@@ -47,7 +47,7 @@ class Sai.Chart
         for series in groups[group]
           if @data[series]?
             for i in [0...@data[series].length]
-              if @data[series][i] < 0 then @data[series][i] = 0
+              if @data[series][i] < 0 then @data[series][i] *= -1
     
     for group in @groupsToNullPad()
       for series in groups[group]
@@ -125,7 +125,7 @@ class Sai.Chart
           @stackedNdata[group][series] = []
           for i in [0...data[series].length]
             baseline = if baselines[i]? then baselines[i] else 0
-            stackedPoint = if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min)) + baseline] else null
+            stackedPoint = [i / (data[series].length - 1), if data[series][i]? then ((data[series][i]-min) / (max-min)) + baseline else baseline]
             @stackedNdata[group][series].push(stackedPoint)
             baselines[i] = stackedPoint[1] unless stackedPoint is null
         
@@ -269,6 +269,9 @@ class Sai.Chart
 
 class Sai.LineChart extends Sai.Chart
   
+  nonNegativeGroups = () ->
+    if @stacked then ['all'] else []
+  
   render = () ->
     @drawTitle()
     @setupInfoSpace()
@@ -282,14 +285,16 @@ class Sai.LineChart extends Sai.Chart
     @lines = []
     @dots = @r.set()
     
+    ndata = if @stacked? then @stackedNdata else @ndata
+    
     @plot = (new Sai.LinePlot(
       @r,
       @px, @py, @pw, @ph,
-      @ndata['all']
+      ndata['all']
     ))
-    .render(@colors, 3)
+    .render(@colors, 2)
     
-    for series of @ndata['all']
+    for series of ndata['all']
       if series is '__YVALS__'
         continue
       
@@ -303,7 +308,7 @@ class Sai.LineChart extends Sai.Chart
         idx = @getIndex(event.clientX, event.clientY)
         
         info = {}
-        for series of @ndata['all']
+        for series of ndata['all']
           if @data[series]? then info[series] = @data[series][idx]
         @drawInfo(info)
         

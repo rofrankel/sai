@@ -247,7 +247,7 @@
       if (info[label] === null) {
         continue;
       }
-      t = this.text(px, py, label + (label === '' ? '' : ' = ') + Sai.util.prettystr(info[label]));
+      t = this.text(px, py, label + (label === '' ? '' : ': ') + Sai.util.prettystr(info[label]));
       tbbox = t.getBBox();
       t.translate(tbbox.width / 2, tbbox.height / 2);
       if ((px - x) + spacing + tbbox.width > max_width) {

@@ -278,7 +278,7 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
   
   for label of info
     continue if info[label] is null
-    t = @text(px, py, label + (if label is '' then '' else ' = ') + Sai.util.prettystr(info[label]))
+    t = @text(px, py, label + (if label is '' then '' else ': ') + Sai.util.prettystr(info[label]))
     tbbox = t.getBBox()
     t.translate(tbbox.width / 2, tbbox.height / 2)
     
