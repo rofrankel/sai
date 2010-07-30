@@ -190,7 +190,7 @@
       if (text === '__HEAD__') {
         continue;
       }
-      t = this.text(x + 5, py, text + ": " + texts[text]).attr({
+      t = this.text(x + 5, py, text + " = " + texts[text]).attr({
         'fill': 'white',
         'font-weight': 'bold'
       });
@@ -247,7 +247,7 @@
       if (info[label] === null) {
         continue;
       }
-      t = this.text(px, py, label + (label === '' ? '' : ': ') + Sai.util.prettystr(info[label]));
+      t = this.text(px, py, label + (label === '' ? '' : ' = ') + Sai.util.prettystr(info[label]));
       tbbox = t.getBBox();
       t.translate(tbbox.width / 2, tbbox.height / 2);
       if ((px - x) + spacing + tbbox.width > max_width) {

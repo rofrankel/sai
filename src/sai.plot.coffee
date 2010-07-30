@@ -1,6 +1,6 @@
 # A plot is a primitive visualization of data
 class Sai.Plot
-  constructor: (r, x, y, w, h, data, rawdata) ->
+  constructor = (r, x, y, w, h, data, rawdata) ->
     this.r = r
     this.x = x or 0
     this.y = y or 0
@@ -9,21 +9,21 @@ class Sai.Plot
     this.data = data
     this.setDenormalizedData()
     this.rawdata = rawdata
-    this.set: this.r.set()
+    this.set = this.r.set()
   
-  setDenormalizedData: () ->
+  setDenormalizedData = () ->
     if this.data instanceof Array
-      this.dndata: this.denormalize(dnPoint) for dnPoint in this.data
+      this.dndata = this.denormalize(dnPoint) for dnPoint in this.data
     else
       this.dndata ?= {}
       for column of this.data
-        this.dndata[column]: this.denormalize(dnPoint) for dnPoint in this.data[column]
+        this.dndata[column] = this.denormalize(dnPoint) for dnPoint in this.data[column]
   
-  denormalize: (point) ->
+  denormalize = (point) ->
     if point instanceof Array
       return [this.x + (this.w * point[0]), this.y - (this.h * point[1])]
 
-  render: () ->
+  render = () ->
     this.set.push(
       this.r.rect(20, 20, 20, 20).attr('fill', 'red'),
       this.r.circle(40, 40, 10).attr('fill', 'blue')
@@ -33,7 +33,7 @@ class Sai.Plot
 
 class Sai.LinePlot extends Sai.Plot
   
-  render: (colors, width) ->
+  render = (colors, width) ->
     
     this.set.remove()
     
@@ -45,15 +45,15 @@ class Sai.LinePlot extends Sai.Plot
     return this
 
 
-# Raphael.fn.sai.prim.candlestick: (x, by0, by1, sy0, sy1, body_width, color) ->
+# Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color) ->
 class Sai.CandlestickPlot extends Sai.Plot
 
-  render: (colors, body_width, shouldInteract, fSetInfo) ->
+  render = (colors, body_width, shouldInteract, fSetInfo) ->
     
     this.set.remove()
     
-    cup: colors and colors['up'] or 'black'
-    cdown: colors and colors['down'] or 'red'
+    cup = colors and colors['up'] or 'black'
+    cdown = colors and colors['down'] or 'red'
     body_width ?= 5
     
     for i in [0...this.dndata['open'].length]
@@ -61,11 +61,11 @@ class Sai.CandlestickPlot extends Sai.Plot
       continue unless this.dndata['close'][i]?
       
       # Y coords are inverted, which makes a lot of stuff seem backwards...
-      upDay: this.dndata['close'][i][1] < this.dndata['open'][i][1]
+      upDay = this.dndata['close'][i][1] < this.dndata['open'][i][1]
       
-      info: {}
+      info = {}
       for p of this.rawdata
-        info[p]: this.rawdata[p][i]
+        info[p] = this.rawdata[p][i]
       
       this.set.push(
         this.r.sai.prim.candlestick(
@@ -89,16 +89,16 @@ class Sai.BarPlot extends Sai.Plot
   
   # if stacked, plot is rendered stacked...else, grouped
   # colors maps from series name to color string
-  render: (stacked, colors, shouldInteract, fSetInfo) ->
+  render = (stacked, colors, shouldInteract, fSetInfo) ->
     
     this.set.remove()
     
-    len: 0
-    colorArray: []
-    barfunc: if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
+    len = 0
+    colorArray = []
+    barfunc = if stacked then this.r.sai.prim.stackedBar else this.r.sai.prim.groupedBar
     
     for series of this.dndata
-      len: this.dndata[series].length
+      len = this.dndata[series].length
       colorArray.push(colors and colors[series] or 'black')
     
     for i in [0...len]
@@ -106,9 +106,9 @@ class Sai.BarPlot extends Sai.Plot
       for series of this.dndata
         bardata.push(this.dndata[series][i])
       
-      info: {}
+      info = {}
       for p of this.rawdata
-        info[p]: this.rawdata[p][i]
+        info[p] = this.rawdata[p][i]
       
       this.set.push(
         barfunc(
@@ -126,31 +126,31 @@ class Sai.BarPlot extends Sai.Plot
 
 
 # map looks like {width: w, height: h, paths: {CODE: "...", CODE: "..."}}
-# data looks like {series: {series: [a, b, c]}, series2: {series2: [b, c, a]}, __META__: {__LABELS__: [CODE, CODE, CODE]}}
+# data looks like {series: {series: [a, b, c]}, series2 = {series2: [b, c, a]}, __META__ = {__LABELS__: [CODE, CODE, CODE]}}
 class Sai.GeoPlot extends Sai.Plot
 
-  render: (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
+  render = (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
     this.set.remove()
     
-    regions: this.rawdata.__LABELS__
-    ri: {}
+    regions = this.rawdata.__LABELS__
+    ri = {}
     for i in [0...regions.length]
-      ri[regions[i]]: i
+      ri[regions[i]] = i
     
     for region of map.paths
-      ridx: ri[region]
-      name: map.name[region]
+      ridx = ri[region]
+      name = map.name[region]
       
-      info: {region: if name? then name else region}
+      info = {region: if name? then name else region}
       for series of this.rawdata
-        info[series]: this.rawdata[series][ridx]
+        info[series] = this.rawdata[series][ridx]
       
-      val: if this.data[mainSeries][ridx]? then this.data[mainSeries][ridx][1] else null
+      val = if this.data[mainSeries][ridx]? then this.data[mainSeries][ridx][1] else null
       
       this.set.push(
         # fDraw, attrs, extras, hoverattrs
-        hoverShape: this.r.sai.prim.hoverShape(
+        hoverShape = this.r.sai.prim.hoverShape(
           ((path, scale, x, y) ->
             return (r) ->
               r.path(path).translate(x, y).scale(scale, scale, x, y)
@@ -165,7 +165,7 @@ class Sai.GeoPlot extends Sai.Plot
         )
       )
       
-    bbox: this.set.getBBox()
+    bbox = this.set.getBBox()
     this.set.translate((this.w - bbox.width) / 2, (this.h - bbox.height) / 2)
     
     return this

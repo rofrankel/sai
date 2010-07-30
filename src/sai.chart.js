@@ -475,12 +475,7 @@
     this.drawTitle();
     this.setupInfoSpace();
     this.drawLegend();
-    this.addAxes('all', {
-      left: 30,
-      right: 0,
-      top: 0,
-      bottom: 20
-    });
+    this.addAxes('all');
     this.drawLogo();
     this.drawBG();
     this.guidelines = this.r.set();
@@ -559,12 +554,7 @@
     this.colors['down'] = (typeof (_f = this.colors['down']) !== "undefined" && _f !== null) ? this.colors['down'] : 'red';
     this.colors['vol_up'] = (typeof (_g = this.colors['vol_up']) !== "undefined" && _g !== null) ? this.colors['vol_up'] : '#666';
     this.colors['vol_down'] = (typeof (_h = this.colors['vol_down']) !== "undefined" && _h !== null) ? this.colors['vol_down'] : '#c66';
-    this.addAxes('prices', {
-      left: 30,
-      right: 0,
-      top: 0,
-      bottom: 20
-    });
+    this.addAxes('prices');
     this.drawLogo();
     this.drawBG();
     this.drawGuideline(0, 'prices');
