@@ -139,22 +139,23 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
   group = @set()
-  return group unless coords[0]?
   barwidth = width / (coords.length + 1)
-  x = coords[0][0] - ((width - barwidth) / 2)
+  offset = ((width - barwidth) / 2)
+  
   axisClip = 0.5  # visual hack to prevent bars covering x axis
   for i in [0...coords.length]
-    if coords[i]?
+    if coords[i]?[0]?
+      x = coords[i][0] - offset + (i * barwidth)
+      alert 'c.i.0: ' + coords[i][0] + ', offset: ' + offset + ', x: ' + x
+      
       group.push(
         @rect(x,
-                  coords[i][1],
-                  barwidth - 1,
-                  baseline - coords[i][1] - axisClip)
+              coords[i][1],
+              barwidth - 1,
+              baseline - coords[i][1] - axisClip)
         .attr('fill', colors?[i] or 'black')
         .attr('stroke', colors?[i] or 'black')
       )
-    
-    x += barwidth
   
   if shouldInteract
     hoverfuncs = getHoverfuncs(
