@@ -658,6 +658,12 @@
   __extends(Sai.GeoChart, Sai.Chart);
   Sai.GeoChart.prototype.plotType = Sai.GeoPlot;
   Sai.GeoChart.prototype.interactiveHistogram = true;
+  Sai.GeoChart.prototype.getMax = function(data, series) {
+    return Math.max.apply(Math, data);
+  };
+  Sai.GeoChart.prototype.getMin = function(data, series) {
+    return Math.min.apply(Math, data);
+  };
   Sai.GeoChart.prototype.normalize = function(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, d, dataWithoutNulls, i, max, min, series;
     this.ndata = {};
@@ -677,13 +683,13 @@
         }
         return _d;
       })();
-      max = Math.max.apply(Math, dataWithoutNulls);
-      min = Math.min.apply(Math, dataWithoutNulls);
+      max = this.getMax(dataWithoutNulls, series);
+      min = this.getMin(dataWithoutNulls, series);
       this.ndata[series] = (function() {
         _h = []; (_i = data[series].length);
 
         for (i = 0; i < _i; i += 1) {
-          _h.push(((typeof (_j = data[series][i]) !== "undefined" && _j !== null) && [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] || null));
+          _h.push(((typeof (_j = data[series][i]) !== "undefined" && _j !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] : null));
         }
         return _h;
       })();

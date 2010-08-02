@@ -115,18 +115,81 @@
           'Math sightings': 'green',
         }
         
+        var repubs = getRandomData(44, 56, states.length);
+        var dems = getRandomData(44, 56, states.length);
+        var greens = getRandomData(0, 0.5, states.length);
+        
+        realData_repub = {
+          'HI': 27,
+          'AK': 60,
+          'FL': 48,
+          'NH': 45,
+          'MI': 41,
+          'VT': 31,
+          'ME': 40,
+          'RI': 35,
+          'NY': 36,
+          'PA': 44,
+          'NJ': 42,
+          'DE': 37,
+          'MD': 37,
+          'VA': 47,
+          'WV': 56,
+          'OH': 47,
+          'IN': 49,
+          'IL': 37,
+          'CT': 38,
+          'WI': 43,
+          'NC': 49,
+          'MA': 36,
+          'TN': 57,
+          'AR': 59,
+          'MO': 50,
+          'GA': 52,
+          'SC': 54,
+          'KY': 58,
+          'AL': 61,
+          'LA': 59,
+          'MS': 56,
+          'IA': 45,
+          'MN': 44,
+          'OK': 66,
+          'TX': 55,
+          'NM': 42,
+          'KS': 57,
+          'NE': 57,
+          'SD': 53,
+          'ND': 53,
+          'WY': 65,
+          'MT': 50,
+          'CO': 45,
+          'ID': 61,
+          'UT': 63,
+          'AZ': 54,
+          'NV': 43,
+          'OR': 41,
+          'WA': 41,
+          'CA': 37,
+          'DC': 23,
+        };
+        
+        for(i = 0; i < states.length; i++) {
+          repubs[i] = realData_repub[states[i]];
+          dems[i] = 100 - repubs[i];
+        }
+        
         var USChromaticData = {
           '__MAP__': Sai.data.map.us,
           '__LABELS__': states, // parallel to data arrays
-          'Confidence': USdata.Confidence,
-          'Unemployment': USdata.Unemployment,
-          'Dropped calls': USdata['Dropped calls']
+          'Republican': repubs,
+          //'Green Party': greens,
+          'Democrat': dems,
         };
         
         var USChromaticColors = {
-          'Confidence': 'red',
-          'Unemployment': 'green',
-          'Dropped calls': 'blue',
+          'Republican': '#f00',
+          'Democrat': 'blue',
+          //'Green Party': '#0f0',
         };
         
         var uschart = new Sai.GeoChart(r, 800, 750, 400, 350, USdata, {bgcolor: tea, title: "MAP OF US", interactive: true}).setColors(UScolors).render();

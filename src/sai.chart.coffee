@@ -553,6 +553,12 @@ class Sai.GeoChart extends Sai.Chart
   plotType = Sai.GeoPlot
   interactiveHistogram = true
   
+  getMax = (data, series) ->
+    Math.max.apply(Math, data)
+  
+  getMin = (data, series) ->
+    Math.min.apply(Math, data)
+  
   normalize = (data) ->
     @ndata = {}
     
@@ -560,9 +566,9 @@ class Sai.GeoChart extends Sai.Chart
       continue if series.match('^__')
       continue unless data[series]?
       dataWithoutNulls = d for d in data[series] when d?
-      max = Math.max.apply(Math, dataWithoutNulls)
-      min = Math.min.apply(Math, dataWithoutNulls)
-      @ndata[series] = (data[series][i]? and [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] or null) for i in [0...data[series].length]
+      max = @getMax(dataWithoutNulls, series)
+      min = @getMin(dataWithoutNulls, series)
+      @ndata[series] = (if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length]
   
   
   dataGroups = (data) ->
