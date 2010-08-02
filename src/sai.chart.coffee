@@ -145,7 +145,7 @@ class Sai.Chart
     @padding.top += 5
     # (over)estimate how much padding we need for the last label
     if @data['__LABELS__'][@data['__LABELS__'].length - 1]?
-      @padding.right += (@data['__LABELS__'][@data['__LABELS__'].length - 1].length / 2) * 5
+      @padding.right += (Sai.util.prettystr(@data['__LABELS__'][@data['__LABELS__'].length - 1]).length / 2) * 5
     
     
     vlen = @h - (@padding.bottom + haxis_height + @padding.top)

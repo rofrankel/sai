@@ -237,7 +237,7 @@
     this.axisWidth = 1.5;
     haxis_height = LINE_HEIGHT + 2 + 10;
     this.padding.top += 5;
-    (typeof (_a = this.data['__LABELS__'][this.data['__LABELS__'].length - 1]) !== "undefined" && _a !== null) ? this.padding.right += (this.data['__LABELS__'][this.data['__LABELS__'].length - 1].length / 2) * 5 : null;
+    (typeof (_a = this.data['__LABELS__'][this.data['__LABELS__'].length - 1]) !== "undefined" && _a !== null) ? this.padding.right += (Sai.util.prettystr(this.data['__LABELS__'][this.data['__LABELS__'].length - 1]).length / 2) * 5 : null;
     vlen = this.h - (this.padding.bottom + haxis_height + this.padding.top);
     this.vaxis = this.r.sai.prim.vaxis(this.ndata[group].__YVALS__, this.x + this.padding.left, this.y - (this.padding.bottom + haxis_height), vlen, this.axisWidth);
     this.vaxis.translate(this.vaxis.getBBox().width, 0);
