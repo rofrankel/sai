@@ -144,7 +144,13 @@ class Sai.BarPlot extends Sai.Plot
 # map looks like {width: w, height: h, paths: {CODE: "...", CODE: "..."}}
 # data looks like {series: {series: [a, b, c]}, series2 = {series2: [b, c, a]}, __META__ = {__LABELS__: [CODE, CODE, CODE]}}
 class Sai.GeoPlot extends Sai.Plot
-
+  
+  getRegionColor = (colors, ridx, mainSeries) ->
+    return Sai.util.multiplyColor(colors[mainSeries], @data[mainSeries][ridx]?[1] or 0).str
+  
+  getRegionOpacity = (ridx, mainSeries) ->
+    if @data[mainSeries][ridx]?[1]? then 1 else 0.25
+  
   render = (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
     @set.remove()
@@ -162,7 +168,8 @@ class Sai.GeoPlot extends Sai.Plot
       for series of @rawdata
         info[series] = @rawdata[series][ridx]
       
-      val = if @data[mainSeries][ridx]? then @data[mainSeries][ridx][1] else null
+      color = @getRegionColor(colors, ridx, mainSeries)
+      opacity = @getRegionOpacity(ridx, mainSeries)
       
       @set.push(
         # fDraw, attrs, extras, hoverattrs
@@ -172,10 +179,10 @@ class Sai.GeoPlot extends Sai.Plot
               r.path(path).translate(x, y).scale(scale, scale, x, y)
           )(map.paths[region], Math.min(@w / map.width, @h / map.height), @x, @y - @h),
           {
-            'fill': Sai.util.multiplyColor(colors[mainSeries], val)
+            'fill': color
             'stroke': bgcolor
             'stroke-width': 0.75
-            'opacity': if val isnt null then 1 else 0.25
+            'opacity': opacity
           }
           if shouldInteract then Sai.util.infoSetters(fSetInfo, info) else null,
           if shouldInteract then [{'fill-opacity': .75}, {'fill-opacity': 1}] else null
@@ -186,3 +193,23 @@ class Sai.GeoPlot extends Sai.Plot
     @set.translate((@w - bbox.width) / 2, (@h - bbox.height) / 2)
     
     return this
+
+
+class Sai.ChromaticGeoPlot extends Sai.GeoPlot
+  
+  getRegionColor = (colors, ridx, mainSeries) ->
+    r = g = b = 0
+    for series of @data
+      rgb = Sai.util.multiplyColor(colors[series], @data[series][ridx]?[1] or 0)
+      r += rgb.r
+      g += rgb.g
+      b += rgb.b
+    
+    return  "rgb($r, $g, $b)"
+  
+  getRegionOpacity = (ridx, mainSeries) ->
+    for series of @data
+      if @data[series][ridx]?[1]? then return 1
+    
+    return 0.25
+  

@@ -72,9 +72,17 @@ Sai.util.transformCoords = function(coords, canvas) {
   }
 };
 Sai.util.multiplyColor = function(colorStr, coeff, bob) {
-  var rgb;
+  var b, g, r, rgb;
   rgb = Raphael.getRGB(colorStr);
-  return ("rgb(" + (rgb.r * coeff) + ", " + (rgb.g * coeff) + ", " + (rgb.b * coeff) + ")");
+  r = rgb.r * coeff;
+  g = rgb.g * coeff;
+  b = rgb.b * coeff;
+  return {
+    r: r,
+    g: g,
+    b: b,
+    str: ("rgb(" + r + ", " + g + ", " + b + ")")
+  };
 };
 Sai.data = (typeof (_c = Sai.data) !== "undefined" && _c !== null) ? Sai.data : {};
 Sai.data.map = (typeof (_d = Sai.data.map) !== "undefined" && _d !== null) ? Sai.data.map : {};

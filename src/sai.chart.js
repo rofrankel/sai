@@ -347,13 +347,13 @@
     return this.padding.top += 30;
   };
   Sai.Chart.prototype.drawInfo = function(info, clear) {
-    var _a, label;
+    var _a, _b, label;
     clear = (typeof clear !== "undefined" && clear !== null) ? clear : true;
-    info = (typeof info !== "undefined" && info !== null) ? info : this.default_info;
+    info = (typeof info !== "undefined" && info !== null) ? info : (typeof (_a = this.default_info) !== "undefined" && _a !== null) ? this.default_info() : {};
     clear ? (this.info_data = {}) : null;
     this.info ? this.info.remove() : null;
-    _a = info;
-    for (label in _a) { if (__hasProp.call(_a, label)) {
+    _b = info;
+    for (label in _b) { if (__hasProp.call(_b, label)) {
       !(label.match("^__")) ? (this.info_data[label] = info[label] || '(no data)') : null;
     }}
     this.info = this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data);
@@ -656,6 +656,8 @@
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.GeoChart, Sai.Chart);
+  Sai.GeoChart.prototype.plotType = Sai.GeoPlot;
+  Sai.GeoChart.prototype.interactiveHistogram = true;
   Sai.GeoChart.prototype.normalize = function(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, d, dataWithoutNulls, i, max, min, series;
     this.ndata = {};
@@ -706,7 +708,7 @@
     return groups;
   };
   Sai.GeoChart.prototype.drawHistogramLegend = function(seriesNames) {
-    var _a, extrapadding, height, width;
+    var _a, _b, _c, _d, _e, _f, _g, _h, data, dataWithoutNulls, extrapadding, height, histogram, i, j, max, maxLabel, min, minLabel, px, series, width, x, yvals;
     this.histogramLegend = this.r.set();
     extrapadding = 20;
     height = Math.max(0.1 * (this.h - this.padding.bottom - this.padding.top), 50);
@@ -714,93 +716,93 @@
     (_a = seriesNames.length);
 
     for (i = 0; i < _a; i += 1) {
-      (function() {
-        var _b, _c, _d, _e, _f, _g, _h, data, dataWithoutNulls, histogram, j, max, maxLabel, min, minLabel, px, series, x, yvals;
-        series = seriesNames[i];
-        px = this.x + this.padding.left + (extrapadding / 2) + (i * width);
-        data = (function() {
-          _b = []; (_c = this.ndata[series].length);
+      series = seriesNames[i];
+      px = this.x + this.padding.left + (extrapadding / 2) + (i * width);
+      data = (function() {
+        _b = []; (_c = this.ndata[series].length);
 
-          for (j = 0; j < _c; j += 1) {
-            (typeof (_d = this.ndata[series][j]) !== "undefined" && _d !== null) ? _b.push(this.ndata[series][j][1]) : null;
-          }
-          return _b;
-        }).call(this);
-        dataWithoutNulls = (function() {
-          _e = []; _g = this.data[series];
-          for (_f = 0, _h = _g.length; _f < _h; _f++) {
-            x = _g[_f];
-            (typeof x !== "undefined" && x !== null) ? _e.push(x) : null;
-          }
-          return _e;
-        }).call(this);
-        min = Math.min.apply(Math, dataWithoutNulls);
-        max = Math.max.apply(Math, dataWithoutNulls);
-        yvals = this.getYAxisVals(min, max, true);
-        minLabel = yvals[0];
-        maxLabel = yvals[yvals.length - 1];
-        this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white')));
-        if (this.interactive) {
-          return histogram.click((function(__this) {
-            var __func = function() {
-              return this.renderPlot(series);
-            };
-            return (function() {
-              return __func.apply(__this, arguments);
-            });
-          })(this)).hover(((function(__this) {
-            var __func = function(set) {
-              return (function(__this) {
-                var __func = function() {
-                  set.attr({
-                    'fill-opacity': 0.75
-                  });
-                  return this.drawInfo({
-                    'Click to display on map': series
-                  });
-                };
-                return (function() {
-                  return __func.apply(__this, arguments);
-                });
-              })(this);
-            };
-            return (function() {
-              return __func.apply(__this, arguments);
-            });
-          })(this))(histogram), ((function(__this) {
-            var __func = function(set) {
-              return (function(__this) {
-                var __func = function() {
-                  set.attr({
-                    'fill-opacity': 1.0
-                  });
-                  return this.drawInfo();
-                };
-                return (function() {
-                  return __func.apply(__this, arguments);
-                });
-              })(this);
-            };
-            return (function() {
-              return __func.apply(__this, arguments);
-            });
-          })(this))(histogram));
+        for (j = 0; j < _c; j += 1) {
+          (typeof (_d = this.ndata[series][j]) !== "undefined" && _d !== null) ? _b.push(this.ndata[series][j][1]) : null;
         }
+        return _b;
       }).call(this);
+      dataWithoutNulls = (function() {
+        _e = []; _g = this.data[series];
+        for (_f = 0, _h = _g.length; _f < _h; _f++) {
+          x = _g[_f];
+          (typeof x !== "undefined" && x !== null) ? _e.push(x) : null;
+        }
+        return _e;
+      }).call(this);
+      min = Math.min.apply(Math, dataWithoutNulls);
+      max = Math.max.apply(Math, dataWithoutNulls);
+      yvals = this.getYAxisVals(min, max, true);
+      minLabel = yvals[0];
+      maxLabel = yvals[yvals.length - 1];
+      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white')));
+      this.interactive ? this.setupHistogramInteraction(histogram, series) : null;
     }
     this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);
     return this.padding.bottom += height + 5;
   };
+  Sai.GeoChart.prototype.setupHistogramInteraction = function(histogram, series) {
+    return histogram.click((function(__this) {
+      var __func = function() {
+        return this.renderPlot(series);
+      };
+      return (function() {
+        return __func.apply(__this, arguments);
+      });
+    })(this)).hover(((function(__this) {
+      var __func = function(set) {
+        return (function(__this) {
+          var __func = function() {
+            set.attr({
+              'fill-opacity': 0.75
+            });
+            return this.drawInfo({
+              'Click to display on map': series
+            });
+          };
+          return (function() {
+            return __func.apply(__this, arguments);
+          });
+        })(this);
+      };
+      return (function() {
+        return __func.apply(__this, arguments);
+      });
+    })(this))(histogram), ((function(__this) {
+      var __func = function(set) {
+        return (function(__this) {
+          var __func = function() {
+            set.attr({
+              'fill-opacity': 1.0
+            });
+            return this.drawInfo();
+          };
+          return (function() {
+            return __func.apply(__this, arguments);
+          });
+        })(this);
+      };
+      return (function() {
+        return __func.apply(__this, arguments);
+      });
+    })(this))(histogram));
+  };
   Sai.GeoChart.prototype.renderPlot = function(mainSeries) {
     this.geoPlot == undefined ? undefined : this.geoPlot.set.remove();
-    this.geoPlot = (new Sai.GeoPlot(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data)).render(this.colors || {}, this.data['__MAP__'], mainSeries, this.bgcolor, this.interactive, this.drawInfo);
+    this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data)).render(this.colors || {}, this.data['__MAP__'], mainSeries, this.bgcolor, this.interactive, this.drawInfo);
     return this.logo == undefined ? undefined : this.logo.toFront();
+  };
+  Sai.GeoChart.prototype.default_info = function() {
+    return {
+      '': this.interactive ? 'Click histogram below to change map display' : ''
+    };
   };
   Sai.GeoChart.prototype.render = function() {
     var _a, _b, series;
-    this.default_info = {
-      '': this.interactive ? 'Click histogram below to change map display' : ''
-    };
     this.drawTitle();
     this.setupInfoSpace();
     this.drawHistogramLegend((function() {
@@ -816,6 +818,19 @@
     this.drawInfo();
     this.renderPlot(this.data['__DEFAULT__']);
     return this;
+  };
+
+  Sai.ChromaticGeoChart = function() {
+    return Sai.GeoChart.apply(this, arguments);
+  };
+  __extends(Sai.ChromaticGeoChart, Sai.GeoChart);
+  Sai.ChromaticGeoChart.prototype.plotType = Sai.ChromaticGeoPlot;
+  Sai.ChromaticGeoChart.prototype.interactiveHistogram = false;
+  Sai.ChromaticGeoChart.prototype.default_info = function() {
+    return {};
+  };
+  Sai.ChromaticGeoChart.prototype.setupHistogramInteraction = function(histogram, series) {
+    return false;
   };
 
 })();

@@ -157,6 +157,17 @@
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.GeoPlot, Sai.Plot);
+  Sai.GeoPlot.prototype.getRegionColor = function(colors, ridx, mainSeries) {
+    return Sai.util.multiplyColor(colors[mainSeries], (this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) || 0).str;
+  };
+  Sai.GeoPlot.prototype.getRegionOpacity = function(ridx, mainSeries) {
+    var _a;
+    if ((typeof (_a = this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null)) {
+      return 1;
+    } else {
+      return 0.25;
+    }
+  };
   Sai.GeoPlot.prototype.render = function(colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) {
     var _a, _b, _c, bbox, i, region, regions, ri;
     this.set.remove();
@@ -170,7 +181,7 @@
     _c = map.paths;
     for (_b in _c) { if (__hasProp.call(_c, _b)) {
       (function() {
-        var _d, _e, hoverShape, info, name, ridx, series, val;
+        var _d, color, hoverShape, info, name, opacity, ridx, series;
         var region = _b;
         ridx = ri[region];
         name = map.name[region];
@@ -181,16 +192,17 @@
         for (series in _d) { if (__hasProp.call(_d, series)) {
           info[series] = this.rawdata[series][ridx];
         }}
-        val = (typeof (_e = this.data[mainSeries][ridx]) !== "undefined" && _e !== null) ? this.data[mainSeries][ridx][1] : null;
+        color = this.getRegionColor(colors, ridx, mainSeries);
+        opacity = this.getRegionOpacity(ridx, mainSeries);
         return this.set.push((hoverShape = this.r.sai.prim.hoverShape((function(path, scale, x, y) {
           return function(r) {
             return r.path(path).translate(x, y).scale(scale, scale, x, y);
           };
         })(map.paths[region], Math.min(this.w / map.width, this.h / map.height), this.x, this.y - this.h), {
-          'fill': Sai.util.multiplyColor(colors[mainSeries], val),
+          'fill': color,
           'stroke': bgcolor,
           'stroke-width': 0.75,
-          'opacity': val !== null ? 1 : 0.25
+          'opacity': opacity
         }, shouldInteract ? Sai.util.infoSetters(fSetInfo, info) : null, shouldInteract ? [
           {
             'fill-opacity': .75
@@ -203,6 +215,33 @@
     bbox = this.set.getBBox();
     this.set.translate((this.w - bbox.width) / 2, (this.h - bbox.height) / 2);
     return this;
+  };
+
+  Sai.ChromaticGeoPlot = function() {
+    return Sai.GeoPlot.apply(this, arguments);
+  };
+  __extends(Sai.ChromaticGeoPlot, Sai.GeoPlot);
+  Sai.ChromaticGeoPlot.prototype.getRegionColor = function(colors, ridx, mainSeries) {
+    var _a, b, g, r, rgb, series;
+    r = (g = (b = 0));
+    _a = this.data;
+    for (series in _a) { if (__hasProp.call(_a, series)) {
+      rgb = Sai.util.multiplyColor(colors[series], (this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) || 0);
+      r += rgb.r;
+      g += rgb.g;
+      b += rgb.b;
+    }}
+    return ("rgb(" + r + ", " + g + ", " + b + ")");
+  };
+  Sai.ChromaticGeoPlot.prototype.getRegionOpacity = function(ridx, mainSeries) {
+    var _a, _b, series;
+    _a = this.data;
+    for (series in _a) { if (__hasProp.call(_a, series)) {
+      if ((typeof (_b = this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) !== "undefined" && _b !== null)) {
+        return 1;
+      }
+    }}
+    return 0.25;
   };
 
 })();

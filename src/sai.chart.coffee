@@ -248,7 +248,7 @@ class Sai.Chart
   drawInfo = (info, clear) =>  
     clear ?= true
     
-    info ?= @default_info
+    info ?= if @default_info? then @default_info() else {}
     
     # clear out anything that already exists
     if clear
@@ -550,6 +550,9 @@ class Sai.StockChart extends Sai.Chart
 
 class Sai.GeoChart extends Sai.Chart
   
+  plotType = Sai.GeoPlot
+  interactiveHistogram = true
+  
   normalize = (data) ->
     @ndata = {}
     
@@ -602,31 +605,33 @@ class Sai.GeoChart extends Sai.Chart
         )
       )
       
-      if @interactive
-        histogram.click( () => @renderPlot(series) )
-        .hover(
-          ((set) =>
-            () =>
-              set.attr({'fill-opacity': 0.75})
-              @drawInfo({'Click to display on map': series})
-          )(histogram)
-          ,
-          ((set) =>
-            () =>
-              set.attr({'fill-opacity': 1.0})
-              @drawInfo()
-          )(histogram)
-        )
-    
+      if @interactive then @setupHistogramInteraction(histogram, series)
     
     @histogramLegend.translate((@w - @padding.left - @padding.right - @histogramLegend.getBBox().width) / 2, 0)
     
     @padding.bottom += height + 5
+
+  setupHistogramInteraction = (histogram, series) ->  
+    histogram.click( () => @renderPlot(series) )
+    .hover(
+      ((set) =>
+        () =>
+          set.attr({'fill-opacity': 0.75})
+          @drawInfo({'Click to display on map': series})
+      )(histogram)
+      ,
+      ((set) =>
+        () =>
+          set.attr({'fill-opacity': 1.0})
+          @drawInfo()
+      )(histogram)
+    )
   
   renderPlot = (mainSeries) =>
+    
     @geoPlot?.set.remove()
     
-    @geoPlot = (new Sai.GeoPlot(
+    @geoPlot = (new @plotType(
       @r,
       @px, @py, @pw, @ph,
       @ndata,
@@ -636,8 +641,10 @@ class Sai.GeoChart extends Sai.Chart
     
     @logo?.toFront()
   
+  default_info = () ->
+    {'': if @interactive then 'Click histogram below to change map display' else ''}
+
   render = () ->
-    @default_info = {'': if @interactive then 'Click histogram below to change map display' else ''}
     
     @drawTitle()
     @setupInfoSpace()
@@ -652,3 +659,17 @@ class Sai.GeoChart extends Sai.Chart
     @renderPlot(@data['__DEFAULT__'])
     
     return this
+
+
+class Sai.ChromaticGeoChart extends Sai.GeoChart
+  
+  plotType = Sai.ChromaticGeoPlot
+  interactiveHistogram = false
+  
+  default_info = () ->
+    {}
+  
+  setupHistogramInteraction = (histogram, series) ->  
+    false
+
+

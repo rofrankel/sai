@@ -61,9 +61,16 @@ Sai.util.transformCoords = (coords, canvas) ->
   else
     {x: event.x, y: event.y}
 
+
 Sai.util.multiplyColor = (colorStr, coeff, bob) ->
   rgb = Raphael.getRGB(colorStr)
-  return "rgb(${rgb.r * coeff}, ${rgb.g * coeff}, ${rgb.b * coeff})"
+  r = rgb.r * coeff
+  g = rgb.g * coeff
+  b = rgb.b * coeff
+  return {
+    r: r, g: g, b: b,
+    str: "rgb($r, $g, $b)"
+  }
 
 
 # for maps

@@ -6,8 +6,8 @@
     <script type="text/javascript" charset="utf-8" src="lib/raphael-min.js"></script>
     <script type="text/javascript" charset="utf-8" src="src/sai.js"></script>
     <script type="text/javascript" charset="utf-8" src="src/sai.prim.js"></script>
-    <script type="text/javascript" charset="utf-8" src="src/sai.chart.js"></script>
     <script type="text/javascript" charset="utf-8" src="src/sai.plot.js"></script>
+    <script type="text/javascript" charset="utf-8" src="src/sai.chart.js"></script>
     <script type="text/javascript" charset="utf-8" src="data/us.svg.json"></script>
     <script type="text/javascript" charset="utf-8" src="data/europe.svg.json"></script>
   </head>
@@ -31,8 +31,9 @@
         var r = Raphael("abc", 1800, 850);
         
         var data = {'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null],
-                    'AMZN': [4, 5, 19, 1, -3, 2, -6, 6, 10, 6, 4, 2],
-                    'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 0, -1],
+                    'AMZN': [4, 5, 12, 1, -3, 2, -6, 6, 10, 6, 4, 2],
+                    'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, -1],
+                    'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 1],
                     '__LABELS__': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']};
         
         var csdata = {
@@ -62,7 +63,7 @@
           '__LABELS__': ['Q1', 'Q2', 'Q3', 'Q4']
         };
         
-        var chart = new Sai.LineChart(r, 0, 350, 350, 350, data, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, area: true}).setColors(colors).render();
+        var chart = new Sai.LineChart(r, 0, 350, 350, 350, data, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true}).setColors(colors).render();
         var stackedchart = new Sai.LineChart(r, 400, 350, 350, 350, data, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true}).setColors(colors).render();
         var stockchart = new Sai.StockChart(r, 800, 350, 350, 350, msft_data, {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'7 day avg': olive}).render();
         var barc = new Sai.BarChart(r, 0, 750, 350, 350, bardata, {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
@@ -106,7 +107,23 @@
           'Math sightings': 'green',
         }
         
+        var USChromaticData = {
+          '__MAP__': Sai.data.map.us,
+          '__LABELS__': states, // parallel to data arrays
+          '__DEFAULT__': 'Confidence',
+          'Confidence': USdata.Confidence,
+          'Unemployment': USdata.Unemployment,
+          'Dropped calls': USdata['Dropped calls']
+        };
+        
+        var USChromaticColors = {
+          'Confidence': 'red',
+          'Unemployment': 'green',
+          'Dropped calls': 'blue',
+        };
+        
         var uschart = new Sai.GeoChart(r, 800, 750, 400, 350, USdata, {bgcolor: tea, title: "MAP OF US", interactive: true}).setColors(UScolors).render();
+        var uschromaticchart = new Sai.ChromaticGeoChart(r, 1250, 750, 400, 350, USChromaticData, {bgcolor: tea, title: "CHROMATIC MAP OF US", interactive: true}).setColors(USChromaticColors).render();
         
       </script>
     </div>

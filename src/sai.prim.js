@@ -335,7 +335,7 @@
     for (bucket in _e) { if (__hasProp.call(_e, bucket)) {
       bh = (y - bartop) * (buckets[bucket] / maxBucket);
       set.push(this.rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({
-        'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets),
+        'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets).str,
         'stroke-width': 0,
         'stroke-opacity': 0
       }));
