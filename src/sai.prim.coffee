@@ -146,7 +146,6 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
   for i in [0...coords.length]
     if coords[i]?[0]?
       x = coords[i][0] - offset + (i * barwidth)
-      alert 'c.i.0: ' + coords[i][0] + ', offset: ' + offset + ', x: ' + x
       
       group.push(
         @rect(x,
