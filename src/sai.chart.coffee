@@ -561,13 +561,29 @@ class Sai.GeoChart extends Sai.Chart
   
   normalize = (data) ->
     @ndata = {}
+    @bounds = {}
+    maxes = {}
+    mins = {}
     
     for series of data
       continue if series.match('^__')
       continue unless data[series]?
       dataWithoutNulls = d for d in data[series] when d?
-      max = @getMax(dataWithoutNulls, series)
-      min = @getMin(dataWithoutNulls, series)
+      maxes[series] = @getMax(dataWithoutNulls, series)
+      if not overallMax? or maxes[series] > overallMax then overallMax = maxes[series]
+      mins[series] = @getMin(dataWithoutNulls, series)
+      if not overallMin? or mins[series] < overallMin then overallMin = mins[series]
+    
+    for series of data
+      continue if series.match('^__')
+      continue unless data[series]?
+      if @opts.groupedNormalization
+        max = overallMax
+        min = overallMin
+      else
+        max = maxes[series]
+        min = mins[series]
+      @bounds[series] = [min, max]
       @ndata[series] = (if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length]
   
   
@@ -592,10 +608,14 @@ class Sai.GeoChart extends Sai.Chart
       series = seriesNames[i]
       px = @x + @padding.left + (extrapadding / 2) + (i * width)
       data = @ndata[series][j][1] for j in [0...@ndata[series].length] when @ndata[series][j]?
-      dataWithoutNulls = x for x in @data[series] when x?
-      min = Math.min.apply(Math, dataWithoutNulls)
-      max = Math.max.apply(Math, dataWithoutNulls)
-      yvals = @getYAxisVals(min, max, true)
+      
+      if @bounds?[series]?
+        [min, max] = @bounds[series]
+      else
+        dataWithoutNulls = x for x in @data[series] when x?
+        [min, max] = [Math.min.apply(Math, dataWithoutNulls), Math.max.apply(Math, dataWithoutNulls)]
+      
+      yvals =  @getYAxisVals(min, max, true)
       minLabel = yvals[0]
       maxLabel = yvals[yvals.length - 1]
       @histogramLegend.push(

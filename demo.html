@@ -182,18 +182,18 @@
           '__MAP__': Sai.data.map.us,
           '__LABELS__': states, // parallel to data arrays
           'Republican': repubs,
-          //'Green Party': greens,
           'Democrat': dems,
+          'Green Party': greens,
         };
         
         var USChromaticColors = {
-          'Republican': '#f00',
-          'Democrat': 'blue',
-          //'Green Party': '#0f0',
+          'Republican': '#c00',
+          'Democrat': '#00c',
+          'Green Party': '#0f0',
         };
         
         var uschart = new Sai.GeoChart(r, 800, 750, 400, 350, USdata, {bgcolor: tea, title: "MAP OF US", interactive: true}).setColors(UScolors).render();
-        var uschromaticchart = new Sai.ChromaticGeoChart(r, 1250, 750, 400, 350, USChromaticData, {bgcolor: tea, title: "CHROMATIC MAP OF US", interactive: true}).setColors(USChromaticColors).render();
+        var uschromaticchart = new Sai.ChromaticGeoChart(r, 1250, 750, 400, 350, USChromaticData, {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
         
       </script>
     </div>

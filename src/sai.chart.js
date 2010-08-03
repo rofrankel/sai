@@ -665,36 +665,58 @@
     return Math.min.apply(Math, data);
   };
   Sai.GeoChart.prototype.normalize = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, d, dataWithoutNulls, i, max, min, series;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, d, dataWithoutNulls, i, max, maxes, min, mins, overallMax, overallMin, series;
     this.ndata = {};
-    _a = []; _b = data;
-    for (series in _b) { if (__hasProp.call(_b, series)) {
+    this.bounds = {};
+    maxes = {};
+    mins = {};
+    _a = data;
+    for (series in _a) { if (__hasProp.call(_a, series)) {
       if (series.match('^__')) {
         continue;
       }
-      if (!((typeof (_c = data[series]) !== "undefined" && _c !== null))) {
+      if (!((typeof (_b = data[series]) !== "undefined" && _b !== null))) {
         continue;
       }
       dataWithoutNulls = (function() {
-        _d = []; _f = data[series];
-        for (_e = 0, _g = _f.length; _e < _g; _e++) {
-          d = _f[_e];
-          (typeof d !== "undefined" && d !== null) ? _d.push(d) : null;
+        _c = []; _e = data[series];
+        for (_d = 0, _f = _e.length; _d < _f; _d++) {
+          d = _e[_d];
+          (typeof d !== "undefined" && d !== null) ? _c.push(d) : null;
         }
-        return _d;
+        return _c;
       })();
-      max = this.getMax(dataWithoutNulls, series);
-      min = this.getMin(dataWithoutNulls, series);
+      maxes[series] = this.getMax(dataWithoutNulls, series);
+      !(typeof overallMax !== "undefined" && overallMax !== null) || maxes[series] > overallMax ? (overallMax = maxes[series]) : null;
+      mins[series] = this.getMin(dataWithoutNulls, series);
+      !(typeof overallMin !== "undefined" && overallMin !== null) || mins[series] < overallMin ? (overallMin = mins[series]) : null;
+    }}
+    _g = []; _h = data;
+    for (series in _h) { if (__hasProp.call(_h, series)) {
+      if (series.match('^__')) {
+        continue;
+      }
+      if (!((typeof (_i = data[series]) !== "undefined" && _i !== null))) {
+        continue;
+      }
+      if (this.opts.groupedNormalization) {
+        max = overallMax;
+        min = overallMin;
+      } else {
+        max = maxes[series];
+        min = mins[series];
+      }
+      this.bounds[series] = [min, max];
       this.ndata[series] = (function() {
-        _h = []; (_i = data[series].length);
+        _j = []; (_k = data[series].length);
 
-        for (i = 0; i < _i; i += 1) {
-          _h.push(((typeof (_j = data[series][i]) !== "undefined" && _j !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] : null));
+        for (i = 0; i < _k; i += 1) {
+          _j.push(((typeof (_l = data[series][i]) !== "undefined" && _l !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] : null));
         }
-        return _h;
+        return _j;
       })();
     }}
-    return _a;
+    return _g;
   };
   Sai.GeoChart.prototype.dataGroups = function(data) {
     var _a, _b, _c, groups, seriesName;
@@ -714,7 +736,7 @@
     return groups;
   };
   Sai.GeoChart.prototype.drawHistogramLegend = function(seriesNames) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, data, dataWithoutNulls, extrapadding, height, histogram, i, j, max, maxLabel, min, minLabel, px, series, width, x, yvals;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, data, dataWithoutNulls, extrapadding, height, histogram, i, j, max, maxLabel, min, minLabel, px, series, width, x, yvals;
     this.histogramLegend = this.r.set();
     extrapadding = 20;
     height = Math.max(0.1 * (this.h - this.padding.bottom - this.padding.top), 50);
@@ -732,16 +754,23 @@
         }
         return _b;
       }).call(this);
-      dataWithoutNulls = (function() {
-        _e = []; _g = this.data[series];
-        for (_f = 0, _h = _g.length; _f < _h; _f++) {
-          x = _g[_f];
-          (typeof x !== "undefined" && x !== null) ? _e.push(x) : null;
-        }
-        return _e;
-      }).call(this);
-      min = Math.min.apply(Math, dataWithoutNulls);
-      max = Math.max.apply(Math, dataWithoutNulls);
+      if ((typeof (_f = this.bounds == undefined ? undefined : this.bounds[series]) !== "undefined" && _f !== null)) {
+        _e = this.bounds[series];
+        min = _e[0];
+        max = _e[1];
+      } else {
+        dataWithoutNulls = (function() {
+          _g = []; _i = this.data[series];
+          for (_h = 0, _j = _i.length; _h < _j; _h++) {
+            x = _i[_h];
+            (typeof x !== "undefined" && x !== null) ? _g.push(x) : null;
+          }
+          return _g;
+        }).call(this);
+        _k = [Math.min.apply(Math, dataWithoutNulls), Math.max.apply(Math, dataWithoutNulls)];
+        min = _k[0];
+        max = _k[1];
+      }
       yvals = this.getYAxisVals(min, max, true);
       minLabel = yvals[0];
       maxLabel = yvals[yvals.length - 1];
