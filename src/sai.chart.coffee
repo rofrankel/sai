@@ -7,7 +7,6 @@ class Sai.Chart
     @y = y or 0
     @w = w or 640
     @h = h or 480
-    @r.rect(@x, @y - @h, @w, @h).attr('stroke', 'red')
     @stacked = opts.stacked
     @opts = opts
     
