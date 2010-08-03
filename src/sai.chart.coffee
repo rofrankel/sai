@@ -7,6 +7,7 @@ class Sai.Chart
     @y = y or 0
     @w = w or 640
     @h = h or 480
+    @r.rect(@x, @y - @h, @w, @h).attr('stroke', 'red')
     @stacked = opts.stacked
     @opts = opts
     
@@ -606,7 +607,7 @@ class Sai.GeoChart extends Sai.Chart
     
     for i in [0...seriesNames.length]
       series = seriesNames[i]
-      px = @x + @padding.left + (extrapadding / 2) + (i * width)
+      px = @x + (i * width)
       data = @ndata[series][j][1] for j in [0...@ndata[series].length] when @ndata[series][j]?
       
       if @bounds?[series]?
@@ -634,7 +635,6 @@ class Sai.GeoChart extends Sai.Chart
       if @interactive then @setupHistogramInteraction(histogram, series)
     
     @histogramLegend.translate((@w - @padding.left - @padding.right - @histogramLegend.getBBox().width) / 2, 0)
-    
     @padding.bottom += height + 5
 
   setupHistogramInteraction = (histogram, series) ->  

@@ -34,7 +34,6 @@ class Sai.Plot
 class Sai.LinePlot extends Sai.Plot
   
   render = (colors, width) ->
-    
     @set.remove()
     
     for series of @dndata when not series.match('^__')

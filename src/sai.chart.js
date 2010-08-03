@@ -15,6 +15,7 @@
     this.y = y || 0;
     this.w = w || 640;
     this.h = h || 480;
+    this.r.rect(this.x, this.y - this.h, this.w, this.h).attr('stroke', 'red');
     this.stacked = opts.stacked;
     this.opts = opts;
     this.setData(data);
@@ -745,7 +746,7 @@
 
     for (i = 0; i < _a; i += 1) {
       series = seriesNames[i];
-      px = this.x + this.padding.left + (extrapadding / 2) + (i * width);
+      px = this.x + (i * width);
       data = (function() {
         _b = []; (_c = this.ndata[series].length);
 
