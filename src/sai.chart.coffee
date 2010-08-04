@@ -263,8 +263,8 @@ class Sai.Chart
     
     @info = @r.sai.prim.info(@info_x, @info_y, @info_w, @info_data)
   
-  getIndex = (mx, my) ->
-    tx = Sai.util.transformCoords({x: mx, y: my}, @r.canvas).x
+  getIndex = (evt) ->
+    tx = Sai.util.transformCoords(evt, @r.canvas).x
     return Math.round((@data.__LABELS__.length - 1) * (tx - @px) / @pw)
 
 
@@ -308,7 +308,7 @@ class Sai.LineChart extends Sai.Chart
     everything = @r.set().push(@bg, @plot.set, @dots, @logo, @guidelines).mousemove(
       moveDots = (event) =>
         
-        idx = @getIndex(event.clientX, event.clientY)
+        idx = @getIndex(event)
         
         info = {}
         for series of ndata['all']

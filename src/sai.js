@@ -53,13 +53,14 @@ Sai.util.infoSetters = function(fSetInfo, info) {
     }
   ];
 };
-Sai.util.transformCoords = function(coords, canvas) {
+Sai.util.transformCoords = function(evt, canvas) {
   var svgPoint, xformed;
   if (canvas.getScreenCTM) {
     svgPoint = canvas.createSVGPoint();
-    svgPoint.x = coords.x;
-    svgPoint.y = coords.y;
+    svgPoint.x = evt.clientX;
+    svgPoint.y = evt.clientY;
     xformed = svgPoint.matrixTransform(canvas.getScreenCTM().inverse());
+    navigator.userAgent.toLowerCase().indexOf('chrome') !== -1 || navigator.userAgent.toLowerCase().indexOf('safari') !== -1 ? xformed.x += document.body.scrollLeft : null;
     return {
       x: xformed.x,
       y: xformed.y

@@ -359,12 +359,9 @@
     this.info = this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data);
     return this.info;
   };
-  Sai.Chart.prototype.getIndex = function(mx, my) {
+  Sai.Chart.prototype.getIndex = function(evt) {
     var tx;
-    tx = Sai.util.transformCoords({
-      x: mx,
-      y: my
-    }, this.r.canvas).x;
+    tx = Sai.util.transformCoords(evt, this.r.canvas).x;
     return Math.round((this.data.__LABELS__.length - 1) * (tx - this.px) / this.pw);
   };
 
@@ -406,7 +403,7 @@
     everything = this.r.set().push(this.bg, this.plot.set, this.dots, this.logo, this.guidelines).mousemove((moveDots = (function(__this) {
       var __func = function(event) {
         var _c, _d, _e, _f, i, idx, info, pos;
-        idx = this.getIndex(event.clientX, event.clientY);
+        idx = this.getIndex(event);
         info = {};
         _c = ndata['all'];
         for (series in _c) { if (__hasProp.call(_c, series)) {
