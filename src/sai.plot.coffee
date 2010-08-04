@@ -182,7 +182,7 @@ class Sai.GeoPlot extends Sai.Plot
           )(map.paths[region], Math.min(@w / map.width, @h / map.height), @x, @y - @h),
           {
             'fill': color
-            'stroke': 'black'
+            'stroke': if @opts.fromWhite then 'black' else bgcolor
             'stroke-width': 0.5
             'opacity': opacity
           },

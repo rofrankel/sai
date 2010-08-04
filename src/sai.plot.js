@@ -206,7 +206,7 @@
           };
         })(map.paths[region], Math.min(this.w / map.width, this.h / map.height), this.x, this.y - this.h), {
           'fill': color,
-          'stroke': 'black',
+          'stroke': this.opts.fromWhite ? 'black' : bgcolor,
           'stroke-width': 0.5,
           'opacity': opacity
         }, (shouldInteract ? [
