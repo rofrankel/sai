@@ -1,6 +1,6 @@
 # A plot is a primitive visualization of data
 class Sai.Plot
-  constructor = (r, x, y, w, h, data, rawdata) ->
+  constructor = (r, x, y, w, h, data, rawdata, opts) ->
     @r = r
     @x = x or 0
     @y = y or 0
@@ -9,6 +9,7 @@ class Sai.Plot
     @data = data
     @setDenormalizedData()
     @rawdata = rawdata
+    @opts = opts or {}
     @set = @r.set()
   
   setDenormalizedData = () ->
@@ -145,10 +146,10 @@ class Sai.BarPlot extends Sai.Plot
 class Sai.GeoPlot extends Sai.Plot
   
   getRegionColor = (colors, ridx, mainSeries) ->
-    return Sai.util.multiplyColor(colors[mainSeries], @data[mainSeries][ridx]?[1] or 0).str
+    return Sai.util.multiplyColor(colors[mainSeries], @data[mainSeries][ridx]?[1] or 0, @opts.fromWhite, if @opts.fromWhite then 0.2 else 0).str
   
   getRegionOpacity = (ridx, mainSeries) ->
-    if @data[mainSeries][ridx]?[1]? then 1 else 0.25
+    if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then .15 else 0.25)
   
   render = (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
@@ -170,6 +171,8 @@ class Sai.GeoPlot extends Sai.Plot
       color = @getRegionColor(colors, ridx, mainSeries)
       opacity = @getRegionOpacity(ridx, mainSeries)
       
+      infoSetters = Sai.util.infoSetters(fSetInfo, info)
+      
       @set.push(
         # fDraw, attrs, extras, hoverattrs
         hoverShape = @r.sai.prim.hoverShape(
@@ -179,12 +182,22 @@ class Sai.GeoPlot extends Sai.Plot
           )(map.paths[region], Math.min(@w / map.width, @h / map.height), @x, @y - @h),
           {
             'fill': color
-            'stroke': bgcolor
-            'stroke-width': 0.75
+            'stroke': 'black'
+            'stroke-width': 0.5
             'opacity': opacity
-          }
-          if shouldInteract then Sai.util.infoSetters(fSetInfo, info) else null,
-          if shouldInteract then [{'fill-opacity': .75}, {'fill-opacity': 1}] else null
+          },
+          (if shouldInteract
+            [
+              (target) ->
+                # opera and IE have a bug where calling toFront() blocks the mouseout event
+                target.toFront() unless navigator.userAgent.toLowerCase().indexOf('msie') isnt -1 or navigator.userAgent.toLowerCase().indexOf('opera') isnt -1
+                infoSetters[0]()
+              ,
+              infoSetters[1]
+            ]
+          else
+            null),
+          if shouldInteract then [{'fill-opacity': .75, 'stroke-width': 2}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
         )
       )
       
@@ -199,7 +212,7 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
   getRegionColor = (colors, ridx, mainSeries) ->
     r = g = b = 0
     for series of @data
-      rgb = Sai.util.multiplyColor(colors[series], @data[series][ridx]?[1] or 0)
+      rgb = Sai.util.multiplyColor(colors[series], @data[series][ridx]?[1] or 0, @opts.fromWhite)
       r += rgb.r
       g += rgb.g
       b += rgb.b

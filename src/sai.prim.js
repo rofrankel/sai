@@ -7,12 +7,12 @@
       function() {
         target.attr(attrOn);
         if (extras) {
-          return extras[0]();
+          return extras[0](target);
         }
       }, function() {
         target.attr(attrOff);
         if (extras) {
-          return extras[1]();
+          return extras[1](target);
         }
       }
     ];
@@ -293,10 +293,11 @@
     var hoverfuncs, shape;
     shape = fDraw(this).attr(attrs);
     hoverfuncs = getHoverfuncs(shape, hoverattrs && hoverattrs[0] || {}, hoverattrs && hoverattrs[1] || {}, extras);
-    shape.hover(hoverfuncs[0], hoverfuncs[1]);
+    shape.mouseover(hoverfuncs[0]);
+    shape.mouseout(hoverfuncs[1]);
     return shape;
   };
-  Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, color, bgcolor, numBuckets) {
+  Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) {
     var _b, _c, _d, _e, bartop, bg, bh, bucket, buckets, bw, datum, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set;
     bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : 'white';
     numBuckets = (typeof numBuckets !== "undefined" && numBuckets !== null) ? numBuckets : 10;
@@ -331,9 +332,10 @@
     for (bucket in _e) { if (__hasProp.call(_e, bucket)) {
       bh = (y - bartop) * (buckets[bucket] / maxBucket);
       set.push(this.rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({
-        'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets).str,
-        'stroke-width': 0,
-        'stroke-opacity': 0
+        'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str,
+        'stroke-width': fromWhite ? .35 : 0,
+        'stroke-opacity': fromWhite ? 1 : 0,
+        'stroke': 'black'
       }));
     }}
     set.push((lbl = this.text(x + w / 2, bartop - 6, Sai.util.prettystr(label))));

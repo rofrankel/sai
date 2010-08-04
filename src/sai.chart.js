@@ -16,7 +16,7 @@
     this.w = w || 640;
     this.h = h || 480;
     this.stacked = opts.stacked;
-    this.opts = opts;
+    this.opts = opts || {};
     this.setData(data);
     this.title_text = opts.title;
     this.interactive = opts.interactive;
@@ -380,7 +380,7 @@
     }
   };
   Sai.LineChart.prototype.render = function() {
-    var _a, _b, color, ndata, plotType, series;
+    var _a, _b, color, everything, moveDots, ndata, plotType, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawLegend();
@@ -403,7 +403,7 @@
         'fill': color
       }).hide());
     }}
-    this.r.set().push(this.bg, this.plot.set, this.dots, this.logo, this.guidelines).mousemove((function(__this) {
+    everything = this.r.set().push(this.bg, this.plot.set, this.dots, this.logo, this.guidelines).mousemove((moveDots = (function(__this) {
       var __func = function(event) {
         var _c, _d, _e, _f, i, idx, info, pos;
         idx = this.getIndex(event.clientX, event.clientY);
@@ -430,15 +430,16 @@
       return (function() {
         return __func.apply(__this, arguments);
       });
-    })(this)).mouseout((function(__this) {
+    })(this))).mouseout((function(__this) {
       var __func = function(event) {
-        this.drawInfo({});
+        this.drawInfo({}, true);
         return this.dots.hide();
       };
       return (function() {
         return __func.apply(__this, arguments);
       });
     })(this));
+    navigator.userAgent.indexOf('MSIE') !== -1 ? everything.hover(moveDots, function() {    }) : null;
     this.logo == undefined ? undefined : this.logo.toFront();
     return this;
   };
@@ -541,7 +542,7 @@
     return ['volume'];
   };
   Sai.StockChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, avgColors, avgNdata, glow_width, i, p, rawdata, series, shouldDrawLegend, vol;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, avgColors, avgNdata, everything, glow_width, i, moveGlow, p, rawdata, series, shouldDrawLegend, vol;
     this.drawTitle();
     this.setupInfoSpace();
     avgColors = {};
@@ -615,7 +616,7 @@
       'stroke-opacity': 0
     }).toBack().hide();
     this.bg.toBack();
-    this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove((function(__this) {
+    everything = this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove((moveGlow = (function(__this) {
       var __func = function(event) {
         var _k, _l, idx, info, notNull;
         idx = this.getIndex(event.clientX, event.clientY);
@@ -636,15 +637,16 @@
       return (function() {
         return __func.apply(__this, arguments);
       });
-    })(this)).mouseout((function(__this) {
+    })(this))).mouseout((function(__this) {
       var __func = function(event) {
-        this.drawInfo({});
+        this.drawInfo({}, true);
         return this.glow.hide();
       };
       return (function() {
         return __func.apply(__this, arguments);
       });
     })(this));
+    navigator.userAgent.indexOf('MSIE') !== -1 ? everything.hover(moveGlow, function() {    }) : null;
     this.logo == undefined ? undefined : this.logo.toFront();
     return this;
   };
@@ -774,7 +776,7 @@
       yvals = this.getYAxisVals(min, max, true);
       minLabel = yvals[0];
       maxLabel = yvals[yvals.length - 1];
-      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white')));
+      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white', this.opts.fromWhite)));
       this.interactive ? this.setupHistogramInteraction(histogram, series) : null;
     }
     this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);
@@ -828,7 +830,9 @@
   };
   Sai.GeoChart.prototype.renderPlot = function(mainSeries) {
     this.geoPlot == undefined ? undefined : this.geoPlot.set.remove();
-    this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data)).render(this.colors || {}, this.data['__MAP__'], mainSeries, this.bgcolor, this.interactive, this.drawInfo);
+    this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data, {
+      fromWhite: this.opts.fromWhite
+    })).render(this.colors || {}, this.data['__MAP__'], mainSeries, this.bgcolor, this.interactive, this.drawInfo);
     return this.logo == undefined ? undefined : this.logo.toFront();
   };
   Sai.GeoChart.prototype.default_info = function() {

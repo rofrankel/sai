@@ -62,16 +62,43 @@ Sai.util.transformCoords = (coords, canvas) ->
     {x: event.x, y: event.y}
 
 
-Sai.util.multiplyColor = (colorStr, coeff, bob) ->
+Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding) ->
+  padding ?= 0
+  coeff = padding + (1.0 - padding) * coeff
   rgb = Raphael.getRGB(colorStr)
-  r = rgb.r * coeff
-  g = rgb.g * coeff
-  b = rgb.b * coeff
+  if fromWhite
+    r = rgb.r + ((255 - rgb.r) * (1.0 - coeff))
+    g = rgb.g + ((255 - rgb.g) * (1.0 - coeff))
+    b = rgb.b + ((255 - rgb.b) * (1.0 - coeff))
+  else
+    r = rgb.r * coeff
+    g = rgb.g * coeff
+    b = rgb.b * coeff
   return {
     r: r, g: g, b: b,
     str: "rgb($r, $g, $b)"
   }
 
+# if a channel color is 2/3 of the way from black to mirror,
+# then the result in that channel is 1/3 of the way from the mirror to white
+Sai.util.reflectColor = (color, mirror) ->
+  max = 255
+  
+  crgb = Raphael.getRGB(color)
+  mrgb = Raphael.getRGB(mirror)
+  rgb = {}
+  for channel in ['r', 'g', 'b']
+    c = crgb[channel]
+    m = mrgb[channel]
+    if c == m
+      rgb[channel] = c
+    # if c is .9 and m is .2 then we want 2 * (1 - 7/8) = 1.75
+    else if c > m 
+      rgb[channel] =  m * ((max - c) / (max - m))
+    else
+      rgb[channel] = (max * (m - c) + (m * c)) / m
+  
+  return "rgb(${rgb.r}, ${rgb.g}, ${rgb.b})"
 
 # for maps
 Sai.data ?= {}

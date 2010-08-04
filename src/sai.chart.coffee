@@ -8,7 +8,7 @@ class Sai.Chart
     @w = w or 640
     @h = h or 480
     @stacked = opts.stacked
-    @opts = opts
+    @opts = opts or {}
     
     @setData(data)
     
@@ -305,8 +305,8 @@ class Sai.LineChart extends Sai.Chart
       
       @dots.push(@r.circle(0, 0, 4).attr({'fill': color}).hide())
     
-    @r.set().push(@bg, @plot.set, @dots, @logo, @guidelines).mousemove(
-      (event) =>
+    everything = @r.set().push(@bg, @plot.set, @dots, @logo, @guidelines).mousemove(
+      moveDots = (event) =>
         
         idx = @getIndex(event.clientX, event.clientY)
         
@@ -323,10 +323,16 @@ class Sai.LineChart extends Sai.Chart
         
     ).mouseout(
       (event) =>
-        @drawInfo({})
+        @drawInfo({}, true)
         @dots.hide()
     )
     
+    if navigator.userAgent.indexOf('MSIE') isnt -1
+      everything.hover(
+        moveDots,
+        () ->
+      )
+        
     @logo?.toFront()
     
     return this
@@ -522,8 +528,8 @@ class Sai.StockChart extends Sai.Chart
     
     @bg.toBack()
     
-    @r.set().push(@bg, @plots, @logo, @glow, @guidelines).mousemove(
-      (event) =>
+    everything = @r.set().push(@bg, @plots, @logo, @glow, @guidelines).mousemove(
+      moveGlow = (event) =>
         
         idx = @getIndex(event.clientX, event.clientY)
         
@@ -539,9 +545,15 @@ class Sai.StockChart extends Sai.Chart
         
     ).mouseout(
       (event) =>
-        @drawInfo({})
+        @drawInfo({}, true)
         @glow.hide()
     )
+    
+    if navigator.userAgent.indexOf('MSIE') isnt -1
+      everything.hover(
+        moveGlow,
+        () ->
+      )
     
     @logo?.toFront()
     
@@ -627,7 +639,9 @@ class Sai.GeoChart extends Sai.Chart
           minLabel,
           maxLabel,
           series,
-          @colors[series], 'white'
+          @colors[series],
+          'white',
+          @opts.fromWhite
         )
       )
       
@@ -660,7 +674,8 @@ class Sai.GeoChart extends Sai.Chart
       @r,
       @px, @py, @pw, @ph,
       @ndata,
-      @data
+      @data,
+      {fromWhite: @opts.fromWhite}
     ))
     .render(@colors or {}, @data['__MAP__'], mainSeries, @bgcolor, @interactive, @drawInfo)
     

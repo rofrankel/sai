@@ -4,11 +4,11 @@ getHoverfuncs = (target, attrOn, attrOff, extras) ->
   return [
     () ->
       target.attr(attrOn)
-      if extras then extras[0]()
+      if extras then extras[0](target)
     ,
     () ->
       target.attr(attrOff)
-      if extras then extras[1]()
+      if extras then extras[1](target)
   ]
 
 Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fill, shouldInteract, fSetInfo, extras) ->
@@ -323,16 +323,18 @@ Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
     hoverattrs and hoverattrs[1] or {},
     extras
   )
-  
+  ###
   shape.hover(
     hoverfuncs[0],
     hoverfuncs[1]
   )
-  
+  ###
+  shape.mouseover(hoverfuncs[0])
+  shape.mouseout(hoverfuncs[1])
   return shape
 
 
-Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgcolor, numBuckets) ->
+Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) ->
   bgcolor ?= 'white'
   numBuckets ?= 10
   
@@ -374,7 +376,13 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
   for bucket of buckets
     bh = (y - bartop) * (buckets[bucket] / maxBucket)
     set.push(
-      @rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets).str, 'stroke-width': 0, 'stroke-opacity': 0})
+      @rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh)
+      .attr({
+        'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str,
+        'stroke-width': if fromWhite then .35 else 0,
+        'stroke-opacity': if fromWhite then 1 else 0,
+        'stroke': 'black'
+      })
     )
   
   set.push(lbl = @text(x + w/2, bartop - 6, Sai.util.prettystr(label)))

@@ -71,18 +71,47 @@ Sai.util.transformCoords = function(coords, canvas) {
     };
   }
 };
-Sai.util.multiplyColor = function(colorStr, coeff, bob) {
+Sai.util.multiplyColor = function(colorStr, coeff, fromWhite, padding) {
   var b, g, r, rgb;
+  padding = (typeof padding !== "undefined" && padding !== null) ? padding : 0;
+  coeff = padding + (1.0 - padding) * coeff;
   rgb = Raphael.getRGB(colorStr);
-  r = rgb.r * coeff;
-  g = rgb.g * coeff;
-  b = rgb.b * coeff;
+  if (fromWhite) {
+    r = rgb.r + ((255 - rgb.r) * (1.0 - coeff));
+    g = rgb.g + ((255 - rgb.g) * (1.0 - coeff));
+    b = rgb.b + ((255 - rgb.b) * (1.0 - coeff));
+  } else {
+    r = rgb.r * coeff;
+    g = rgb.g * coeff;
+    b = rgb.b * coeff;
+  }
   return {
     r: r,
     g: g,
     b: b,
     str: ("rgb(" + r + ", " + g + ", " + b + ")")
   };
+};
+Sai.util.reflectColor = function(color, mirror) {
+  var _c, _d, _e, c, channel, crgb, m, max, mrgb, rgb;
+  max = 255;
+  crgb = Raphael.getRGB(color);
+  mrgb = Raphael.getRGB(mirror);
+  rgb = {};
+  _d = ['r', 'g', 'b'];
+  for (_c = 0, _e = _d.length; _c < _e; _c++) {
+    channel = _d[_c];
+    c = crgb[channel];
+    m = mrgb[channel];
+    if (c === m) {
+      rgb[channel] = c;
+    } else if (c > m) {
+      rgb[channel] = m * ((max - c) / (max - m));
+    } else {
+      rgb[channel] = (max * (m - c) + (m * c)) / m;
+    }
+  }
+  return ("rgb(" + (rgb.r) + ", " + (rgb.g) + ", " + (rgb.b) + ")");
 };
 Sai.data = (typeof (_c = Sai.data) !== "undefined" && _c !== null) ? Sai.data : {};
 Sai.data.map = (typeof (_d = Sai.data.map) !== "undefined" && _d !== null) ? Sai.data.map : {};

@@ -6,7 +6,7 @@
     child.prototype = new ctor();
     child.prototype.constructor = child;
   };
-  Sai.Plot = function(r, x, y, w, h, data, rawdata) {
+  Sai.Plot = function(r, x, y, w, h, data, rawdata, opts) {
     this.r = r;
     this.x = x || 0;
     this.y = y || 0;
@@ -15,6 +15,7 @@
     this.data = data;
     this.setDenormalizedData();
     this.rawdata = rawdata;
+    this.opts = opts || {};
     this.set = this.r.set();
     return this;
   };
@@ -158,14 +159,18 @@
   };
   __extends(Sai.GeoPlot, Sai.Plot);
   Sai.GeoPlot.prototype.getRegionColor = function(colors, ridx, mainSeries) {
-    return Sai.util.multiplyColor(colors[mainSeries], (this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) || 0).str;
+    return Sai.util.multiplyColor(colors[mainSeries], (this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) || 0, this.opts.fromWhite, this.opts.fromWhite ? 0.2 : 0).str;
   };
   Sai.GeoPlot.prototype.getRegionOpacity = function(ridx, mainSeries) {
     var _a;
     if ((typeof (_a = this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null)) {
       return 1;
     } else {
-      return 0.25;
+      if (this.opts.fromWhite) {
+        return .15;
+      } else {
+        return 0.25;
+      }
     }
   };
   Sai.GeoPlot.prototype.render = function(colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) {
@@ -181,7 +186,7 @@
     _c = map.paths;
     for (_b in _c) { if (__hasProp.call(_c, _b)) {
       (function() {
-        var _d, color, hoverShape, info, name, opacity, ridx, series;
+        var _d, color, hoverShape, info, infoSetters, name, opacity, ridx, series;
         var region = _b;
         ridx = ri[region];
         name = map.name[region];
@@ -194,20 +199,30 @@
         }}
         color = this.getRegionColor(colors, ridx, mainSeries);
         opacity = this.getRegionOpacity(ridx, mainSeries);
+        infoSetters = Sai.util.infoSetters(fSetInfo, info);
         return this.set.push((hoverShape = this.r.sai.prim.hoverShape((function(path, scale, x, y) {
           return function(r) {
             return r.path(path).translate(x, y).scale(scale, scale, x, y);
           };
         })(map.paths[region], Math.min(this.w / map.width, this.h / map.height), this.x, this.y - this.h), {
           'fill': color,
-          'stroke': bgcolor,
-          'stroke-width': 0.75,
+          'stroke': 'black',
+          'stroke-width': 0.5,
           'opacity': opacity
-        }, shouldInteract ? Sai.util.infoSetters(fSetInfo, info) : null, shouldInteract ? [
+        }, (shouldInteract ? [
+          function(target) {
+            if (!(navigator.userAgent.toLowerCase().indexOf('msie') !== -1 || navigator.userAgent.toLowerCase().indexOf('opera') !== -1)) {
+              target.toFront();
+            }
+            return infoSetters[0]();
+          }, infoSetters[1]
+        ] : null), shouldInteract ? [
           {
-            'fill-opacity': .75
+            'fill-opacity': .75,
+            'stroke-width': 2
           }, {
-            'fill-opacity': 1
+            'fill-opacity': 1,
+            'stroke-width': 0.5
           }
         ] : null)));
       }).call(this);
@@ -226,7 +241,7 @@
     r = (g = (b = 0));
     _a = this.data;
     for (series in _a) { if (__hasProp.call(_a, series)) {
-      rgb = Sai.util.multiplyColor(colors[series], (this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) || 0);
+      rgb = Sai.util.multiplyColor(colors[series], (this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) || 0, this.opts.fromWhite);
       r += rgb.r;
       g += rgb.g;
       b += rgb.b;
