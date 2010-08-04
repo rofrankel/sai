@@ -219,7 +219,7 @@
         ] : null), shouldInteract ? [
           {
             'fill-opacity': .75,
-            'stroke-width': 2
+            'stroke-width': (this.opts.fromWhite ? 2 : 0.5)
           }, {
             'fill-opacity': 1,
             'stroke-width': 0.5

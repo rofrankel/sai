@@ -197,7 +197,7 @@ class Sai.GeoPlot extends Sai.Plot
             ]
           else
             null),
-          if shouldInteract then [{'fill-opacity': .75, 'stroke-width': 2}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
+          if shouldInteract then [{'fill-opacity': .75, 'stroke-width': (if @opts.fromWhite then 2 else 0.5)}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
         )
       )
       
