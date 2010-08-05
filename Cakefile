@@ -1,14 +1,13 @@
 fs = require('fs')
-coffee = require('./coffee-script')
+coffee = require('coffee-script')
 
 compile = (source, noWrap) ->
   fs.readFile "#source\.coffee", (err, code) ->
     try
-      puts "comiling #source\.coffee"
       js = coffee.compile(code.toString(), {source: "#source\.coffee", noWrap: noWrap or false})
       fs.writeFile "#source\.js", js
     catch err
-      console.log err
+      console.log "#source\.coffee: #err"
 
 
 task 'build', 'build all of the source files', ->
