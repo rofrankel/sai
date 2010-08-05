@@ -12,7 +12,7 @@ getHoverfuncs = (target, attrOn, attrOff, extras) ->
   ]
 
 Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fill, shouldInteract, fSetInfo, extras) ->
-  color ?= '#000'
+  color ?= 'black'
   body_width++ unless body_width % 2
   bx = x - (body_width / 2.0)
   
@@ -49,7 +49,7 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fil
 
 
 Raphael.fn.sai.prim.line = (coords, color, width) ->
-  color ?= '#000'
+  color ?= 'black'
   width ?= 1
   
   for coord in coords
@@ -63,7 +63,7 @@ Raphael.fn.sai.prim.line = (coords, color, width) ->
 
 
 Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
-  color ?= '#000'
+  color ?= 'black'
   width ?= 1
   
   for coord in coords
@@ -76,7 +76,7 @@ Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
       areaPath = ("M" + coord[0] + " " + coord[1])
   
   for i in [baseline.length-1..0] by -1
-    areaPath += "L${baseline[i][0]},${baseline[i][1]}"
+    areaPath += "L#{baseline[i][0]},#{baseline[i][1]}"
   
   area = @path(areaPath).attr({'fill': color, 'stroke-width': 0, 'stroke-opacity': 0, 'fill-opacity': 0.35})
   stroke = @path(strokePath).attr({'stroke': color, 'stroke-width': width})
@@ -176,7 +176,7 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
 Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
-  color ?= '#000'
+  color ?= 'black'
   
   line = @path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
   ticks = @set()
@@ -200,7 +200,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
 Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
-  color ?= '#000'
+  color ?= 'black'
   
   line = @path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
   ticks = @set()
@@ -369,7 +369,7 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
     if idx of buckets then buckets[idx] += 1 else buckets[idx] = 1
     maxBucket = Math.max(maxBucket, buckets[idx])
   
-  set.push(hrule = @path("M$x,$y l$w, 0").attr('stroke', color))
+  set.push(hrule = @path("M#x,#y l#w, 0").attr('stroke', color))
   y -= 1
   
   bw = w / numBuckets

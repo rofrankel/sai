@@ -78,7 +78,7 @@ Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding) ->
     b = rgb.b * coeff
   return {
     r: r, g: g, b: b,
-    str: "rgb($r, $g, $b)"
+    str: "rgb(#r, #g, #b)"
   }
 
 # if a channel color is 2/3 of the way from black to mirror,
@@ -100,7 +100,7 @@ Sai.util.reflectColor = (color, mirror) ->
     else
       rgb[channel] = (max * (m - c) + (m * c)) / m
   
-  return "rgb(${rgb.r}, ${rgb.g}, ${rgb.b})"
+  return "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
 
 # for maps
 Sai.data ?= {}

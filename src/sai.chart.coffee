@@ -1,7 +1,7 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
   
-  constructor = (r, x, y, w, h, data, opts) ->
+  constructor: (r, x, y, w, h, data, opts) ->
     @r = r
     @x = x or 0
     @y = y or 0
@@ -23,13 +23,13 @@ class Sai.Chart
       bottom: 2
     }
   
-  groupsToNullPad = () ->
+  groupsToNullPad: () ->
     return []
   
-  nonNegativeGroups = () ->
+  nonNegativeGroups: () ->
     []
   
-  setData = (data) ->
+  setData: (data) ->
     @data = {}
     
     # deep copy
@@ -56,23 +56,23 @@ class Sai.Chart
     
     @normalize(@data)
   
-  nullPad = (seriesName) ->
+  nullPad: (seriesName) ->
     if seriesName of @data
       @data[seriesName] = [null].concat(@data[seriesName].concat([null]))
   
   # a line chart plots everything, but a stock chart only cares about e.g. high low open close avg vol
-  caresAbout = (seriesName) ->
+  caresAbout: (seriesName) ->
     return not seriesName.match("^__")
   
   # Used to determine whether a data series should be used to scale the overall chart.
   # For example, in a stock chart, volume doesn't scale the chart.
-  dataGroups = (data) ->
+  dataGroups: (data) ->
     {
       'all': seriesName for seriesName of data when @caresAbout(seriesName)
       '__META__': seriesName for seriesName of data when seriesName.match("^__")
     }
   
-  getYAxisVals = (min, max, nopad) ->
+  getYAxisVals: (min, max, nopad) ->
     nopad ?= false
     mag = Math.floor(rawmag = (Math.log(max - min) / Math.LN10) - 0.4)
     step = Math.pow(10, mag)
@@ -87,21 +87,21 @@ class Sai.Chart
     return Sai.util.round(i, step) for i in [bottom..top] by step
   
   # takes e.g. groups[group], not just a group name
-  getMax = (data, group) ->
+  getMax: (data, group) ->
     return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d?) for series in group when data[series]?)
   
   # takes e.g. groups[group], not just a group name
-  getMin = (data, group) ->
+  getMin: (data, group) ->
     return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d?) for series in group when data[series]?)
   
-  getStackedMax = (data, group) ->
+  getStackedMax: (data, group) ->
     return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...@data['__LABELS__'].length])
   
   # stacked charts generally have a 0 baseline
-  getStackedMin = (data, group) ->
+  getStackedMin: (data, group) ->
     return 0
   
-  normalize = (data) ->
+  normalize: (data) ->
     groups = @dataGroups(data)
     @ndata = {}
     if @stacked? then @stackedNdata = {}
@@ -132,7 +132,7 @@ class Sai.Chart
         
         @ndata[group].__YVALS__ = yvals
   
-  addAxes = (group) ->
+  addAxes: (group) ->
     
     LINE_HEIGHT = 10
     
@@ -162,19 +162,19 @@ class Sai.Chart
     
     return @r.set().push(@haxis).push(@vaxis)
 
-  setPlotCoords = () ->
+  setPlotCoords: () ->
     @px = @x + @padding.left
     @py = @y - @padding.bottom
     @pw = @w - @padding.left - @padding.right
     @ph = @h - @padding.bottom - @padding.top
   
-  drawBG = () ->
+  drawBG: () ->
     @bg = @r.rect(@px? and @px or @x,
                           @py? and (@py - @ph) or (@y - @h),
                           @pw? and @pw or @w,
                           @ph? and @ph or @h).attr({fill: @bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
   
-  logoPos = () ->
+  logoPos: () ->
     w = 160
     h = 34
     [
@@ -184,29 +184,29 @@ class Sai.Chart
       h
     ]
   
-  drawLogo = () ->
+  drawLogo: () ->
     [x, y, w, h] = @logoPos()
     @logo = @r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25})
   
-  render = () ->
+  render: () ->
     @plot ?= new Sai.Plot(@r)
     @plot.render()
     return this
   
   # map from series name to color
-  setColors = (colors) ->
+  setColors: (colors) ->
     @colors ?= {}
     for series of colors
       if series of @data
         @colors[series] = colors[series]
     return this
   
-  setColor = (series, color) ->
+  setColor: (series, color) ->
     @colors ?= {}
     @colors[series] = color
     return this
   
-  drawGuideline = (h, group) ->
+  drawGuideline: (h, group) ->
     group ?= 'all'
     ymin = @ndata[group].__YVALS__[0]
     ymax = @ndata[group].__YVALS__[@ndata[group].__YVALS__.length - 1]
@@ -225,27 +225,27 @@ class Sai.Chart
     
     @guidelines.push(guideline.set)
   
-  drawLegend = (colors) ->
+  drawLegend: (colors) ->
     colors ?= @colors
     if colors
       @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, colors)
       @padding.bottom += @legend.getBBox().height + 15
       @legend.translate((@w - @legend.getBBox().width) / 2, 0)
   
-  drawTitle = () ->
+  drawTitle: () ->
     if @title_text?
       @title = @r.text(@x + (@w / 2), @y - @h, @title_text).attr({'font-size': 20})
       @title.translate(0, @title.getBBox().height / 2)
       @padding.top += @title.getBBox().height + 5
   
   # this reserves room for the info thing
-  setupInfoSpace = () ->
+  setupInfoSpace: () ->
     @info_y = @y - @h + @padding.top
     @info_x = @x + @padding.left
     @info_w = @w - @padding.left - @padding.right
     @padding.top += 30
   
-  drawInfo = (info, clear) =>  
+  drawInfo: (info, clear) =>  
     clear ?= true
     
     info ?= if @default_info? then @default_info() else {}
@@ -263,17 +263,17 @@ class Sai.Chart
     
     @info = @r.sai.prim.info(@info_x, @info_y, @info_w, @info_data)
   
-  getIndex = (evt) ->
+  getIndex: (evt) ->
     tx = Sai.util.transformCoords(evt, @r.canvas).x
     return Math.round((@data.__LABELS__.length - 1) * (tx - @px) / @pw)
 
 
 class Sai.LineChart extends Sai.Chart
   
-  nonNegativeGroups = () ->
+  nonNegativeGroups: () ->
     if @stacked then ['all'] else []
   
-  render = () ->
+  render: () ->
     @drawTitle()
     @setupInfoSpace()
     @drawLegend()
@@ -340,12 +340,12 @@ class Sai.LineChart extends Sai.Chart
 
 class Sai.Sparkline extends Sai.Chart
   
-  dataGroups = (data) ->
+  dataGroups: (data) ->
     {
       'data': ['data']
     }
   
-  render = () ->
+  render: () ->
     @drawBG()
     
     @plots = @r.set()
@@ -366,13 +366,13 @@ class Sai.Sparkline extends Sai.Chart
 
 class Sai.BarChart extends Sai.Chart
   
-  groupsToNullPad = () ->
+  groupsToNullPad: () ->
     return group for group of @dataGroups()
 
-  nonNegativeGroups = () ->
+  nonNegativeGroups: () ->
     return group for group of @dataGroups()
   
-  render = () ->
+  render: () ->
     @drawTitle()
     @setupInfoSpace()
     @drawLegend()
@@ -414,20 +414,20 @@ class Sai.BarChart extends Sai.Chart
 
 class Sai.StockChart extends Sai.Chart
   
-  groupsToNullPad = () ->
+  groupsToNullPad: () ->
     return group for group of @dataGroups()
   
-  dataGroups = (data) ->
+  dataGroups: (data) ->
     {
       '__META__': ['__LABELS__']
       'volume': ['volume']
       'prices': seriesName for seriesName of data when @caresAbout(seriesName) and seriesName not in ['__LABELS__', 'volume']
     }
   
-  nonNegativeGroups = () ->
+  nonNegativeGroups: () ->
     ['volume']
 
-  render = () ->
+  render: () ->
     @drawTitle()
     @setupInfoSpace()
     
@@ -494,7 +494,8 @@ class Sai.StockChart extends Sai.Chart
                                @px,
                                @py,
                                @pw, @ph,
-                               {'open': @ndata['prices']['open'],
+                               {
+                                'open': @ndata['prices']['open'],
                                 'close': @ndata['prices']['close'],
                                 'high': @ndata['prices']['high'],
                                 'low': @ndata['prices']['low']
@@ -522,7 +523,7 @@ class Sai.StockChart extends Sai.Chart
     
     glow_width = @pw / (@data.__LABELS__.length - 1)
     @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
-                      .attr({fill: "0-$@bgcolor-#DDAA99-$@bgcolor", 'stroke-width': 0, 'stroke-opacity': 0})
+                      .attr({fill: "0-#@bgcolor-\#DDAA99-#@bgcolor", 'stroke-width': 0, 'stroke-opacity': 0})
                       .toBack()
                       .hide()
     
@@ -562,16 +563,16 @@ class Sai.StockChart extends Sai.Chart
 
 class Sai.GeoChart extends Sai.Chart
   
-  plotType = Sai.GeoPlot
-  interactiveHistogram = true
+  plotType: Sai.GeoPlot
+  interactiveHistogram: true
   
-  getMax = (data, series) ->
+  getMax: (data, series) ->
     Math.max.apply(Math, data)
   
-  getMin = (data, series) ->
+  getMin: (data, series) ->
     Math.min.apply(Math, data)
   
-  normalize = (data) ->
+  normalize: (data) ->
     @ndata = {}
     @bounds = {}
     maxes = {}
@@ -599,7 +600,7 @@ class Sai.GeoChart extends Sai.Chart
       @ndata[series] = (if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length]
   
   
-  dataGroups = (data) ->
+  dataGroups: (data) ->
     groups = {
       '__META__': seriesName for seriesName of data when seriesName.match("^__")
     }
@@ -610,7 +611,7 @@ class Sai.GeoChart extends Sai.Chart
     
     return groups
   
-  drawHistogramLegend = (seriesNames) ->
+  drawHistogramLegend: (seriesNames) ->
     @histogramLegend = @r.set()
     extrapadding = 20
     height = Math.max(0.1 * (@h - @padding.bottom - @padding.top), 50)
@@ -650,7 +651,7 @@ class Sai.GeoChart extends Sai.Chart
     @histogramLegend.translate((@w - @padding.left - @padding.right - @histogramLegend.getBBox().width) / 2, 0)
     @padding.bottom += height + 5
 
-  setupHistogramInteraction = (histogram, series) ->  
+  setupHistogramInteraction: (histogram, series) ->  
     histogram.click( () => @renderPlot(series) )
     .hover(
       ((set) =>
@@ -666,7 +667,7 @@ class Sai.GeoChart extends Sai.Chart
       )(histogram)
     )
   
-  renderPlot = (mainSeries) =>
+  renderPlot: (mainSeries) =>
     
     @geoPlot?.set.remove()
     
@@ -681,10 +682,10 @@ class Sai.GeoChart extends Sai.Chart
     
     @logo?.toFront()
   
-  default_info = () ->
+  default_info: () ->
     {'': if @interactive then 'Click histogram below to change map display' else ''}
 
-  render = () ->
+  render: () ->
     
     @drawTitle()
     @setupInfoSpace()
@@ -703,13 +704,13 @@ class Sai.GeoChart extends Sai.Chart
 
 class Sai.ChromaticGeoChart extends Sai.GeoChart
   
-  plotType = Sai.ChromaticGeoPlot
-  interactiveHistogram = false
+  plotType: Sai.ChromaticGeoPlot
+  interactiveHistogram: false
   
-  default_info = () ->
+  default_info: () ->
     {}
   
-  setupHistogramInteraction = (histogram, series) ->  
+  setupHistogramInteraction: (histogram, series) ->  
     false
 
 

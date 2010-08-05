@@ -1,10 +1,11 @@
-(function(){
+(function() {
   var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    var ctor = function(){ };
+    var ctor = function(){};
     ctor.prototype = parent.prototype;
-    child.__superClass__ = parent.prototype;
     child.prototype = new ctor();
     child.prototype.constructor = child;
+    if (typeof parent.extended === "function") parent.extended(child);
+    child.__superClass__ = parent.prototype;
   };
   Sai.Plot = function(r, x, y, w, h, data, rawdata, opts) {
     this.r = r;
@@ -22,19 +23,20 @@
   Sai.Plot.prototype.setDenormalizedData = function() {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, column, dnPoint;
     if (this.data instanceof Array) {
-      this.dndata = (function() {
+      return (this.dndata = (function() {
         _a = []; _c = this.data;
         for (_b = 0, _d = _c.length; _b < _d; _b++) {
           dnPoint = _c[_b];
           _a.push(this.denormalize(dnPoint));
         }
         return _a;
-      }).call(this);
-      return this.dndata;
+      }).call(this));
     } else {
-      this.dndata = (typeof (_e = this.dndata) !== "undefined" && _e !== null) ? this.dndata : {};
+      this.dndata = (typeof this.dndata !== "undefined" && this.dndata !== null) ? this.dndata : {};
       _f = []; _g = this.data;
-      for (column in _g) { if (__hasProp.call(_g, column)) {
+      for (column in _g) {
+        if (!__hasProp.call(_g, column)) continue;
+        _e = _g[column];
         _f.push((this.dndata[column] = (function() {
           _h = []; _j = this.data[column];
           for (_i = 0, _k = _j.length; _i < _k; _i++) {
@@ -43,7 +45,7 @@
           }
           return _h;
         }).call(this)));
-      }}
+      }
       return _f;
     }
   };
@@ -56,104 +58,110 @@
     this.set.push(this.r.rect(20, 20, 20, 20).attr('fill', 'red'), this.r.circle(40, 40, 10).attr('fill', 'blue'));
     return this;
   };
-
   Sai.LinePlot = function() {
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.LinePlot, Sai.Plot);
   Sai.LinePlot.prototype.render = function(colors, width) {
-    var _a, series;
+    var _a, _b, series;
     this.set.remove();
-    _a = this.dndata;
-    for (series in _a) { if (__hasProp.call(_a, series)) {
+    _b = this.dndata;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
       !series.match('^__') ? this.set.push(this.r.sai.prim.line(this.dndata[series], ((colors == undefined ? undefined : colors[series]) || 'black'), width || 1)) : null;
-    }}
+    }
     return this;
   };
-
   Sai.AreaPlot = function() {
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.AreaPlot, Sai.Plot);
   Sai.AreaPlot.prototype.render = function(colors, width, stacked) {
-    var _a, _b, _c, _d, _e, baseline, d, series;
+    var _a, _b, _c, _d, _e, _f, baseline, d, series;
     this.set.remove();
-    _a = this.dndata;
-    for (series in _a) { if (__hasProp.call(_a, series)) {
+    _b = this.dndata;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
       if (!series.match('^__')) {
         baseline = (typeof baseline !== "undefined" && baseline !== null) ? baseline : [this.denormalize([0, 0]), this.denormalize([1, 0])];
         this.set.push(this.r.sai.prim.area(this.dndata[series], (colors == undefined ? undefined : colors[series]) || 'black', width || 1, baseline));
         stacked ? (baseline = (function() {
-          _b = []; _d = this.dndata[series];
-          for (_c = 0, _e = _d.length; _c < _e; _c++) {
-            d = _d[_c];
-            _b.push([d[0], d[1] - width / 2]);
+          _c = []; _e = this.dndata[series];
+          for (_d = 0, _f = _e.length; _d < _f; _d++) {
+            d = _e[_d];
+            _c.push([d[0], d[1] - width / 2]);
           }
-          return _b;
+          return _c;
         }).call(this)) : null;
       }
-    }}
+    }
     return this;
   };
-
   Sai.CandlestickPlot = function() {
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.CandlestickPlot, Sai.Plot);
   Sai.CandlestickPlot.prototype.render = function(colors, body_width, shouldInteract, fSetInfo) {
-    var _a, _b, _c, _d, cdown, cup, i, info, p, upDay;
+    var _a, _b, _c, _d, _e, cdown, cup, i, info, p, upDay;
     this.set.remove();
     cup = (colors == undefined ? undefined : colors['up']) || 'black';
     cdown = (colors == undefined ? undefined : colors['down']) || 'red';
     body_width = (typeof body_width !== "undefined" && body_width !== null) ? body_width : 5;
-    (_a = this.dndata['open'].length);
-
-    for (i = 0; i < _a; i += 1) {
+    _a = this.dndata['open'].length;
+    for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
       if (!((typeof (_b = this.dndata['close'][i]) !== "undefined" && _b !== null))) {
         continue;
       }
       upDay = this.dndata['close'][i][1] < this.dndata['open'][i][1];
       info = {};
-      _c = this.rawdata;
-      for (p in _c) { if (__hasProp.call(_c, p)) {
+      _d = this.rawdata;
+      for (p in _d) {
+        if (!__hasProp.call(_d, p)) continue;
+        _c = _d[p];
         info[p] = this.rawdata[p][i];
-      }}
-      this.set.push(this.r.sai.prim.candlestick(this.dndata['open'][i][0], upDay && this.dndata['close'][i][1] || this.dndata['open'][i][1], upDay && this.dndata['open'][i][1] || this.dndata['close'][i][1], this.dndata['high'][i][1], this.dndata['low'][i][1], body_width || 5, (i && (typeof (_d = this.dndata['close'][i - 1]) !== "undefined" && _d !== null) && (this.dndata['close'][i - 1][1] < this.dndata['close'][i][1])) ? cdown : cup, !upDay, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
+      }
+      this.set.push(this.r.sai.prim.candlestick(this.dndata['open'][i][0], upDay && this.dndata['close'][i][1] || this.dndata['open'][i][1], upDay && this.dndata['open'][i][1] || this.dndata['close'][i][1], this.dndata['high'][i][1], this.dndata['low'][i][1], body_width || 5, (i && (typeof (_e = this.dndata['close'][i - 1]) !== "undefined" && _e !== null) && (this.dndata['close'][i - 1][1] < this.dndata['close'][i][1])) ? cdown : cup, !upDay, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
     }
     return this;
   };
-
   Sai.BarPlot = function() {
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.BarPlot, Sai.Plot);
   Sai.BarPlot.prototype.render = function(stacked, colors, shouldInteract, fSetInfo) {
-    var _a, _b, _c, bardata, barfunc, colorArray, i, info, len, p, series;
+    var _a, _b, _c, _d, _e, _f, bardata, barfunc, colorArray, i, info, len, p, series;
     this.set.remove();
     len = 0;
     colorArray = [];
     barfunc = stacked ? this.r.sai.prim.stackedBar : this.r.sai.prim.groupedBar;
-    _a = this.dndata;
-    for (series in _a) { if (__hasProp.call(_a, series)) {
+    _b = this.dndata;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
       len = this.dndata[series].length;
       colorArray.push((colors == undefined ? undefined : colors[series]) || 'black');
-    }}
-    for (i = 0; i < len; i += 1) {
+    }
+    for (i = 0; (0 <= len ? i < len : i > len); (0 <= len ? i += 1 : i -= 1)) {
       bardata = [];
-      _b = this.dndata;
-      for (series in _b) { if (__hasProp.call(_b, series)) {
+      _d = this.dndata;
+      for (series in _d) {
+        if (!__hasProp.call(_d, series)) continue;
+        _c = _d[series];
         bardata.push(this.dndata[series][i]);
-      }}
+      }
       info = {};
-      _c = this.rawdata;
-      for (p in _c) { if (__hasProp.call(_c, p)) {
+      _f = this.rawdata;
+      for (p in _f) {
+        if (!__hasProp.call(_f, p)) continue;
+        _e = _f[p];
         info[p] = this.rawdata[p][i];
-      }}
+      }
       this.set.push(barfunc(bardata, colorArray, this.w / len, this.y, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
     }
     return this;
   };
-
   Sai.GeoPlot = function() {
     return Sai.Plot.apply(this, arguments);
   };
@@ -163,40 +171,35 @@
   };
   Sai.GeoPlot.prototype.getRegionOpacity = function(ridx, mainSeries) {
     var _a;
-    if ((typeof (_a = this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null)) {
-      return 1;
-    } else {
-      if (this.opts.fromWhite) {
-        return .15;
-      } else {
-        return 0.25;
-      }
-    }
+    return (typeof (_a = this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null) ? 1 : (this.opts.fromWhite ? .15 : 0.25);
   };
   Sai.GeoPlot.prototype.render = function(colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) {
-    var _a, _b, _c, bbox, i, region, regions, ri;
+    var _a, _b, _c, _d, bbox, i, region, regions, ri;
     this.set.remove();
     regions = this.rawdata.__LABELS__;
     ri = {};
-    (_a = regions.length);
-
-    for (i = 0; i < _a; i += 1) {
+    _a = regions.length;
+    for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
       ri[regions[i]] = i;
     }
-    _c = map.paths;
-    for (_b in _c) { if (__hasProp.call(_c, _b)) {
+    _d = map.paths;
+    for (_c in _d) {
+      if (!__hasProp.call(_d, _c)) continue;
       (function() {
-        var _d, color, hoverShape, info, infoSetters, name, opacity, ridx, series;
-        var region = _b;
+        var _e, _f, color, hoverShape, info, infoSetters, name, opacity, ridx, series;
+        var region = _c;
+        var _b = _d[_c];
         ridx = ri[region];
         name = map.name[region];
         info = {
           region: (typeof name !== "undefined" && name !== null) ? name : region
         };
-        _d = this.rawdata;
-        for (series in _d) { if (__hasProp.call(_d, series)) {
+        _f = this.rawdata;
+        for (series in _f) {
+          if (!__hasProp.call(_f, series)) continue;
+          _e = _f[series];
           info[series] = this.rawdata[series][ridx];
-        }}
+        }
         color = this.getRegionColor(colors, ridx, mainSeries);
         opacity = this.getRegionOpacity(ridx, mainSeries);
         infoSetters = Sai.util.infoSetters(fSetInfo, info);
@@ -226,37 +229,39 @@
           }
         ] : null)));
       }).call(this);
-    }}
+    }
     bbox = this.set.getBBox();
     this.set.translate((this.w - bbox.width) / 2, (this.h - bbox.height) / 2);
     return this;
   };
-
   Sai.ChromaticGeoPlot = function() {
     return Sai.GeoPlot.apply(this, arguments);
   };
   __extends(Sai.ChromaticGeoPlot, Sai.GeoPlot);
   Sai.ChromaticGeoPlot.prototype.getRegionColor = function(colors, ridx, mainSeries) {
-    var _a, b, g, r, rgb, series;
+    var _a, _b, b, g, r, rgb, series;
     r = (g = (b = 0));
-    _a = this.data;
-    for (series in _a) { if (__hasProp.call(_a, series)) {
+    _b = this.data;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
       rgb = Sai.util.multiplyColor(colors[series], (this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) || 0, this.opts.fromWhite);
       r += rgb.r;
       g += rgb.g;
       b += rgb.b;
-    }}
+    }
     return ("rgb(" + r + ", " + g + ", " + b + ")");
   };
   Sai.ChromaticGeoPlot.prototype.getRegionOpacity = function(ridx, mainSeries) {
-    var _a, _b, series;
-    _a = this.data;
-    for (series in _a) { if (__hasProp.call(_a, series)) {
-      if ((typeof (_b = this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) !== "undefined" && _b !== null)) {
+    var _a, _b, _c, series;
+    _b = this.data;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
+      if ((typeof (_c = this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) !== "undefined" && _c !== null)) {
         return 1;
       }
-    }}
+    }
     return 0.25;
   };
-
 })();

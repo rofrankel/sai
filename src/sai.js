@@ -1,7 +1,7 @@
-var Sai, _a, _b, _c, _d, _e;
+var Sai;
 Sai = (typeof Sai !== "undefined" && Sai !== null) ? Sai : {};
-Sai.util = (typeof (_a = Sai.util) !== "undefined" && _a !== null) ? Sai.util : {};
-Sai.imagePath = (typeof (_b = Sai.imagePath) !== "undefined" && _b !== null) ? Sai.imagePath : 'images/';
+Sai.util = (typeof Sai.util !== "undefined" && Sai.util !== null) ? Sai.util : {};
+Sai.imagePath = (typeof Sai.imagePath !== "undefined" && Sai.imagePath !== null) ? Sai.imagePath : 'images/';
 Sai.util.roundToMag = function(x, mag) {
   var target;
   mag = (typeof mag !== "undefined" && mag !== null) ? mag : 0;
@@ -12,11 +12,10 @@ Sai.util.round = function(x, target) {
   return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.log(x) / Math.LN10)));
 };
 Sai.util.sumArray = function(a) {
-  var _c, i, sum;
+  var _a, i, sum;
   sum = 0;
-  (_c = a.length);
-
-  for (i = 0; i < _c; i += 1) {
+  _a = a.length;
+  for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
     sum += typeof a[i] === 'number' ? a[i] : 0;
   }
   return sum;
@@ -94,14 +93,14 @@ Sai.util.multiplyColor = function(colorStr, coeff, fromWhite, padding) {
   };
 };
 Sai.util.reflectColor = function(color, mirror) {
-  var _c, _d, _e, c, channel, crgb, m, max, mrgb, rgb;
+  var _a, _b, _c, c, channel, crgb, m, max, mrgb, rgb;
   max = 255;
   crgb = Raphael.getRGB(color);
   mrgb = Raphael.getRGB(mirror);
   rgb = {};
-  _d = ['r', 'g', 'b'];
-  for (_c = 0, _e = _d.length; _c < _e; _c++) {
-    channel = _d[_c];
+  _b = ['r', 'g', 'b'];
+  for (_a = 0, _c = _b.length; _a < _c; _a++) {
+    channel = _b[_a];
     c = crgb[channel];
     m = mrgb[channel];
     if (c === m) {
@@ -114,14 +113,14 @@ Sai.util.reflectColor = function(color, mirror) {
   }
   return ("rgb(" + (rgb.r) + ", " + (rgb.g) + ", " + (rgb.b) + ")");
 };
-Sai.data = (typeof (_c = Sai.data) !== "undefined" && _c !== null) ? Sai.data : {};
-Sai.data.map = (typeof (_d = Sai.data.map) !== "undefined" && _d !== null) ? Sai.data.map : {};
-Raphael.fn.sai = (typeof (_e = Raphael.fn.sai) !== "undefined" && _e !== null) ? Raphael.fn.sai : {};
+Sai.data = (typeof Sai.data !== "undefined" && Sai.data !== null) ? Sai.data : {};
+Sai.data.map = (typeof Sai.data.map !== "undefined" && Sai.data.map !== null) ? Sai.data.map : {};
+Raphael.fn.sai = (typeof Raphael.fn.sai !== "undefined" && Raphael.fn.sai !== null) ? Raphael.fn.sai : {};
 Raphael.fn.sai.chart = function(x, y, w, h, type, data) {
   var chart;
-  type = ({
+  type = (({
     'line': Sai.LineChart
-  })[type] || type;
+  })[type]) || type;
   type = (typeof type !== "undefined" && type !== null) ? type : Sai.Chart;
   chart = new type(this, x, y, w, h, data);
   return chart.render();

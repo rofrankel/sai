@@ -1,6 +1,6 @@
 # A plot is a primitive visualization of data
 class Sai.Plot
-  constructor = (r, x, y, w, h, data, rawdata, opts) ->
+  constructor: (r, x, y, w, h, data, rawdata, opts) ->
     @r = r
     @x = x or 0
     @y = y or 0
@@ -12,7 +12,7 @@ class Sai.Plot
     @opts = opts or {}
     @set = @r.set()
   
-  setDenormalizedData = () ->
+  setDenormalizedData: () ->
     if @data instanceof Array
       @dndata = @denormalize(dnPoint) for dnPoint in @data
     else
@@ -20,11 +20,11 @@ class Sai.Plot
       for column of @data
         @dndata[column] = @denormalize(dnPoint) for dnPoint in @data[column]
   
-  denormalize = (point) ->
+  denormalize: (point) ->
     if point instanceof Array
       return [@x + (@w * point[0]), @y - (@h * point[1])]
 
-  render = () ->
+  render: () ->
     @set.push(
       @r.rect(20, 20, 20, 20).attr('fill', 'red'),
       @r.circle(40, 40, 10).attr('fill', 'blue')
@@ -34,7 +34,7 @@ class Sai.Plot
 
 class Sai.LinePlot extends Sai.Plot
   
-  render = (colors, width) ->
+  render: (colors, width) ->
     @set.remove()
     
     for series of @dndata when not series.match('^__')
@@ -47,7 +47,7 @@ class Sai.LinePlot extends Sai.Plot
 
 class Sai.AreaPlot extends Sai.Plot
   
-  render = (colors, width, stacked) ->
+  render: (colors, width, stacked) ->
     
     @set.remove()
     
@@ -61,10 +61,9 @@ class Sai.AreaPlot extends Sai.Plot
     
     return this
 
-# Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color) ->
 class Sai.CandlestickPlot extends Sai.Plot
 
-  render = (colors, body_width, shouldInteract, fSetInfo) ->
+  render: (colors, body_width, shouldInteract, fSetInfo) ->
     
     @set.remove()
     
@@ -105,7 +104,7 @@ class Sai.BarPlot extends Sai.Plot
   
   # if stacked, plot is rendered stacked...else, grouped
   # colors maps from series name to color string
-  render = (stacked, colors, shouldInteract, fSetInfo) ->
+  render: (stacked, colors, shouldInteract, fSetInfo) ->
     
     @set.remove()
     
@@ -145,13 +144,13 @@ class Sai.BarPlot extends Sai.Plot
 # data looks like {series: {series: [a, b, c]}, series2 = {series2: [b, c, a]}, __META__ = {__LABELS__: [CODE, CODE, CODE]}}
 class Sai.GeoPlot extends Sai.Plot
   
-  getRegionColor = (colors, ridx, mainSeries) ->
+  getRegionColor: (colors, ridx, mainSeries) ->
     return Sai.util.multiplyColor(colors[mainSeries], @data[mainSeries][ridx]?[1] or 0, @opts.fromWhite, if @opts.fromWhite then 0.2 else 0).str
   
-  getRegionOpacity = (ridx, mainSeries) ->
+  getRegionOpacity: (ridx, mainSeries) ->
     if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then .15 else 0.25)
   
-  render = (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
+  render: (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
     @set.remove()
     
@@ -209,7 +208,7 @@ class Sai.GeoPlot extends Sai.Plot
 
 class Sai.ChromaticGeoPlot extends Sai.GeoPlot
   
-  getRegionColor = (colors, ridx, mainSeries) ->
+  getRegionColor: (colors, ridx, mainSeries) ->
     r = g = b = 0
     for series of @data
       rgb = Sai.util.multiplyColor(colors[series], @data[series][ridx]?[1] or 0, @opts.fromWhite)
@@ -217,9 +216,9 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
       g += rgb.g
       b += rgb.b
     
-    return  "rgb($r, $g, $b)"
+    return  "rgb(#r, #g, #b)"
   
-  getRegionOpacity = (ridx, mainSeries) ->
+  getRegionOpacity: (ridx, mainSeries) ->
     for series of @data
       if @data[series][ridx]?[1]? then return 1
     
