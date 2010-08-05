@@ -18,9 +18,9 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fil
   
   body = @rect(bx, by0, body_width, by1-by0 or 1).attr('stroke', color)
   shadow = @path("M" + x + " " + sy0 +
-                    "L" + x + " " + by0 +
-                    "M" + x + " " + by1 +
-                    "L" + x + " " + sy1).attr('stroke', color)
+                 "L" + x + " " + by0 +
+                 "M" + x + " " + by1 +
+                 "L" + x + " " + sy1).attr('stroke', color)
   
   body.attr('fill', if fill then color else 'white')
   
@@ -99,9 +99,9 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
     axisClip = if i is 0 then 1 else 0 # visual hack to prevent bars covering x axis
     stack.push(
       bar = @rect(coords[i][0] - (width / 2.0),
-                coords[i][1],
-                width,
-                height - axisClip)
+                  coords[i][1],
+                  width,
+                  height - axisClip)
       .attr('fill', colors?[i] or 'black')
       .attr('stroke', colors?[i] or 'black')
     )
