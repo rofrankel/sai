@@ -1,15 +1,8 @@
 # A plot is a primitive visualization of data
 class Sai.Plot
-  constructor: (r, x, y, w, h, data, rawdata, opts) ->
-    @r = r
-    @x = x or 0
-    @y = y or 0
-    @w = w or 640
-    @h = h or 480
-    @data = data
+  constructor: (@r, @x, @y, @w, @h, @data, @rawdata, @opts) ->
+    @opts ?= {}
     @setDenormalizedData()
-    @rawdata = rawdata
-    @opts = opts or {}
     @set = @r.set()
   
   setDenormalizedData: () ->

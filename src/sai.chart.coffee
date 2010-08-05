@@ -1,20 +1,10 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
   
-  constructor: (r, x, y, w, h, data, opts) ->
-    @r = r
-    @x = x or 0
-    @y = y or 0
-    @w = w or 640
-    @h = h or 480
-    @stacked = opts.stacked
-    @opts = opts or {}
+  constructor: (@r, @x, @y, @w, @h, data, @opts) ->
+    @opts ?= {}
     
     @setData(data)
-    
-    @title_text = opts.title
-    @interactive = opts.interactive
-    @bgcolor = opts.bgcolor or 'white'
     
     @padding = {
       left: 2
@@ -104,16 +94,16 @@ class Sai.Chart
   normalize: (data) ->
     groups = @dataGroups(data)
     @ndata = {}
-    if @stacked? then @stackedNdata = {}
+    if @opts.stacked? then @stackedNdata = {}
     
     for group of groups
       continue if group.match('^__')
       @ndata[group] = {}
-      if @stacked?
+      if @opts.stacked?
         @stackedNdata[group] = {}
         baselines = {}
-      maxf = if @stacked? then @getStackedMax else @getMax
-      minf = if @stacked? then @getStackedMin else @getMin
+      maxf = if @opts.stacked? then @getStackedMax else @getMax
+      minf = if @opts.stacked? then @getStackedMin else @getMin
       max = maxf(data, groups[group])
       min = minf(data, groups[group])
       yvals = @getYAxisVals(min, max)
@@ -122,7 +112,7 @@ class Sai.Chart
       for series in groups[group]
         continue unless data[series]?
         @ndata[group][series] = (if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length]
-        if @stacked?
+        if @opts.stacked?
           @stackedNdata[group][series] = []
           for i in [0...data[series].length]
             baseline = baselines[i] or 0
@@ -172,7 +162,7 @@ class Sai.Chart
     @bg = @r.rect(@px? and @px or @x,
                           @py? and (@py - @ph) or (@y - @h),
                           @pw? and @pw or @w,
-                          @ph? and @ph or @h).attr({fill: @bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
+                          @ph? and @ph or @h).attr({fill: @opts.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
   
   logoPos: () ->
     w = 160
@@ -233,8 +223,8 @@ class Sai.Chart
       @legend.translate((@w - @legend.getBBox().width) / 2, 0)
   
   drawTitle: () ->
-    if @title_text?
-      @title = @r.text(@x + (@w / 2), @y - @h, @title_text).attr({'font-size': 20})
+    if @opts.title?
+      @title = @r.text(@x + (@w / 2), @y - @h, @opts.title).attr({'font-size': 20})
       @title.translate(0, @title.getBBox().height / 2)
       @padding.top += @title.getBBox().height + 5
   
@@ -271,7 +261,7 @@ class Sai.Chart
 class Sai.LineChart extends Sai.Chart
   
   nonNegativeGroups: () ->
-    if @stacked then ['all'] else []
+    if @opts.stacked then ['all'] else []
   
   render: () ->
     @drawTitle()
@@ -286,7 +276,7 @@ class Sai.LineChart extends Sai.Chart
     @lines = []
     @dots = @r.set()
     
-    ndata = if @stacked? then @stackedNdata else @ndata
+    ndata = if @opts.stacked? then @stackedNdata else @ndata
     
     plotType = if @opts.area then Sai.AreaPlot else Sai.LinePlot
     
@@ -295,7 +285,7 @@ class Sai.LineChart extends Sai.Chart
       @px, @py, @pw, @ph,
       ndata['all'],
     ))
-    .render(@colors, 2, @stacked)
+    .render(@colors, 2, @opts.stacked)
     
     for series of ndata['all']
       if series is '__YVALS__'
@@ -327,12 +317,6 @@ class Sai.LineChart extends Sai.Chart
         @dots.hide()
     )
     
-    if navigator.userAgent.indexOf('MSIE') isnt -1
-      everything.hover(
-        moveDots,
-        () ->
-      )
-        
     @logo?.toFront()
     
     return this
@@ -388,7 +372,7 @@ class Sai.BarChart extends Sai.Chart
     data = {}
     rawdata = {}
     
-    ndata = if @stacked? then @stackedNdata else @ndata
+    ndata = if @opts.stacked? then @stackedNdata else @ndata
     
     for series of ndata['all']
       unless series.match('^__')
@@ -403,7 +387,7 @@ class Sai.BarChart extends Sai.Chart
                        @ph,
                        data,
                        rawdata))
-      .render(@stacked?, @colors, @interactive, @drawInfo)
+      .render(@opts.stacked?, @colors, @opts.interactive, @drawInfo)
       .set
     )
     
@@ -523,7 +507,7 @@ class Sai.StockChart extends Sai.Chart
     
     glow_width = @pw / (@data.__LABELS__.length - 1)
     @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
-                      .attr({fill: "0-#@bgcolor-\#DDAA99-#@bgcolor", 'stroke-width': 0, 'stroke-opacity': 0})
+                      .attr({fill: "0-#{@opts.bgcolor}-\#DDAA99-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
                       .toBack()
                       .hide()
     
@@ -532,15 +516,18 @@ class Sai.StockChart extends Sai.Chart
     everything = @r.set().push(@bg, @plots, @logo, @glow, @guidelines).mousemove(
       moveGlow = (event) =>
         
-        idx = @getIndex(event.clientX, event.clientY)
+        idx = @getIndex(event)
         
         info = {}
-        notNull = true
-        for series of @ndata['prices']
-          if @data[series]?[idx] then info[series] = @data[series][idx] else notNull = false
-        if @data['volume']?[idx]? then info['volume'] = @data['volume'][idx] else notNull = false
+        notNull = false
+        for series of @ndata['prices'] when not series.match('^__')
+          if @data[series]?[idx]?
+            info[series] = @data[series][idx]
+            notNull = true
+        if @data['volume']?[idx]?
+          info['volume'] = @data['volume'][idx]
+          notNull = true
         @drawInfo(info)
-        
         if notNull
           @glow.attr({x: @px + (glow_width * (idx - 0.5))}).show()
         
@@ -549,12 +536,6 @@ class Sai.StockChart extends Sai.Chart
         @drawInfo({}, true)
         @glow.hide()
     )
-    
-    if navigator.userAgent.indexOf('MSIE') isnt -1
-      everything.hover(
-        moveGlow,
-        () ->
-      )
     
     @logo?.toFront()
     
@@ -646,7 +627,7 @@ class Sai.GeoChart extends Sai.Chart
         )
       )
       
-      if @interactive then @setupHistogramInteraction(histogram, series)
+      if @opts.interactive then @setupHistogramInteraction(histogram, series)
     
     @histogramLegend.translate((@w - @padding.left - @padding.right - @histogramLegend.getBBox().width) / 2, 0)
     @padding.bottom += height + 5
@@ -678,12 +659,12 @@ class Sai.GeoChart extends Sai.Chart
       @data,
       {fromWhite: @opts.fromWhite}
     ))
-    .render(@colors or {}, @data['__MAP__'], mainSeries, @bgcolor, @interactive, @drawInfo)
+    .render(@colors or {}, @data['__MAP__'], mainSeries, @opts.bgcolor, @opts.interactive, @drawInfo)
     
     @logo?.toFront()
   
   default_info: () ->
-    {'': if @interactive then 'Click histogram below to change map display' else ''}
+    {'': if @opts.interactive then 'Click histogram below to change map display' else ''}
 
   render: () ->
     

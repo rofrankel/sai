@@ -7,16 +7,17 @@
     if (typeof parent.extended === "function") parent.extended(child);
     child.__superClass__ = parent.prototype;
   };
-  Sai.Plot = function(r, x, y, w, h, data, rawdata, opts) {
-    this.r = r;
-    this.x = x || 0;
-    this.y = y || 0;
-    this.w = w || 640;
-    this.h = h || 480;
-    this.data = data;
+  Sai.Plot = function(_a, _b, _c, _d, _e, _f, _g, _h) {
+    this.opts = _h;
+    this.rawdata = _g;
+    this.data = _f;
+    this.h = _e;
+    this.w = _d;
+    this.y = _c;
+    this.x = _b;
+    this.r = _a;
+    this.opts = (typeof this.opts !== "undefined" && this.opts !== null) ? this.opts : {};
     this.setDenormalizedData();
-    this.rawdata = rawdata;
-    this.opts = opts || {};
     this.set = this.r.set();
     return this;
   };
