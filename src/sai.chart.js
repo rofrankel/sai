@@ -235,12 +235,19 @@
     return _c;
   };
   Sai.Chart.prototype.addAxes = function(group) {
-    var LINE_HEIGHT, _a, haxis_height, hlen, vlen;
+    var LINE_HEIGHT, _a, haxis_height, hlen, i, tmptext, vlen;
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
     haxis_height = LINE_HEIGHT + 2 + 10;
     this.padding.top += 5;
-    (typeof (_a = this.data['__LABELS__'][this.data['__LABELS__'].length - 1]) !== "undefined" && _a !== null) ? this.padding.right += (Sai.util.prettystr(this.data['__LABELS__'][this.data['__LABELS__'].length - 1]).length / 2) * 5 : null;
+    for (i = this.data['__LABELS__'].length - 1; (this.data['__LABELS__'].length - 1 <= 0 ? i <= 0 : i >= 0); (this.data['__LABELS__'].length - 1 <= 0 ? i += 1 : i -= 1)) {
+      if ((typeof (_a = this.data['__LABELS__'][i]) !== "undefined" && _a !== null)) {
+        tmptext = this.r.text(0, 0, Sai.util.prettystr(this.data['__LABELS__'][i]));
+        this.padding.right += tmptext.getBBox().width / 2;
+        tmptext.remove();
+        break;
+      }
+    }
     vlen = this.h - (this.padding.bottom + haxis_height + this.padding.top);
     this.vaxis = this.r.sai.prim.vaxis(this.ndata[group].__YVALS__, this.x + this.padding.left, this.y - (this.padding.bottom + haxis_height), vlen, this.axisWidth);
     this.vaxis.translate(this.vaxis.getBBox().width, 0);

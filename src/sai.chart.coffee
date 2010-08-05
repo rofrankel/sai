@@ -134,8 +134,12 @@ class Sai.Chart
     # the 5 is for the half a text line at the top tick
     @padding.top += 5
     # (over)estimate how much padding we need for the last label
-    if @data['__LABELS__'][@data['__LABELS__'].length - 1]?
-      @padding.right += (Sai.util.prettystr(@data['__LABELS__'][@data['__LABELS__'].length - 1]).length / 2) * 5
+    for i in [@data['__LABELS__'].length-1..0]
+      if @data['__LABELS__'][i]?
+        tmptext = @r.text(0, 0, Sai.util.prettystr(@data['__LABELS__'][i]))
+        @padding.right += tmptext.getBBox().width / 2
+        tmptext.remove()
+        break
     
     
     vlen = @h - (@padding.bottom + haxis_height + @padding.top)
