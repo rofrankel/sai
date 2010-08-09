@@ -56,7 +56,7 @@
     }
   };
   Sai.Plot.prototype.render = function() {
-    this.set.push(this.r.rect(20, 20, 20, 20).attr('fill', 'red'), this.r.circle(40, 40, 10).attr('fill', 'blue'));
+    this.set.push(this.r.rect(20, 20, 20, 20).attr('fill', '#ff0000'), this.r.circle(40, 40, 10).attr('fill', '#0000ff'));
     return this;
   };
   Sai.LinePlot = function() {
@@ -70,7 +70,7 @@
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      !series.match('^__') ? this.set.push(this.r.sai.prim.line(this.dndata[series], ((colors == undefined ? undefined : colors[series]) || 'black'), width || 1)) : null;
+      !series.match('^__') ? this.set.push(this.r.sai.prim.line(this.dndata[series], ((colors == undefined ? undefined : colors[series]) || '#000000'), width || 1)) : null;
     }
     return this;
   };
@@ -87,7 +87,7 @@
       _a = _b[series];
       if (!series.match('^__')) {
         baseline = (typeof baseline !== "undefined" && baseline !== null) ? baseline : [this.denormalize([0, 0]), this.denormalize([1, 0])];
-        this.set.push(this.r.sai.prim.area(this.dndata[series], (colors == undefined ? undefined : colors[series]) || 'black', width || 1, baseline));
+        this.set.push(this.r.sai.prim.area(this.dndata[series], (colors == undefined ? undefined : colors[series]) || '#000000', width || 1, baseline));
         stacked ? (baseline = (function() {
           _c = []; _e = this.dndata[series];
           for (_d = 0, _f = _e.length; _d < _f; _d++) {
@@ -107,8 +107,8 @@
   Sai.CandlestickPlot.prototype.render = function(colors, body_width, shouldInteract, fSetInfo) {
     var _a, _b, _c, _d, _e, cdown, cup, i, info, p, upDay;
     this.set.remove();
-    cup = (colors == undefined ? undefined : colors['up']) || 'black';
-    cdown = (colors == undefined ? undefined : colors['down']) || 'red';
+    cup = (colors == undefined ? undefined : colors['up']) || '#000000';
+    cdown = (colors == undefined ? undefined : colors['down']) || '#ff0000';
     body_width = (typeof body_width !== "undefined" && body_width !== null) ? body_width : 5;
     _a = this.dndata['open'].length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
@@ -142,7 +142,7 @@
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       len = this.dndata[series].length;
-      colorArray.push((colors == undefined ? undefined : colors[series]) || 'black');
+      colorArray.push((colors == undefined ? undefined : colors[series]) || '#000000');
     }
     for (i = 0; (0 <= len ? i < len : i > len); (0 <= len ? i += 1 : i -= 1)) {
       bardata = [];
@@ -210,7 +210,7 @@
           };
         })(map.paths[region], Math.min(this.w / map.width, this.h / map.height), this.x, this.y - this.h), {
           'fill': color,
-          'stroke': this.opts.fromWhite ? 'black' : bgcolor,
+          'stroke': this.opts.fromWhite ? '#000000' : bgcolor,
           'stroke-width': 0.5,
           'opacity': opacity
         }, (shouldInteract ? [

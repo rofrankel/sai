@@ -15,14 +15,14 @@
   };
   Raphael.fn.sai.prim.candlestick = function(x, by0, by1, sy0, sy1, body_width, color, fill, shouldInteract, fSetInfo, extras) {
     var body, bx, candlestick, hoverfuncs, shadow;
-    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
+    color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     if (!(body_width % 2)) {
       body_width++;
     }
     bx = x - (body_width / 2.0);
     body = this.rect(bx, by0, body_width, by1 - by0 || 1).attr('stroke', color);
     shadow = this.path("M" + x + " " + sy0 + "L" + x + " " + by0 + "M" + x + " " + by1 + "L" + x + " " + sy1).attr('stroke', color);
-    body.attr('fill', fill ? color : 'white');
+    body.attr('fill', fill ? color : '#ffffff');
     candlestick = this.set().push(body, shadow);
     if (shouldInteract) {
       hoverfuncs = getHoverfuncs(candlestick, {
@@ -38,7 +38,7 @@
   };
   Raphael.fn.sai.prim.line = function(coords, color, width) {
     var _a, _b, _c, coord, path;
-    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
+    color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     _b = coords;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
@@ -55,7 +55,7 @@
   };
   Raphael.fn.sai.prim.area = function(coords, color, width, baseline) {
     var _a, _b, _c, area, areaPath, coord, i, stroke, strokePath;
-    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
+    color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     _b = coords;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
@@ -99,7 +99,7 @@
       }
       height = prev - coords[i][1];
       axisClip = i === 0 ? 1 : 0;
-      stack.push((bar = this.rect(coords[i][0] - (width / 2.0), coords[i][1], width, height - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || 'black').attr('stroke', (colors == undefined ? undefined : colors[i]) || 'black')));
+      stack.push((bar = this.rect(coords[i][0] - (width / 2.0), coords[i][1], width, height - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000')));
       if (shouldInteract) {
         hoverfuncs = getHoverfuncs(bar, {
           'fill-opacity': '0.75'
@@ -129,7 +129,7 @@
     axisClip = 0.5;
     _a = coords.length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
-      (typeof (_b = coords[i] == undefined ? undefined : coords[i][0]) !== "undefined" && _b !== null) ? group.push(this.rect(coords[i][0] - offset + (i * barwidth), coords[i][1], barwidth - 1, baseline - coords[i][1] - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || 'black').attr('stroke', (colors == undefined ? undefined : colors[i]) || 'black')) : null;
+      (typeof (_b = coords[i] == undefined ? undefined : coords[i][0]) !== "undefined" && _b !== null) ? group.push(this.rect(coords[i][0] - offset + (i * barwidth), coords[i][1], barwidth - 1, baseline - coords[i][1] - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000')) : null;
     }
     if (shouldInteract) {
       hoverfuncs = getHoverfuncs(group, {
@@ -145,7 +145,7 @@
     var _a, _b, _c, dx, label, labels, line, ticklen, ticks, val, xpos;
     ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [10, 5];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
-    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
+    color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
     ticks = this.set();
     labels = this.set();
@@ -171,7 +171,7 @@
     var _a, _b, _c, dy, label, labels, line, ticklen, ticks, val, ypos;
     ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [10, 5];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
-    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
+    color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     line = this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color);
     ticks = this.set();
     labels = this.set();
@@ -216,7 +216,7 @@
         continue;
       }
       t = this.text(x + 5, py, text + " = " + texts[text]).attr({
-        'fill': 'white',
+        'fill': '#ffffff',
         'font-weight': 'bold'
       });
       t.translate(t.getBBox().width / 2, 0);
@@ -226,9 +226,9 @@
     }
     bg_width = max_width + 10;
     rect = this.rect(x, y, bg_width, (py - y), 5).attr({
-      'fill': 'black',
+      'fill': '#000000',
       'fill-opacity': '.85',
-      'stroke': 'black'
+      'stroke': '#000000'
     });
     typeof head_text === "undefined" || head_text == undefined ? undefined : head_text.translate(bg_width / 2);
     return text_set.toFront();
@@ -248,7 +248,7 @@
       t = this.text(px + 14, py, text);
       t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
       r = this.rect(px, py, 9, 9).attr({
-        'fill': (typeof (_c = colors[text]) !== "undefined" && _c !== null) ? colors[text] : 'black'
+        'fill': (typeof (_c = colors[text]) !== "undefined" && _c !== null) ? colors[text] : '#000000'
       });
       key = this.set().push(t, r);
       if ((px - x) + spacing + key.getBBox().width > max_width) {
@@ -305,7 +305,7 @@
   };
   Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) {
     var _a, _b, _c, _d, _e, bartop, bg, bh, bucket, buckets, bw, datum, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set;
-    bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : 'white';
+    bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : '#ffffff';
     numBuckets = (typeof numBuckets !== "undefined" && numBuckets !== null) ? numBuckets : 10;
     set = this.set();
     set.push((bg = this.rect(x, y - h, w, h).attr({
@@ -343,7 +343,7 @@
         'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str,
         'stroke-width': fromWhite ? .35 : 0,
         'stroke-opacity': fromWhite ? 1 : 0,
-        'stroke': 'black'
+        'stroke': '#000000'
       }));
     }
     set.push((lbl = this.text(x + w / 2, bartop - 6, Sai.util.prettystr(label))));

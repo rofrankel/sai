@@ -12,7 +12,7 @@ getHoverfuncs = (target, attrOn, attrOff, extras) ->
   ]
 
 Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fill, shouldInteract, fSetInfo, extras) ->
-  color ?= 'black'
+  color ?= '#000000'
   body_width++ unless body_width % 2
   bx = x - (body_width / 2.0)
   
@@ -22,7 +22,7 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fil
                  "M" + x + " " + by1 +
                  "L" + x + " " + sy1).attr('stroke', color)
   
-  body.attr('fill', if fill then color else 'white')
+  body.attr('fill', if fill then color else '#ffffff')
   
   candlestick = @set().push(body, shadow)
   
@@ -49,7 +49,7 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fil
 
 
 Raphael.fn.sai.prim.line = (coords, color, width) ->
-  color ?= 'black'
+  color ?= '#000000'
   width ?= 1
   
   for coord in coords
@@ -63,7 +63,7 @@ Raphael.fn.sai.prim.line = (coords, color, width) ->
 
 
 Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
-  color ?= 'black'
+  color ?= '#000000'
   width ?= 1
   
   for coord in coords
@@ -102,8 +102,8 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
                   coords[i][1],
                   width,
                   height - axisClip)
-      .attr('fill', colors?[i] or 'black')
-      .attr('stroke', colors?[i] or 'black')
+      .attr('fill', colors?[i] or '#000000')
+      .attr('stroke', colors?[i] or '#000000')
     )
     
     if shouldInteract
@@ -150,8 +150,8 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
               coords[i][1],
               barwidth - 1,
               baseline - coords[i][1] - axisClip)
-        .attr('fill', colors?[i] or 'black')
-        .attr('stroke', colors?[i] or 'black')
+        .attr('fill', colors?[i] or '#000000')
+        .attr('stroke', colors?[i] or '#000000')
       )
   
   if shouldInteract
@@ -176,7 +176,7 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
 Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
-  color ?= 'black'
+  color ?= '#000000'
   
   line = @path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
   ticks = @set()
@@ -200,7 +200,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
 Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
-  color ?= 'black'
+  color ?= '#000000'
   
   line = @path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
   ticks = @set()
@@ -243,14 +243,14 @@ Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   # create text and find total height
   for text of texts
     continue if text is '__HEAD__'
-    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold'})
+    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': '#ffffff', 'font-weight': 'bold'})
     t.translate(t.getBBox().width / 2, 0)
     max_width = Math.max(max_width, t.getBBox().width)
     py += TEXT_LINE_HEIGHT
     text_set.push(t)
   
   bg_width = max_width + 10
-  rect = @rect(x, y, bg_width, (py - y), 5).attr({'fill': 'black', 'fill-opacity': '.85', 'stroke': 'black'})
+  rect = @rect(x, y, bg_width, (py - y), 5).attr({'fill': '#000000', 'fill-opacity': '.85', 'stroke': '#000000'})
   
   head_text?.translate(bg_width / 2)
   text_set.toFront()
@@ -270,7 +270,7 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, colors) ->
   for text of colors
     t = @text(px + 14, py, text)
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
-    r = @rect(px, py, 9, 9).attr({'fill': if colors[text]? then colors[text] else 'black'})
+    r = @rect(px, py, 9, 9).attr({'fill': if colors[text]? then colors[text] else '#000000'})
     key = @set().push(t, r)
     
     if (px - x) + spacing + key.getBBox().width > max_width
@@ -335,7 +335,7 @@ Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
 
 
 Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) ->
-  bgcolor ?= 'white'
+  bgcolor ?= '#ffffff'
   numBuckets ?= 10
   
   set = @set()
@@ -381,7 +381,7 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
         'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str,
         'stroke-width': if fromWhite then .35 else 0,
         'stroke-opacity': if fromWhite then 1 else 0,
-        'stroke': 'black'
+        'stroke': '#000000'
       })
     )
   

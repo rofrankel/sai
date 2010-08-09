@@ -19,8 +19,8 @@ class Sai.Plot
 
   render: () ->
     @set.push(
-      @r.rect(20, 20, 20, 20).attr('fill', 'red'),
-      @r.circle(40, 40, 10).attr('fill', 'blue')
+      @r.rect(20, 20, 20, 20).attr('fill', '#ff0000'),
+      @r.circle(40, 40, 10).attr('fill', '#0000ff')
     )
     return this
 
@@ -32,7 +32,7 @@ class Sai.LinePlot extends Sai.Plot
     
     for series of @dndata when not series.match('^__')
       @set.push(
-        @r.sai.prim.line(@dndata[series], (colors?[series] or 'black'), width or 1)
+        @r.sai.prim.line(@dndata[series], (colors?[series] or '#000000'), width or 1)
       )
     
     return this
@@ -47,7 +47,7 @@ class Sai.AreaPlot extends Sai.Plot
     for series of @dndata when not series.match('^__')
       baseline ?= [@denormalize([0, 0]),@denormalize([1, 0])]
       @set.push(
-        @r.sai.prim.area(@dndata[series], colors?[series] or 'black', width or 1, baseline)
+        @r.sai.prim.area(@dndata[series], colors?[series] or '#000000', width or 1, baseline)
       )
       
       if stacked then baseline = ([d[0], d[1] - width/2] for d in @dndata[series])
@@ -60,8 +60,8 @@ class Sai.CandlestickPlot extends Sai.Plot
     
     @set.remove()
     
-    cup = colors?['up'] or 'black'
-    cdown = colors?['down'] or 'red'
+    cup = colors?['up'] or '#000000'
+    cdown = colors?['down'] or '#ff0000'
     body_width ?= 5
     
     for i in [0...@dndata['open'].length]
@@ -107,7 +107,7 @@ class Sai.BarPlot extends Sai.Plot
     
     for series of @dndata
       len = @dndata[series].length
-      colorArray.push(colors?[series] or 'black')
+      colorArray.push(colors?[series] or '#000000')
     
     for i in [0...len]
       bardata = []
@@ -174,7 +174,7 @@ class Sai.GeoPlot extends Sai.Plot
           )(map.paths[region], Math.min(@w / map.width, @h / map.height), @x, @y - @h),
           {
             'fill': color
-            'stroke': if @opts.fromWhite then 'black' else bgcolor
+            'stroke': if @opts.fromWhite then '#000000' else bgcolor
             'stroke-width': 0.5
             'opacity': opacity
           },

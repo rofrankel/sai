@@ -400,7 +400,7 @@
       if (series === '__YVALS__') {
         continue;
       }
-      color = this.colors && this.colors[series] || 'black';
+      color = this.colors && this.colors[series] || '#000000';
       this.dots.push(this.r.circle(0, 0, 4).attr({
         'fill': color
       }).hide());
@@ -451,7 +451,7 @@
     this.drawBG();
     this.plots = this.r.set();
     this.plots.push((new Sai.LinePlot(this.r, this.x, this.y, this.w, this.h, this.ndata['data'])).render({
-      data: this.colors && this.colors[series] || 'black'
+      data: this.colors && this.colors[series] || '#000000'
     }, 1).set);
     return this;
   };
@@ -554,14 +554,14 @@
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !series.match('^__')) {
-        avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || 'black';
+        avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || '#000000';
         shouldDrawLegend = true;
       }
     }
     shouldDrawLegend ? this.drawLegend(avgColors) : null;
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
-    this.colors['up'] = (typeof this.colors['up'] !== "undefined" && this.colors['up'] !== null) ? this.colors['up'] : 'black';
-    this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : 'red';
+    this.colors['up'] = (typeof this.colors['up'] !== "undefined" && this.colors['up'] !== null) ? this.colors['up'] : '#000000';
+    this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : '#ff0000';
     this.colors['vol_up'] = (typeof this.colors['vol_up'] !== "undefined" && this.colors['vol_up'] !== null) ? this.colors['vol_up'] : '#666';
     this.colors['vol_down'] = (typeof this.colors['vol_down'] !== "undefined" && this.colors['vol_down'] !== null) ? this.colors['vol_down'] : '#c66';
     this.addAxes('prices');
@@ -784,7 +784,7 @@
       yvals = this.getYAxisVals(min, max, true);
       minLabel = yvals[0];
       maxLabel = yvals[yvals.length - 1];
-      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white', this.opts.fromWhite)));
+      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], '#ffffff', this.opts.fromWhite)));
       this.opts.interactive ? this.setupHistogramInteraction(histogram, series) : null;
     }
     this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);

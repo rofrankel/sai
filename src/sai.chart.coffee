@@ -295,7 +295,7 @@ class Sai.LineChart extends Sai.Chart
       if series is '__YVALS__'
         continue
       
-      color = @colors and @colors[series] or 'black'
+      color = @colors and @colors[series] or '#000000'
       
       @dots.push(@r.circle(0, 0, 4).attr({'fill': color}).hide())
     
@@ -345,7 +345,7 @@ class Sai.Sparkline extends Sai.Chart
                         @w,
                         @h,
                         @ndata['data']))
-      .render({data: @colors and @colors[series] or 'black'}, 1)
+      .render({data: @colors and @colors[series] or '#000000'}, 1)
       .set
     )
     
@@ -422,13 +422,13 @@ class Sai.StockChart extends Sai.Chart
     avgColors = {}
     shouldDrawLegend = false
     for series of @ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not series.match('^__')
-      avgColors[series] = @colors?[series] or 'black'
+      avgColors[series] = @colors?[series] or '#000000'
       shouldDrawLegend = true
     if shouldDrawLegend then @drawLegend(avgColors)
     
     @colors ?= {}
-    @colors['up'] ?= 'black'
-    @colors['down'] ?= 'red'
+    @colors['up'] ?= '#000000'
+    @colors['down'] ?= '#ff0000'
     @colors['vol_up'] ?= '#666'
     @colors['vol_down'] ?= '#c66'
     
@@ -626,7 +626,7 @@ class Sai.GeoChart extends Sai.Chart
           maxLabel,
           series,
           @colors[series],
-          'white',
+          '#ffffff',
           @opts.fromWhite
         )
       )
