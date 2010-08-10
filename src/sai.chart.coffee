@@ -69,8 +69,6 @@ class Sai.Chart
     while((max - min) * factor) < 10
       factor *= 10
     
-    alert "min: #min, max: #max"
-    
     # scale everything up if neccessary, making the following simpler
     min *= factor
     max *= factor
@@ -90,8 +88,6 @@ class Sai.Chart
     bottom /= factor
     top /= factor
     step /= factor
-    
-    alert step
     
     return Sai.util.round(i, step) for i in [bottom..top] by step
   

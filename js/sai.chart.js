@@ -111,7 +111,6 @@
     while (((max - min) * factor) < 10) {
       factor *= 10;
     }
-    alert("min: " + min + ", max: " + max);
     min *= factor;
     max *= factor;
     mag = Math.floor((rawmag = (Math.log(max - min) / Math.LN10) - 0.4));
@@ -129,7 +128,6 @@
     bottom /= factor;
     top /= factor;
     step /= factor;
-    alert(step);
     _a = [];
     for (i = bottom; (bottom <= top ? i <= top : i >= top); i += step) {
       _a.push(Sai.util.round(i, step));
