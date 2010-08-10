@@ -9,7 +9,7 @@ Sai.util.roundToMag = (x, mag) ->
   return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)))
 
 Sai.util.round = (x, target) ->
-  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.round(-1 * Math.log(target) / Math.LN10))))
+  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.ceil(-1 * Math.log(target) / Math.LN10))))
 
 # why isn't this already in JS? :/
 Sai.util.sumArray = (a) ->

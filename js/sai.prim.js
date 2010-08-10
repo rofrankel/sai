@@ -55,6 +55,9 @@
   };
   Raphael.fn.sai.prim.area = function(coords, color, width, baseline) {
     var _a, _b, _c, area, areaPath, coord, i, stroke, strokePath;
+    if (coords.length < 2) {
+      return this.set();
+    }
     color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     _b = coords;

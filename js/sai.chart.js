@@ -120,8 +120,8 @@
     } else if (rawmag % 1 > 0.35 && !nopad) {
       step *= 2;
     }
-    bottom = Sai.util.round(min - (nopad ? (step / 2.1) : (step / 1.9)) / factor, step);
-    if ((bottom < 0) && (0 <= min)) {
+    bottom = Sai.util.round(min - (nopad ? (step / 2.1) : (step / 1.9)), step);
+    if ((bottom <= 0) && (0 <= min)) {
       bottom = 0;
     }
     top = Sai.util.round(max + (nopad ? (step / 2.1) : (step / 1.9)), step);
@@ -207,10 +207,10 @@
         this.stackedNdata[group] = {};
         baselines = {};
       }
-      maxf = (typeof (_f = this.opts.stacked) !== "undefined" && _f !== null) ? this.getStackedMax : this.getMax;
-      minf = (typeof (_g = this.opts.stacked) !== "undefined" && _g !== null) ? this.getStackedMin : this.getMin;
-      max = maxf(data, groups[group]);
+      minf = (typeof (_f = this.opts.stacked) !== "undefined" && _f !== null) ? this.getStackedMin : this.getMin;
+      maxf = (typeof (_g = this.opts.stacked) !== "undefined" && _g !== null) ? this.getStackedMax : this.getMax;
       min = minf(data, groups[group]);
+      max = maxf(data, groups[group]);
       yvals = this.getYAxisVals(min, max);
       min = yvals[0];
       max = yvals[yvals.length - 1];
@@ -223,7 +223,7 @@
         this.ndata[group][series] = (function() {
           _l = []; _m = data[series].length;
           for (i = 0; (0 <= _m ? i < _m : i > _m); (0 <= _m ? i += 1 : i -= 1)) {
-            _l.push(((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] : null));
+            _l.push(((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1 || 1), (data[series][i] - min) / (max - min)] : null));
           }
           return _l;
         })();
@@ -232,7 +232,7 @@
           _o = data[series].length;
           for (i = 0; (0 <= _o ? i < _o : i > _o); (0 <= _o ? i += 1 : i -= 1)) {
             baseline = baselines[i] || 0;
-            stackedPoint = [i / (data[series].length - 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? ((data[series][i] - min) / (max - min)) + baseline : baseline];
+            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? (data[series][i] - min) / (max - min) + baseline : baseline];
             this.stackedNdata[group][series].push(stackedPoint);
             if (!(stackedPoint === null)) {
               baselines[i] = stackedPoint[1];
@@ -469,6 +469,9 @@
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.BarChart, Sai.Chart);
+  Sai.BarChart.prototype.getMin = function(data, group) {
+    return 0;
+  };
   Sai.BarChart.prototype.groupsToNullPad = function() {
     var _a, _b, _c, group;
     _b = []; _c = this.dataGroups();

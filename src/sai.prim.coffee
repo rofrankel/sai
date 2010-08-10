@@ -63,6 +63,9 @@ Raphael.fn.sai.prim.line = (coords, color, width) ->
 
 
 Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
+
+  return @set() if coords.length < 2
+  
   color ?= '#000000'
   width ?= 1
   

@@ -22,7 +22,7 @@
     return this;
   };
   Sai.Plot.prototype.setDenormalizedData = function() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, column, dnPoint;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, dnPoint, series;
     if (this.data instanceof Array) {
       return (this.dndata = (function() {
         _a = []; _c = this.data;
@@ -35,11 +35,11 @@
     } else {
       this.dndata = (typeof this.dndata !== "undefined" && this.dndata !== null) ? this.dndata : {};
       _f = []; _g = this.data;
-      for (column in _g) {
-        if (!__hasProp.call(_g, column)) continue;
-        _e = _g[column];
-        _f.push((this.dndata[column] = (function() {
-          _h = []; _j = this.data[column];
+      for (series in _g) {
+        if (!__hasProp.call(_g, series)) continue;
+        _e = _g[series];
+        _f.push((this.dndata[series] = (function() {
+          _h = []; _j = this.data[series];
           for (_i = 0, _k = _j.length; _i < _k; _i++) {
             dnPoint = _j[_i];
             _h.push(this.denormalize(dnPoint));
@@ -63,6 +63,17 @@
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.LinePlot, Sai.Plot);
+  Sai.LinePlot.prototype.setDenormalizedData = function() {
+    var _a, _b, _c, series;
+    Sai.LinePlot.__superClass__.setDenormalizedData.apply(this, arguments);
+    _b = []; _c = this.dndata;
+    for (series in _c) {
+      if (!__hasProp.call(_c, series)) continue;
+      _a = _c[series];
+      _b.push(this.dndata[series].length === 1 && this.dndata[series][0][0] === this.x ? this.dndata[series].push([this.x + this.w, this.dndata[series][0][1]]) : null);
+    }
+    return _b;
+  };
   Sai.LinePlot.prototype.render = function(colors, width) {
     var _a, _b, series;
     this.set.remove();
@@ -75,9 +86,9 @@
     return this;
   };
   Sai.AreaPlot = function() {
-    return Sai.Plot.apply(this, arguments);
+    return Sai.LinePlot.apply(this, arguments);
   };
-  __extends(Sai.AreaPlot, Sai.Plot);
+  __extends(Sai.AreaPlot, Sai.LinePlot);
   Sai.AreaPlot.prototype.render = function(colors, width, stacked) {
     var _a, _b, _c, _d, _e, _f, baseline, d, series;
     this.set.remove();

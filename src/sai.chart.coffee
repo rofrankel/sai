@@ -25,7 +25,7 @@ class Sai.Chart
     
     # deep copy
     for series of data
-      if  data[series] instanceof Array
+      if data[series] instanceof Array
         @data[series] = data[series].slice(0)
       else
         @data[series] = data[series]
@@ -49,7 +49,7 @@ class Sai.Chart
   
   nullPad: (seriesName) ->
     if seriesName of @data
-      @data[seriesName] = [null].concat(@data[seriesName].concat([null]))
+      @data[seriesName] = [null].concat @data[seriesName].concat [null]
   
   # a line chart plots everything, but a stock chart only cares about e.g. high low open close avg vol
   caresAbout: (seriesName) ->
@@ -80,8 +80,8 @@ class Sai.Chart
     else if rawmag % 1 > 0.35 and not nopad
       step *= 2
     
-    bottom = Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.9)) / factor, step)
-    bottom = 0 if bottom < 0 <= min
+    bottom = Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.9)), step)
+    bottom = 0 if bottom <= 0 <= min
     top = Sai.util.round(max + (if nopad then (step / 2.1) else (step / 1.9)), step)
     
     # scale back down
@@ -117,21 +117,21 @@ class Sai.Chart
       if @opts.stacked?
         @stackedNdata[group] = {}
         baselines = {}
-      maxf = if @opts.stacked? then @getStackedMax else @getMax
       minf = if @opts.stacked? then @getStackedMin else @getMin
-      max = maxf(data, groups[group])
+      maxf = if @opts.stacked? then @getStackedMax else @getMax
       min = minf(data, groups[group])
+      max = maxf(data, groups[group])
       yvals = @getYAxisVals(min, max)
       min = yvals[0]
       max = yvals[yvals.length - 1]
       for series in groups[group]
         continue unless data[series]?
-        @ndata[group][series] = (if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length]
+        @ndata[group][series] = (if data[series][i]? then [i / (data[series].length - 1 or 1), (data[series][i]-min) / (max-min)] else null) for i in [0...data[series].length]
         if @opts.stacked?
           @stackedNdata[group][series] = []
           for i in [0...data[series].length]
             baseline = baselines[i] or 0
-            stackedPoint = [i / (data[series].length - 1), if data[series][i]? then ((data[series][i]-min) / (max-min)) + baseline else baseline]
+            stackedPoint = [i / (data[series].length - 1 or 1), if data[series][i]? then (data[series][i]-min) / (max-min) + baseline else baseline]
             @stackedNdata[group][series].push(stackedPoint)
             baselines[i] = stackedPoint[1] unless stackedPoint is null
         
@@ -368,6 +368,9 @@ class Sai.Sparkline extends Sai.Chart
 
 
 class Sai.BarChart extends Sai.Chart
+  
+  getMin: (data, group) ->
+    return 0
   
   groupsToNullPad: () ->
     return group for group of @dataGroups()
