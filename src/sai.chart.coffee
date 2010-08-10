@@ -111,6 +111,12 @@ class Sai.Chart
     @ndata = {}
     if @opts.stacked? then @stackedNdata = {}
     
+    norm = (val, min, max) ->
+      if typeof val is "number"
+        return (val - min) / (max - min)
+      
+      return 0
+    
     for group of groups
       continue if group.match('^__')
       @ndata[group] = {}
@@ -126,12 +132,12 @@ class Sai.Chart
       max = yvals[yvals.length - 1]
       for series in groups[group]
         continue unless data[series]?
-        @ndata[group][series] = (if data[series][i]? then [i / (data[series].length - 1 or 1), (data[series][i]-min) / (max-min)] else null) for i in [0...data[series].length]
+        @ndata[group][series] = (if data[series][i]? then [i / (data[series].length - 1 or 1), norm(data[series][i], min, max)] else null) for i in [0...data[series].length]
         if @opts.stacked?
           @stackedNdata[group][series] = []
           for i in [0...data[series].length]
             baseline = baselines[i] or 0
-            stackedPoint = [i / (data[series].length - 1 or 1), if data[series][i]? then (data[series][i]-min) / (max-min) + baseline else baseline]
+            stackedPoint = [i / (data[series].length - 1 or 1), if data[series][i]? then norm(data[series][i], min, max) + baseline else baseline]
             @stackedNdata[group][series].push(stackedPoint)
             baselines[i] = stackedPoint[1] unless stackedPoint is null
         

@@ -191,10 +191,16 @@
     return 0;
   };
   Sai.Chart.prototype.normalize = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, baseline, baselines, group, groups, i, max, maxf, min, minf, series, stackedPoint, yvals;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, baseline, baselines, group, groups, i, max, maxf, min, minf, norm, series, stackedPoint, yvals;
     groups = this.dataGroups(data);
     this.ndata = {};
     (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) ? (this.stackedNdata = {}) : null;
+    norm = function(val, min, max) {
+      if (typeof val === "number") {
+        return (val - min) / (max - min);
+      }
+      return 0;
+    };
     _c = []; _d = groups;
     for (group in _d) {
       if (!__hasProp.call(_d, group)) continue;
@@ -223,7 +229,7 @@
         this.ndata[group][series] = (function() {
           _l = []; _m = data[series].length;
           for (i = 0; (0 <= _m ? i < _m : i > _m); (0 <= _m ? i += 1 : i -= 1)) {
-            _l.push(((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1 || 1), (data[series][i] - min) / (max - min)] : null));
+            _l.push(((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1 || 1), norm(data[series][i], min, max)] : null));
           }
           return _l;
         })();
@@ -232,7 +238,7 @@
           _o = data[series].length;
           for (i = 0; (0 <= _o ? i < _o : i > _o); (0 <= _o ? i += 1 : i -= 1)) {
             baseline = baselines[i] || 0;
-            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? (data[series][i] - min) / (max - min) + baseline : baseline];
+            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? norm(data[series][i], min, max) + baseline : baseline];
             this.stackedNdata[group][series].push(stackedPoint);
             if (!(stackedPoint === null)) {
               baselines[i] = stackedPoint[1];
