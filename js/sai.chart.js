@@ -20,6 +20,7 @@
     _a = this;
     this.drawInfo = function(){ return Sai.Chart.prototype.drawInfo.apply(_a, arguments); };
     this.opts = (typeof this.opts !== "undefined" && this.opts !== null) ? this.opts : {};
+    this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : '#ffffff';
     this.setData(data);
     this.padding = {
       left: 2,
@@ -104,8 +105,15 @@
     };
   };
   Sai.Chart.prototype.getYAxisVals = function(min, max, nopad) {
-    var _a, bottom, i, mag, rawmag, step, top;
+    var _a, bottom, factor, i, mag, rawmag, step, top;
     nopad = (typeof nopad !== "undefined" && nopad !== null) ? nopad : false;
+    factor = 1;
+    while (((max - min) * factor) < 10) {
+      factor *= 10;
+    }
+    alert("min: " + min + ", max: " + max);
+    min *= factor;
+    max *= factor;
     mag = Math.floor((rawmag = (Math.log(max - min) / Math.LN10) - 0.4));
     step = Math.pow(10, mag);
     if (rawmag % 1 > 0.7 && !nopad) {
@@ -113,11 +121,15 @@
     } else if (rawmag % 1 > 0.35 && !nopad) {
       step *= 2;
     }
-    bottom = Sai.util.round(min - (nopad ? (step / 2.1) : (step / 1.9)), step);
+    bottom = Sai.util.round(min - (nopad ? (step / 2.1) : (step / 1.9)) / factor, step);
     if ((bottom < 0) && (0 <= min)) {
       bottom = 0;
     }
     top = Sai.util.round(max + (nopad ? (step / 2.1) : (step / 1.9)), step);
+    bottom /= factor;
+    top /= factor;
+    step /= factor;
+    alert(step);
     _a = [];
     for (i = bottom; (bottom <= top ? i <= top : i >= top); i += step) {
       _a.push(Sai.util.round(i, step));
@@ -562,8 +574,8 @@
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
     this.colors['up'] = (typeof this.colors['up'] !== "undefined" && this.colors['up'] !== null) ? this.colors['up'] : '#000000';
     this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : '#ff0000';
-    this.colors['vol_up'] = (typeof this.colors['vol_up'] !== "undefined" && this.colors['vol_up'] !== null) ? this.colors['vol_up'] : '#666';
-    this.colors['vol_down'] = (typeof this.colors['vol_down'] !== "undefined" && this.colors['vol_down'] !== null) ? this.colors['vol_down'] : '#c66';
+    this.colors['vol_up'] = (typeof this.colors['vol_up'] !== "undefined" && this.colors['vol_up'] !== null) ? this.colors['vol_up'] : '#666666';
+    this.colors['vol_down'] = (typeof this.colors['vol_down'] !== "undefined" && this.colors['vol_down'] !== null) ? this.colors['vol_down'] : '#cc6666';
     this.addAxes('prices');
     this.drawLogo();
     this.drawBG();

@@ -21,8 +21,9 @@
     <div id="c7" style="width: 400px; height: 400px; float: left;"></div>
     <script type="text/javascript">
       
-      var orange = '#A8502C';
+      var orange = '#AA5128';
       var olive = '#615C3E';
+      var gold = '#CABC5C';
       var lilac = '#B3A4B7';
       var tea = '#E7ECE6';
       var ucla = '#536895';
@@ -38,8 +39,8 @@
       var colors = {
         'AAPL': orange,
         'AMZN': olive,
-        'GOOG': lilac,
-        'MSFT': ucla,
+        'GOOG': gold,
+        'MSFT': lilac,
       }
       
       var data = {'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null],
@@ -204,8 +205,14 @@
         "Temperature": ucla,
       }
       
+      var badSmallData = {MSFT: [1], GOOG: [2], __LABELS__: [null]};
+      
+      alert(Math.floor((Math.log(2 - 1) / Math.LN10)));
+      alert('r' + Sai.util.round(11.0013, 0.001));
+      alert(Sai.Chart.prototype.getYAxisVals(11, 11.01));
+      
       var r1 = Raphael("c1", 350, 350);
-      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true}).setColors(colors).render();
+      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, badSmallData, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true}).setColors(colors).render();
       
       var r2 = Raphael("c2", 350, 350);
       var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true}).setColors(colors).render();
@@ -214,10 +221,10 @@
       var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'7 day avg': olive}).render();
       
       var r4 = Raphael("c4", 350, 350);
-      var barc = new Sai.BarChart(r4, 0, 350, 350, 350, badData, {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
+      var barc = new Sai.BarChart(r4, 0, 350, 350, 350, badSmallData, {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
       
       var r5 = Raphael("c5", 350, 350);
-      var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, bardata, {bgcolor: tea, interactive: true, stacked: true}).setColors(colors).render(true);
+      var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, badSmallData, {bgcolor: tea, interactive: true, stacked: true}).setColors(colors).render(true);
       
       var r6 = Raphael("c6", 400, 350);
       var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, USdata, {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true}).setColors(UScolors).render();

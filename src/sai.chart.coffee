@@ -3,6 +3,7 @@ class Sai.Chart
   
   constructor: (@r, @x, @y, @w, @h, data, @opts) ->
     @opts ?= {}
+    @opts.bgcolor ?= '#ffffff'
     
     @setData(data)
     
@@ -64,6 +65,16 @@ class Sai.Chart
   
   getYAxisVals: (min, max, nopad) ->
     nopad ?= false
+    factor = 1
+    while((max - min) * factor) < 10
+      factor *= 10
+    
+    alert "min: #min, max: #max"
+    
+    # scale everything up if neccessary, making the following simpler
+    min *= factor
+    max *= factor
+    
     mag = Math.floor(rawmag = (Math.log(max - min) / Math.LN10) - 0.4)
     step = Math.pow(10, mag)
     if rawmag % 1 > 0.7 and not nopad
@@ -71,9 +82,17 @@ class Sai.Chart
     else if rawmag % 1 > 0.35 and not nopad
       step *= 2
     
-    bottom = Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.9)), step)
+    bottom = Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.9)) / factor, step)
     bottom = 0 if bottom < 0 <= min
     top = Sai.util.round(max + (if nopad then (step / 2.1) else (step / 1.9)), step)
+    
+    # scale back down
+    bottom /= factor
+    top /= factor
+    step /= factor
+    
+    alert step
+    
     return Sai.util.round(i, step) for i in [bottom..top] by step
   
   # takes e.g. groups[group], not just a group name
@@ -429,8 +448,8 @@ class Sai.StockChart extends Sai.Chart
     @colors ?= {}
     @colors['up'] ?= '#000000'
     @colors['down'] ?= '#ff0000'
-    @colors['vol_up'] ?= '#666'
-    @colors['vol_down'] ?= '#c66'
+    @colors['vol_up'] ?= '#666666'
+    @colors['vol_down'] ?= '#cc6666'
     
     # @drawLegend({up: @colors.up, down: @colors.down})
     

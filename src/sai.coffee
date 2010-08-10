@@ -9,7 +9,7 @@ Sai.util.roundToMag = (x, mag) ->
   return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)))
 
 Sai.util.round = (x, target) ->
-  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.log(x) / Math.LN10)))
+  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.round(-1 * Math.log(target) / Math.LN10))))
 
 # why isn't this already in JS? :/
 Sai.util.sumArray = (a) ->
@@ -19,7 +19,8 @@ Sai.util.sumArray = (a) ->
   
   return sum
 
-Sai.util.prettystr = (x) ->
+Sai.util.prettystr = (x, precision) ->
+  precision ?= 2
   if typeof x is 'number'
     suffix = ''
     if Math.abs(x) >= 1000000000000
@@ -35,7 +36,7 @@ Sai.util.prettystr = (x) ->
       suffix = 'k'
       x /= 1000
     else
-      return String(parseFloat(x.toFixed(2)))
+      return String(parseFloat(x.toFixed(precision)))
     
     return parseFloat(x.toFixed(1)) + suffix
   

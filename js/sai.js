@@ -9,7 +9,7 @@ Sai.util.roundToMag = function(x, mag) {
   return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)));
 };
 Sai.util.round = function(x, target) {
-  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.log(x) / Math.LN10)));
+  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.round(-1 * Math.log(target) / Math.LN10))));
 };
 Sai.util.sumArray = function(a) {
   var _a, i, sum;
@@ -20,8 +20,9 @@ Sai.util.sumArray = function(a) {
   }
   return sum;
 };
-Sai.util.prettystr = function(x) {
+Sai.util.prettystr = function(x, precision) {
   var suffix;
+  precision = (typeof precision !== "undefined" && precision !== null) ? precision : 2;
   if (typeof x === 'number') {
     suffix = '';
     if (Math.abs(x) >= 1000000000000) {
@@ -37,7 +38,7 @@ Sai.util.prettystr = function(x) {
       suffix = 'k';
       x /= 1000;
     } else {
-      return String(parseFloat(x.toFixed(2)));
+      return String(parseFloat(x.toFixed(precision)));
     }
     return parseFloat(x.toFixed(1)) + suffix;
   }
