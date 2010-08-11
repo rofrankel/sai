@@ -1,6 +1,6 @@
 Sai = {};;
 Sai.util = {};
-Sai.imagePath = (typeof Sai.imagePath !== "undefined" && Sai.imagePath !== null) ? Sai.imagePath : 'images/';
+Sai.imagePath = (typeof Sai.imagePath !== "undefined" && Sai.imagePath !== null) ? Sai.imagePath : '/static/images/sai/';
 Sai.util.roundToMag = function(x, mag) {
   var target;
   mag = (typeof mag !== "undefined" && mag !== null) ? mag : 0;

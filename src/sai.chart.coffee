@@ -272,7 +272,7 @@ class Sai.Chart
   drawInfo: (info, clear) =>  
     clear ?= true
     
-    info ?= @default_info ? {}
+    info ?= if @default_info? then @default_info() else {}
     
     # clear out anything that already exists
     if clear

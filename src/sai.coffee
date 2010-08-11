@@ -1,7 +1,7 @@
 `Sai = {};`
 Sai.util = {}
 
-Sai.imagePath ?= 'images/'
+Sai.imagePath ?= '/static/images/sai/'
 
 Sai.util.roundToMag = (x, mag) ->
   mag ?= 0
