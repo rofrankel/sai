@@ -189,7 +189,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   xpos = x
   
   for val in vals
-    unless val is null
+    if val?
       ticklen = ticklens[if String(val) then 0 else 1]
       ticks.push(@path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
       unless val is ''

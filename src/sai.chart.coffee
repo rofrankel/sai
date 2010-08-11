@@ -93,11 +93,11 @@ class Sai.Chart
   
   # takes e.g. groups[group], not just a group name
   getMax: (data, group) ->
-    return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d?) for series in group when data[series]?)
+    return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
   
   # takes e.g. groups[group], not just a group name
   getMin: (data, group) ->
-    return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d?) for series in group when data[series]?)
+    return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
   
   getStackedMax: (data, group) ->
     return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...@data['__LABELS__'].length])
@@ -115,7 +115,7 @@ class Sai.Chart
       if typeof val is "number"
         return (val - min) / (max - min)
       
-      return 0
+      return null
     
     for group of groups
       continue if group.match('^__')
@@ -132,12 +132,12 @@ class Sai.Chart
       max = yvals[yvals.length - 1]
       for series in groups[group]
         continue unless data[series]?
-        @ndata[group][series] = (if data[series][i]? then [i / (data[series].length - 1 or 1), norm(data[series][i], min, max)] else null) for i in [0...data[series].length]
+        @ndata[group][series] = (if data[series][i]? and (nval = norm(data[series][i], min, max)) isnt null then [i / (data[series].length - 1 or 1), nval] else null) for i in [0...data[series].length]
         if @opts.stacked?
           @stackedNdata[group][series] = []
           for i in [0...data[series].length]
             baseline = baselines[i] or 0
-            stackedPoint = [i / (data[series].length - 1 or 1), if data[series][i]? then norm(data[series][i], min, max) + baseline else baseline]
+            stackedPoint = [i / (data[series].length - 1 or 1), if data[series][i]? and (nval = norm(data[series][i], min, max)) isnt null then nval + baseline else baseline]
             @stackedNdata[group][series].push(stackedPoint)
             baselines[i] = stackedPoint[1] unless stackedPoint is null
         

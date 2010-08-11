@@ -15,7 +15,7 @@ Sai.util.round = (x, target) ->
 Sai.util.sumArray = (a) ->
   sum = 0
   for i in [0...a.length]
-    sum += if typeof a[i] == 'number' then a[i] else 0
+    sum += if typeof a[i] is 'number' then a[i] else 0
   
   return sum
 

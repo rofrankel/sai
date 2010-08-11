@@ -144,7 +144,7 @@
           _f = []; _h = data[series];
           for (_g = 0, _i = _h.length; _g < _i; _g++) {
             d = _h[_g];
-            (typeof d !== "undefined" && d !== null) ? _f.push(d) : null;
+            (typeof d !== "undefined" && d !== null) && typeof d === "number" ? _f.push(d) : null;
           }
           return _f;
         })())) : null;
@@ -162,7 +162,7 @@
           _f = []; _h = data[series];
           for (_g = 0, _i = _h.length; _g < _i; _g++) {
             d = _h[_g];
-            (typeof d !== "undefined" && d !== null) ? _f.push(d) : null;
+            (typeof d !== "undefined" && d !== null) && typeof d === "number" ? _f.push(d) : null;
           }
           return _f;
         })())) : null;
@@ -191,7 +191,7 @@
     return 0;
   };
   Sai.Chart.prototype.normalize = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, baseline, baselines, group, groups, i, max, maxf, min, minf, norm, series, stackedPoint, yvals;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, baseline, baselines, group, groups, i, max, maxf, min, minf, norm, nval, series, stackedPoint, yvals;
     groups = this.dataGroups(data);
     this.ndata = {};
     (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) ? (this.stackedNdata = {}) : null;
@@ -199,7 +199,7 @@
       if (typeof val === "number") {
         return (val - min) / (max - min);
       }
-      return 0;
+      return null;
     };
     _c = []; _d = groups;
     for (group in _d) {
@@ -229,7 +229,7 @@
         this.ndata[group][series] = (function() {
           _l = []; _m = data[series].length;
           for (i = 0; (0 <= _m ? i < _m : i > _m); (0 <= _m ? i += 1 : i -= 1)) {
-            _l.push(((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1 || 1), norm(data[series][i], min, max)] : null));
+            _l.push(((typeof (_n = data[series][i]) !== "undefined" && _n !== null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null));
           }
           return _l;
         })();
@@ -238,7 +238,7 @@
           _o = data[series].length;
           for (i = 0; (0 <= _o ? i < _o : i > _o); (0 <= _o ? i += 1 : i -= 1)) {
             baseline = baselines[i] || 0;
-            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) ? norm(data[series][i], min, max) + baseline : baseline];
+            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_p = data[series][i]) !== "undefined" && _p !== null) && (nval = norm(data[series][i], min, max)) !== null ? nval + baseline : baseline];
             this.stackedNdata[group][series].push(stackedPoint);
             if (!(stackedPoint === null)) {
               baselines[i] = stackedPoint[1];

@@ -157,7 +157,7 @@
     _b = vals;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       val = _b[_a];
-      if (!(val === null)) {
+      if (typeof val !== "undefined" && val !== null) {
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color));
         if (!(val === '')) {
