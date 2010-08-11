@@ -14,13 +14,27 @@ compile = (source, noWrap) ->
 
 task 'build', 'build all of the source files', ->
   rootFile = 'sai'
-  sourceFiles = ['sai.chart', 'sai.plot', 'sai.prim']
+  sourceFiles = ['sai.prim', 'sai.plot', 'sai.chart']
   
   compile(rootFile, true)
   
-  for src in sourceFiles
-    try
-      compile(src)
-    catch error
-      puts 'build error: ' + error
+  compile(src) for src in sourceFiles
+
+  # generate optimized and minified JS
+  try
+    inputs = "--js js/#{f}.js" for f in [rootFile].concat sourceFiles
+    args = ["-jar",  "compiler.jar"]
+    
+    for f in [rootFile].concat sourceFiles
+      args.push("--js")
+      args.push("js/#{f}.js")
+    
+    args.push("--js_output_file")
+    args.push("js/sai-min.js")
+    
+    puts args
+    
+    require('child_process').spawn("java", args)
+  catch err
+    puts "Error generating minified JavaScript: #{err}"
 
