@@ -1,4 +1,4 @@
-Sai = {}
+`Sai = {};`
 Sai.util = {}
 
 Sai.imagePath ?= 'images/'

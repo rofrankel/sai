@@ -202,7 +202,7 @@
         "Temperature": ucla,
       }
       
-      var badSmallData =  {MSFT: [1], "GOOG": [null], "__LABELS__": [null], "AAPL": [2]};
+      var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "__LABELS__": [null], "AAPL": [2]};
       
       var r1 = Raphael("c1", 350, 350);
       var chart = new Sai.LineChart(r1, 0, 350, 350, 350, badSmallData, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true}).setColors(colors).render();
