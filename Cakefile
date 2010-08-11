@@ -4,12 +4,12 @@ sourceDir = 'src/'
 targetDir = 'js/'
 
 compile = (source, noWrap) ->
-  fs.readFile "#sourceDir#source\.coffee", (err, code) ->
+  fs.readFile "#{sourceDir}#{source}.coffee", (err, code) ->
     try
-      js = coffee.compile(code.toString(), {source: "#sourceDir#source\.coffee", noWrap: noWrap or false})
-      fs.writeFile "#targetDir#source\.js", js
+      js = coffee.compile(code.toString(), {source: "#{sourceDir}#{source}.coffee", noWrap: noWrap or false})
+      fs.writeFile "#{targetDir}#{source}.js", js
     catch err
-      console.log "#source\.coffee: #err"
+      console.log "#{source}.coffee: #{err}"
 
 
 task 'build', 'build all of the source files', ->

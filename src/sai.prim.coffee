@@ -101,11 +101,12 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
     height = prev - coords[i][1]
     axisClip = if i is 0 then 1 else 0 # visual hack to prevent bars covering x axis
     stack.push(
-      bar = @rect(coords[i][0] - (width / 2.0),
-                  coords[i][1],
-                  width,
-                  height - axisClip)
-      .attr('fill', colors?[i] or '#000000')
+      bar = @rect(
+        coords[i][0] - (width / 2.0),
+        coords[i][1],
+        width,
+        height - axisClip
+      ).attr('fill', colors?[i] or '#000000')
       .attr('stroke', colors?[i] or '#000000')
     )
     
@@ -149,11 +150,12 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
   for i in [0...coords.length]
     if coords[i]?[0]?
       group.push(
-        @rect(coords[i][0] - offset + (i * barwidth),
-              coords[i][1],
-              barwidth - 1,
-              baseline - coords[i][1] - axisClip)
-        .attr('fill', colors?[i] or '#000000')
+        @rect(
+          coords[i][0] - offset + (i * barwidth),
+          coords[i][1],
+          barwidth - 1,
+          baseline - coords[i][1] - axisClip
+        ).attr('fill', colors?[i] or '#000000')
         .attr('stroke', colors?[i] or '#000000')
       )
   
@@ -372,7 +374,7 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
     if idx of buckets then buckets[idx] += 1 else buckets[idx] = 1
     maxBucket = Math.max(maxBucket, buckets[idx])
   
-  set.push(hrule = @path("M#x,#y l#w, 0").attr('stroke', color))
+  set.push(hrule = @path("M#{x},#{y} l#{w}, 0").attr('stroke', color))
   y -= 1
   
   bw = w / numBuckets

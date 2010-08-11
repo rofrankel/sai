@@ -60,7 +60,9 @@ Sai.util.transformCoords = function(evt, canvas) {
     svgPoint.x = evt.clientX;
     svgPoint.y = evt.clientY;
     xformed = svgPoint.matrixTransform(canvas.getScreenCTM().inverse());
-    navigator.userAgent.toLowerCase().indexOf('chrome') !== -1 || navigator.userAgent.toLowerCase().indexOf('safari') !== -1 ? xformed.x += document.body.scrollLeft : null;
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') !== -1 || navigator.userAgent.toLowerCase().indexOf('safari') !== -1) {
+      xformed.x += document.body.scrollLeft;
+    };
     return {
       x: xformed.x,
       y: xformed.y
@@ -90,7 +92,7 @@ Sai.util.multiplyColor = function(colorStr, coeff, fromWhite, padding) {
     r: r,
     g: g,
     b: b,
-    str: ("rgb(" + r + ", " + g + ", " + b + ")")
+    str: ("rgb(" + (r) + ", " + (g) + ", " + (b) + ")")
   };
 };
 Sai.util.reflectColor = function(color, mirror) {

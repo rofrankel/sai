@@ -79,7 +79,7 @@ Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding) ->
     b = rgb.b * coeff
   return {
     r: r, g: g, b: b,
-    str: "rgb(#r, #g, #b)"
+    str: "rgb(#{r}, #{g}, #{b})"
   }
 
 # if a channel color is 2/3 of the way from black to mirror,

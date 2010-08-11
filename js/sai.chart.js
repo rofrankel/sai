@@ -20,7 +20,7 @@
     _a = this;
     this.drawInfo = function(){ return Sai.Chart.prototype.drawInfo.apply(_a, arguments); };
     this.opts = (typeof this.opts !== "undefined" && this.opts !== null) ? this.opts : {};
-    this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : '#ffffff';
+    this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : 'white';
     this.setData(data);
     this.padding = {
       left: 2,
@@ -43,7 +43,11 @@
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      data[series] instanceof Array ? (this.data[series] = data[series].slice(0)) : (this.data[series] = data[series]);
+      if (data[series] instanceof Array) {
+        this.data[series] = data[series].slice(0);
+      } else {
+        this.data[series] = data[series];
+      };
     }
     groups = this.dataGroups(data);
     nngroups = this.nonNegativeGroups();
@@ -58,7 +62,9 @@
           if ((typeof (_i = this.data[series]) !== "undefined" && _i !== null)) {
             _h = this.data[series].length;
             for (i = 0; (0 <= _h ? i < _h : i > _h); (0 <= _h ? i += 1 : i -= 1)) {
-              this.data[series][i] < 0 ? this.data[series][i] *= -1 : null;
+              if (this.data[series][i] < 0) {
+                this.data[series][i] *= -1;
+              };
             }
           }
         }
@@ -89,7 +95,9 @@
         for (seriesName in _c) {
           if (!__hasProp.call(_c, seriesName)) continue;
           _a = _c[seriesName];
-          this.caresAbout(seriesName) ? _b.push(seriesName) : null;
+          if (this.caresAbout(seriesName)) {
+            _b.push(seriesName);
+          };
         }
         return _b;
       }).call(this),
@@ -98,7 +106,9 @@
         for (seriesName in _f) {
           if (!__hasProp.call(_f, seriesName)) continue;
           _d = _f[seriesName];
-          seriesName.match("^__") ? _e.push(seriesName) : null;
+          if (seriesName.match("^__")) {
+            _e.push(seriesName);
+          };
         }
         return _e;
       })()
@@ -143,14 +153,18 @@
       _a = []; _c = group;
       for (_b = 0, _d = _c.length; _b < _d; _b++) {
         series = _c[_b];
-        (typeof (_e = data[series]) !== "undefined" && _e !== null) ? _a.push(Math.max.apply(Math, (function() {
-          _f = []; _h = data[series];
-          for (_g = 0, _i = _h.length; _g < _i; _g++) {
-            d = _h[_g];
-            (typeof d !== "undefined" && d !== null) && typeof d === "number" ? _f.push(d) : null;
-          }
-          return _f;
-        })())) : null;
+        if ((typeof (_i = data[series]) !== "undefined" && _i !== null)) {
+          _a.push(Math.max.apply(Math, (function() {
+            _e = []; _g = data[series];
+            for (_f = 0, _h = _g.length; _f < _h; _f++) {
+              d = _g[_f];
+              if ((typeof d !== "undefined" && d !== null) && typeof d === "number") {
+                _e.push(d);
+              };
+            }
+            return _e;
+          })()));
+        };
       }
       return _a;
     })());
@@ -161,14 +175,18 @@
       _a = []; _c = group;
       for (_b = 0, _d = _c.length; _b < _d; _b++) {
         series = _c[_b];
-        (typeof (_e = data[series]) !== "undefined" && _e !== null) ? _a.push(Math.min.apply(Math, (function() {
-          _f = []; _h = data[series];
-          for (_g = 0, _i = _h.length; _g < _i; _g++) {
-            d = _h[_g];
-            (typeof d !== "undefined" && d !== null) && typeof d === "number" ? _f.push(d) : null;
-          }
-          return _f;
-        })())) : null;
+        if ((typeof (_i = data[series]) !== "undefined" && _i !== null)) {
+          _a.push(Math.min.apply(Math, (function() {
+            _e = []; _g = data[series];
+            for (_f = 0, _h = _g.length; _f < _h; _f++) {
+              d = _g[_f];
+              if ((typeof d !== "undefined" && d !== null) && typeof d === "number") {
+                _e.push(d);
+              };
+            }
+            return _e;
+          })()));
+        };
       }
       return _a;
     })());
@@ -197,7 +215,9 @@
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, baseline, baselines, group, groups, i, max, maxf, min, minf, norm, nval, series, stackedPoint, yvals;
     groups = this.dataGroups(data);
     this.ndata = {};
-    (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) ? (this.stackedNdata = {}) : null;
+    if ((typeof (_a = this.opts.stacked) !== "undefined" && _a !== null)) {
+      this.stackedNdata = {};
+    };
     norm = function(val, min, max) {
       if (typeof val === "number") {
         if (min === max) {
@@ -325,7 +345,9 @@
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      series in this.data ? (this.colors[series] = colors[series]) : null;
+      if (series in this.data) {
+        this.colors[series] = colors[series];
+      };
     }
     return this;
   };
@@ -380,13 +402,19 @@
     var _a, _b, _c, label;
     clear = (typeof clear !== "undefined" && clear !== null) ? clear : true;
     info = (typeof info !== "undefined" && info !== null) ? info : (typeof (_a = this.default_info) !== "undefined" && _a !== null) ? this.default_info() : {};
-    clear ? (this.info_data = {}) : null;
-    this.info ? this.info.remove() : null;
+    if (clear) {
+      this.info_data = {};
+    };
+    if (this.info) {
+      this.info.remove();
+    };
     _c = info;
     for (label in _c) {
       if (!__hasProp.call(_c, label)) continue;
       _b = _c[label];
-      !(label.match("^__")) ? (this.info_data[label] = info[label] || '(no data)') : null;
+      if (!(label.match("^__"))) {
+        this.info_data[label] = info[label] || '(no data)';
+      };
     }
     return (this.info = this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data));
   };
@@ -423,7 +451,7 @@
       if (series === '__YVALS__') {
         continue;
       }
-      color = this.colors && this.colors[series] || '#000000';
+      color = this.colors && this.colors[series] || 'black';
       this.dots.push(this.r.circle(0, 0, 4).attr({
         'fill': color
       }).hide());
@@ -436,7 +464,9 @@
       for (series in _e) {
         if (!__hasProp.call(_e, series)) continue;
         _d = _e[series];
-        (typeof (_f = this.data[series]) !== "undefined" && _f !== null) ? (info[series] = this.data[series][idx]) : null;
+        if ((typeof (_f = this.data[series]) !== "undefined" && _f !== null)) {
+          info[series] = this.data[series][idx];
+        };
       }
       this.drawInfo(info);
       i = 0;
@@ -444,14 +474,20 @@
       for (series in _i) {
         if (!__hasProp.call(_i, series)) continue;
         _g = _i[series];
-        !series.match('^__') ? _h.push((function() {
-          pos = this.plot.dndata[series][idx];
-          (typeof pos !== "undefined" && pos !== null) ? this.dots[i].attr({
-            cx: pos[0],
-            cy: pos[1]
-          }).show().toFront() : this.dots[i].hide();
-          return i++;
-        }).call(this)) : null;
+        if (!series.match('^__')) {
+          _h.push((function() {
+            pos = this.plot.dndata[series][idx];
+            if ((typeof pos !== "undefined" && pos !== null)) {
+              this.dots[i].attr({
+                cx: pos[0],
+                cy: pos[1]
+              }).show().toFront();
+            } else {
+              this.dots[i].hide();
+            };
+            return i++;
+          }).call(this));
+        };
       }
       return _h;
     }, this))).mouseout(__bind(function(event) {
@@ -474,7 +510,7 @@
     this.drawBG();
     this.plots = this.r.set();
     this.plots.push((new Sai.LinePlot(this.r, this.x, this.y, this.w, this.h, this.ndata['data'])).render({
-      data: this.colors && this.colors[series] || '#000000'
+      data: this.colors && this.colors[series] || 'black'
     }, 1).set);
     return this;
   };
@@ -560,7 +596,9 @@
         for (seriesName in _c) {
           if (!__hasProp.call(_c, seriesName)) continue;
           _a = _c[seriesName];
-          this.caresAbout(seriesName) && !('__LABELS__' === seriesName || 'volume' === seriesName) ? _b.push(seriesName) : null;
+          if (this.caresAbout(seriesName) && !('__LABELS__' === seriesName || 'volume' === seriesName)) {
+            _b.push(seriesName);
+          };
         }
         return _b;
       }).call(this)
@@ -580,14 +618,16 @@
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !series.match('^__')) {
-        avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || '#000000';
+        avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || 'black';
         shouldDrawLegend = true;
       }
     }
-    shouldDrawLegend ? this.drawLegend(avgColors) : null;
+    if (shouldDrawLegend) {
+      this.drawLegend(avgColors);
+    };
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
-    this.colors['up'] = (typeof this.colors['up'] !== "undefined" && this.colors['up'] !== null) ? this.colors['up'] : '#000000';
-    this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : '#ff0000';
+    this.colors['up'] = (typeof this.colors['up'] !== "undefined" && this.colors['up'] !== null) ? this.colors['up'] : 'black';
+    this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : 'red';
     this.colors['vol_up'] = (typeof this.colors['vol_up'] !== "undefined" && this.colors['vol_up'] !== null) ? this.colors['vol_up'] : '#666666';
     this.colors['vol_down'] = (typeof this.colors['vol_down'] !== "undefined" && this.colors['vol_down'] !== null) ? this.colors['vol_down'] : '#cc6666';
     this.addAxes('prices');
@@ -604,9 +644,13 @@
     for (p in _d) {
       if (!__hasProp.call(_d, p)) continue;
       _c = _d[p];
-      !(p.match('^__')) ? (rawdata[p] = this.data[p]) : null;
+      if (!(p.match('^__'))) {
+        rawdata[p] = this.data[p];
+      };
     }
-    (typeof (_e = this.data['volume']) !== "undefined" && _e !== null) ? (rawdata['vol'] = this.data['volume']) : null;
+    if ((typeof (_e = this.data['volume']) !== "undefined" && _e !== null)) {
+      rawdata['vol'] = this.data['volume'];
+    };
     if ('volume' in this.ndata.volume) {
       _f = this.ndata['volume']['volume'].length;
       for (i = 0; (0 <= _f ? i < _f : i > _f); (0 <= _f ? i += 1 : i -= 1)) {
@@ -639,12 +683,14 @@
     for (series in _h) {
       if (!__hasProp.call(_h, series)) continue;
       _g = _h[series];
-      !(('open' === series || 'close' === series || 'high' === series || 'low' === series) || series.match("^__")) ? (avgNdata[series] = this.ndata['prices'][series]) : null;
+      if (!((('open' === series || 'close' === series || 'high' === series || 'low' === series)) || series.match("^__"))) {
+        avgNdata[series] = this.ndata['prices'][series];
+      };
     }
     this.plots.push((new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, avgNdata)).render(this.colors).set);
     glow_width = this.pw / (this.data.__LABELS__.length - 1);
     this.glow = this.r.rect(this.px - (glow_width / 2), this.py - this.ph, glow_width, this.ph).attr({
-      fill: ("0-" + (this.opts.bgcolor) + "-\#DDAA99-" + (this.opts.bgcolor)),
+      fill: ("0-" + (this.opts.bgcolor) + "-#DDAA99-" + (this.opts.bgcolor)),
       'stroke-width': 0,
       'stroke-opacity': 0
     }).toBack().hide();
@@ -715,14 +761,20 @@
         _d = []; _f = data[series];
         for (_e = 0, _g = _f.length; _e < _g; _e++) {
           d = _f[_e];
-          (typeof d !== "undefined" && d !== null) ? _d.push(d) : null;
+          if ((typeof d !== "undefined" && d !== null)) {
+            _d.push(d);
+          };
         }
         return _d;
       })();
       maxes[series] = this.getMax(dataWithoutNulls, series);
-      !(typeof overallMax !== "undefined" && overallMax !== null) || maxes[series] > overallMax ? (overallMax = maxes[series]) : null;
+      if (!(typeof overallMax !== "undefined" && overallMax !== null) || maxes[series] > overallMax) {
+        overallMax = maxes[series];
+      };
       mins[series] = this.getMin(dataWithoutNulls, series);
-      !(typeof overallMin !== "undefined" && overallMin !== null) || mins[series] < overallMin ? (overallMin = mins[series]) : null;
+      if (!(typeof overallMin !== "undefined" && overallMin !== null) || mins[series] < overallMin) {
+        overallMin = mins[series];
+      };
     }
     _i = []; _j = data;
     for (series in _j) {
@@ -760,7 +812,9 @@
         for (seriesName in _c) {
           if (!__hasProp.call(_c, seriesName)) continue;
           _a = _c[seriesName];
-          seriesName.match("^__") ? _b.push(seriesName) : null;
+          if (seriesName.match("^__")) {
+            _b.push(seriesName);
+          };
         }
         return _b;
       })()
@@ -769,7 +823,9 @@
     for (seriesName in _e) {
       if (!__hasProp.call(_e, seriesName)) continue;
       _d = _e[seriesName];
-      !(seriesName.match("^__")) ? (groups[seriesName] = [seriesName]) : null;
+      if (!(seriesName.match("^__"))) {
+        groups[seriesName] = [seriesName];
+      };
     }
     return groups;
   };
@@ -786,7 +842,9 @@
       data = (function() {
         _b = []; _c = this.ndata[series].length;
         for (j = 0; (0 <= _c ? j < _c : j > _c); (0 <= _c ? j += 1 : j -= 1)) {
-          (typeof (_d = this.ndata[series][j]) !== "undefined" && _d !== null) ? _b.push(this.ndata[series][j][1]) : null;
+          if ((typeof (_d = this.ndata[series][j]) !== "undefined" && _d !== null)) {
+            _b.push(this.ndata[series][j][1]);
+          };
         }
         return _b;
       }).call(this);
@@ -799,7 +857,9 @@
           _g = []; _i = this.data[series];
           for (_h = 0, _j = _i.length; _h < _j; _h++) {
             x = _i[_h];
-            (typeof x !== "undefined" && x !== null) ? _g.push(x) : null;
+            if ((typeof x !== "undefined" && x !== null)) {
+              _g.push(x);
+            };
           }
           return _g;
         }).call(this);
@@ -810,8 +870,10 @@
       yvals = this.getYAxisVals(min, max, true);
       minLabel = yvals[0];
       maxLabel = yvals[yvals.length - 1];
-      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], '#ffffff', this.opts.fromWhite)));
-      this.opts.interactive ? this.setupHistogramInteraction(histogram, series) : null;
+      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white', this.opts.fromWhite)));
+      if (this.opts.interactive) {
+        this.setupHistogramInteraction(histogram, series);
+      };
     }
     this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);
     return this.padding.bottom += height + 5;
@@ -858,7 +920,9 @@
       for (series in _c) {
         if (!__hasProp.call(_c, series)) continue;
         _a = _c[series];
-        !series.match('^__') ? _b.push(series) : null;
+        if (!series.match('^__')) {
+          _b.push(series);
+        };
       }
       return _b;
     }).call(this));

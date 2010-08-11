@@ -3,7 +3,7 @@ class Sai.Chart
   
   constructor: (@r, @x, @y, @w, @h, data, @opts) ->
     @opts ?= {}
-    @opts.bgcolor ?= '#ffffff'
+    @opts.bgcolor ?= 'white'
     
     @setData(data)
     
@@ -189,10 +189,12 @@ class Sai.Chart
     @ph = @h - @padding.bottom - @padding.top
   
   drawBG: () ->
-    @bg = @r.rect(@px? and @px or @x,
-                          @py? and (@py - @ph) or (@y - @h),
-                          @pw? and @pw or @w,
-                          @ph? and @ph or @h).attr({fill: @opts.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
+    @bg = @r.rect(
+      @px? and @px or @x,
+      @py? and (@py - @ph) or (@y - @h),
+      @pw? and @pw or @w,
+      @ph? and @ph or @h
+    ).attr({fill: @opts.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
   
   logoPos: () ->
     w = 160
@@ -235,11 +237,13 @@ class Sai.Chart
     
     @guidelines ?= @r.set()
     
-    guideline = new Sai.LinePlot(@r,
-                                 @px,
-                                 @py,
-                                 @pw, @ph,
-                                 {'guideline': [[0, nh], [1, nh]]})
+    guideline = new Sai.LinePlot(
+      @r,
+      @px,
+      @py,
+      @pw, @ph,
+      {'guideline': [[0, nh], [1, nh]]}
+    )
     
     guideline.render({'guideline': '#ccc'})
     
@@ -321,7 +325,7 @@ class Sai.LineChart extends Sai.Chart
       if series is '__YVALS__'
         continue
       
-      color = @colors and @colors[series] or '#000000'
+      color = @colors and @colors[series] or 'black'
       
       @dots.push(@r.circle(0, 0, 4).attr({'fill': color}).hide())
     
@@ -371,7 +375,7 @@ class Sai.Sparkline extends Sai.Chart
                         @w,
                         @h,
                         @ndata['data']))
-      .render({data: @colors and @colors[series] or '#000000'}, 1)
+      .render({data: @colors and @colors[series] or 'black'}, 1)
       .set
     )
     
@@ -451,13 +455,13 @@ class Sai.StockChart extends Sai.Chart
     avgColors = {}
     shouldDrawLegend = false
     for series of @ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not series.match('^__')
-      avgColors[series] = @colors?[series] or '#000000'
+      avgColors[series] = @colors?[series] or 'black'
       shouldDrawLegend = true
     if shouldDrawLegend then @drawLegend(avgColors)
     
     @colors ?= {}
-    @colors['up'] ?= '#000000'
-    @colors['down'] ?= '#ff0000'
+    @colors['up'] ?= 'black'
+    @colors['down'] ?= 'red'
     @colors['vol_up'] ?= '#666666'
     @colors['vol_down'] ?= '#cc6666'
     
@@ -540,7 +544,7 @@ class Sai.StockChart extends Sai.Chart
     
     glow_width = @pw / (@data.__LABELS__.length - 1)
     @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
-                      .attr({fill: "0-#{@opts.bgcolor}-\#DDAA99-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
+                      .attr({fill: "0-#{@opts.bgcolor}-#DDAA99-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
                       .toBack()
                       .hide()
     
@@ -655,7 +659,7 @@ class Sai.GeoChart extends Sai.Chart
           maxLabel,
           series,
           @colors[series],
-          '#ffffff',
+          'white',
           @opts.fromWhite
         )
       )

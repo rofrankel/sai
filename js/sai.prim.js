@@ -43,10 +43,14 @@
     _b = coords;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       coord = _b[_a];
-      if (!(typeof coord !== "undefined" && coord !== null)) {
+      if (!((typeof coord !== "undefined" && coord !== null))) {
         continue;
       }
-      (typeof path !== "undefined" && path !== null) ? path += ("L" + coord[0] + " " + coord[1]) : (path = ("M" + coord[0] + " " + coord[1]));
+      if ((typeof path !== "undefined" && path !== null)) {
+        path += ("L" + coord[0] + " " + coord[1]);
+      } else {
+        path = ("M" + coord[0] + " " + coord[1]);
+      };
     }
     return this.path(path).attr({
       'stroke': color,
@@ -63,10 +67,10 @@
     _b = coords;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       coord = _b[_a];
-      if (!(typeof coord !== "undefined" && coord !== null)) {
+      if (!((typeof coord !== "undefined" && coord !== null))) {
         continue;
       }
-      if (typeof strokePath !== "undefined" && strokePath !== null) {
+      if ((typeof strokePath !== "undefined" && strokePath !== null)) {
         strokePath += ("L" + coord[0] + " " + coord[1]);
         areaPath += ("L" + coord[0] + " " + coord[1]);
       } else {
@@ -90,14 +94,17 @@
     return this.set().push(area, stroke);
   };
   Raphael.fn.sai.prim.stackedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
-    var _a, _b, _c, axisClip, bar, height, hoverfuncs, prev, stack, totalHeight;
-    shouldInteract && (typeof (_a = coords[coords.length - 1]) !== "undefined" && _a !== null) ? (totalHeight = baseline - coords[coords.length - 1][1]) : null;
+    var _a, _b, _c, _d, axisClip, bar, height, hoverfuncs, i, prev, stack, totalHeight;
+    if (shouldInteract && (typeof (_a = coords[coords.length - 1]) !== "undefined" && _a !== null)) {
+      totalHeight = baseline - coords[coords.length - 1][1];
+    };
     width *= .67;
     stack = this.set();
     prev = baseline;
-    _b = coords.length;
-    for (i = 0; (0 <= _b ? i < _b : i > _b); (0 <= _b ? i += 1 : i -= 1)) {
-      if (!((typeof (_c = coords[i]) !== "undefined" && _c !== null) && coords[i][1] !== baseline)) {
+    _c = coords.length;
+    for (_b = 0; (0 <= _c ? _b < _c : _b > _c); (0 <= _c ? _b += 1 : _b -= 1)) {
+      var i = _b;
+      if (!((typeof (_d = coords[i]) !== "undefined" && _d !== null) && coords[i][1] !== baseline)) {
         continue;
       }
       height = prev - coords[i][1];
@@ -111,7 +118,9 @@
         }, [
           (function(_percent) {
             return function() {
-              extras[0] ? extras[0]() : null;
+              if (extras[0]) {
+                extras[0]();
+              };
               return fSetInfo({
                 '(selected)': Sai.util.prettystr(_percent) + '%'
               }, false);
@@ -132,7 +141,9 @@
     axisClip = 0.5;
     _a = coords.length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
-      (typeof (_b = coords[i] == undefined ? undefined : coords[i][0]) !== "undefined" && _b !== null) ? group.push(this.rect(coords[i][0] - offset + (i * barwidth), coords[i][1], barwidth - 1, baseline - coords[i][1] - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000')) : null;
+      if ((typeof (_b = coords[i] == undefined ? undefined : coords[i][0]) !== "undefined" && _b !== null)) {
+        group.push(this.rect(coords[i][0] - offset + (i * barwidth), coords[i][1], barwidth - 1, baseline - coords[i][1] - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000'));
+      };
     }
     if (shouldInteract) {
       hoverfuncs = getHoverfuncs(group, {
@@ -157,7 +168,7 @@
     _b = vals;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       val = _b[_a];
-      if (typeof val !== "undefined" && val !== null) {
+      if ((typeof val !== "undefined" && val !== null)) {
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color));
         if (!(val === '')) {
@@ -331,10 +342,14 @@
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       datum = _b[_a];
       idx = Math.min(numBuckets - 1, Math.floor(numBuckets * datum / 1));
-      idx in buckets ? buckets[idx] += 1 : (buckets[idx] = 1);
+      if (idx in buckets) {
+        buckets[idx] += 1;
+      } else {
+        buckets[idx] = 1;
+      };
       maxBucket = Math.max(maxBucket, buckets[idx]);
     }
-    set.push((hrule = this.path("M" + x + "," + y + " l" + w + ", 0").attr('stroke', color)));
+    set.push((hrule = this.path(("M" + (x) + "," + (y) + " l" + (w) + ", 0")).attr('stroke', color)));
     y -= 1;
     bw = w / numBuckets;
     _e = buckets;
