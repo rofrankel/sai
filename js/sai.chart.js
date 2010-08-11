@@ -106,6 +106,9 @@
   };
   Sai.Chart.prototype.getYAxisVals = function(min, max, nopad) {
     var _a, bottom, factor, i, mag, rawmag, step, top;
+    if (min === max) {
+      return [0, max, max * 2];
+    }
     nopad = (typeof nopad !== "undefined" && nopad !== null) ? nopad : false;
     factor = 1;
     while (((max - min) * factor) < 10) {
@@ -197,7 +200,11 @@
     (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) ? (this.stackedNdata = {}) : null;
     norm = function(val, min, max) {
       if (typeof val === "number") {
-        return (val - min) / (max - min);
+        if (min === max) {
+          return 1;
+        } else {
+          return (val - min) / (max - min);
+        }
       }
       return null;
     };

@@ -64,6 +64,8 @@ class Sai.Chart
     }
   
   getYAxisVals: (min, max, nopad) ->
+    if min is max then return [0, max, max * 2]
+    
     nopad ?= false
     factor = 1
     while((max - min) * factor) < 10
@@ -113,7 +115,10 @@ class Sai.Chart
     
     norm = (val, min, max) ->
       if typeof val is "number"
-        return (val - min) / (max - min)
+        if min is max
+          return 1
+        else
+          return (val - min) / (max - min)
       
       return null
     
