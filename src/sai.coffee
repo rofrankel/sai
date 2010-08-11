@@ -1,5 +1,5 @@
-Sai ?= {}
-Sai.util ?= {}
+Sai = {}
+Sai.util = {}
 
 Sai.imagePath ?= 'images/'
 

@@ -1,6 +1,6 @@
 var Sai;
-Sai = (typeof Sai !== "undefined" && Sai !== null) ? Sai : {};
-Sai.util = (typeof Sai.util !== "undefined" && Sai.util !== null) ? Sai.util : {};
+Sai = {};
+Sai.util = {};
 Sai.imagePath = (typeof Sai.imagePath !== "undefined" && Sai.imagePath !== null) ? Sai.imagePath : 'images/';
 Sai.util.roundToMag = function(x, mag) {
   var target;

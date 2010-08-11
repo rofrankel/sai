@@ -262,7 +262,7 @@
       t = this.text(px + 14, py, text);
       t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
       r = this.rect(px, py, 9, 9).attr({
-        'fill': (typeof (_c = colors[text]) !== "undefined" && _c !== null) ? colors[text] : '#000000'
+        'fill': (typeof (_c = colors[text]) !== "undefined" && _c !== null) ? colors[text] : 'black'
       });
       key = this.set().push(t, r);
       if ((px - x) + spacing + key.getBBox().width > max_width) {

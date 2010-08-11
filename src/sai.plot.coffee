@@ -162,7 +162,7 @@ class Sai.GeoPlot extends Sai.Plot
       ridx = ri[region]
       name = map.name[region]
       
-      info = {region: if name? then name else region}
+      info = {region: name ? region}
       for series of @rawdata
         info[series] = @rawdata[series][ridx]
       

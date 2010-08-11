@@ -31,8 +31,10 @@ task 'build', 'build all of the source files', ->
     
     args.push("--js_output_file")
     args.push("js/sai-min.js")
-    
-    puts args
+    #args.push("--compilation_level")
+    #args.push("ADVANCED_OPTIMIZATIONS")
+    #args.push("--externs")
+    #args.push("externs.js")
     
     require('child_process').spawn("java", args)
   catch err

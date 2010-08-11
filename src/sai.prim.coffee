@@ -275,7 +275,7 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, colors) ->
   for text of colors
     t = @text(px + 14, py, text)
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
-    r = @rect(px, py, 9, 9).attr({'fill': if colors[text]? then colors[text] else '#000000'})
+    r = @rect(px, py, 9, 9).attr({'fill': colors[text] ? 'black'})
     key = @set().push(t, r)
     
     if (px - x) + spacing + key.getBBox().width > max_width

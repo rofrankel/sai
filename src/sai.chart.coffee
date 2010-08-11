@@ -128,8 +128,8 @@ class Sai.Chart
       if @opts.stacked?
         @stackedNdata[group] = {}
         baselines = {}
-      minf = if @opts.stacked? then @getStackedMin else @getMin
-      maxf = if @opts.stacked? then @getStackedMax else @getMax
+      minf = if @opts.stacked then @getStackedMin else @getMin
+      maxf = if @opts.stacked then @getStackedMax else @getMax
       min = minf(data, groups[group])
       max = maxf(data, groups[group])
       yvals = @getYAxisVals(min, max)
@@ -272,7 +272,7 @@ class Sai.Chart
   drawInfo: (info, clear) =>  
     clear ?= true
     
-    info ?= if @default_info? then @default_info() else {}
+    info ?= @default_info ? {}
     
     # clear out anything that already exists
     if clear
