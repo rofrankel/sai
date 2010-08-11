@@ -70,7 +70,7 @@
     for (series in _c) {
       if (!__hasProp.call(_c, series)) continue;
       _a = _c[series];
-      _b.push(this.dndata[series].length === 1 && this.dndata[series][0][0] === this.x ? this.dndata[series].push([this.x + this.w, this.dndata[series][0][1]]) : null);
+      _b.push(this.dndata[series].length === 1 && (this.dndata[series] == undefined ? undefined : this.dndata[series][0] == undefined ? undefined : this.dndata[series][0][0]) === this.x ? this.dndata[series].push([this.x + this.w, this.dndata[series][0][1]]) : null);
     }
     return _b;
   };

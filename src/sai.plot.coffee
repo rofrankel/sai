@@ -30,7 +30,7 @@ class Sai.LinePlot extends Sai.Plot
   setDenormalizedData: () ->
     super
     for series of @dndata
-      if @dndata[series].length is 1 and @dndata[series][0][0] is @x
+      if @dndata[series].length is 1 and @dndata[series]?[0]?[0] is @x
         @dndata[series].push([@x + @w, @dndata[series][0][1]])
 
   render: (colors, width) ->
