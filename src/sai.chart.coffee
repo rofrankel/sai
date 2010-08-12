@@ -103,6 +103,15 @@ class Sai.Chart
     return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
   
   getStackedMax: (data, group) ->
+    alert "getting max for stacked data group #{group}:"
+    
+    for i in [0...@data['__LABELS__'].length]
+      alert 'i is ' + i
+      for series in group
+        alert 'series: ' + series + " value is " + data[series][i]
+      alert 'sum of that group is ' + Sai.util.sumArray(data[series][i] for series in group)
+    
+    alert "result is " + Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...@data['__LABELS__'].length])
     return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...@data['__LABELS__'].length])
   
   # stacked charts generally have a 0 baseline

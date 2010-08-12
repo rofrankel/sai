@@ -197,20 +197,52 @@
     })());
   };
   Sai.Chart.prototype.getStackedMax = function(data, group) {
-    var _a, _b, _c, _d, _e, _f, i, series;
-    return Math.max.apply(Math, (function() {
-      _a = []; _b = this.data['__LABELS__'].length;
-      for (i = 0; (0 <= _b ? i < _b : i > _b); (0 <= _b ? i += 1 : i -= 1)) {
-        _a.push(Sai.util.sumArray((function() {
-          _c = []; _e = group;
-          for (_d = 0, _f = _e.length; _d < _f; _d++) {
-            series = _e[_d];
-            _c.push(data[series][i]);
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, i, series;
+    alert(("getting max for stacked data group " + (group) + ":"));
+    _a = this.data['__LABELS__'].length;
+    for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
+      alert('i is ' + i);
+      _c = group;
+      for (_b = 0, _d = _c.length; _b < _d; _b++) {
+        series = _c[_b];
+        alert('series: ' + series + " value is " + data[series][i]);
+      }
+      alert('sum of that group is ' + Sai.util.sumArray((function() {
+        _e = []; _g = group;
+        for (_f = 0, _h = _g.length; _f < _h; _f++) {
+          series = _g[_f];
+          _e.push(data[series][i]);
+        }
+        return _e;
+      })()));
+    }
+    alert("result is " + Math.max.apply(Math, (function() {
+      _i = []; _j = this.data['__LABELS__'].length;
+      for (i = 0; (0 <= _j ? i < _j : i > _j); (0 <= _j ? i += 1 : i -= 1)) {
+        _i.push(Sai.util.sumArray((function() {
+          _k = []; _m = group;
+          for (_l = 0, _n = _m.length; _l < _n; _l++) {
+            series = _m[_l];
+            _k.push(data[series][i]);
           }
-          return _c;
+          return _k;
         })()));
       }
-      return _a;
+      return _i;
+    }).call(this)));
+    return Math.max.apply(Math, (function() {
+      _o = []; _p = this.data['__LABELS__'].length;
+      for (i = 0; (0 <= _p ? i < _p : i > _p); (0 <= _p ? i += 1 : i -= 1)) {
+        _o.push(Sai.util.sumArray((function() {
+          _q = []; _s = group;
+          for (_r = 0, _t = _s.length; _r < _t; _r++) {
+            series = _s[_r];
+            _q.push(data[series][i]);
+          }
+          return _q;
+        })()));
+      }
+      return _o;
     }).call(this));
   };
   Sai.Chart.prototype.getStackedMin = function(data, group) {
