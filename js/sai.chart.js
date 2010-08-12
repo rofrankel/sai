@@ -402,7 +402,6 @@
     var _a, _b, _c, label;
     clear = (typeof clear !== "undefined" && clear !== null) ? clear : true;
     info = (typeof info !== "undefined" && info !== null) ? info : (typeof (_a = this.default_info) !== "undefined" && _a !== null) ? this.default_info() : {};
-    alert(info);
     if (clear) {
       this.info_data = {};
     };
