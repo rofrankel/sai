@@ -33,7 +33,7 @@ class Sai.Chart
     # do any necessary null padding
     groups = @dataGroups(data)
     nngroups = @nonNegativeGroups()
-    for group of groups
+    for group of groups when groups[group].length > 0
       if group in nngroups
         for series in groups[group]
           if @data[series]?
@@ -122,11 +122,13 @@ class Sai.Chart
       return null
     
     for group of groups
-      continue if group.match('^__')
+      continue if group.match('^__') or Sai.util.sumArray(@data[series].length for series in groups[group]) is 0
+      
       @ndata[group] = {}
       if @opts.stacked?
         @stackedNdata[group] = {}
         baselines = {}
+      
       minf = if @opts.stacked then @getStackedMin else @getMin
       maxf = if @opts.stacked then @getStackedMax else @getMax
       min = minf(data, groups[group])
@@ -166,9 +168,8 @@ class Sai.Chart
         tmptext.remove()
         break
     
-    
     vlen = @h - (@padding.bottom + haxis_height + @padding.top)
-    @vaxis = @r.sai.prim.vaxis(@ndata[group].__YVALS__, @x + @padding.left, @y - (@padding.bottom + haxis_height), vlen, @axisWidth)
+    @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - (@padding.bottom + haxis_height), vlen, @axisWidth)
     @vaxis.translate(@vaxis.getBBox().width, 0)
     @padding.left += @vaxis.getBBox().width
     
@@ -198,12 +199,9 @@ class Sai.Chart
   logoPos: () ->
     w = 160
     h = 34
-    [
-      @px + @pw - w - 5,
-      @py - @ph + 5,
-      w,
-      h
-    ]
+    x = if @px? and @pw? then @px + @pw - w - 5 else @w + @x - w - @padding.right
+    y = if @py? and @ph? then @py - @ph + 5 else @y - @h + @padding.top
+    return [x, y, w, h]
   
   drawLogo: () ->
     [x, y, w, h] = @logoPos()
@@ -232,6 +230,9 @@ class Sai.Chart
   
   drawGuideline: (h, group) ->
     group ?= 'all'
+    
+    return unless @ndata[group]?.__YVALS__?
+    
     ymin = @ndata[group].__YVALS__[0]
     ymax = @ndata[group].__YVALS__[@ndata[group].__YVALS__.length - 1]
     return unless h > ymin 
@@ -241,9 +242,7 @@ class Sai.Chart
     
     guideline = new Sai.LinePlot(
       @r,
-      @px,
-      @py,
-      @pw, @ph,
+      @px, @py, @pw, @ph,
       {'guideline': [[0, nh], [1, nh]]}
     )
     
@@ -255,7 +254,7 @@ class Sai.Chart
     colors ?= @colors
     if colors
       @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, colors)
-      @padding.bottom += @legend.getBBox().height + 15
+      if @legend.length > 0 then @padding.bottom += @legend.getBBox().height + 15
       @legend.translate((@w - @legend.getBBox().width) / 2, 0)
   
   drawTitle: () ->
@@ -403,9 +402,10 @@ class Sai.BarChart extends Sai.Chart
     @drawLogo()
     @drawBG()
     
-    @guidelines = @r.set()
-    for yval in @ndata['all']['__YVALS__']
-      @drawGuideline(yval)
+    if 'all' of @ndata
+      @guidelines = @r.set()
+      for yval in @ndata['all']['__YVALS__']
+        @drawGuideline(yval)
     
     @plots = @r.set()
     data = {}

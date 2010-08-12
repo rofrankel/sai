@@ -55,16 +55,18 @@
     for (group in _d) {
       if (!__hasProp.call(_d, group)) continue;
       _c = _d[group];
-      if ((function(){ for (var _j=0, _k=nngroups.length; _j<_k; _j++) { if (nngroups[_j] === group) return true; } return false; }).call(this)) {
-        _f = groups[group];
-        for (_e = 0, _g = _f.length; _e < _g; _e++) {
-          series = _f[_e];
-          if ((typeof (_i = this.data[series]) !== "undefined" && _i !== null)) {
-            _h = this.data[series].length;
-            for (i = 0; (0 <= _h ? i < _h : i > _h); (0 <= _h ? i += 1 : i -= 1)) {
-              if (this.data[series][i] < 0) {
-                this.data[series][i] *= -1;
-              };
+      if (groups[group].length > 0) {
+        if ((function(){ for (var _j=0, _k=nngroups.length; _j<_k; _j++) { if (nngroups[_j] === group) return true; } return false; }).call(this)) {
+          _f = groups[group];
+          for (_e = 0, _g = _f.length; _e < _g; _e++) {
+            series = _f[_e];
+            if ((typeof (_i = this.data[series]) !== "undefined" && _i !== null)) {
+              _h = this.data[series].length;
+              for (i = 0; (0 <= _h ? i < _h : i > _h); (0 <= _h ? i += 1 : i -= 1)) {
+                if (this.data[series][i] < 0) {
+                  this.data[series][i] *= -1;
+                };
+              }
             }
           }
         }
@@ -214,7 +216,7 @@
     return 0;
   };
   Sai.Chart.prototype.normalize = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, baseline, baselines, group, groups, i, max, maxf, min, minf, norm, nval, series, stackedPoint, yvals;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, baseline, baselines, group, groups, i, max, maxf, min, minf, norm, nval, series, stackedPoint, yvals;
     groups = this.dataGroups(data);
     this.ndata = {};
     if ((typeof (_a = this.opts.stacked) !== "undefined" && _a !== null)) {
@@ -234,11 +236,18 @@
     for (group in _d) {
       if (!__hasProp.call(_d, group)) continue;
       _b = _d[group];
-      if (group.match('^__')) {
+      if (group.match('^__') || Sai.util.sumArray((function() {
+        _e = []; _g = groups[group];
+        for (_f = 0, _h = _g.length; _f < _h; _f++) {
+          series = _g[_f];
+          _e.push(this.data[series].length);
+        }
+        return _e;
+      }).call(this)) === 0) {
         continue;
       }
       this.ndata[group] = {};
-      if ((typeof (_e = this.opts.stacked) !== "undefined" && _e !== null)) {
+      if ((typeof (_i = this.opts.stacked) !== "undefined" && _i !== null)) {
         this.stackedNdata[group] = {};
         baselines = {};
       }
@@ -249,25 +258,25 @@
       yvals = this.getYAxisVals(min, max);
       min = yvals[0];
       max = yvals[yvals.length - 1];
-      _g = groups[group];
-      for (_f = 0, _h = _g.length; _f < _h; _f++) {
-        series = _g[_f];
-        if (!((typeof (_i = data[series]) !== "undefined" && _i !== null))) {
+      _k = groups[group];
+      for (_j = 0, _l = _k.length; _j < _l; _j++) {
+        series = _k[_j];
+        if (!((typeof (_m = data[series]) !== "undefined" && _m !== null))) {
           continue;
         }
         this.ndata[group][series] = (function() {
-          _j = []; _k = data[series].length;
-          for (i = 0; (0 <= _k ? i < _k : i > _k); (0 <= _k ? i += 1 : i -= 1)) {
-            _j.push(((typeof (_l = data[series][i]) !== "undefined" && _l !== null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null));
+          _n = []; _o = data[series].length;
+          for (i = 0; (0 <= _o ? i < _o : i > _o); (0 <= _o ? i += 1 : i -= 1)) {
+            _n.push(((typeof (_p = data[series][i]) !== "undefined" && _p !== null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null));
           }
-          return _j;
+          return _n;
         })();
-        if ((typeof (_o = this.opts.stacked) !== "undefined" && _o !== null)) {
+        if ((typeof (_s = this.opts.stacked) !== "undefined" && _s !== null)) {
           this.stackedNdata[group][series] = [];
-          _m = data[series].length;
-          for (i = 0; (0 <= _m ? i < _m : i > _m); (0 <= _m ? i += 1 : i -= 1)) {
+          _q = data[series].length;
+          for (i = 0; (0 <= _q ? i < _q : i > _q); (0 <= _q ? i += 1 : i -= 1)) {
             baseline = baselines[i] || 0;
-            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_n = data[series][i]) !== "undefined" && _n !== null) && (nval = norm(data[series][i], min, max)) !== null ? nval + baseline : baseline];
+            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_r = data[series][i]) !== "undefined" && _r !== null) && (nval = norm(data[series][i], min, max)) !== null ? nval + baseline : baseline];
             this.stackedNdata[group][series].push(stackedPoint);
             if (!(stackedPoint === null)) {
               baselines[i] = stackedPoint[1];
@@ -280,7 +289,7 @@
     return _c;
   };
   Sai.Chart.prototype.addAxes = function(group) {
-    var LINE_HEIGHT, _a, haxis_height, hlen, i, tmptext, vlen;
+    var LINE_HEIGHT, _a, _b, haxis_height, hlen, i, tmptext, vlen;
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
     haxis_height = LINE_HEIGHT + 2 + 10;
@@ -294,7 +303,7 @@
       }
     }
     vlen = this.h - (this.padding.bottom + haxis_height + this.padding.top);
-    this.vaxis = this.r.sai.prim.vaxis(this.ndata[group].__YVALS__, this.x + this.padding.left, this.y - (this.padding.bottom + haxis_height), vlen, this.axisWidth);
+    this.vaxis = this.r.sai.prim.vaxis((typeof (_b = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _b !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - (this.padding.bottom + haxis_height), vlen, this.axisWidth);
     this.vaxis.translate(this.vaxis.getBBox().width, 0);
     this.padding.left += this.vaxis.getBBox().width;
     hlen = this.w - this.padding.left - this.padding.right;
@@ -319,10 +328,12 @@
     }).toBack());
   };
   Sai.Chart.prototype.logoPos = function() {
-    var h, w;
+    var _a, _b, _c, _d, h, w, x, y;
     w = 160;
     h = 34;
-    return [this.px + this.pw - w - 5, this.py - this.ph + 5, w, h];
+    x = (typeof (_a = this.px) !== "undefined" && _a !== null) && (typeof (_b = this.pw) !== "undefined" && _b !== null) ? this.px + this.pw - w - 5 : this.w + this.x - w - this.padding.right;
+    y = (typeof (_c = this.py) !== "undefined" && _c !== null) && (typeof (_d = this.ph) !== "undefined" && _d !== null) ? this.py - this.ph + 5 : this.y - this.h + this.padding.top;
+    return [x, y, w, h];
   };
   Sai.Chart.prototype.drawLogo = function() {
     var _a, h, w, x, y;
@@ -363,8 +374,11 @@
     return this;
   };
   Sai.Chart.prototype.drawGuideline = function(h, group) {
-    var guideline, nh, ymax, ymin;
+    var _a, guideline, nh, ymax, ymin;
     group = (typeof group !== "undefined" && group !== null) ? group : 'all';
+    if (!((typeof (_a = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null))) {
+      return null;
+    }
     ymin = this.ndata[group].__YVALS__[0];
     ymax = this.ndata[group].__YVALS__[this.ndata[group].__YVALS__.length - 1];
     if (!(h > ymin)) {
@@ -384,7 +398,9 @@
     colors = (typeof colors !== "undefined" && colors !== null) ? colors : this.colors;
     if (colors) {
       this.legend = this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, colors);
-      this.padding.bottom += this.legend.getBBox().height + 15;
+      if (this.legend.length > 0) {
+        this.padding.bottom += this.legend.getBBox().height + 15;
+      };
       return this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0);
     }
   };
@@ -555,11 +571,13 @@
     this.addAxes('all');
     this.drawLogo();
     this.drawBG();
-    this.guidelines = this.r.set();
-    _b = this.ndata['all']['__YVALS__'];
-    for (_a = 0, _c = _b.length; _a < _c; _a++) {
-      yval = _b[_a];
-      this.drawGuideline(yval);
+    if ('all' in this.ndata) {
+      this.guidelines = this.r.set();
+      _b = this.ndata['all']['__YVALS__'];
+      for (_a = 0, _c = _b.length; _a < _c; _a++) {
+        yval = _b[_a];
+        this.drawGuideline(yval);
+      }
     }
     this.plots = this.r.set();
     data = {};
