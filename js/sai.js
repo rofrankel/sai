@@ -136,9 +136,13 @@ Sai.data.map = (typeof Sai.data.map !== "undefined" && Sai.data.map !== null) ? 
 Raphael.fn.sai = (typeof Raphael.fn.sai !== "undefined" && Raphael.fn.sai !== null) ? Raphael.fn.sai : {};
 Raphael.fn.sai.chart = function(x, y, w, h, type, data) {
   var chart;
-  type = (({
+  type = (typeof (({
     'line': Sai.LineChart
-  })[type]) || type;
+  })[type]) !== "undefined" && (({
+    'line': Sai.LineChart
+  })[type]) !== null) ? (({
+    'line': Sai.LineChart
+  })[type]) : type;
   type = (typeof type !== "undefined" && type !== null) ? type : Sai.Chart;
   chart = new type(this, x, y, w, h, data);
   return chart.render();

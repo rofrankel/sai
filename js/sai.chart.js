@@ -120,6 +120,7 @@
   };
   Sai.Chart.prototype.getYAxisVals = function(min, max, nopad) {
     var _a, bottom, factor, i, mag, rawmag, step, top;
+    alert(("finding y axis values for " + (min) + " to " + (max)));
     if (min === max) {
       return [0, max, max * 2];
     }

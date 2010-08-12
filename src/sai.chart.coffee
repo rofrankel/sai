@@ -63,6 +63,8 @@ class Sai.Chart
     }
   
   getYAxisVals: (min, max, nopad) ->
+    alert "finding y axis values for #{min} to #{max}"
+    
     if min is max then return [0, max, max * 2]
     
     nopad ?= false

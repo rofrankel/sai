@@ -126,7 +126,7 @@ Raphael.fn.sai ?= {}
 Raphael.fn.sai.chart = (x, y, w, h, type, data) ->
   type = {
     'line': Sai.LineChart
-  }[type] or type
+  }[type] ? type
   
   type ?= Sai.Chart
   
