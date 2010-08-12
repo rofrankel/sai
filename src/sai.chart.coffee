@@ -284,7 +284,7 @@ class Sai.Chart
     
     for label of info
       unless label.match("^__")
-        @info_data[label] = info[label] or '(no data)'
+        @info_data[label] = info[label] ? '(no data)'
     
     @info = @r.sai.prim.info(@info_x, @info_y, @info_w, @info_data)
   

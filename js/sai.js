@@ -43,6 +43,22 @@ Sai.util.prettystr = function(x, precision) {
   }
   return x;
 };
+Sai.util.prettynum = function(num) {
+  var rgx;
+  if (isNaN(parseFloat(num))) {
+    return undefined;
+  }
+  num = String(num).split('.');
+  rgx = /(\d+)(\d{3})/;
+  while (rgx.test(num[0])) {
+    num[0] = num[0].replace(rgx, '$1,$2');
+  }
+  if (num.length > 1 && false) {
+    alert(num[1]);
+    alert("bbb" + parseFloat("0." + num[1]).toFixed(2).slice(1));
+  }
+  return num[0] + (num.length > 1 ? parseFloat("0." + num[1]).toFixed(2).slice(1) : '');
+};
 Sai.util.infoSetters = function(fSetInfo, info) {
   return [
     function() {

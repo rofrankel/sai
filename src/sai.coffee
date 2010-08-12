@@ -42,6 +42,20 @@ Sai.util.prettystr = (x, precision) ->
   
   return x
 
+Sai.util.prettynum = (num) ->
+  if isNaN(parseFloat(num))
+    return undefined
+  
+  num = String(num).split('.')
+  rgx = /(\d+)(\d{3})/
+  while rgx.test(num[0])
+    num[0] = num[0].replace(rgx, '$1,$2')
+  
+  if num.length > 1 and false
+    alert num[1]
+    alert "bbb" + parseFloat("0." + num[1]).toFixed(2).slice(1)
+  
+  return num[0] + (if num.length > 1 then parseFloat("0." +num[1]).toFixed(2).slice(1) else '')
 
 Sai.util.infoSetters = (fSetInfo, info) ->
   [

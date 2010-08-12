@@ -421,7 +421,7 @@
     return this.padding.top += 30;
   };
   Sai.Chart.prototype.drawInfo = function(info, clear) {
-    var _a, _b, _c, label;
+    var _a, _b, _c, _d, label;
     clear = (typeof clear !== "undefined" && clear !== null) ? clear : true;
     info = (typeof info !== "undefined" && info !== null) ? info : (typeof (_a = this.default_info) !== "undefined" && _a !== null) ? this.default_info() : {};
     if (clear) {
@@ -435,7 +435,7 @@
       if (!__hasProp.call(_c, label)) continue;
       _b = _c[label];
       if (!(label.match("^__"))) {
-        this.info_data[label] = info[label] || '(no data)';
+        this.info_data[label] = (typeof (_d = info[label]) !== "undefined" && _d !== null) ? info[label] : '(no data)';
       };
     }
     return (this.info = this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data));
