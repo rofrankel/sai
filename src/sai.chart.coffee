@@ -33,7 +33,6 @@ class Sai.Chart
     # do any necessary null padding
     groups = @dataGroups(data)
     nngroups = @nonNegativeGroups()
-    
     for group of groups
       if group in nngroups
         for series in groups[group]
@@ -41,7 +40,7 @@ class Sai.Chart
             for i in [0...@data[series].length]
               if @data[series][i] < 0 then @data[series][i] *= -1
     
-    for group in @groupsToNullPad()
+    for group in @groupsToNullPad() when group of groups
       for series in groups[group]
         @nullPad(series)
     
@@ -214,6 +213,9 @@ class Sai.Chart
     @plot ?= new Sai.Plot(@r)
     @plot.render()
     return this
+  
+  showError: (error) ->
+    err = this.r.text(@x + (@w/2), @y - (@h/2), error)
   
   # map from series name to color
   setColors: (colors) ->
@@ -436,19 +438,26 @@ class Sai.BarChart extends Sai.Chart
 class Sai.StockChart extends Sai.Chart
   
   groupsToNullPad: () ->
-    return group for group of @dataGroups()
+    return ['prices', 'volume', '__META__']
   
   dataGroups: (data) ->
-    {
+    groups = {
       '__META__': ['__LABELS__']
-      'volume': ['volume']
-      'prices': seriesName for seriesName of data when @caresAbout(seriesName) and seriesName not in ['__LABELS__', 'volume']
     }
+    if 'volume' of @data then groups.volume = ['volume']
+    for seriesName of data when @caresAbout(seriesName) and seriesName not in ['__LABELS__', 'volume']
+      groups.prices ?= []
+      groups.prices.push(seriesName)
+    return groups
   
   nonNegativeGroups: () ->
     ['volume']
 
   render: () ->
+    unless @ndata.prices? and 'open' of @ndata.prices and 'close' of @ndata.prices and 'high' of @ndata.prices and 'low' of @ndata.prices 
+      @showError("This chart requires data series named 'open', 'close', 'high', and 'low'.\n \nOnce you add series with these names, the chart will display.")
+      return
+    
     @drawTitle()
     @setupInfoSpace()
     
@@ -486,7 +495,7 @@ class Sai.StockChart extends Sai.Chart
         rawdata[p] = @data[p]
     if @data['volume']? then rawdata['vol'] = @data['volume']
     
-    if 'volume' of @ndata.volume
+    if 'volume' of @ndata
       for i in [0...@ndata['volume']['volume'].length]
         if @ndata['volume']['volume'][i] isnt null
           if i and @ndata['prices']['close'][i-1] and (@ndata['prices']['close'][i][1] < @ndata['prices']['close'][i-1][1])
