@@ -149,11 +149,11 @@ class Sai.GeoPlot extends Sai.Plot
   getRegionOpacity: (ridx, mainSeries) ->
     if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then .15 else 0.25)
   
-  render: (colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
+  render: (colors, map, regionSeries, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
     @set.remove()
     
-    regions = @rawdata.__LABELS__
+    regions = @rawdata[regionSeries]
     ri = {}
     for i in [0...regions.length]
       ri[regions[i]] = i
@@ -163,7 +163,7 @@ class Sai.GeoPlot extends Sai.Plot
       name = map.name[region]
       
       info = {region: name ? region}
-      for series of @rawdata
+      for series of @rawdata when series isnt regionSeries
         info[series] = @rawdata[series][ridx]
       
       color = @getRegionColor(colors, ridx, mainSeries)

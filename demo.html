@@ -29,10 +29,10 @@
       
       var badData = {
         "AAPL": [45, 50, 80, 87, 110, null, null, null, null, null, null, null, null],
-        "__LABELS__": ['1', '2', '4', '5', '6', '9', '10', '11', '14', '16', '18', '20', 21],
+        "date": ['1', '2', '4', '5', '6', '9', '10', '11', '14', '16', '18', '20', 21],
         "AMZN": [45, 344, 211, null, 78, null, 34, null, 23, 45, null, 57, 69],
         "GOOG": [322, 111, 23, null, 100, 70, null, null, 42, 27, 7, 15, 12],
-        "MSFT": [244, 16, 56, null, null, 67, null, 54.432, null, 65, null, 22.2, 27.5]
+        "MSFT": [244, 16, 56, null, null, 67, null, 54.432, null, 65, null, 22.2, 27.5],
       };
       
       var colors = {
@@ -47,7 +47,7 @@
         'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 6, 4, 2],
         'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, -1],
         'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 1],
-        '__LABELS__': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+        'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
       };
       
       var data2 = {
@@ -55,7 +55,7 @@
         'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 4, 6, 4, 2, 6, 3, 2, 8, 3, 12, 2, 1, 11, 8, 7, 6, 5, 2],
         'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, 6, 3, -1, 6, 1, 12, -3, 2, 3, 12, 2, 4, 6, 8, 7, 5],
         'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 3, 6, 1, 2, 8, 2, 3, 12, 27, 14, 10, 1, 3, 5, 7, 9],
-        '__LABELS__': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'UND', 'DOD', 'TRED', 'QUTD', 'QND', 'SED', 'STD', 'OTD', 'NVD', 'VNE', 'VNU', 'VND', 'VNT', 'VNQT', 'VNQN']
+        'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'UND', 'DOD', 'TRED', 'QUTD', 'QND', 'SED', 'STD', 'OTD', 'NVD', 'VNE', 'VNU', 'VND', 'VNT', 'VNQT', 'VNQN'],
       };
       
       var csdata = {
@@ -64,7 +64,7 @@
         'high': [5, 8, 6, 6, 5, 7, 5, 8, 6, 6, 5, 7, 5, 8, 6, 6, 5, 7],
         'low': [1, 3, 2, 1, 3, 4, 1, 3, 2, 1, 3, 4, 1, 3, 2, 1, 3, 4],
         'price': [4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7],
-        '__LABELS__': ['t1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6']
+        'time': ['t1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6'],
       };
       
       var msft_data = {
@@ -74,7 +74,7 @@
         'low': [25.89, 25.76, 25.22, 24.93, 24.31, 24.12, 23.11, 22.95, 22.73, 23.05, 23.27, 23.58, 23.61, 23.55, 23.45, 23.7, 23.91, 24.01, 25.89, 25.76, 25.22, 24.93, 24.31, 24.12, 23.11, 22.95, 22.73, 23.05, 23.27, 23.58, 23.61, 23.55, 23.45, 23.7, 23.91, 24.01],
         'volume': [54625218, 55986386, 61468282, 85252196, 156256672, 73787879, 119885791, 81057995, 92239399, 62489452, 0, 73594554, 81967278, 54625218, 55986386, 61468282, 85252196, 56256672, 54625218, 55986386, 61468282, 85252196, 156256672, 73787879, 119885791, 81057995, 92239399, 62489452, 0, 73594554, 81967278, 54625218, 55986386, 61468282, 85252196, 56256672],
         '7 day avg': [26.88, 26.77, 26.60, 26.52, 26.3, 26.20, 25.76, 25.11, 24.76, 24.42, 23.81, 23.51, 23.3, 23.16, 23.21, 23.29, 23.3, 23.35, 26.88, 26.77, 26.60, 26.52, 26.3, 26.20, 25.76, 25.11, 24.76, 24.42, 23.81, 23.51, 23.3, 23.16, 23.21, 23.29, 23.3, 23.35],
-        '__LABELS__': ['Jun 21', '', '', '', '', 'Jun 28', '', '', '', '', 'Jul 5', '', '', '', '', 'Jul 12', '', '', '', '', 'Jul 19', '', '', '', '', 'Jul 26', '', '', '', '', 'Aug 2', '', '', '', '', 'Aug 9']
+        'date': ['Jun 21', '', '', '', '', 'Jun 28', '', '', '', '', 'Jul 5', '', '', '', '', 'Jul 12', '', '', '', '', 'Jul 19', '', '', '', '', 'Jul 26', '', '', '', '', 'Aug 2', '', '', '', '', 'Aug 9'],
       };
       
       var bardata = {
@@ -82,7 +82,7 @@
         'AMZN': [200000, null, 400000, 400000],
         'GOOG': [300000, 500000, 100000, 150000],
         'MSFT': [500000, 100000, 400000, 350000],
-        '__LABELS__': ['Q1', 'Q2', 'Q3', 'Q4']
+        'Quarter': ['Q1', 'Q2', 'Q3', 'Q4'],
       };
       
       var getRandomData = function (min, max, n, ints) {
@@ -105,7 +105,7 @@
       
       var USdata = {
         '__MAP__': Sai.data.map.us,
-        '__LABELS__': states, // parallel to data arrays
+        'states': states, // parallel to data arrays
         '__DEFAULT__': 'Unemployment',
         'Confidence': [null, null, 1, 2, 3, null, 4, 5, 9, 1, 53, null, null, null, 1, 24, null, null, null, null, 54, 12, 34, null, null, null, null, 54, 12, 34, 34, null], // getRandomData(38.4, 38.7, states.length),
         'Unemployment': getRandomData(0, 1, states.length),
@@ -187,10 +187,10 @@
       
       var USChromaticData = {
         '__MAP__': Sai.data.map.us,
-        '__LABELS__': states, // parallel to data arrays
         'Republican': repubs,
         'Democrat': dems,
         'Green Party': greens,
+        states: states
       };
       
       var USChromaticColors = {
@@ -201,7 +201,8 @@
       
       var badMapData = {
         "Unemployment Rate": [20, 23, 25, 30, 34, 23, 10, 15, 27, 23, 20],
-        "__LABELS__": ["MA", "ES", "TN", "PT", "PL", "GR", "DE", "NO", "GB", "CZ", "SK"],
+        "__LABELS__": "state",
+        "state": ["MA", "ES", "TN", "PT", "PL", "GR", "DE", "NO", "GB", "CZ", "SK"],
         "Education": [56, 53, 34, 40, 54, 60, 70, 23, 80, 83, 67],
         "Temperature": [80, 64, 82, 90, 91, 60, 85, 75, 93, 84, 81],
         '__MAP__': Sai.data.map.us,
@@ -214,28 +215,28 @@
         "Temperature": ucla,
       }
       
-      var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "__LABELS__": [null], "AAPL": [2]};
+      var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
       
       var r1 = Raphael("c1", 350, 350);
-      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true}).setColors(colors).render();
+      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true}).setColors(colors).render();
       
       var r2 = Raphael("c2", 350, 350);
-      var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data2, {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true}).setColors(colors).render();
+      var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true}).setColors(colors).render();
       
       var r3 = Raphael("c3", 350, 350);
-      var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'7 day avg': olive}).render();
+      var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, "date", {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'7 day avg': olive}).render();
       
       var r4 = Raphael("c4", 350, 350);
-      var barc = new Sai.BarChart(r4, 0, 350, 350, 350, data, {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
+      var barc = new Sai.BarChart(r4, 0, 350, 350, 350, data, "Month", {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
       
       var r5 = Raphael("c5", 350, 350);
-      var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, {"__LABELS__": ["JAN", "FEB", "MAR"], "MSFT": [4, 6, 31]}, {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
+      var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
       
       var r6 = Raphael("c6", 400, 350);
-      var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, USdata, {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true}).setColors(UScolors).render();
+      var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, USdata, "states", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true}).setColors(UScolors).render();
       
       var r7 = Raphael("c7", 400, 350);
-      var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
+      var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
       
     </script>
   </body>

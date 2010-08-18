@@ -9,9 +9,10 @@
     if (typeof parent.extended === "function") parent.extended(child);
     child.__superClass__ = parent.prototype;
   };
-  Sai.Chart = function(_b, _c, _d, _e, _f, data, _g) {
+  Sai.Chart = function(_b, _c, _d, _e, _f, data, _g, _h) {
     var _a;
-    this.opts = _g;
+    this.opts = _h;
+    this.__LABELS__ = _g;
     this.h = _f;
     this.w = _e;
     this.y = _d;
@@ -19,6 +20,7 @@
     this.r = _b;
     _a = this;
     this.drawInfo = function(){ return Sai.Chart.prototype.drawInfo.apply(_a, arguments); };
+    this.getStackedMax = function(){ return Sai.Chart.prototype.getStackedMax.apply(_a, arguments); };
     this.setData = function(){ return Sai.Chart.prototype.setData.apply(_a, arguments); };
     this.opts = (typeof this.opts !== "undefined" && this.opts !== null) ? this.opts : {};
     this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : 'white';
@@ -90,7 +92,7 @@
     return seriesName in this.data ? (this.data[seriesName] = [null].concat(this.data[seriesName].concat([null]))) : null;
   };
   Sai.Chart.prototype.caresAbout = function(seriesName) {
-    return !seriesName.match("^__");
+    return !(seriesName.match("^__") || seriesName === this.__LABELS__);
   };
   Sai.Chart.prototype.dataGroups = function(data) {
     var _a, _b, _c, _d, _e, _f, seriesName;
@@ -111,12 +113,12 @@
         for (seriesName in _f) {
           if (!__hasProp.call(_f, seriesName)) continue;
           _d = _f[seriesName];
-          if (seriesName.match("^__")) {
+          if (seriesName.match("^__") || seriesName === this.__LABELS__) {
             _e.push(seriesName);
           };
         }
         return _e;
-      })()
+      }).call(this)
     };
   };
   Sai.Chart.prototype.getYAxisVals = function(min, max, nopad) {
@@ -199,19 +201,21 @@
   Sai.Chart.prototype.getStackedMax = function(data, group) {
     var _a, _b, _c, _d, _e, _f, i, series;
     return Math.max.apply(Math, (function() {
-      _a = []; _b = data['__LABELS__'].length;
+      _a = []; _b = data[this.__LABELS__].length;
       for (i = 0; (0 <= _b ? i < _b : i > _b); (0 <= _b ? i += 1 : i -= 1)) {
         _a.push(Sai.util.sumArray((function() {
           _c = []; _e = group;
           for (_d = 0, _f = _e.length; _d < _f; _d++) {
             series = _e[_d];
-            _c.push(data[series][i]);
+            if (series !== this.__LABELS__) {
+              _c.push(data[series][i]);
+            };
           }
           return _c;
-        })()));
+        }).call(this)));
       }
       return _a;
-    })());
+    }).call(this));
   };
   Sai.Chart.prototype.getStackedMin = function(data, group) {
     return 0;
@@ -294,9 +298,9 @@
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
     this.padding.top += 5;
-    for (i = this.data['__LABELS__'].length - 1; (this.data['__LABELS__'].length - 1 <= 0 ? i <= 0 : i >= 0); (this.data['__LABELS__'].length - 1 <= 0 ? i += 1 : i -= 1)) {
-      if ((typeof (_a = this.data['__LABELS__'][i]) !== "undefined" && _a !== null)) {
-        tmptext = this.r.text(0, 0, Sai.util.prettystr(this.data['__LABELS__'][i]));
+    for (i = this.data[this.__LABELS__].length - 1; (this.data[this.__LABELS__].length - 1 <= 0 ? i <= 0 : i >= 0); (this.data[this.__LABELS__].length - 1 <= 0 ? i += 1 : i -= 1)) {
+      if ((typeof (_a = this.data[this.__LABELS__][i]) !== "undefined" && _a !== null)) {
+        tmptext = this.r.text(0, 0, Sai.util.prettystr(this.data[this.__LABELS__][i]));
         this.padding.right += tmptext.getBBox().width / 2;
         tmptext.remove();
         break;
@@ -307,7 +311,7 @@
     vaxis_width = this.vaxis.getBBox().width;
     this.vaxis.remove();
     hlen = this.w - this.padding.left - this.padding.right - vaxis_width;
-    this.haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], this.x + this.padding.left + vaxis_width, this.y - this.padding.bottom, hlen, this.axisWidth);
+    this.haxis = this.r.sai.prim.haxis(this.data[this.__LABELS__], this.x + this.padding.left + vaxis_width, this.y - this.padding.bottom, hlen, this.axisWidth);
     hbb = this.haxis.getBBox();
     haxis_height = hbb.height;
     this.haxis.translate(0, -haxis_height);
@@ -449,7 +453,7 @@
   Sai.Chart.prototype.getIndex = function(evt) {
     var tx;
     tx = Sai.util.transformCoords(evt, this.r.canvas).x;
-    return Math.round((this.data.__LABELS__.length - 1) * (tx - this.px) / this.pw);
+    return Math.round((this.data[this.__LABELS__].length - 1) * (tx - this.px) / this.pw);
   };
   Sai.LineChart = function() {
     return Sai.Chart.apply(this, arguments);
@@ -502,7 +506,7 @@
       for (series in _i) {
         if (!__hasProp.call(_i, series)) continue;
         _g = _i[series];
-        if (!series.match('^__')) {
+        if (!(series.match('^__') || series === this.__LABELS__)) {
           _h.push((function() {
             pos = this.plot.dndata[series][idx];
             if ((typeof pos !== "undefined" && pos !== null)) {
@@ -593,7 +597,7 @@
     for (series in _f) {
       if (!__hasProp.call(_f, series)) continue;
       _e = _f[series];
-      if (!(series.match('^__'))) {
+      if (!(series.match('^__') || series === this.__LABELS__)) {
         data[series] = ndata['all'][series];
         rawdata[series] = this.data[series];
       }
@@ -612,7 +616,7 @@
   Sai.StockChart.prototype.dataGroups = function(data) {
     var _a, _b, groups, seriesName;
     groups = {
-      '__META__': ['__LABELS__']
+      '__META__': [this.__LABELS__]
     };
     if ('volume' in this.data) {
       groups.volume = ['volume'];
@@ -621,7 +625,7 @@
     for (seriesName in _b) {
       if (!__hasProp.call(_b, seriesName)) continue;
       _a = _b[seriesName];
-      if (this.caresAbout(seriesName) && !('__LABELS__' === seriesName || 'volume' === seriesName)) {
+      if (this.caresAbout(seriesName) && !(this.__LABELS__ === seriesName || 'volume' === seriesName)) {
         groups.prices = (typeof groups.prices !== "undefined" && groups.prices !== null) ? groups.prices : [];
         groups.prices.push(seriesName);
       }
@@ -645,7 +649,7 @@
     for (series in _c) {
       if (!__hasProp.call(_c, series)) continue;
       _b = _c[series];
-      if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !series.match('^__')) {
+      if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !(series.match('^__') || series === this.__LABELS__)) {
         avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || 'black';
         shouldDrawLegend = true;
       }
@@ -672,7 +676,7 @@
     for (p in _e) {
       if (!__hasProp.call(_e, p)) continue;
       _d = _e[p];
-      if (!(p.match('^__'))) {
+      if (!(p.match('^__') || p === this.__LABELS__)) {
         rawdata[p] = this.data[p];
       };
     }
@@ -711,12 +715,12 @@
     for (series in _i) {
       if (!__hasProp.call(_i, series)) continue;
       _h = _i[series];
-      if (!((('open' === series || 'close' === series || 'high' === series || 'low' === series)) || series.match("^__"))) {
+      if (!((('open' === series || 'close' === series || 'high' === series || 'low' === series)) || series.match("^__") || series === this.__LABELS__)) {
         avgNdata[series] = this.ndata['prices'][series];
       };
     }
     this.plots.push((new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, avgNdata)).render(this.colors).set);
-    glow_width = this.pw / (this.data.__LABELS__.length - 1);
+    glow_width = this.pw / (this.data[this.__LABELS__].length - 1);
     this.glow = this.r.rect(this.px - (glow_width / 2), this.py - this.ph, glow_width, this.ph).attr({
       fill: ("0-" + (this.opts.bgcolor) + "-#DDAA99-" + (this.opts.bgcolor)),
       'stroke-width': 0,
@@ -732,7 +736,7 @@
       for (series in _k) {
         if (!__hasProp.call(_k, series)) continue;
         _j = _k[series];
-        if (!series.match('^__')) {
+        if (!(series.match('^__') || series === this.__LABELS__)) {
           if ((typeof (_l = this.data[series] == undefined ? undefined : this.data[series][idx]) !== "undefined" && _l !== null)) {
             info[series] = this.data[series][idx];
             notNull = true;
@@ -779,7 +783,7 @@
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      if (series.match('^__')) {
+      if (series.match('^__') || series === this.__LABELS__) {
         continue;
       }
       if (!((typeof (_c = data[series]) !== "undefined" && _c !== null))) {
@@ -808,7 +812,7 @@
     for (series in _j) {
       if (!__hasProp.call(_j, series)) continue;
       _h = _j[series];
-      if (series.match('^__')) {
+      if (series.match('^__') || series === this.__LABELS__) {
         continue;
       }
       if (!((typeof (_k = data[series]) !== "undefined" && _k !== null))) {
@@ -840,18 +844,18 @@
         for (seriesName in _c) {
           if (!__hasProp.call(_c, seriesName)) continue;
           _a = _c[seriesName];
-          if (seriesName.match("^__")) {
+          if (seriesName.match("^__") || seriesName === this.__LABELS__) {
             _b.push(seriesName);
           };
         }
         return _b;
-      })()
+      }).call(this)
     };
     _e = data;
     for (seriesName in _e) {
       if (!__hasProp.call(_e, seriesName)) continue;
       _d = _e[seriesName];
-      if (!(seriesName.match("^__"))) {
+      if (!(seriesName.match("^__") || seriesName === this.__LABELS__)) {
         groups[seriesName] = [seriesName];
       };
     }
@@ -931,7 +935,7 @@
     this.geoPlot == undefined ? undefined : this.geoPlot.set.remove();
     this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data, {
       fromWhite: this.opts.fromWhite
-    })).render(this.colors || {}, this.data['__MAP__'], mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo);
+    })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo);
     return this.logo == undefined ? undefined : this.logo.toFront();
   };
   Sai.GeoChart.prototype.default_info = function() {
@@ -948,7 +952,7 @@
       for (series in _c) {
         if (!__hasProp.call(_c, series)) continue;
         _a = _c[series];
-        if (!series.match('^__')) {
+        if (!(series.match('^__') || series === this.__LABELS__)) {
           _b.push(series);
         };
       }

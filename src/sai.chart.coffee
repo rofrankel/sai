@@ -1,7 +1,7 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
   
-  constructor: (@r, @x, @y, @w, @h, data, @opts) ->
+  constructor: (@r, @x, @y, @w, @h, data, @__LABELS__, @opts) ->
     @opts ?= {}
     @opts.bgcolor ?= 'white'
     
@@ -52,14 +52,14 @@ class Sai.Chart
   
   # a line chart plots everything, but a stock chart only cares about e.g. high low open close avg vol
   caresAbout: (seriesName) ->
-    return not seriesName.match("^__")
+    return not (seriesName.match("^__") or seriesName is @__LABELS__)
   
   # Used to determine whether a data series should be used to scale the overall chart.
   # For example, in a stock chart, volume doesn't scale the chart.
   dataGroups: (data) ->
     {
       'all': seriesName for seriesName of data when @caresAbout(seriesName)
-      '__META__': seriesName for seriesName of data when seriesName.match("^__")
+      '__META__': seriesName for seriesName of data when seriesName.match("^__") or seriesName is @__LABELS__
     }
   
   getYAxisVals: (min, max, nopad) ->
@@ -100,8 +100,8 @@ class Sai.Chart
   getMin: (data, group) ->
     return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
   
-  getStackedMax: (data, group) ->
-    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group) for i in [0...data['__LABELS__'].length])
+  getStackedMax: (data, group) =>
+    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__) for i in [0...data[@__LABELS__].length])
   
   # stacked charts generally have a 0 baseline
   getStackedMin: (data, group) ->
@@ -158,9 +158,9 @@ class Sai.Chart
     # the 5 is for the half a text line at the top tick
     @padding.top += 5
     # (over)estimate how much padding we need for the last label
-    for i in [@data['__LABELS__'].length-1..0]
-      if @data['__LABELS__'][i]?
-        tmptext = @r.text(0, 0, Sai.util.prettystr(@data['__LABELS__'][i]))
+    for i in [@data[@__LABELS__].length-1..0]
+      if @data[@__LABELS__][i]?
+        tmptext = @r.text(0, 0, Sai.util.prettystr(@data[@__LABELS__][i]))
         @padding.right += tmptext.getBBox().width / 2
         tmptext.remove()
         break
@@ -171,7 +171,7 @@ class Sai.Chart
     @vaxis.remove()
     
     hlen = @w - @padding.left - @padding.right - vaxis_width
-    @haxis = @r.sai.prim.haxis(@data['__LABELS__'], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen, @axisWidth)
+    @haxis = @r.sai.prim.haxis(@data[@__LABELS__], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen, @axisWidth)
     hbb = @haxis.getBBox()
     haxis_height = hbb.height
     @haxis.translate(0, -haxis_height)
@@ -294,7 +294,7 @@ class Sai.Chart
   
   getIndex: (evt) ->
     tx = Sai.util.transformCoords(evt, @r.canvas).x
-    return Math.round((@data.__LABELS__.length - 1) * (tx - @px) / @pw)
+    return Math.round((@data[@__LABELS__].length - 1) * (tx - @px) / @pw)
 
 
 class Sai.LineChart extends Sai.Chart
@@ -345,7 +345,7 @@ class Sai.LineChart extends Sai.Chart
         @drawInfo(info)
         
         i = 0
-        for series of @plot.dndata when not series.match('^__')
+        for series of @plot.dndata when not (series.match('^__') or series is @__LABELS__)
           pos = @plot.dndata[series][idx]
           if pos? then @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else @dots[i].hide()
           i++
@@ -418,7 +418,7 @@ class Sai.BarChart extends Sai.Chart
     ndata = if @opts.stacked? then @stackedNdata else @ndata
     
     for series of ndata['all']
-      unless series.match('^__')
+      unless series.match('^__') or series is @__LABELS__
         data[series] = ndata['all'][series]
         rawdata[series] = @data[series]
     
@@ -446,10 +446,10 @@ class Sai.StockChart extends Sai.Chart
   
   dataGroups: (data) ->
     groups = {
-      '__META__': ['__LABELS__']
+      '__META__': [@__LABELS__]
     }
     if 'volume' of @data then groups.volume = ['volume']
-    for seriesName of data when @caresAbout(seriesName) and seriesName not in ['__LABELS__', 'volume']
+    for seriesName of data when @caresAbout(seriesName) and seriesName not in [@__LABELS__, 'volume']
       groups.prices ?= []
       groups.prices.push(seriesName)
     return groups
@@ -467,7 +467,7 @@ class Sai.StockChart extends Sai.Chart
     
     avgColors = {}
     shouldDrawLegend = false
-    for series of @ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not series.match('^__')
+    for series of @ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not (series.match('^__') or series is @__LABELS__)
       avgColors[series] = @colors?[series] or 'black'
       shouldDrawLegend = true
     if shouldDrawLegend then @drawLegend(avgColors)
@@ -495,7 +495,7 @@ class Sai.StockChart extends Sai.Chart
     
     rawdata = {}
     for p of @ndata['prices']
-      unless p.match('^__')
+      unless p.match('^__') or p is @__LABELS__
         rawdata[p] = @data[p]
     if @data['volume']? then rawdata['vol'] = @data['volume']
     
@@ -542,7 +542,7 @@ class Sai.StockChart extends Sai.Chart
     
     avgNdata = {}
     for series of @ndata['prices']
-      unless (series in ['open', 'close', 'high', 'low']) or series.match("^__")
+      unless (series in ['open', 'close', 'high', 'low']) or series.match("^__") or series is @__LABELS__
         avgNdata[series] = @ndata['prices'][series]
     
     @plots.push(
@@ -555,7 +555,7 @@ class Sai.StockChart extends Sai.Chart
     
     
     
-    glow_width = @pw / (@data.__LABELS__.length - 1)
+    glow_width = @pw / (@data[@__LABELS__].length - 1)
     @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
                       .attr({fill: "0-#{@opts.bgcolor}-#DDAA99-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
                       .toBack()
@@ -570,7 +570,7 @@ class Sai.StockChart extends Sai.Chart
         
         info = {}
         notNull = false
-        for series of @ndata['prices'] when not series.match('^__')
+        for series of @ndata['prices'] when not (series.match('^__') or series is @__LABELS__)
           if @data[series]?[idx]?
             info[series] = @data[series][idx]
             notNull = true
@@ -610,7 +610,7 @@ class Sai.GeoChart extends Sai.Chart
     mins = {}
     
     for series of data
-      continue if series.match('^__')
+      continue if series.match('^__') or series is @__LABELS__
       continue unless data[series]?
       dataWithoutNulls = d for d in data[series] when d?
       maxes[series] = @getMax(dataWithoutNulls, series)
@@ -619,7 +619,7 @@ class Sai.GeoChart extends Sai.Chart
       if not overallMin? or mins[series] < overallMin then overallMin = mins[series]
     
     for series of data
-      continue if series.match('^__')
+      continue if series.match('^__') or series is @__LABELS__
       continue unless data[series]?
       if @opts.groupedNormalization
         max = overallMax
@@ -633,11 +633,11 @@ class Sai.GeoChart extends Sai.Chart
   
   dataGroups: (data) ->
     groups = {
-      '__META__': seriesName for seriesName of data when seriesName.match("^__")
+      '__META__': seriesName for seriesName of data when seriesName.match("^__") or seriesName is @__LABELS__
     }
     
     for seriesName of data
-      unless seriesName.match("^__")
+      unless seriesName.match("^__") or seriesName is @__LABELS__
         groups[seriesName] = [seriesName]
     
     return groups
@@ -709,7 +709,7 @@ class Sai.GeoChart extends Sai.Chart
       @data,
       {fromWhite: @opts.fromWhite}
     ))
-    .render(@colors or {}, @data['__MAP__'], mainSeries, @opts.bgcolor, @opts.interactive, @drawInfo)
+    .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries, @opts.bgcolor, @opts.interactive, @drawInfo)
     
     @logo?.toFront()
   
@@ -720,7 +720,7 @@ class Sai.GeoChart extends Sai.Chart
     
     @drawTitle()
     @setupInfoSpace()
-    @drawHistogramLegend(series for series of @data when not series.match('^__'))
+    @drawHistogramLegend(series for series of @data when not (series.match('^__') or series is @__LABELS__))
     
     @setPlotCoords()
     

@@ -189,10 +189,10 @@
     var _a;
     return (typeof (_a = this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null) ? 1 : (this.opts.fromWhite ? .15 : 0.25);
   };
-  Sai.GeoPlot.prototype.render = function(colors, map, mainSeries, bgcolor, shouldInteract, fSetInfo) {
+  Sai.GeoPlot.prototype.render = function(colors, map, regionSeries, mainSeries, bgcolor, shouldInteract, fSetInfo) {
     var _a, _b, _c, _d, bbox, i, region, regions, ri;
     this.set.remove();
-    regions = this.rawdata.__LABELS__;
+    regions = this.rawdata[regionSeries];
     ri = {};
     _a = regions.length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
@@ -214,7 +214,9 @@
         for (series in _f) {
           if (!__hasProp.call(_f, series)) continue;
           _e = _f[series];
-          info[series] = this.rawdata[series][ridx];
+          if (series !== regionSeries) {
+            info[series] = this.rawdata[series][ridx];
+          };
         }
         color = this.getRegionColor(colors, ridx, mainSeries);
         opacity = this.getRegionOpacity(ridx, mainSeries);
