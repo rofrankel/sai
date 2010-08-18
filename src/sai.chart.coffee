@@ -155,9 +155,6 @@ class Sai.Chart
     
     @axisWidth = 1.5
     
-    # height of text + space between ticks and text + height of tick + height of axis
-    haxis_height = LINE_HEIGHT + 2 + 10
-    
     # the 5 is for the half a text line at the top tick
     @padding.top += 5
     # (over)estimate how much padding we need for the last label
@@ -168,15 +165,22 @@ class Sai.Chart
         tmptext.remove()
         break
     
-    vlen = @h - (@padding.bottom + haxis_height + @padding.top)
-    @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - (@padding.bottom + haxis_height), vlen, @axisWidth)
-    @vaxis.translate(@vaxis.getBBox().width, 0)
-    @padding.left += @vaxis.getBBox().width
+    vlen = @h - (@padding.bottom + @padding.top)
+    @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
+    vaxis_width = @vaxis.getBBox().width
+    @vaxis.remove()
     
-    hlen = @w - @padding.left - @padding.right
-    @haxis = @r.sai.prim.haxis(@data['__LABELS__'], @x + @padding.left, @y - @padding.bottom, hlen, @axisWidth)
+    hlen = @w - @padding.left - @padding.right - vaxis_width
+    @haxis = @r.sai.prim.haxis(@data['__LABELS__'], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen, @axisWidth)
+    hbb = @haxis.getBBox()
+    haxis_height = hbb.height
     @haxis.translate(0, -haxis_height)
     @padding.bottom += haxis_height
+    
+    vlen = @h - (@padding.bottom + @padding.top)
+    @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
+    @vaxis.translate(@vaxis.getBBox().width, 0)
+    @padding.left += @vaxis.getBBox().width
     
     @setPlotCoords()
     

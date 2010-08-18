@@ -290,10 +290,9 @@
     return _c;
   };
   Sai.Chart.prototype.addAxes = function(group) {
-    var LINE_HEIGHT, _a, _b, haxis_height, hlen, i, tmptext, vlen;
+    var LINE_HEIGHT, _a, _b, _c, haxis_height, hbb, hlen, i, tmptext, vaxis_width, vlen;
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
-    haxis_height = LINE_HEIGHT + 2 + 10;
     this.padding.top += 5;
     for (i = this.data['__LABELS__'].length - 1; (this.data['__LABELS__'].length - 1 <= 0 ? i <= 0 : i >= 0); (this.data['__LABELS__'].length - 1 <= 0 ? i += 1 : i -= 1)) {
       if ((typeof (_a = this.data['__LABELS__'][i]) !== "undefined" && _a !== null)) {
@@ -303,14 +302,20 @@
         break;
       }
     }
-    vlen = this.h - (this.padding.bottom + haxis_height + this.padding.top);
-    this.vaxis = this.r.sai.prim.vaxis((typeof (_b = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _b !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - (this.padding.bottom + haxis_height), vlen, this.axisWidth);
-    this.vaxis.translate(this.vaxis.getBBox().width, 0);
-    this.padding.left += this.vaxis.getBBox().width;
-    hlen = this.w - this.padding.left - this.padding.right;
-    this.haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], this.x + this.padding.left, this.y - this.padding.bottom, hlen, this.axisWidth);
+    vlen = this.h - (this.padding.bottom + this.padding.top);
+    this.vaxis = this.r.sai.prim.vaxis((typeof (_b = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _b !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+    vaxis_width = this.vaxis.getBBox().width;
+    this.vaxis.remove();
+    hlen = this.w - this.padding.left - this.padding.right - vaxis_width;
+    this.haxis = this.r.sai.prim.haxis(this.data['__LABELS__'], this.x + this.padding.left + vaxis_width, this.y - this.padding.bottom, hlen, this.axisWidth);
+    hbb = this.haxis.getBBox();
+    haxis_height = hbb.height;
     this.haxis.translate(0, -haxis_height);
     this.padding.bottom += haxis_height;
+    vlen = this.h - (this.padding.bottom + this.padding.top);
+    this.vaxis = this.r.sai.prim.vaxis((typeof (_c = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _c !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+    this.vaxis.translate(this.vaxis.getBBox().width, 0);
+    this.padding.left += this.vaxis.getBBox().width;
     this.setPlotCoords();
     return this.r.set().push(this.haxis).push(this.vaxis);
   };

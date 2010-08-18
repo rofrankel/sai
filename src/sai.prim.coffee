@@ -221,7 +221,6 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
     for label in labels.items
       label.rotate(-90)
       label.translate(0, label.getBBox().width/2 - padding)
-    result.translate(0, -max_label_width / 2)
   
   return result
 
