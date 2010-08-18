@@ -156,30 +156,53 @@
     return group;
   };
   Raphael.fn.sai.prim.haxis = function(vals, x, y, len, width, color, ticklens) {
-    var _a, _b, _c, dx, label, labels, line, ticklen, ticks, val, xpos;
+    var _a, _b, _c, _d, bbox, bbw, dx, i, interval, label, labels, line, max_label_width, max_labels, padding, result, rotate, ticklen, ticks, val, xmax, xpos;
     ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [10, 5];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
     ticks = this.set();
     labels = this.set();
-    dx = len / (vals.length - 1);
+    max_labels = len / 12;
+    interval = max_labels < vals.length ? Math.ceil(vals.length / max_labels) : 1;
+    dx = len / (vals.length - 1) * interval;
     xpos = x;
-    _b = vals;
-    for (_a = 0, _c = _b.length; _a < _c; _a++) {
-      val = _b[_a];
+    xmax = 0;
+    rotate = false;
+    padding = 2;
+    max_label_width = 0;
+    _a = vals.length;
+    for (i = 0; (0 <= _a ? i < _a : i > _a); i += interval) {
+      val = vals[i];
       if ((typeof val !== "undefined" && val !== null)) {
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color));
         if (!(val === '')) {
-          label = this.text(xpos, y + ticklen + 2, Sai.util.prettystr(val));
-          label.attr('y', label.attr('y') + (label.getBBox().height / 2.0));
+          label = this.text(xpos, y + ticklen + padding, Sai.util.prettystr(val));
+          bbox = label.getBBox();
+          label.attr('y', label.attr('y') + (bbox.height / 2.0));
           labels.push(label);
+          bbw = bbox.width;
+          max_label_width = Math.max(bbw, max_label_width);
+          if (bbox.x - bbw / 2 <= xmax) {
+            rotate = true;
+          };
+          xmax = Math.max(bbox.x + bbw / 2, xmax);
         }
       }
       xpos += dx;
     }
-    return this.set().push(line, ticks, labels);
+    result = this.set().push(line, ticks, labels);
+    if (rotate) {
+      _c = labels.items;
+      for (_b = 0, _d = _c.length; _b < _d; _b++) {
+        label = _c[_b];
+        label.rotate(-90);
+        label.translate(0, label.getBBox().width / 2 - padding);
+      }
+      result.translate(0, -max_label_width / 2);
+    }
+    return result;
   };
   Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, width, color, ticklens) {
     var _a, _b, _c, dy, label, labels, line, ticklen, ticks, val, ypos;

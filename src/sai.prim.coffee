@@ -187,20 +187,43 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   ticks = @set()
   labels = @set()
   
-  dx = len / (vals.length - 1)
-  xpos = x
+  max_labels = len / 12
+  interval = if max_labels < vals.length then Math.ceil(vals.length / max_labels) else 1
   
-  for val in vals
+  dx = len / (vals.length - 1) * interval
+  xpos = x
+  xmax = 0
+  rotate = false
+  padding = 2
+  max_label_width = 0
+  
+  for i in [0...vals.length] by interval
+    val = vals[i]
     if val?
       ticklen = ticklens[if String(val) then 0 else 1]
       ticks.push(@path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
       unless val is ''
-        label = @text(xpos, y + ticklen + 2, Sai.util.prettystr(val))
-        label.attr('y', label.attr('y') + (label.getBBox().height / 2.0))
+        label = @text(xpos, y + ticklen + padding, Sai.util.prettystr(val))
+        bbox = label.getBBox()
+        label.attr('y', label.attr('y') + (bbox.height / 2.0))
         labels.push(label)
+        
+        # handle collision detection for rotation
+        bbw = bbox.width
+        max_label_width = Math.max(bbw, max_label_width)
+        if bbox.x - bbw/2 <= xmax then rotate = true
+        xmax = Math.max(bbox.x + bbw/2, xmax)
     xpos += dx
   
-  return @set().push(line, ticks, labels)
+  result = @set().push(line, ticks, labels)
+  
+  if rotate
+    for label in labels.items
+      label.rotate(-90)
+      label.translate(0, label.getBBox().width/2 - padding)
+    result.translate(0, -max_label_width / 2)
+  
+  return result
 
 Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
