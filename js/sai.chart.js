@@ -495,6 +495,7 @@
       var _d, _e, _f, _g, _h, _i, i, idx, info, pos;
       idx = this.getIndex(event);
       info = {};
+      info[this.__LABELS__] = this.data[this.__LABELS__][idx];
       _e = ndata['all'];
       for (series in _e) {
         if (!__hasProp.call(_e, series)) continue;
@@ -595,6 +596,7 @@
     this.plots = this.r.set();
     data = {};
     rawdata = {};
+    rawdata[this.__LABELS__] = this.data[this.__LABELS__];
     ndata = (typeof (_d = this.opts.stacked) !== "undefined" && _d !== null) ? this.stackedNdata : this.ndata;
     _f = ndata['all'];
     for (series in _f) {
@@ -734,6 +736,7 @@
       var _j, _k, _l, _m, idx, info, notNull;
       idx = this.getIndex(event);
       info = {};
+      info[this.__LABELS__] = this.data[this.__LABELS__][idx];
       notNull = false;
       _k = this.ndata['prices'];
       for (series in _k) {

@@ -341,8 +341,11 @@ class Sai.LineChart extends Sai.Chart
         idx = @getIndex(event)
         
         info = {}
+        info[@__LABELS__] = @data[@__LABELS__][idx]
+        
         for series of ndata['all']
           if @data[series]? then info[series] = @data[series][idx]
+        
         @drawInfo(info)
         
         i = 0
@@ -415,6 +418,8 @@ class Sai.BarChart extends Sai.Chart
     @plots = @r.set()
     data = {}
     rawdata = {}
+    rawdata[@__LABELS__] = @data[@__LABELS__]
+    
     
     ndata = if @opts.stacked? then @stackedNdata else @ndata
     
@@ -570,6 +575,9 @@ class Sai.StockChart extends Sai.Chart
         idx = @getIndex(event)
         
         info = {}
+        
+        info[@__LABELS__] = @data[@__LABELS__][idx]
+        
         notNull = false
         for series of @ndata['prices'] when not (series.match('^__') or series is @__LABELS__)
           if @data[series]?[idx]?
