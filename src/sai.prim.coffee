@@ -221,6 +221,8 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
     for label in labels.items
       label.rotate(-90)
       label.translate(0, label.getBBox().width/2 - padding)
+    # this is a hack because getBBox() doesn't work for rotated text
+    result.push(@rect(x, y, 1, width + max_label_width + ticklens[0]).attr('opacity', '0'))
   
   return result
 

@@ -200,6 +200,7 @@
         label.rotate(-90);
         label.translate(0, label.getBBox().width / 2 - padding);
       }
+      result.push(this.rect(x, y, 1, width + max_label_width + ticklens[0]).attr('opacity', '0'));
     }
     return result;
   };
