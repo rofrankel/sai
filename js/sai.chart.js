@@ -26,10 +26,10 @@
     this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : 'white';
     this.setData(data);
     this.padding = {
-      left: 2,
-      right: 2,
-      top: 2,
-      bottom: 2
+      left: 5,
+      right: 5,
+      top: 5,
+      bottom: 5
     };
     return this;
   };
@@ -314,6 +314,9 @@
     this.haxis = this.r.sai.prim.haxis(this.data[this.__LABELS__], this.x + this.padding.left + vaxis_width, this.y - this.padding.bottom, hlen, this.axisWidth);
     hbb = this.haxis.getBBox();
     haxis_height = hbb.height;
+    if (isNaN(haxis_height)) {
+      haxis_height = 1;
+    };
     this.haxis.translate(0, -haxis_height);
     this.padding.bottom += haxis_height;
     vlen = this.h - (this.padding.bottom + this.padding.top);

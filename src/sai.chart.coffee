@@ -8,10 +8,10 @@ class Sai.Chart
     @setData(data)
     
     @padding = {
-      left: 2
-      right: 2
-      top: 2
-      bottom: 2
+      left: 5
+      right: 5
+      top: 5
+      bottom: 5
     }
   
   groupsToNullPad: () ->
@@ -174,6 +174,7 @@ class Sai.Chart
     @haxis = @r.sai.prim.haxis(@data[@__LABELS__], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen, @axisWidth)
     hbb = @haxis.getBBox()
     haxis_height = hbb.height
+    if isNaN(haxis_height) then haxis_height = 1
     @haxis.translate(0, -haxis_height)
     @padding.bottom += haxis_height
     
