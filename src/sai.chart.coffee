@@ -258,7 +258,10 @@ class Sai.Chart
   drawLegend: (colors) ->
     colors ?= @colors
     if colors
-      @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, colors)
+      _colors = {}
+      for l of colors when l isnt @__LABELS__
+        _colors[l] = colors[l] 
+      @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, _colors)
       if @legend.length > 0 then @padding.bottom += @legend.getBBox().height + 15
       @legend.translate((@w - @legend.getBBox().width) / 2, 0)
   

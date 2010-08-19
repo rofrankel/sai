@@ -408,9 +408,19 @@
     return this.guidelines.push(guideline.set);
   };
   Sai.Chart.prototype.drawLegend = function(colors) {
+    var _a, _b, _colors, l;
     colors = (typeof colors !== "undefined" && colors !== null) ? colors : this.colors;
     if (colors) {
-      this.legend = this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, colors);
+      _colors = {};
+      _b = colors;
+      for (l in _b) {
+        if (!__hasProp.call(_b, l)) continue;
+        _a = _b[l];
+        if (l !== this.__LABELS__) {
+          _colors[l] = colors[l];
+        };
+      }
+      this.legend = this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, _colors);
       if (this.legend.length > 0) {
         this.padding.bottom += this.legend.getBBox().height + 15;
       };
