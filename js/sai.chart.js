@@ -466,7 +466,7 @@
     return this.opts.stacked ? ['all'] : [];
   };
   Sai.LineChart.prototype.render = function() {
-    var _a, _b, _c, color, everything, moveDots, ndata, plotType, series;
+    var _a, _b, _c, _d, color, everything, moveDots, ndata, plotType, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawLegend();
@@ -478,11 +478,11 @@
     this.dots = this.r.set();
     ndata = (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) ? this.stackedNdata : this.ndata;
     plotType = this.opts.area ? Sai.AreaPlot : Sai.LinePlot;
-    this.plot = (new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, 2, this.opts.stacked);
-    _c = ndata['all'];
-    for (series in _c) {
-      if (!__hasProp.call(_c, series)) continue;
-      _b = _c[series];
+    this.plot = (new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_b = this.opts.lineWidth) !== "undefined" && _b !== null) ? this.opts.lineWidth : 2, this.opts.stacked);
+    _d = ndata['all'];
+    for (series in _d) {
+      if (!__hasProp.call(_d, series)) continue;
+      _c = _d[series];
       if (series === '__YVALS__') {
         continue;
       }
@@ -492,26 +492,26 @@
       }).hide());
     }
     everything = this.r.set().push(this.bg, this.plot.set, this.dots, this.logo, this.guidelines).mousemove((moveDots = __bind(function(event) {
-      var _d, _e, _f, _g, _h, _i, i, idx, info, pos;
+      var _e, _f, _g, _h, _i, _j, i, idx, info, pos;
       idx = this.getIndex(event);
       info = {};
       info[this.__LABELS__] = this.data[this.__LABELS__][idx];
-      _e = ndata['all'];
-      for (series in _e) {
-        if (!__hasProp.call(_e, series)) continue;
-        _d = _e[series];
-        if ((typeof (_f = this.data[series]) !== "undefined" && _f !== null)) {
+      _f = ndata['all'];
+      for (series in _f) {
+        if (!__hasProp.call(_f, series)) continue;
+        _e = _f[series];
+        if ((typeof (_g = this.data[series]) !== "undefined" && _g !== null)) {
           info[series] = this.data[series][idx];
         };
       }
       this.drawInfo(info);
       i = 0;
-      _h = []; _i = this.plot.dndata;
-      for (series in _i) {
-        if (!__hasProp.call(_i, series)) continue;
-        _g = _i[series];
+      _i = []; _j = this.plot.dndata;
+      for (series in _j) {
+        if (!__hasProp.call(_j, series)) continue;
+        _h = _j[series];
         if (!(series.match('^__') || series === this.__LABELS__)) {
-          _h.push((function() {
+          _i.push((function() {
             pos = this.plot.dndata[series][idx];
             if ((typeof pos !== "undefined" && pos !== null)) {
               this.dots[i].attr({
@@ -525,7 +525,7 @@
           }).call(this));
         };
       }
-      return _h;
+      return _i;
     }, this))).mouseout(__bind(function(event) {
       this.drawInfo({}, true);
       return this.dots.hide();

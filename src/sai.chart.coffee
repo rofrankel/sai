@@ -325,7 +325,7 @@ class Sai.LineChart extends Sai.Chart
       @px, @py, @pw, @ph,
       ndata['all'],
     ))
-    .render(@colors, 2, @opts.stacked)
+    .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
     
     for series of ndata['all']
       if series is '__YVALS__'
