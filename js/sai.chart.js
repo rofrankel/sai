@@ -260,7 +260,7 @@
       _c = a;
       for (_b = 0, _d = _c.length; _b < _d; _b++) {
         e = _c[_b];
-        if ((typeof e !== "undefined" && e !== null)) {
+        if (typeof e === 'number') {
           return false;
         }
       }

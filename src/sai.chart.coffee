@@ -128,7 +128,7 @@ class Sai.Chart
     
     empty = (a) ->
       for e in a
-        if e? then return false
+        if typeof e is 'number' then return false
       return true
     
     for group of groups
