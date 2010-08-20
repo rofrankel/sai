@@ -326,8 +326,8 @@ class Sai.LineChart extends Sai.Chart
     groups = super
     
     if @opts.groups?.left? and @opts.groups?.right?
-      groups.left = @opts.groups.left
-      groups.right = @opts.groups.right
+      groups.left = x for x in @opts.groups.left when not (x.match('^__') or x is @__LABELS__)
+      groups.right = x for x in @opts.groups.right when not (x.match('^__') or x is @__LABELS__)
     
     return groups
   

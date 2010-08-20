@@ -495,11 +495,29 @@
     return this.opts.stacked ? ['all', 'left', 'right'] : [];
   };
   Sai.LineChart.prototype.dataGroups = function(data) {
-    var _a, _b, groups;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, groups, x;
     groups = Sai.LineChart.__superClass__.dataGroups.apply(this, arguments);
-    if ((typeof (_a = this.opts.groups == undefined ? undefined : this.opts.groups.left) !== "undefined" && _a !== null) && (typeof (_b = this.opts.groups == undefined ? undefined : this.opts.groups.right) !== "undefined" && _b !== null)) {
-      groups.left = this.opts.groups.left;
-      groups.right = this.opts.groups.right;
+    if ((typeof (_i = this.opts.groups == undefined ? undefined : this.opts.groups.left) !== "undefined" && _i !== null) && (typeof (_j = this.opts.groups == undefined ? undefined : this.opts.groups.right) !== "undefined" && _j !== null)) {
+      groups.left = (function() {
+        _a = []; _c = this.opts.groups.left;
+        for (_b = 0, _d = _c.length; _b < _d; _b++) {
+          x = _c[_b];
+          if (!(x.match('^__') || x === this.__LABELS__)) {
+            _a.push(x);
+          };
+        }
+        return _a;
+      }).call(this);
+      groups.right = (function() {
+        _e = []; _g = this.opts.groups.right;
+        for (_f = 0, _h = _g.length; _f < _h; _f++) {
+          x = _g[_f];
+          if (!(x.match('^__') || x === this.__LABELS__)) {
+            _e.push(x);
+          };
+        }
+        return _e;
+      }).call(this);
     }
     return groups;
   };
