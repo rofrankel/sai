@@ -294,7 +294,7 @@
     return _c;
   };
   Sai.Chart.prototype.addAxes = function(group, group2) {
-    var LINE_HEIGHT, _a, _b, _c, _d, _e, _f, _vaxis, haxis_height, hbb, hlen, i, tmptext, vaxis2_width, vaxis_width, vlen;
+    var LINE_HEIGHT, _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _vaxis, haxis_height, hbb, hlen, i, tmptext, vaxis2_width, vaxis_width, vlen;
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
     this.padding.top += 5;
@@ -307,11 +307,15 @@
       }
     }
     vlen = this.h - (this.padding.bottom + this.padding.top);
-    _vaxis = this.r.sai.prim.vaxis((typeof (_b = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _b !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
-    vaxis_width = _vaxis.getBBox().width;
-    _vaxis.remove();
-    if ((typeof group2 !== "undefined" && group2 !== null)) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_c = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _c !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+    if ((typeof (_c = this.ndata[group]) !== "undefined" && _c !== null)) {
+      _vaxis = this.r.sai.prim.vaxis((typeof (_b = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _b !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+      vaxis_width = _vaxis.getBBox().width;
+      _vaxis.remove();
+    } else {
+      vaxis_width = 0;
+    }
+    if ((typeof (_e = this.ndata[group2]) !== "undefined" && _e !== null)) {
+      _vaxis = this.r.sai.prim.vaxis((typeof (_d = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _d !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       vaxis2_width = _vaxis.getBBox().width;
       _vaxis.remove();
     } else {
@@ -327,13 +331,17 @@
     this.haxis.translate(0, -haxis_height);
     this.padding.bottom += haxis_height;
     vlen = this.h - (this.padding.bottom + this.padding.top);
-    this.vaxis = this.r.sai.prim.vaxis((typeof (_d = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _d !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
-    this.vaxis.translate(this.vaxis.getBBox().width, 0);
-    this.padding.left += this.vaxis.getBBox().width;
-    if ((typeof group2 !== "undefined" && group2 !== null)) {
-      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_e = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _e !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, this.axisWidth, true, (typeof (_f = this.colors.__RIGHTAXIS__) !== "undefined" && _f !== null) ? this.colors.__RIGHTAXIS__ : 'blue');
+    if ((typeof (_g = this.ndata[group]) !== "undefined" && _g !== null)) {
+      this.vaxis = this.r.sai.prim.vaxis((typeof (_f = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _f !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+      this.vaxis.translate(this.vaxis.getBBox().width, 0);
+      this.padding.left += this.vaxis.getBBox().width;
+      alert('created left axis');
+    }
+    if ((typeof (_k = this.ndata[group2]) !== "undefined" && _k !== null)) {
+      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_h = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _h !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, this.axisWidth, true, (typeof (_i = this.ndata[group]) !== "undefined" && _i !== null) ? (typeof (_j = this.colors.__RIGHTAXIS__) !== "undefined" && _j !== null) ? this.colors.__RIGHTAXIS__ : 'blue' : 'black');
       this.vaxis_right.translate(-this.vaxis_right.getBBox().width, 0);
       this.padding.right += this.vaxis_right.getBBox().width;
+      alert('created right axis');
     }
     this.setPlotCoords();
     return this.r.set().push(this.haxis).push(this.vaxis);
@@ -420,7 +428,7 @@
     return this.guidelines.push(guideline.set);
   };
   Sai.Chart.prototype.drawLegend = function(colors) {
-    var _a, _b, _c, _colors, _d, _e, _f, _g, _highlightColors, l;
+    var _a, _b, _c, _colors, _d, _e, _f, _g, _h, _highlightColors, l;
     colors = (typeof colors !== "undefined" && colors !== null) ? colors : this.colors;
     if (colors) {
       _colors = {};
@@ -432,9 +440,9 @@
         if (l !== this.__LABELS__) {
           _colors[l] = colors[l];
           _highlightColors[l] = 'black';
-          if ((typeof (_g = this.opts.groups == undefined ? undefined : this.opts.groups.right) !== "undefined" && _g !== null)) {
-            if ((function(){ for (var _e=0, _f=(_d = this.opts.groups.right).length; _e<_f; _e++) { if (_d[_e] === l) return true; } return false; }).call(this)) {
-              _highlightColors[l] = (typeof (_c = this.colors.__RIGHTAXIS__) !== "undefined" && _c !== null) ? this.colors.__RIGHTAXIS__ : 'blue';
+          if ((typeof (_h = this.opts.groups == undefined ? undefined : this.opts.groups.right) !== "undefined" && _h !== null)) {
+            if ((function(){ for (var _f=0, _g=(_e = this.opts.groups.right).length; _f<_g; _f++) { if (_e[_f] === l) return true; } return false; }).call(this)) {
+              _highlightColors[l] = (typeof (_c = this.ndata.left) !== "undefined" && _c !== null) ? (typeof (_d = this.colors.__RIGHTAXIS__) !== "undefined" && _d !== null) ? this.colors.__RIGHTAXIS__ : 'blue' : 'black';
             };
           };
         }
@@ -526,7 +534,7 @@
     this.drawTitle();
     this.setupInfoSpace();
     this.drawLegend();
-    saxis = 'left' in this.ndata && 'right' in this.ndata;
+    saxis = 'right' in this.ndata;
     if (saxis) {
       this.addAxes('left', 'right');
     } else {
