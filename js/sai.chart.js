@@ -335,13 +335,11 @@
       this.vaxis = this.r.sai.prim.vaxis((typeof (_f = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _f !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       this.vaxis.translate(this.vaxis.getBBox().width, 0);
       this.padding.left += this.vaxis.getBBox().width;
-      alert('created left axis');
     }
     if ((typeof (_k = this.ndata[group2]) !== "undefined" && _k !== null)) {
       this.vaxis_right = this.r.sai.prim.vaxis((typeof (_h = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _h !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, this.axisWidth, true, (typeof (_i = this.ndata[group]) !== "undefined" && _i !== null) ? (typeof (_j = this.colors.__RIGHTAXIS__) !== "undefined" && _j !== null) ? this.colors.__RIGHTAXIS__ : 'blue' : 'black');
       this.vaxis_right.translate(-this.vaxis_right.getBBox().width, 0);
       this.padding.right += this.vaxis_right.getBBox().width;
-      alert('created right axis');
     }
     this.setPlotCoords();
     return this.r.set().push(this.haxis).push(this.vaxis);

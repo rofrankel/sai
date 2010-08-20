@@ -195,13 +195,11 @@ class Sai.Chart
       @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
       @vaxis.translate(@vaxis.getBBox().width, 0)
       @padding.left += @vaxis.getBBox().width
-      alert 'created left axis'
     
     if @ndata[group2]?
       @vaxis_right = @r.sai.prim.vaxis(@ndata[group2]?.__YVALS__ ? [0, '?'], @w - @padding.right, @y - @padding.bottom, vlen, @axisWidth, true, if @ndata[group]? then @colors.__RIGHTAXIS__ ? 'blue' else 'black')
       @vaxis_right.translate(-@vaxis_right.getBBox().width, 0)
       @padding.right += @vaxis_right.getBBox().width
-      alert 'created right axis'
     
     @setPlotCoords()
     
