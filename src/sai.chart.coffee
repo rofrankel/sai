@@ -149,7 +149,7 @@ class Sai.Chart
         
         @ndata[group].__YVALS__ = yvals
   
-  addAxes: (group) ->
+  addAxes: (group, group2) ->
     
     LINE_HEIGHT = 10
     
@@ -166,11 +166,17 @@ class Sai.Chart
         break
     
     vlen = @h - (@padding.bottom + @padding.top)
-    @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
-    vaxis_width = @vaxis.getBBox().width
-    @vaxis.remove()
+    _vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
+    vaxis_width = _vaxis.getBBox().width
+    _vaxis.remove()
+    if group2?
+      _vaxis = @r.sai.prim.vaxis(@ndata[group2]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
+      vaxis2_width = _vaxis.getBBox().width
+      _vaxis.remove()
+    else
+      vaxis2_width = 0
     
-    hlen = @w - @padding.left - @padding.right - vaxis_width
+    hlen = @w - @padding.left - @padding.right - vaxis_width - vaxis2_width
     @haxis = @r.sai.prim.haxis(@data[@__LABELS__], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen, @axisWidth)
     hbb = @haxis.getBBox()
     haxis_height = hbb.height
@@ -182,6 +188,11 @@ class Sai.Chart
     @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
     @vaxis.translate(@vaxis.getBBox().width, 0)
     @padding.left += @vaxis.getBBox().width
+    
+    if group2?
+      @vaxis_right = @r.sai.prim.vaxis(@ndata[group2]?.__YVALS__ ? [0, '?'], @w - @padding.right, @y - @padding.bottom, vlen, @axisWidth, true, @colors.__RIGHTAXIS__ ? 'blue')
+      @vaxis_right.translate(-@vaxis_right.getBBox().width, 0)
+      @padding.right += @vaxis_right.getBBox().width
     
     @setPlotCoords()
     
@@ -259,9 +270,14 @@ class Sai.Chart
     colors ?= @colors
     if colors
       _colors = {}
+      _highlightColors = {}
       for l of colors when l isnt @__LABELS__
-        _colors[l] = colors[l] 
-      @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, _colors)
+        _colors[l] = colors[l]
+        _highlightColors[l] = 'black'
+        if @opts.groups?.right?
+          if l in @opts.groups.right
+            _highlightColors[l] = @colors.__RIGHTAXIS__ ? 'blue'
+      @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, _colors, _highlightColors)
       if @legend.length > 0 then @padding.bottom += @legend.getBBox().height + 15
       @legend.translate((@w - @legend.getBBox().width) / 2, 0)
   
@@ -304,13 +320,23 @@ class Sai.Chart
 class Sai.LineChart extends Sai.Chart
   
   nonNegativeGroups: () ->
-    if @opts.stacked then ['all'] else []
+    if @opts.stacked then ['all', 'left', 'right'] else []
+  
+  dataGroups: (data) ->
+    groups = super
+    
+    if @opts.groups?.left? and @opts.groups?.right?
+      groups.left = @opts.groups.left
+      groups.right = @opts.groups.right
+    
+    return groups
   
   render: () ->
     @drawTitle()
     @setupInfoSpace()
     @drawLegend()
-    @addAxes('all')
+    saxis = 'left' of @ndata and 'right' of @ndata
+    if saxis then @addAxes('left', 'right') else @addAxes('all')
     @drawBG()
     @drawLogo()
     
@@ -323,22 +349,45 @@ class Sai.LineChart extends Sai.Chart
     
     plotType = if @opts.area then Sai.AreaPlot else Sai.LinePlot
     
-    @plot = (new plotType(
-      @r,
-      @px, @py, @pw, @ph,
-      ndata['all'],
-    ))
-    .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
+    @plotSets = @r.set()
+    @plots = []
     
-    for series of ndata['all']
-      if series is '__YVALS__'
-        continue
+    if saxis
+      @plots.push(
+        (new plotType(
+          @r,
+          @px, @py, @pw, @ph,
+          ndata['left'],
+        ))
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
+      )
+      @plotSets.push(@plots[0].set)
       
-      color = @colors and @colors[series] or 'black'
+      @plots.push(
+        (new plotType(
+          @r,
+          @px, @py, @pw, @ph,
+          ndata['right'],
+        ))
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
+      )
+      @plotSets.push(@plots[1].set)
+    else
+      @plots.push(
+        (new plotType(
+          @r,
+          @px, @py, @pw, @ph,
+          ndata['all'],
+        ))
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
+      )
+      @plotSets.push(@plots[0].set)
       
-      @dots.push(@r.circle(0, 0, 4).attr({'fill': color}).hide())
     
-    everything = @r.set().push(@bg, @plot.set, @dots, @logo, @guidelines).mousemove(
+    for series of ndata['all'] when series isnt '__YVALS__'
+      @dots.push(@r.circle(0, 0, 4).attr({'fill': @colors?[series] ? 'black'}).hide())
+    
+    everything = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines).mousemove(
       moveDots = (event) =>
         
         idx = @getIndex(event)
@@ -352,10 +401,11 @@ class Sai.LineChart extends Sai.Chart
         @drawInfo(info)
         
         i = 0
-        for series of @plot.dndata when not (series.match('^__') or series is @__LABELS__)
-          pos = @plot.dndata[series][idx]
-          if pos? then @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else @dots[i].hide()
-          i++
+        for series of ndata['all'] when series isnt '__YVALS__'
+          for plot in @plots when series of plot.dndata
+            pos = plot.dndata[series][idx]
+            if pos? then @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else @dots[i].hide()
+            i++
         
     ).mouseout(
       (event) =>

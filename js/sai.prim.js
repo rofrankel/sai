@@ -204,11 +204,12 @@
     }
     return result;
   };
-  Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, width, color, ticklens) {
+  Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, width, right, color, ticklens) {
     var _a, _b, _c, dy, label, labels, line, ticklen, ticks, val, ypos;
     ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [10, 5];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
+    right = (typeof right !== "undefined" && right !== null) ? right : false;
     line = this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color);
     ticks = this.set();
     labels = this.set();
@@ -219,9 +220,12 @@
       val = _b[_a];
       if (!(val === null)) {
         ticklen = ticklens[String(val) ? 0 : 1];
-        ticks.push(this.path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color));
-        label = this.text(x - ticklen - 2, ypos, Sai.util.prettystr(val));
-        label.attr('x', label.attr('x') - (label.getBBox().width / 2.0));
+        ticks.push(this.path("M" + x + " " + ypos + "l" + (right ? ticklen : -ticklen) + " 0").attr('stroke', color));
+        label = this.text(x + ((right ? 1 : -1) * (ticklen + 2)), ypos, Sai.util.prettystr(val));
+        label.attr({
+          'x': label.attr('x') + ((right ? 1 : -1) * label.getBBox().width / 2.0),
+          'fill': color
+        });
         labels.push(label);
       }
       ypos -= dy;
@@ -253,7 +257,7 @@
         continue;
       }
       t = this.text(x + 5, py, text + " = " + texts[text]).attr({
-        'fill': '#ffffff',
+        'fill': 'white',
         'font-weight': 'bold'
       });
       t.translate(t.getBBox().width / 2, 0);
@@ -263,15 +267,15 @@
     }
     bg_width = max_width + 10;
     rect = this.rect(x, y, bg_width, (py - y), 5).attr({
-      'fill': '#000000',
+      'fill': 'black',
       'fill-opacity': '.85',
-      'stroke': '#000000'
+      'stroke': 'black'
     });
     typeof head_text === "undefined" || head_text == undefined ? undefined : head_text.translate(bg_width / 2);
     return text_set.toFront();
   };
-  Raphael.fn.sai.prim.legend = function(x, y, max_width, colors) {
-    var _a, _b, _c, key, line_height, px, py, r, set, spacing, t, text;
+  Raphael.fn.sai.prim.legend = function(x, y, max_width, colors, highlightColors) {
+    var _a, _b, _c, _d, _e, key, line_height, px, py, r, set, spacing, t, text;
     spacing = 15;
     line_height = 14;
     y -= line_height;
@@ -282,10 +286,13 @@
     for (text in _b) {
       if (!__hasProp.call(_b, text)) continue;
       _a = _b[text];
-      t = this.text(px + 14, py, text);
+      t = this.text(px + 14, py, text).attr({
+        fill: (typeof (_c = highlightColors == undefined ? undefined : highlightColors[text]) !== "undefined" && _c !== null) ? (highlightColors == undefined ? undefined : highlightColors[text]) : 'black'
+      });
       t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
       r = this.rect(px, py, 9, 9).attr({
-        'fill': (typeof (_c = colors[text]) !== "undefined" && _c !== null) ? colors[text] : 'black'
+        'fill': (typeof (_d = colors[text]) !== "undefined" && _d !== null) ? colors[text] : 'black',
+        'stroke': (typeof (_e = highlightColors == undefined ? undefined : highlightColors[text]) !== "undefined" && _e !== null) ? (highlightColors == undefined ? undefined : highlightColors[text]) : 'black'
       });
       key = this.set().push(t, r);
       if ((px - x) + spacing + key.getBBox().width > max_width) {

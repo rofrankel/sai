@@ -226,10 +226,11 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   
   return result
 
-Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
+Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, right, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
   color ?= '#000000'
+  right ?= false
   
   line = @path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
   ticks = @set()
@@ -241,9 +242,12 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, color, ticklens) ->
   for val in vals
     unless val is null
       ticklen = ticklens[if String(val) then 0 else 1]
-      ticks.push(@path("M" + x + " " + ypos + "l" + (-ticklen) + " 0").attr('stroke', color))
-      label = @text(x - ticklen - 2, ypos, Sai.util.prettystr(val))
-      label.attr('x', label.attr('x') - (label.getBBox().width / 2.0))
+      ticks.push(@path("M" + x + " " + ypos + "l" + (if right then ticklen else -ticklen) + " 0").attr('stroke', color))
+      label = @text(x + ((if right then 1 else -1) * (ticklen + 2)), ypos, Sai.util.prettystr(val))
+      label.attr({
+        'x': label.attr('x') + ((if right then 1 else -1) * label.getBBox().width / 2.0)
+        'fill': color
+      })
       labels.push(label)
     ypos -= dy
   
@@ -272,21 +276,21 @@ Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   # create text and find total height
   for text of texts
     continue if text is '__HEAD__'
-    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': '#ffffff', 'font-weight': 'bold'})
+    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold'})
     t.translate(t.getBBox().width / 2, 0)
     max_width = Math.max(max_width, t.getBBox().width)
     py += TEXT_LINE_HEIGHT
     text_set.push(t)
   
   bg_width = max_width + 10
-  rect = @rect(x, y, bg_width, (py - y), 5).attr({'fill': '#000000', 'fill-opacity': '.85', 'stroke': '#000000'})
+  rect = @rect(x, y, bg_width, (py - y), 5).attr({'fill': 'black', 'fill-opacity': '.85', 'stroke': 'black'})
   
   head_text?.translate(bg_width / 2)
   text_set.toFront()
   
 
 # colors is a map from key names to colors
-Raphael.fn.sai.prim.legend = (x, y, max_width, colors) ->
+Raphael.fn.sai.prim.legend = (x, y, max_width, colors, highlightColors) ->
   spacing = 15
   line_height = 14
   y -= line_height
@@ -297,9 +301,14 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, colors) ->
   py = y
   
   for text of colors
-    t = @text(px + 14, py, text)
+    t = @text(px + 14, py, text).attr({
+      fill: highlightColors?[text] ? 'black'
+    })
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
-    r = @rect(px, py, 9, 9).attr({'fill': colors[text] ? 'black'})
+    r = @rect(px, py, 9, 9).attr({
+      'fill': colors[text] ? 'black'
+      'stroke': highlightColors?[text] ? 'black'
+    })
     key = @set().push(t, r)
     
     if (px - x) + spacing + key.getBBox().width > max_width
