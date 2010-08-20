@@ -76,7 +76,7 @@ Sai.util.transformCoords = (evt, canvas) ->
     if navigator.userAgent.toLowerCase().indexOf('chrome') isnt -1 or navigator.userAgent.toLowerCase().indexOf('safari') isnt -1 then xformed.x += document.body.scrollLeft
     return {x: xformed.x, y: xformed.y}
   else
-    {x: event.x, y: event.y}
+    {x: evt.x, y: evt.y}
 
 
 Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding) ->
