@@ -121,8 +121,18 @@ class Sai.Chart
       
       return null
     
+    all = (f, a) ->
+      for e in a
+        if not f(e) then return false
+      return true
+    
+    empty = (a) ->
+      for e in a
+        if e? then return false
+      return true
+    
     for group of groups
-      continue if group.match('^__') or Sai.util.sumArray(@data[series].length for series in groups[group]) is 0
+      continue if group.match('^__') or Sai.util.sumArray(@data[series].length for series in groups[group]) is 0 or all(empty, @data[series] for series in groups[group])
       
       @ndata[group] = {}
       if @opts.stacked?
