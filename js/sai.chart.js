@@ -40,32 +40,39 @@
     return [];
   };
   Sai.Chart.prototype.setData = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, group, groups, i, nngroups, series;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, d, group, groups, i, nngroups, pd, series;
     this.data = {};
     _b = data;
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       if (data[series] instanceof Array) {
-        this.data[series] = data[series].slice(0);
+        this.data[series] = (function() {
+          _c = []; _e = data[series];
+          for (_d = 0, _f = _e.length; _d < _f; _d++) {
+            d = _e[_d];
+            _c.push((typeof d === 'string' && d.match(/^\d+(\.\d+)?$/) && !isNaN((pd = parseFloat(d))) ? pd : d));
+          }
+          return _c;
+        })();
       } else {
         this.data[series] = data[series];
       };
     }
     groups = this.dataGroups(data);
     nngroups = this.nonNegativeGroups();
-    _d = groups;
-    for (group in _d) {
-      if (!__hasProp.call(_d, group)) continue;
-      _c = _d[group];
+    _h = groups;
+    for (group in _h) {
+      if (!__hasProp.call(_h, group)) continue;
+      _g = _h[group];
       if (groups[group].length > 0) {
-        if ((function(){ for (var _j=0, _k=nngroups.length; _j<_k; _j++) { if (nngroups[_j] === group) return true; } return false; }).call(this)) {
-          _f = groups[group];
-          for (_e = 0, _g = _f.length; _e < _g; _e++) {
-            series = _f[_e];
-            if ((typeof (_i = this.data[series]) !== "undefined" && _i !== null)) {
-              _h = this.data[series].length;
-              for (i = 0; (0 <= _h ? i < _h : i > _h); (0 <= _h ? i += 1 : i -= 1)) {
+        if ((function(){ for (var _n=0, _o=nngroups.length; _n<_o; _n++) { if (nngroups[_n] === group) return true; } return false; }).call(this)) {
+          _j = groups[group];
+          for (_i = 0, _k = _j.length; _i < _k; _i++) {
+            series = _j[_i];
+            if ((typeof (_m = this.data[series]) !== "undefined" && _m !== null)) {
+              _l = this.data[series].length;
+              for (i = 0; (0 <= _l ? i < _l : i > _l); (0 <= _l ? i += 1 : i -= 1)) {
                 if (this.data[series][i] < 0) {
                   this.data[series][i] *= -1;
                 };
@@ -75,13 +82,13 @@
         }
       }
     }
-    _m = this.groupsToNullPad();
-    for (_l = 0, _n = _m.length; _l < _n; _l++) {
-      group = _m[_l];
+    _q = this.groupsToNullPad();
+    for (_p = 0, _r = _q.length; _p < _r; _p++) {
+      group = _q[_p];
       if (group in groups) {
-        _p = groups[group];
-        for (_o = 0, _q = _p.length; _o < _q; _o++) {
-          series = _p[_o];
+        _t = groups[group];
+        for (_s = 0, _u = _t.length; _s < _u; _s++) {
+          series = _t[_s];
           this.nullPad(series);
         }
       }

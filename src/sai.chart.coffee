@@ -26,7 +26,7 @@ class Sai.Chart
     # deep copy
     for series of data
       if data[series] instanceof Array
-        @data[series] = data[series].slice(0)
+        @data[series] = (if typeof d is 'string' and d.match(/^\d+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
       else
         @data[series] = data[series]
     
