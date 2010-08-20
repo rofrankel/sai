@@ -167,7 +167,7 @@
     interval = max_labels < vals.length ? Math.ceil(vals.length / max_labels) : 1;
     dx = len / (vals.length - 1) * interval;
     xpos = x;
-    xmax = 0;
+    xmax = -1;
     rotate = false;
     padding = 2;
     max_label_width = 0;

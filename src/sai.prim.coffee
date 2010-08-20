@@ -192,7 +192,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   
   dx = len / (vals.length - 1) * interval
   xpos = x
-  xmax = 0
+  xmax = -1
   rotate = false
   padding = 2
   max_label_width = 0

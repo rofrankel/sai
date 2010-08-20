@@ -508,7 +508,7 @@
         _a = []; _c = this.opts.groups.left;
         for (_b = 0, _d = _c.length; _b < _d; _b++) {
           x = _c[_b];
-          if (!(x.match('^__') || x === this.__LABELS__)) {
+          if (this.caresAbout(x) && x in this.data) {
             _a.push(x);
           };
         }
@@ -518,7 +518,7 @@
         _e = []; _g = this.opts.groups.right;
         for (_f = 0, _h = _g.length; _f < _h; _f++) {
           x = _g[_f];
-          if (!(x.match('^__') || x === this.__LABELS__)) {
+          if (this.caresAbout(x) && x in this.data) {
             _e.push(x);
           };
         }
