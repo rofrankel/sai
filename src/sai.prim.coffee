@@ -211,8 +211,8 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
         # handle collision detection for rotation
         bbw = bbox.width
         max_label_width = Math.max(bbw, max_label_width)
-        if bbox.x - bbw/2 <= xmax then rotate = true
-        xmax = Math.max(bbox.x + bbw/2, xmax)
+        if bbox.x <= xmax then rotate = true
+        if bbox.x + bbw > xmax then xmax = bbox.x + bbw
     xpos += dx
   
   result = @set().push(line, ticks, labels)

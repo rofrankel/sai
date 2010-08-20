@@ -39,12 +39,10 @@
       };
       
       var badData = {
-        "AAPL": [45, 50, 80, 87, 110, null, null, null, null, null, null, null, null],
-        "date": ['1', '2', '4', '5', '6', '9', '10', '11', '14', '16', '18', '20', 21],
-        "AMZN": [45, 344, 211, null, 78, null, 34, null, 23, 45, null, 57, 69],
-        "GOOG": [322, 111, 23, null, 100, 70, null, null, 42, 27, 7, 15, 12],
-        "MSFT": [244, 16, 56, null, null, 67, null, 54.432, null, 65, null, 22.2, 27.5],
-      };
+        "date": ["5/10/2010", "5/11/2010", "12-May"],
+        "MSFT": [30.0, 28.0, 21.0],
+        "AAPL": [5.0, 6.0, 11.0]
+      };      
       
       var colors = {
         'AAPL': orange,
@@ -229,7 +227,7 @@
       var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
       
       var r1 = Raphael("c1", 350, 350);
-      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, groups: {left: ['Month'], right: ['GOOG', 'MSFT', 'AAPL', 'AMZN']}}).setColors(colors).render();
+      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, badData, "date", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, groups: {left: ['AAPL'], right: ['date', 'MSFT']}}).setColors(colors).render();
       
       var r2 = Raphael("c2", 350, 350);
       var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true, lineWidth: 1}).setColors(colors).render();

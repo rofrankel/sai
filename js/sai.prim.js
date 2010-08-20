@@ -184,10 +184,12 @@
           labels.push(label);
           bbw = bbox.width;
           max_label_width = Math.max(bbw, max_label_width);
-          if (bbox.x - bbw / 2 <= xmax) {
+          if (bbox.x <= xmax) {
             rotate = true;
           };
-          xmax = Math.max(bbox.x + bbw / 2, xmax);
+          if (bbox.x + bbw > xmax) {
+            xmax = bbox.x + bbw;
+          };
         }
       }
       xpos += dx;
