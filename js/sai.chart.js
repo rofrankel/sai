@@ -442,9 +442,8 @@
     this.colors[series] = color;
     return this;
   };
-  Sai.Chart.prototype.drawGuideline = function(h, group) {
-    var _a, guideline, nh, ymax, ymin;
-    group = (typeof group !== "undefined" && group !== null) ? group : 'all';
+  Sai.Chart.prototype.normalizedHeight = function(h, group) {
+    var _a, nh, ymax, ymin;
     if (!((typeof (_a = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null))) {
       return null;
     }
@@ -453,7 +452,15 @@
     if (!(h > ymin)) {
       return null;
     }
-    nh = (h - ymin) / (ymax - ymin);
+    return (nh = (h - ymin) / (ymax - ymin));
+  };
+  Sai.Chart.prototype.drawGuideline = function(h, group) {
+    var _a, guideline, nh;
+    group = (typeof group !== "undefined" && group !== null) ? group : 'all';
+    if (!((typeof (_a = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null))) {
+      return null;
+    }
+    nh = this.normalizedHeight(h, group);
     this.guidelines = (typeof this.guidelines !== "undefined" && this.guidelines !== null) ? this.guidelines : this.r.set();
     guideline = new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, {
       'guideline': [[0, nh], [1, nh]]
@@ -578,7 +585,12 @@
     };
     this.drawBG();
     this.drawLogo();
-    this.drawGuideline(0);
+    if (saxis) {
+      this.drawGuideline(0, 'left');
+      this.drawGuideline(0, 'right');
+    } else {
+      this.drawGuideline(0, 'all');
+    }
     this.lines = [];
     this.dots = this.r.set();
     ndata = (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) ? this.stackedNdata : this.ndata;
@@ -586,12 +598,12 @@
     this.plotSets = this.r.set();
     this.plots = [];
     if (saxis) {
-      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_b = this.opts.lineWidth) !== "undefined" && _b !== null) ? this.opts.lineWidth : 2, this.opts.stacked));
+      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_b = this.opts.lineWidth) !== "undefined" && _b !== null) ? this.opts.lineWidth : 2, this.opts.stacked, this.normalizedHeight(0, 'left')));
       this.plotSets.push(this.plots[0].set);
-      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_c = this.opts.lineWidth) !== "undefined" && _c !== null) ? this.opts.lineWidth : 2, this.opts.stacked));
+      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_c = this.opts.lineWidth) !== "undefined" && _c !== null) ? this.opts.lineWidth : 2, this.opts.stacked, this.normalizedHeight(0, 'right')));
       this.plotSets.push(this.plots[1].set);
     } else {
-      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_d = this.opts.lineWidth) !== "undefined" && _d !== null) ? this.opts.lineWidth : 2, this.opts.stacked));
+      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_d = this.opts.lineWidth) !== "undefined" && _d !== null) ? this.opts.lineWidth : 2, this.opts.stacked, this.normalizedHeight(0, 'all')));
       this.plotSets.push(this.plots[0].set);
     }
     _f = ndata['all'];

@@ -46,12 +46,27 @@ class Sai.LinePlot extends Sai.Plot
 
 class Sai.AreaPlot extends Sai.LinePlot
   
-  render: (colors, width, stacked) ->
+  render: (colors, width, stacked, zeroline) ->
     
     @set.remove()
     
+    denzel = [@denormalize([0, zeroline]),@denormalize([1, zeroline])]
+    
     for series of @dndata when not series.match('^__')
-      baseline ?= [@denormalize([0, 0]),@denormalize([1, 0])]
+      for i in [0...@dndata[series].length]
+        first = @dndata[series][i]
+        if first?
+          break
+      
+      alert first
+      
+      for i in [@dndata[series].length-1..0]
+        last = @dndata[series][i]
+        if last?
+          break
+      
+      unless baseline? and stacked
+        baseline = [[first[0], denzel[0][1]], [last[0], denzel[1][1]]]
       @set.push(
         @r.sai.prim.area(@dndata[series], colors?[series] or 'black', width or 1, baseline)
       )

@@ -91,24 +91,41 @@
     return Sai.LinePlot.apply(this, arguments);
   };
   __extends(Sai.AreaPlot, Sai.LinePlot);
-  Sai.AreaPlot.prototype.render = function(colors, width, stacked) {
-    var _a, _b, _c, _d, _e, _f, baseline, d, series;
+  Sai.AreaPlot.prototype.render = function(colors, width, stacked, zeroline) {
+    var _a, _b, _c, _d, _e, _f, _g, baseline, d, denzel, first, i, last, series;
     this.set.remove();
+    denzel = [this.denormalize([0, zeroline]), this.denormalize([1, zeroline])];
     _b = this.dndata;
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       if (!series.match('^__')) {
-        baseline = (typeof baseline !== "undefined" && baseline !== null) ? baseline : [this.denormalize([0, 0]), this.denormalize([1, 0])];
+        _c = this.dndata[series].length;
+        for (i = 0; (0 <= _c ? i < _c : i > _c); (0 <= _c ? i += 1 : i -= 1)) {
+          first = this.dndata[series][i];
+          if ((typeof first !== "undefined" && first !== null)) {
+            break;
+          }
+        }
+        alert(first);
+        for (i = this.dndata[series].length - 1; (this.dndata[series].length - 1 <= 0 ? i <= 0 : i >= 0); (this.dndata[series].length - 1 <= 0 ? i += 1 : i -= 1)) {
+          last = this.dndata[series][i];
+          if ((typeof last !== "undefined" && last !== null)) {
+            break;
+          }
+        }
+        if (!((typeof baseline !== "undefined" && baseline !== null) && stacked)) {
+          baseline = [[first[0], denzel[0][1]], [last[0], denzel[1][1]]];
+        };
         this.set.push(this.r.sai.prim.area(this.dndata[series], (colors == undefined ? undefined : colors[series]) || 'black', width || 1, baseline));
         if (stacked) {
           baseline = (function() {
-            _c = []; _e = this.dndata[series];
-            for (_d = 0, _f = _e.length; _d < _f; _d++) {
-              d = _e[_d];
-              _c.push([d[0], d[1] - width / 2]);
+            _d = []; _f = this.dndata[series];
+            for (_e = 0, _g = _f.length; _e < _g; _e++) {
+              d = _f[_e];
+              _d.push([d[0], d[1] - width / 2]);
             }
-            return _c;
+            return _d;
           }).call(this);
         };
       }

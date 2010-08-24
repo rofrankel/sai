@@ -263,16 +263,21 @@ class Sai.Chart
     @colors ?= {}
     @colors[series] = color
     return this
-  
-  drawGuideline: (h, group) ->
-    group ?= 'all'
-    
+
+  normalizedHeight: (h, group) ->  
     return unless @ndata[group]?.__YVALS__?
     
     ymin = @ndata[group].__YVALS__[0]
     ymax = @ndata[group].__YVALS__[@ndata[group].__YVALS__.length - 1]
     return unless h > ymin 
     nh = (h - ymin) / (ymax - ymin)
+  
+  drawGuideline: (h, group) ->
+    group ?= 'all'
+    
+    return unless @ndata[group]?.__YVALS__?
+    
+    nh = @normalizedHeight(h, group)
     
     @guidelines ?= @r.set()
     
@@ -360,7 +365,11 @@ class Sai.LineChart extends Sai.Chart
     @drawBG()
     @drawLogo()
     
-    @drawGuideline(0)
+    if saxis
+      @drawGuideline(0, 'left')
+      @drawGuideline(0, 'right')
+    else
+      @drawGuideline(0, 'all')
     
     @lines = []
     @dots = @r.set()
@@ -379,7 +388,7 @@ class Sai.LineChart extends Sai.Chart
           @px, @py, @pw, @ph,
           ndata['left'],
         ))
-        .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'left'))
       )
       @plotSets.push(@plots[0].set)
       
@@ -389,7 +398,7 @@ class Sai.LineChart extends Sai.Chart
           @px, @py, @pw, @ph,
           ndata['right'],
         ))
-        .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'right'))
       )
       @plotSets.push(@plots[1].set)
     else
@@ -399,7 +408,7 @@ class Sai.LineChart extends Sai.Chart
           @px, @py, @pw, @ph,
           ndata['all'],
         ))
-        .render(@colors, @opts.lineWidth ? 2, @opts.stacked)
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'all'))
       )
       @plotSets.push(@plots[0].set)
       
