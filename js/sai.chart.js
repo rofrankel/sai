@@ -330,7 +330,7 @@
     return _c;
   };
   Sai.Chart.prototype.addAxes = function(group, group2) {
-    var LINE_HEIGHT, _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _vaxis, haxis_height, hbb, hlen, i, tmptext, vaxis2_width, vaxis_width, vlen;
+    var LINE_HEIGHT, _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _vaxis, doLeftAxis, doRightAxis, haxis_height, hbb, hlen, i, tmptext, vaxis2_width, vaxis_width, vlen;
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
     this.padding.top += 5;
@@ -343,15 +343,17 @@
       }
     }
     vlen = this.h - (this.padding.bottom + this.padding.top);
-    if ((typeof (_c = this.ndata[group]) !== "undefined" && _c !== null)) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_b = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _b !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+    doLeftAxis = (typeof (_b = this.ndata[group]) !== "undefined" && _b !== null) || !(typeof (_c = this.ndata[group2]) !== "undefined" && _c !== null);
+    doRightAxis = (typeof (_d = this.ndata[group2]) !== "undefined" && _d !== null);
+    if (doLeftAxis) {
+      _vaxis = this.r.sai.prim.vaxis((typeof (_e = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _e !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       vaxis_width = _vaxis.getBBox().width;
       _vaxis.remove();
     } else {
       vaxis_width = 0;
     }
-    if ((typeof (_e = this.ndata[group2]) !== "undefined" && _e !== null)) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_d = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _d !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+    if (doRightAxis) {
+      _vaxis = this.r.sai.prim.vaxis((typeof (_f = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _f !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       vaxis2_width = _vaxis.getBBox().width;
       _vaxis.remove();
     } else {
@@ -367,12 +369,12 @@
     this.haxis.translate(0, -haxis_height);
     this.padding.bottom += haxis_height;
     vlen = this.h - (this.padding.bottom + this.padding.top);
-    if ((typeof (_g = this.ndata[group]) !== "undefined" && _g !== null)) {
-      this.vaxis = this.r.sai.prim.vaxis((typeof (_f = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _f !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+    if (doLeftAxis) {
+      this.vaxis = this.r.sai.prim.vaxis((typeof (_g = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _g !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       this.vaxis.translate(this.vaxis.getBBox().width, 0);
       this.padding.left += this.vaxis.getBBox().width;
     }
-    if ((typeof (_k = this.ndata[group2]) !== "undefined" && _k !== null)) {
+    if (doRightAxis) {
       this.vaxis_right = this.r.sai.prim.vaxis((typeof (_h = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _h !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, this.axisWidth, true, (typeof (_i = this.ndata[group]) !== "undefined" && _i !== null) ? (typeof (_j = this.colors.__RIGHTAXIS__) !== "undefined" && _j !== null) ? this.colors.__RIGHTAXIS__ : 'blue' : 'black');
       this.vaxis_right.translate(-this.vaxis_right.getBBox().width, 0);
       this.padding.right += this.vaxis_right.getBBox().width;

@@ -84,8 +84,8 @@ Sai.util.transformCoords = function(evt, canvas) {
     };
   } else {
     return {
-      x: event.x,
-      y: event.y
+      x: evt.x,
+      y: evt.y
     };
   }
 };

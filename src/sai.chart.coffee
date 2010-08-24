@@ -177,14 +177,17 @@ class Sai.Chart
     
     vlen = @h - (@padding.bottom + @padding.top)
     
-    if @ndata[group]?
+    doLeftAxis = @ndata[group]? or not @ndata[group2]?
+    doRightAxis = @ndata[group2]?
+    
+    if doLeftAxis
       _vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
       vaxis_width = _vaxis.getBBox().width
       _vaxis.remove()
     else
       vaxis_width = 0
       
-    if @ndata[group2]?
+    if doRightAxis
       _vaxis = @r.sai.prim.vaxis(@ndata[group2]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
       vaxis2_width = _vaxis.getBBox().width
       _vaxis.remove()
@@ -201,12 +204,12 @@ class Sai.Chart
     
     vlen = @h - (@padding.bottom + @padding.top)
     
-    if @ndata[group]?
+    if doLeftAxis
       @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
       @vaxis.translate(@vaxis.getBBox().width, 0)
       @padding.left += @vaxis.getBBox().width
     
-    if @ndata[group2]?
+    if doRightAxis
       @vaxis_right = @r.sai.prim.vaxis(@ndata[group2]?.__YVALS__ ? [0, '?'], @w - @padding.right, @y - @padding.bottom, vlen, @axisWidth, true, if @ndata[group]? then @colors.__RIGHTAXIS__ ? 'blue' else 'black')
       @vaxis_right.translate(-@vaxis_right.getBBox().width, 0)
       @padding.right += @vaxis_right.getBBox().width
