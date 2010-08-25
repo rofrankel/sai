@@ -187,7 +187,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   ticks = @set()
   labels = @set()
   
-  max_labels = len / 12
+  max_labels = len / 20
   interval = if max_labels < vals.length then Math.ceil(vals.length / max_labels) else 1
   
   dx = len / (vals.length - 1) * interval

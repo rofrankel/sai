@@ -163,7 +163,7 @@
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
     ticks = this.set();
     labels = this.set();
-    max_labels = len / 12;
+    max_labels = len / 20;
     interval = max_labels < vals.length ? Math.ceil(vals.length / max_labels) : 1;
     dx = len / (vals.length - 1) * interval;
     xpos = x;

@@ -107,7 +107,6 @@
             break;
           }
         }
-        alert(first);
         for (i = this.dndata[series].length - 1; (this.dndata[series].length - 1 <= 0 ? i <= 0 : i >= 0); (this.dndata[series].length - 1 <= 0 ? i += 1 : i -= 1)) {
           last = this.dndata[series][i];
           if ((typeof last !== "undefined" && last !== null)) {

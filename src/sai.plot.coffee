@@ -58,8 +58,6 @@ class Sai.AreaPlot extends Sai.LinePlot
         if first?
           break
       
-      alert first
-      
       for i in [@dndata[series].length-1..0]
         last = @dndata[series][i]
         if last?
