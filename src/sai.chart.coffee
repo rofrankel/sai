@@ -44,7 +44,7 @@ class Sai.Chart
           @__LABELS__ = seriesName
           @data[seriesName] = String(d) for d in data[series]
         else
-          @data[seriesName] = (if typeof d is 'string' and d.match(/^[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
+          @data[seriesName] = (if typeof d is 'string' and d.match(/^[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d.replace(',', ''))) then pd else d) for d in data[series]
       else
         @data[seriesName] = data[series]
     

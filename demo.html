@@ -92,7 +92,7 @@
       };
       
       var bardata = {
-        'AAPL': [100000, 200000, 300000, 400000],
+        'AAPL': ['100,000', 200000, 300000, 400000],
         'AMZN': [200000, null, 400000, 400000],
         'GOOG': [300000, 500000, 100000, 150000],
         'MSFT': [500000, 100000, 400000, 350000],
@@ -240,7 +240,7 @@
       var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, "date", {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'7 day avg': olive}).render();
       
       var r4 = Raphael("c4", 350, 350);
-      var barc = new Sai.BarChart(r4, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
+      var barc = new Sai.BarChart(r4, 0, 350, 350, 350, bardata, "Quarter", {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
       
       var r5 = Raphael("c5", 350, 350);
       var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);

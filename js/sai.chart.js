@@ -77,7 +77,7 @@
             _g = []; _i = data[series];
             for (_h = 0, _j = _i.length; _h < _j; _h++) {
               d = _i[_h];
-              _g.push((typeof d === 'string' && d.match(/^[\d,]+(\.\d+)?$/) && !isNaN((pd = parseFloat(d))) ? pd : d));
+              _g.push((typeof d === 'string' && d.match(/^[\d,]+(\.\d+)?$/) && !isNaN((pd = parseFloat(d.replace(',', '')))) ? pd : d));
             }
             return _g;
           })();
