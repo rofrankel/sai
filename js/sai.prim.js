@@ -309,7 +309,7 @@
     return set;
   };
   Raphael.fn.sai.prim.info = function(x, y, max_width, info) {
-    var _a, _b, _c, label, line_height, px, py, set, spacing, t, tbbox;
+    var _a, _b, _c, label, line_height, px, py, set, spacing, t, tbbox, text;
     spacing = 15;
     line_height = 14;
     set = this.set();
@@ -322,7 +322,13 @@
       if (info[label] === null) {
         continue;
       }
-      t = this.text(px, py, label + (label === '' ? '' : ': ') + ((typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? Sai.util.prettynum(info[label]) : Sai.util.prettystr(info[label])));
+      text = label + (label === '' ? '' : ': ');
+      if (typeof info[label] === 'string') {
+        text += info[label];
+      } else {
+        text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? Sai.util.prettynum(info[label]) : Sai.util.prettystr(info[label]);
+      };
+      t = this.text(px, py, text);
       tbbox = t.getBBox();
       t.translate(tbbox.width / 2, tbbox.height / 2);
       if ((px - x) + spacing + tbbox.width > max_width) {

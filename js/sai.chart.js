@@ -48,7 +48,7 @@
     return seriesName + (seriesName.match(/^\s+$/) ? this.nextSeriesSuffix() : '');
   };
   Sai.Chart.prototype.setData = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, d, group, groups, i, nngroups, pd, series, seriesName;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, d, group, groups, i, nngroups, pd, series, seriesName;
     this.data = {};
     this.renames = {};
     _b = data;
@@ -65,33 +65,42 @@
       if (data[series] instanceof Array) {
         if (this.__LABELS__ === series) {
           this.__LABELS__ = seriesName;
-        };
-        this.data[seriesName] = (function() {
-          _c = []; _e = data[series];
-          for (_d = 0, _f = _e.length; _d < _f; _d++) {
-            d = _e[_d];
-            _c.push((typeof d === 'string' && d.match(/^\d+(\.\d+)?$/) && !isNaN((pd = parseFloat(d))) ? pd : d));
-          }
-          return _c;
-        })();
+          this.data[seriesName] = (function() {
+            _c = []; _e = data[series];
+            for (_d = 0, _f = _e.length; _d < _f; _d++) {
+              d = _e[_d];
+              _c.push(String(d));
+            }
+            return _c;
+          })();
+        } else {
+          this.data[seriesName] = (function() {
+            _g = []; _i = data[series];
+            for (_h = 0, _j = _i.length; _h < _j; _h++) {
+              d = _i[_h];
+              _g.push((typeof d === 'string' && d.match(/^[\d,]+(\.\d+)?$/) && !isNaN((pd = parseFloat(d))) ? pd : d));
+            }
+            return _g;
+          })();
+        }
       } else {
         this.data[seriesName] = data[series];
       }
     }
     groups = this.dataGroups(this.data);
     nngroups = this.nonNegativeGroups();
-    _h = groups;
-    for (group in _h) {
-      if (!__hasProp.call(_h, group)) continue;
-      _g = _h[group];
+    _l = groups;
+    for (group in _l) {
+      if (!__hasProp.call(_l, group)) continue;
+      _k = _l[group];
       if (groups[group].length > 0) {
-        if ((function(){ for (var _n=0, _o=nngroups.length; _n<_o; _n++) { if (nngroups[_n] === group) return true; } return false; }).call(this)) {
-          _j = groups[group];
-          for (_i = 0, _k = _j.length; _i < _k; _i++) {
-            series = _j[_i];
-            if ((typeof (_m = this.data[series]) !== "undefined" && _m !== null)) {
-              _l = this.data[series].length;
-              for (i = 0; (0 <= _l ? i < _l : i > _l); (0 <= _l ? i += 1 : i -= 1)) {
+        if ((function(){ for (var _r=0, _s=nngroups.length; _r<_s; _r++) { if (nngroups[_r] === group) return true; } return false; }).call(this)) {
+          _n = groups[group];
+          for (_m = 0, _o = _n.length; _m < _o; _m++) {
+            series = _n[_m];
+            if ((typeof (_q = this.data[series]) !== "undefined" && _q !== null)) {
+              _p = this.data[series].length;
+              for (i = 0; (0 <= _p ? i < _p : i > _p); (0 <= _p ? i += 1 : i -= 1)) {
                 if (this.data[series][i] < 0) {
                   this.data[series][i] *= -1;
                 };
@@ -101,13 +110,13 @@
         }
       }
     }
-    _q = this.groupsToNullPad();
-    for (_p = 0, _r = _q.length; _p < _r; _p++) {
-      group = _q[_p];
+    _u = this.groupsToNullPad();
+    for (_t = 0, _v = _u.length; _t < _v; _t++) {
+      group = _u[_t];
       if (group in groups) {
-        _t = groups[group];
-        for (_s = 0, _u = _t.length; _s < _u; _s++) {
-          series = _t[_s];
+        _x = groups[group];
+        for (_w = 0, _y = _x.length; _w < _y; _w++) {
+          series = _x[_w];
           this.nullPad(series);
         }
       }

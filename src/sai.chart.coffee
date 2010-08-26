@@ -40,8 +40,11 @@ class Sai.Chart
       @renames[series] = seriesName
       
       if data[series] instanceof Array
-        if @__LABELS__ is series then @__LABELS__ = seriesName
-        @data[seriesName] = (if typeof d is 'string' and d.match(/^\d+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
+        if @__LABELS__ is series
+          @__LABELS__ = seriesName
+          @data[seriesName] = String(d) for d in data[series]
+        else
+          @data[seriesName] = (if typeof d is 'string' and d.match(/^[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
       else
         @data[seriesName] = data[series]
     
