@@ -20,18 +20,33 @@ class Sai.Chart
   nonNegativeGroups: () ->
     []
   
+  nextSeriesSuffix: () ->
+    @suffixCtr = (@suffixCtr ? 0) + 1
+    return "_#{@suffixCtr}"
+  
+  invalidSeries: (series) ->
+    if series.match(/^\w$/)
+      return true
+    
+    return false
+  
   setData: (data) =>
     @data = {}
+    
+    fixSeriesName = (seriesName) ->
+      return seriesName + (if @invalidSeries(seriesName) then @nextSeriesSuffx() else '')
     
     # deep copy
     for series of data
       if data[series] instanceof Array
-        @data[series] = (if typeof d is 'string' and d.match(/^\d+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
+        #@data[fixSeriesName(series)] = (if typeof d is 'string' and d.match(/^\d+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
+        @data[series] = (if typeof d is 'string' and d.match(/^[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d.replace(',', '')) then pd else d) for d in data[series]
       else
+        #@data[fixSeriesName(series)] = data[series]
         @data[series] = data[series]
     
     # do any necessary null padding
-    groups = @dataGroups(data)
+    groups = @dataGroups(@data)
     nngroups = @nonNegativeGroups()
     for group of groups when groups[group].length > 0
       if group in nngroups

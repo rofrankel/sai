@@ -39,9 +39,23 @@
   Sai.Chart.prototype.nonNegativeGroups = function() {
     return [];
   };
+  Sai.Chart.prototype.nextSeriesSuffix = function() {
+    var _a;
+    this.suffixCtr = ((typeof (_a = this.suffixCtr) !== "undefined" && _a !== null) ? this.suffixCtr : 0) + 1;
+    return ("_" + (this.suffixCtr));
+  };
+  Sai.Chart.prototype.invalidSeries = function(series) {
+    if (series.match(/^\w$/)) {
+      return true;
+    }
+    return false;
+  };
   Sai.Chart.prototype.setData = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, d, group, groups, i, nngroups, pd, series;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, d, fixSeriesName, group, groups, i, nngroups, pd, series;
     this.data = {};
+    fixSeriesName = function(seriesName) {
+      return seriesName + (this.invalidSeries(seriesName) ? this.nextSeriesSuffx() : '');
+    };
     _b = data;
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
@@ -59,7 +73,7 @@
         this.data[series] = data[series];
       };
     }
-    groups = this.dataGroups(data);
+    groups = this.dataGroups(this.data);
     nngroups = this.nonNegativeGroups();
     _h = groups;
     for (group in _h) {
