@@ -615,10 +615,16 @@
     this.drawBG();
     this.drawLogo();
     if (saxis) {
-      this.drawGuideline(0, 'left');
-      this.drawGuideline(0, 'right');
+      if (this.ndata.left.__YVALS__[0] < 0) {
+        this.drawGuideline(0, 'left');
+      };
+      if (this.ndata.right.__YVALS__[0] < 0) {
+        this.drawGuideline(0, 'right');
+      };
     } else {
-      this.drawGuideline(0, 'all');
+      if (this.ndata.all.__YVALS__[0] < 0) {
+        this.drawGuideline(0, 'all');
+      };
     }
     this.lines = [];
     this.dots = this.r.set();
@@ -753,7 +759,9 @@
       _b = this.ndata['all']['__YVALS__'];
       for (_a = 0, _c = _b.length; _a < _c; _a++) {
         yval = _b[_a];
-        this.drawGuideline(yval);
+        if (yval !== 0) {
+          this.drawGuideline(yval);
+        };
       }
     }
     this.plots = this.r.set();

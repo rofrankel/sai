@@ -181,7 +181,7 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
 Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   ticklens ?= [10, 5]
   width ?= 1
-  color ?= '#000000'
+  color ?= 'black'
   
   line = @path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
   ticks = @set()

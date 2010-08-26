@@ -159,7 +159,7 @@
     var _a, _b, _c, _d, bbox, bbw, dx, i, interval, label, labels, line, max_label_width, max_labels, padding, result, rotate, ticklen, ticks, val, xmax, xpos;
     ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [10, 5];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
-    color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
+    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
     ticks = this.set();
     labels = this.set();

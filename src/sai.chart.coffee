@@ -385,10 +385,13 @@ class Sai.LineChart extends Sai.Chart
     @drawLogo()
     
     if saxis
-      @drawGuideline(0, 'left')
-      @drawGuideline(0, 'right')
+      if @ndata.left.__YVALS__[0] < 0
+        @drawGuideline(0, 'left')
+      if @ndata.right.__YVALS__[0] < 0
+        @drawGuideline(0, 'right')
     else
-      @drawGuideline(0, 'all')
+      if @ndata.all.__YVALS__[0] < 0
+        @drawGuideline(0, 'all')
     
     @lines = []
     @dots = @r.set()
@@ -513,7 +516,7 @@ class Sai.BarChart extends Sai.Chart
     
     if 'all' of @ndata
       @guidelines = @r.set()
-      for yval in @ndata['all']['__YVALS__']
+      for yval in @ndata['all']['__YVALS__'] when yval isnt 0
         @drawGuideline(yval)
     
     @plots = @r.set()
