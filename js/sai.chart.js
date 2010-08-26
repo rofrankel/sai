@@ -21,7 +21,6 @@
     _a = this;
     this.drawInfo = function(){ return Sai.Chart.prototype.drawInfo.apply(_a, arguments); };
     this.getStackedMax = function(){ return Sai.Chart.prototype.getStackedMax.apply(_a, arguments); };
-    this.setData = function(){ return Sai.Chart.prototype.setData.apply(_a, arguments); };
     this.opts = (typeof this.opts !== "undefined" && this.opts !== null) ? this.opts : {};
     this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : 'white';
     this.setData(data);
@@ -450,7 +449,7 @@
   };
   Sai.Chart.prototype.showError = function(error) {
     var err;
-    return (err = this.r.text(this.x + (this.w / 2), this.y - (this.h / 2), error));
+    return (err = this.r.text(this.x + this.padding.left + (this.pw / 2), this.y - this.padding.bottom - (this.ph / 2), error));
   };
   Sai.Chart.prototype.setColors = function(colors) {
     var _a, _b, series, seriesName;
@@ -746,6 +745,21 @@
     }
     return _b;
   };
+  Sai.BarChart.prototype.tooMuchData = function() {
+    var _a, _b, barsToDraw, maxBars, series;
+    maxBars = this.w / 4;
+    barsToDraw = 0;
+    _b = this.data;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
+      barsToDraw += this.data[series].length;
+      if (this.opts.stacked) {
+        break;
+      }
+    }
+    return barsToDraw > maxBars;
+  };
   Sai.BarChart.prototype.render = function() {
     var _a, _b, _c, _d, _e, _f, _g, data, ndata, rawdata, series, yval;
     this.drawTitle();
@@ -754,6 +768,10 @@
     this.addAxes('all');
     this.drawLogo();
     this.drawBG();
+    if (this.tooMuchData()) {
+      this.showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include sampling your data\n (e.g. monthly instead of daily) or using a line chart');
+      return this;
+    }
     if ('all' in this.ndata) {
       this.guidelines = this.r.set();
       _b = this.ndata['all']['__YVALS__'];
@@ -813,18 +831,14 @@
   };
   Sai.StockChart.prototype.render = function() {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, avgColors, avgNdata, everything, glow_width, i, moveGlow, p, rawdata, series, shouldDrawLegend, vol;
-    if (!((typeof (_a = this.ndata.prices) !== "undefined" && _a !== null) && 'open' in this.ndata.prices && 'close' in this.ndata.prices && 'high' in this.ndata.prices && 'low' in this.ndata.prices)) {
-      this.showError("This chart requires data series named 'open', 'close', 'high', and 'low'.\n \nOnce you add series with these names, the chart will display.");
-      return null;
-    }
     this.drawTitle();
     this.setupInfoSpace();
     avgColors = {};
     shouldDrawLegend = false;
-    _c = this.ndata['prices'];
-    for (series in _c) {
-      if (!__hasProp.call(_c, series)) continue;
-      _b = _c[series];
+    _b = this.ndata['prices'];
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
       if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !(series.match('^__') || series === this.__LABELS__)) {
         avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || 'black';
         shouldDrawLegend = true;
@@ -841,7 +855,13 @@
     this.addAxes('prices');
     this.drawLogo();
     this.drawBG();
-    this.drawGuideline(0, 'prices');
+    if (!((typeof (_c = this.ndata.prices) !== "undefined" && _c !== null) && 'open' in this.ndata.prices && 'close' in this.ndata.prices && 'high' in this.ndata.prices && 'low' in this.ndata.prices)) {
+      this.showError("This chart requires data series named\nopen, close, high, and low.\n \nOnce you add series with these names, the chart will display.");
+      return null;
+    }
+    if (this.ndata.prices.__YVALS__[0] < 0) {
+      this.drawGuideline(0, 'prices');
+    };
     this.plots = this.r.set();
     vol = {
       'up': [],

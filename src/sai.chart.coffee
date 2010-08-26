@@ -27,7 +27,7 @@ class Sai.Chart
   fixSeriesName: (seriesName) ->
     return seriesName + (if seriesName.match(/^\s+$/) then @nextSeriesSuffix() else '')
   
-  setData: (data) =>
+  setData: (data) ->
     @data = {}
     @renames = {}
     
@@ -267,7 +267,7 @@ class Sai.Chart
     return this
   
   showError: (error) ->
-    err = this.r.text(@x + (@w/2), @y - (@h/2), error)
+    err = this.r.text(@x + @padding.left + (@pw/2), @y - @padding.bottom - (@ph/2), error)
   
   # map from series name to color
   setColors: (colors) ->
@@ -506,6 +506,17 @@ class Sai.BarChart extends Sai.Chart
   nonNegativeGroups: () ->
     return group for group of @dataGroups()
   
+  tooMuchData: () ->
+    
+    maxBars = @w / 4
+    barsToDraw = 0
+    
+    for series of @data
+      barsToDraw += @data[series].length
+      break if @opts.stacked
+    
+    return barsToDraw > maxBars
+  
   render: () ->
     @drawTitle()
     @setupInfoSpace()
@@ -513,6 +524,10 @@ class Sai.BarChart extends Sai.Chart
     @addAxes('all')
     @drawLogo()
     @drawBG()
+    
+    if @tooMuchData()
+      @showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include sampling your data\n (e.g. monthly instead of daily) or using a line chart')
+      return this
     
     if 'all' of @ndata
       @guidelines = @r.set()
@@ -568,10 +583,6 @@ class Sai.StockChart extends Sai.Chart
     ['volume']
 
   render: () ->
-    unless @ndata.prices? and 'open' of @ndata.prices and 'close' of @ndata.prices and 'high' of @ndata.prices and 'low' of @ndata.prices 
-      @showError("This chart requires data series named 'open', 'close', 'high', and 'low'.\n \nOnce you add series with these names, the chart will display.")
-      return
-    
     @drawTitle()
     @setupInfoSpace()
     
@@ -594,7 +605,12 @@ class Sai.StockChart extends Sai.Chart
     @drawLogo()
     @drawBG()
     
-    @drawGuideline(0, 'prices')
+    unless @ndata.prices? and 'open' of @ndata.prices and 'close' of @ndata.prices and 'high' of @ndata.prices and 'low' of @ndata.prices 
+      @showError("This chart requires data series named\nopen, close, high, and low.\n \nOnce you add series with these names, the chart will display.")
+      return
+    
+    if @ndata.prices.__YVALS__[0] < 0
+      @drawGuideline(0, 'prices')
     
     @plots = @r.set()
     
