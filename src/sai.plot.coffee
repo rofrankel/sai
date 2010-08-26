@@ -166,7 +166,7 @@ class Sai.GeoPlot extends Sai.Plot
     
     @set.remove()
     
-    regions = @rawdata[regionSeries]
+    regions = region.toUpperCase() for region in @rawdata[regionSeries]
     ri = {}
     for i in [0...regions.length]
       ri[regions[i]] = i

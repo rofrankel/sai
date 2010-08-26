@@ -373,7 +373,8 @@ Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
 
 
 Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) ->
-  bgcolor ?= '#ffffff'
+  bgcolor ?= 'white'
+  color ?= 'black'
   numBuckets ?= 10
   
   set = @set()

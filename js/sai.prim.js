@@ -351,7 +351,8 @@
   };
   Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) {
     var _a, _b, _c, _d, _e, bartop, bg, bh, bucket, buckets, bw, datum, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set;
-    bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : '#ffffff';
+    bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : 'white';
+    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
     numBuckets = (typeof numBuckets !== "undefined" && numBuckets !== null) ? numBuckets : 10;
     set = this.set();
     set.push((bg = this.rect(x, y - h, w, h).attr({

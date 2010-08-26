@@ -206,30 +206,37 @@
     return (typeof (_a = this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null) ? 1 : (this.opts.fromWhite ? .15 : 0.25);
   };
   Sai.GeoPlot.prototype.render = function(colors, map, regionSeries, mainSeries, bgcolor, shouldInteract, fSetInfo) {
-    var _a, _b, _c, _d, bbox, i, region, regions, ri;
+    var _a, _b, _c, _d, _e, _f, _g, _h, bbox, i, region, regions, ri;
     this.set.remove();
-    regions = this.rawdata[regionSeries];
+    regions = (function() {
+      _a = []; _c = this.rawdata[regionSeries];
+      for (_b = 0, _d = _c.length; _b < _d; _b++) {
+        region = _c[_b];
+        _a.push(region.toUpperCase());
+      }
+      return _a;
+    }).call(this);
     ri = {};
-    _a = regions.length;
-    for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
+    _e = regions.length;
+    for (i = 0; (0 <= _e ? i < _e : i > _e); (0 <= _e ? i += 1 : i -= 1)) {
       ri[regions[i]] = i;
     }
-    _d = map.paths;
-    for (_c in _d) {
-      if (!__hasProp.call(_d, _c)) continue;
+    _h = map.paths;
+    for (_g in _h) {
+      if (!__hasProp.call(_h, _g)) continue;
       (function() {
-        var _e, _f, color, hoverShape, info, infoSetters, name, opacity, ridx, series;
-        var region = _c;
-        var _b = _d[_c];
+        var _i, _j, color, hoverShape, info, infoSetters, name, opacity, ridx, series;
+        var region = _g;
+        var _f = _h[_g];
         ridx = ri[region];
         name = map.name[region];
         info = {
           region: (typeof name !== "undefined" && name !== null) ? name : region
         };
-        _f = this.rawdata;
-        for (series in _f) {
-          if (!__hasProp.call(_f, series)) continue;
-          _e = _f[series];
+        _j = this.rawdata;
+        for (series in _j) {
+          if (!__hasProp.call(_j, series)) continue;
+          _i = _j[series];
           if (series !== regionSeries) {
             info[series] = this.rawdata[series][ridx];
           };
