@@ -134,7 +134,7 @@
     return stack;
   };
   Raphael.fn.sai.prim.groupedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
-    var _a, _b, axisClip, barwidth, group, hoverfuncs, i, offset;
+    var _a, _b, axisClip, barwidth, base, group, h, hoverfuncs, i, offset;
     group = this.set();
     barwidth = width / (coords.length + 1);
     offset = ((width - barwidth) / 2);
@@ -142,8 +142,10 @@
     _a = coords.length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
       if ((typeof (_b = coords[i] == undefined ? undefined : coords[i][0]) !== "undefined" && _b !== null)) {
-        group.push(this.rect(coords[i][0] - offset + (i * barwidth), coords[i][1], barwidth - 1, baseline - coords[i][1] - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000'));
-      };
+        base = Math.min(coords[i][1], baseline);
+        h = Math.max(coords[i][1], baseline) - base - axisClip;
+        group.push(this.rect(coords[i][0] - offset + (i * barwidth), base, barwidth - 1, h).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000'));
+      }
     }
     if (shouldInteract) {
       hoverfuncs = getHoverfuncs(group, {

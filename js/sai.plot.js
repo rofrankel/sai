@@ -162,9 +162,10 @@
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.BarPlot, Sai.Plot);
-  Sai.BarPlot.prototype.render = function(stacked, colors, shouldInteract, fSetInfo) {
+  Sai.BarPlot.prototype.render = function(stacked, baseline, colors, shouldInteract, fSetInfo) {
     var _a, _b, _c, _d, _e, _f, bardata, barfunc, colorArray, i, info, len, p, series;
     this.set.remove();
+    baseline = this.denormalize([0, baseline])[1];
     len = 0;
     colorArray = [];
     barfunc = stacked ? this.r.sai.prim.stackedBar : this.r.sai.prim.groupedBar;
@@ -190,7 +191,7 @@
         _e = _f[p];
         info[p] = this.rawdata[p][i];
       }
-      this.set.push(barfunc(bardata, colorArray, this.w / len, this.y, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
+      this.set.push(barfunc(bardata, colorArray, this.w / len, baseline, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
     }
     return this;
   };

@@ -45,7 +45,7 @@ Sai.util.prettystr = function(x, precision) {
 };
 Sai.util.prettynum = function(num) {
   var rgx;
-  if (isNaN(parseFloat(num)) || !String(num).match(/^\d+(\.\d+)?$/)) {
+  if (isNaN(parseFloat(num)) || !String(num).match(/^[-+]?\d+(\.\d+)?$/)) {
     return undefined;
   }
   num = String(num).split('.');

@@ -77,7 +77,7 @@
             _g = []; _i = data[series];
             for (_h = 0, _j = _i.length; _h < _j; _h++) {
               d = _i[_h];
-              _g.push((typeof d === 'string' && d.match(/^[\d,]+(\.\d+)?$/) && !isNaN((pd = parseFloat(d.replace(',', '')))) ? pd : d));
+              _g.push((typeof d === 'string' && d.match(/^[+-]?[\d,]+(\.\d+)?$/) && !isNaN((pd = parseFloat(d.replace(',', '')))) ? pd : d));
             }
             return _g;
           })();
@@ -719,11 +719,14 @@
     return this;
   };
   Sai.BarChart = function() {
+    var _a;
+    _a = this;
+    this.getMin = function(){ return Sai.BarChart.prototype.getMin.apply(_a, arguments); };
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.BarChart, Sai.Chart);
   Sai.BarChart.prototype.getMin = function(data, group) {
-    return 0;
+    return Math.min(Sai.BarChart.__superClass__.getMin.apply(this, arguments), 0);
   };
   Sai.BarChart.prototype.groupsToNullPad = function() {
     var _a, _b, _c, group;
@@ -737,13 +740,16 @@
   };
   Sai.BarChart.prototype.nonNegativeGroups = function() {
     var _a, _b, _c, group;
-    _b = []; _c = this.dataGroups();
-    for (group in _c) {
-      if (!__hasProp.call(_c, group)) continue;
-      _a = _c[group];
-      _b.push(group);
+    if (this.opts.stacked) {
+      _b = []; _c = this.dataGroups();
+      for (group in _c) {
+        if (!__hasProp.call(_c, group)) continue;
+        _a = _c[group];
+        _b.push(group);
+      }
+      return _b;
     }
-    return _b;
+    return [];
   };
   Sai.BarChart.prototype.tooMuchData = function() {
     var _a, _b, barsToDraw, maxBars, series;
@@ -774,12 +780,10 @@
     }
     if ('all' in this.ndata) {
       this.guidelines = this.r.set();
-      _b = this.ndata['all']['__YVALS__'];
+      _b = this.ndata['all']['__YVALS__'].slice(1, this.ndata['all']['__YVALS__'].length - 1);
       for (_a = 0, _c = _b.length; _a < _c; _a++) {
         yval = _b[_a];
-        if (yval !== 0) {
-          this.drawGuideline(yval);
-        };
+        this.drawGuideline(yval);
       }
     }
     this.plots = this.r.set();
@@ -796,7 +800,7 @@
         rawdata[series] = this.data[series];
       }
     }
-    this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render((typeof (_g = this.opts.stacked) !== "undefined" && _g !== null), this.colors, this.opts.interactive, this.drawInfo).set);
+    this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render((typeof (_g = this.opts.stacked) !== "undefined" && _g !== null), this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive, this.drawInfo).set);
     this.logo == undefined ? undefined : this.logo.toFront();
     return this;
   };
@@ -895,7 +899,7 @@
           vol.down.push([0, 0]);
         }
       }
-      this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph * 0.2, vol, rawdata)).render(true, {
+      this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph * 0.2, vol, rawdata)).render(true, this.normalizedHeight(0, 'volume'), {
         'up': this.colors['vol_up'],
         'down': this.colors['vol_down']
       }).set);

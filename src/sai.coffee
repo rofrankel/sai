@@ -43,7 +43,7 @@ Sai.util.prettystr = (x, precision) ->
   return x
 
 Sai.util.prettynum = (num) ->
-  if isNaN(parseFloat(num)) or not String(num).match(/^\d+(\.\d+)?$/)
+  if isNaN(parseFloat(num)) or not String(num).match(/^[-+]?\d+(\.\d+)?$/)
     return undefined
   
   num = String(num).split('.')

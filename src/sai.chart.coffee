@@ -44,7 +44,7 @@ class Sai.Chart
           @__LABELS__ = seriesName
           @data[seriesName] = String(d) for d in data[series]
         else
-          @data[seriesName] = (if typeof d is 'string' and d.match(/^[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d.replace(',', ''))) then pd else d) for d in data[series]
+          @data[seriesName] = (if typeof d is 'string' and d.match(/^[+-]?[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d.replace(',', ''))) then pd else d) for d in data[series]
       else
         @data[seriesName] = data[series]
     
@@ -497,14 +497,17 @@ class Sai.Sparkline extends Sai.Chart
 
 class Sai.BarChart extends Sai.Chart
   
-  getMin: (data, group) ->
-    return 0
+  getMin: (data, group) =>
+    return Math.min(super, 0)
   
   groupsToNullPad: () ->
     return group for group of @dataGroups()
 
   nonNegativeGroups: () ->
-    return group for group of @dataGroups()
+    if @opts.stacked
+      return group for group of @dataGroups()
+    
+    return []
   
   tooMuchData: () ->
     
@@ -531,7 +534,7 @@ class Sai.BarChart extends Sai.Chart
     
     if 'all' of @ndata
       @guidelines = @r.set()
-      for yval in @ndata['all']['__YVALS__'] when yval isnt 0
+      for yval in @ndata['all']['__YVALS__'].slice(1, @ndata['all']['__YVALS__'].length - 1)
         @drawGuideline(yval)
     
     @plots = @r.set()
@@ -555,7 +558,7 @@ class Sai.BarChart extends Sai.Chart
                        @ph,
                        data,
                        rawdata))
-      .render(@opts.stacked?, @colors, @opts.interactive, @drawInfo)
+      .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive, @drawInfo)
       .set
     )
     
@@ -645,7 +648,7 @@ class Sai.StockChart extends Sai.Chart
                          @pw, @ph * 0.2,
                          vol,
                          rawdata))
-        .render(true, {'up': @colors['vol_up'], 'down': @colors['vol_down']})
+        .render(true, @normalizedHeight(0, 'volume'), {'up': @colors['vol_up'], 'down': @colors['vol_down']})
         .set
       )
     

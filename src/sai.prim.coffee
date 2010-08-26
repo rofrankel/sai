@@ -149,12 +149,14 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
   axisClip = 0.5  # visual hack to prevent bars covering x axis
   for i in [0...coords.length]
     if coords[i]?[0]?
+      base = Math.min(coords[i][1], baseline)
+      h = Math.max(coords[i][1], baseline) - base - axisClip
       group.push(
         @rect(
           coords[i][0] - offset + (i * barwidth),
-          coords[i][1],
+          base,
           barwidth - 1,
-          baseline - coords[i][1] - axisClip
+          h,
         ).attr('fill', colors?[i] or '#000000')
         .attr('stroke', colors?[i] or '#000000')
       )
