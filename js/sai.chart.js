@@ -42,26 +42,31 @@
   Sai.Chart.prototype.nextSeriesSuffix = function() {
     var _a;
     this.suffixCtr = ((typeof (_a = this.suffixCtr) !== "undefined" && _a !== null) ? this.suffixCtr : 0) + 1;
-    return ("_" + (this.suffixCtr));
+    return ("[" + (this.suffixCtr) + "]");
   };
-  Sai.Chart.prototype.invalidSeries = function(series) {
-    if (series.match(/^\w$/)) {
-      return true;
-    }
-    return false;
+  Sai.Chart.prototype.fixSeriesName = function(seriesName) {
+    return seriesName + (seriesName.match(/^\s+$/) ? this.nextSeriesSuffix() : '');
   };
   Sai.Chart.prototype.setData = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, d, fixSeriesName, group, groups, i, nngroups, pd, series;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, d, group, groups, i, nngroups, pd, series, seriesName;
     this.data = {};
-    fixSeriesName = function(seriesName) {
-      return seriesName + (this.invalidSeries(seriesName) ? this.nextSeriesSuffx() : '');
-    };
+    this.renames = {};
     _b = data;
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
+      while (true) {
+        seriesName = this.fixSeriesName(series);
+        if (seriesName === series || !(seriesName in data)) {
+          break;
+        }
+      }
+      this.renames[series] = seriesName;
       if (data[series] instanceof Array) {
-        this.data[series] = (function() {
+        if (this.__LABELS__ === series) {
+          this.__LABELS__ = seriesName;
+        };
+        this.data[seriesName] = (function() {
           _c = []; _e = data[series];
           for (_d = 0, _f = _e.length; _d < _f; _d++) {
             d = _e[_d];
@@ -70,8 +75,8 @@
           return _c;
         })();
       } else {
-        this.data[series] = data[series];
-      };
+        this.data[seriesName] = data[series];
+      }
     }
     groups = this.dataGroups(this.data);
     nngroups = this.nonNegativeGroups();
@@ -439,21 +444,22 @@
     return (err = this.r.text(this.x + (this.w / 2), this.y - (this.h / 2), error));
   };
   Sai.Chart.prototype.setColors = function(colors) {
-    var _a, _b, series;
+    var _a, _b, series, seriesName;
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
     _b = colors;
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      if (series in this.data) {
-        this.colors[series] = colors[series];
+      seriesName = this.renames[series];
+      if (seriesName in this.data) {
+        this.colors[seriesName] = colors[series];
       };
     }
     return this;
   };
   Sai.Chart.prototype.setColor = function(series, color) {
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
-    this.colors[series] = color;
+    this.colors[this.renames[series]] = color;
     return this;
   };
   Sai.Chart.prototype.normalizedHeight = function(h, group) {

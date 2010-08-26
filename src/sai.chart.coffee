@@ -22,28 +22,28 @@ class Sai.Chart
   
   nextSeriesSuffix: () ->
     @suffixCtr = (@suffixCtr ? 0) + 1
-    return "_#{@suffixCtr}"
+    return "[#{@suffixCtr}]"
   
-  invalidSeries: (series) ->
-    if series.match(/^\w$/)
-      return true
-    
-    return false
+  fixSeriesName: (seriesName) ->
+    return seriesName + (if seriesName.match(/^\s+$/) then @nextSeriesSuffix() else '')
   
   setData: (data) =>
     @data = {}
-    
-    fixSeriesName = (seriesName) ->
-      return seriesName + (if @invalidSeries(seriesName) then @nextSeriesSuffx() else '')
+    @renames = {}
     
     # deep copy
     for series of data
+      loop
+        seriesName = @fixSeriesName(series)
+        break if seriesName is series or seriesName not of data
+      
+      @renames[series] = seriesName
+      
       if data[series] instanceof Array
-        #@data[fixSeriesName(series)] = (if typeof d is 'string' and d.match(/^\d+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
-        @data[series] = (if typeof d is 'string' and d.match(/^[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d.replace(',', '')) then pd else d) for d in data[series]
+        if @__LABELS__ is series then @__LABELS__ = seriesName
+        @data[seriesName] = (if typeof d is 'string' and d.match(/^\d+(\.\d+)?$/) and not isNaN(pd = parseFloat(d)) then pd else d) for d in data[series]
       else
-        #@data[fixSeriesName(series)] = data[series]
-        @data[series] = data[series]
+        @data[seriesName] = data[series]
     
     # do any necessary null padding
     groups = @dataGroups(@data)
@@ -270,13 +270,14 @@ class Sai.Chart
   setColors: (colors) ->
     @colors ?= {}
     for series of colors
-      if series of @data
-        @colors[series] = colors[series]
+      seriesName = @renames[series]
+      if seriesName of @data
+        @colors[seriesName] = colors[series]
     return this
   
   setColor: (series, color) ->
     @colors ?= {}
-    @colors[series] = color
+    @colors[@renames[series]] = color
     return this
 
   normalizedHeight: (h, group) ->  
