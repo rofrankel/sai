@@ -261,6 +261,31 @@ class Sai.Chart
     [x, y, w, h] = @logoPos()
     @logo = @r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25})
   
+  drawFootnote: (text) ->
+    text ?= @opts.footnote ? ''
+    
+    # don't try to draw an empty footnote
+    return if text.match(/^\s*$/)
+    
+    pixels_per_char = 5
+    maxChars = (@w - @padding.left - @padding.right) / pixels_per_char
+    tokens = text.split(' ')
+    lines = []
+    line = ''
+    for token in tokens
+      if line.length + token.length > maxChars
+        lines.push(line)
+        line = ''
+      line += token + ' '
+    
+    if line isnt '' then lines.push(line)
+    
+    text = lines.join('\n')
+    @footnote = @r.text(@x + @padding.left, @y - @padding.bottom, text)
+    h = @footnote.getBBox().height
+    @padding.bottom += h + 5
+    @footnote.translate(0,  -h/ 2).attr({'text-anchor': 'start'})
+  
   render: () ->
     @plot ?= new Sai.Plot(@r)
     @plot.render()
@@ -378,6 +403,7 @@ class Sai.LineChart extends Sai.Chart
   render: () ->
     @drawTitle()
     @setupInfoSpace()
+    @drawFootnote()
     @drawLegend()
     saxis = 'right' of @ndata
     if saxis then @addAxes('left', 'right') else @addAxes('all')
@@ -523,6 +549,7 @@ class Sai.BarChart extends Sai.Chart
   render: () ->
     @drawTitle()
     @setupInfoSpace()
+    @drawFootnote()
     @drawLegend()
     @addAxes('all')
     @drawLogo()
@@ -588,6 +615,7 @@ class Sai.StockChart extends Sai.Chart
   render: () ->
     @drawTitle()
     @setupInfoSpace()
+    @drawFootnote()
     
     avgColors = {}
     shouldDrawLegend = false
@@ -852,6 +880,7 @@ class Sai.GeoChart extends Sai.Chart
     
     @drawTitle()
     @setupInfoSpace()
+    @drawFootnote()
     @drawHistogramLegend(series for series of @data when not (series.match('^__') or series is @__LABELS__))
     
     @setPlotCoords()

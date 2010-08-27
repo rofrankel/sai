@@ -442,6 +442,37 @@
       opacity: 0.25
     }));
   };
+  Sai.Chart.prototype.drawFootnote = function(text) {
+    var _a, _b, _c, _d, h, line, lines, maxChars, pixels_per_char, token, tokens;
+    text = (typeof text !== "undefined" && text !== null) ? text : ((typeof (_a = this.opts.footnote) !== "undefined" && _a !== null) ? this.opts.footnote : '');
+    if (text.match(/^\s*$/)) {
+      return null;
+    }
+    pixels_per_char = 5;
+    maxChars = (this.w - this.padding.left - this.padding.right) / pixels_per_char;
+    tokens = text.split(' ');
+    lines = [];
+    line = '';
+    _c = tokens;
+    for (_b = 0, _d = _c.length; _b < _d; _b++) {
+      token = _c[_b];
+      if (line.length + token.length > maxChars) {
+        lines.push(line);
+        line = '';
+      }
+      line += token + ' ';
+    }
+    if (line !== '') {
+      lines.push(line);
+    };
+    text = lines.join('\n');
+    this.footnote = this.r.text(this.x + this.padding.left, this.y - this.padding.bottom, text);
+    h = this.footnote.getBBox().height;
+    this.padding.bottom += h + 5;
+    return this.footnote.translate(0, -h / 2).attr({
+      'text-anchor': 'start'
+    });
+  };
   Sai.Chart.prototype.render = function() {
     this.plot = (typeof this.plot !== "undefined" && this.plot !== null) ? this.plot : new Sai.Plot(this.r);
     this.plot.render();
@@ -604,6 +635,7 @@
     var _a, _b, _c, _d, _e, _f, _g, everything, moveDots, ndata, plotType, saxis, series;
     this.drawTitle();
     this.setupInfoSpace();
+    this.drawFootnote();
     this.drawLegend();
     saxis = 'right' in this.ndata;
     if (saxis) {
@@ -770,6 +802,7 @@
     var _a, _b, _c, _d, _e, _f, _g, data, ndata, rawdata, series, yval;
     this.drawTitle();
     this.setupInfoSpace();
+    this.drawFootnote();
     this.drawLegend();
     this.addAxes('all');
     this.drawLogo();
@@ -837,6 +870,7 @@
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, avgColors, avgNdata, everything, glow_width, i, moveGlow, p, rawdata, series, shouldDrawLegend, vol;
     this.drawTitle();
     this.setupInfoSpace();
+    this.drawFootnote();
     avgColors = {};
     shouldDrawLegend = false;
     _b = this.ndata['prices'];
@@ -1148,6 +1182,7 @@
     var _a, _b, _c, series;
     this.drawTitle();
     this.setupInfoSpace();
+    this.drawFootnote();
     this.drawHistogramLegend((function() {
       _b = []; _c = this.data;
       for (series in _c) {

@@ -231,7 +231,7 @@
       var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
       
       var r1 = Raphael("c1", 350, 350);
-      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, delta_data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, area: true, }).setColors(colors).render();
+      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, delta_data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, area: true, footnote: "Source:  The most gracious leadership of the singular Robert Savage, Esq., ruler of all he surveys"}).setColors(colors).render();
       
       var r2 = Raphael("c2", 350, 350);
       var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true, lineWidth: 1}).setColors(colors).render();
