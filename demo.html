@@ -246,7 +246,7 @@
       var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, bardata, "Quarter", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
       
       var r6 = Raphael("c6", 400, 350);
-      var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, badMapData, "state", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true}).setColors(UScolors).render();
+      var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, badMapData, "state", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(UScolors).render();
       
       var r7 = Raphael("c7", 400, 350);
       var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();

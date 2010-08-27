@@ -448,7 +448,7 @@
     if (text.match(/^\s*$/)) {
       return null;
     }
-    pixels_per_char = 5;
+    pixels_per_char = 5.5;
     maxChars = (this.w - this.padding.left - this.padding.right) / pixels_per_char;
     tokens = text.split(' ');
     lines = [];
@@ -468,7 +468,7 @@
     text = lines.join('\n');
     this.footnote = this.r.text(this.x + this.padding.left, this.y - this.padding.bottom, text);
     h = this.footnote.getBBox().height;
-    this.padding.bottom += h + 5;
+    this.padding.bottom += h + 10;
     return this.footnote.translate(0, -h / 2).attr({
       'text-anchor': 'start'
     });

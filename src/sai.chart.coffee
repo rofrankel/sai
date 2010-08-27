@@ -267,7 +267,7 @@ class Sai.Chart
     # don't try to draw an empty footnote
     return if text.match(/^\s*$/)
     
-    pixels_per_char = 5
+    pixels_per_char = 5.5
     maxChars = (@w - @padding.left - @padding.right) / pixels_per_char
     tokens = text.split(' ')
     lines = []
@@ -283,7 +283,7 @@ class Sai.Chart
     text = lines.join('\n')
     @footnote = @r.text(@x + @padding.left, @y - @padding.bottom, text)
     h = @footnote.getBBox().height
-    @padding.bottom += h + 5
+    @padding.bottom += h + 10
     @footnote.translate(0,  -h/ 2).attr({'text-anchor': 'start'})
   
   render: () ->
