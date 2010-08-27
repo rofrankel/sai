@@ -5,7 +5,7 @@
     child.prototype = new ctor();
     child.prototype.constructor = child;
     if (typeof parent.extended === "function") parent.extended(child);
-    child.__superClass__ = parent.prototype;
+    child.__super__ = parent.prototype;
   };
   Sai.Plot = function(_a, _b, _c, _d, _e, _f, _g, _h) {
     this.opts = _h;
@@ -38,14 +38,14 @@
       for (series in _g) {
         if (!__hasProp.call(_g, series)) continue;
         _e = _g[series];
-        _f.push((this.dndata[series] = (function() {
+        _f.push(this.dndata[series] = (function() {
           _h = []; _j = this.data[series];
           for (_i = 0, _k = _j.length; _i < _k; _i++) {
             dnPoint = _j[_i];
             _h.push(this.denormalize(dnPoint));
           }
           return _h;
-        }).call(this)));
+        }).call(this));
       }
       return _f;
     }
@@ -65,12 +65,12 @@
   __extends(Sai.LinePlot, Sai.Plot);
   Sai.LinePlot.prototype.setDenormalizedData = function() {
     var _a, _b, _c, series;
-    Sai.LinePlot.__superClass__.setDenormalizedData.apply(this, arguments);
+    Sai.LinePlot.__super__.setDenormalizedData.apply(this, arguments);
     _b = []; _c = this.dndata;
     for (series in _c) {
       if (!__hasProp.call(_c, series)) continue;
       _a = _c[series];
-      _b.push(this.dndata[series].length === 1 && (this.dndata[series] == undefined ? undefined : this.dndata[series][0] == undefined ? undefined : this.dndata[series][0][0]) === this.x ? this.dndata[series].push([this.x + this.w, this.dndata[series][0][1]]) : null);
+      _b.push(this.dndata[series].length === 1 && (this.dndata[series] == null ? undefined : this.dndata[series][0] == null ? undefined : this.dndata[series][0][0]) === this.x ? this.dndata[series].push([this.x + this.w, this.dndata[series][0][1]]) : null);
     }
     return _b;
   };
@@ -82,8 +82,8 @@
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       if (!series.match('^__')) {
-        this.set.push(this.r.sai.prim.line(this.dndata[series], ((colors == undefined ? undefined : colors[series]) || 'black'), width || 1));
-      };
+        this.set.push(this.r.sai.prim.line(this.dndata[series], ((typeof colors === "undefined" || colors === null) ? undefined : colors[series]) || 'black', width || 1));
+      }
     }
     return this;
   };
@@ -103,20 +103,20 @@
         _c = this.dndata[series].length;
         for (i = 0; (0 <= _c ? i < _c : i > _c); (0 <= _c ? i += 1 : i -= 1)) {
           first = this.dndata[series][i];
-          if ((typeof first !== "undefined" && first !== null)) {
+          if (typeof first !== "undefined" && first !== null) {
             break;
           }
         }
         for (i = this.dndata[series].length - 1; (this.dndata[series].length - 1 <= 0 ? i <= 0 : i >= 0); (this.dndata[series].length - 1 <= 0 ? i += 1 : i -= 1)) {
           last = this.dndata[series][i];
-          if ((typeof last !== "undefined" && last !== null)) {
+          if (typeof last !== "undefined" && last !== null) {
             break;
           }
         }
         if (!((typeof baseline !== "undefined" && baseline !== null) && stacked)) {
           baseline = [[first[0], denzel[0][1]], [last[0], denzel[1][1]]];
-        };
-        this.set.push(this.r.sai.prim.area(this.dndata[series], (colors == undefined ? undefined : colors[series]) || 'black', width || 1, baseline));
+        }
+        this.set.push(this.r.sai.prim.area(this.dndata[series], ((typeof colors === "undefined" || colors === null) ? undefined : colors[series]) || 'black', width || 1, baseline));
         if (stacked) {
           baseline = (function() {
             _d = []; _f = this.dndata[series];
@@ -126,7 +126,7 @@
             }
             return _d;
           }).call(this);
-        };
+        }
       }
     }
     return this;
@@ -138,12 +138,12 @@
   Sai.CandlestickPlot.prototype.render = function(colors, body_width, shouldInteract, fSetInfo) {
     var _a, _b, _c, _d, _e, cdown, cup, i, info, p, upDay;
     this.set.remove();
-    cup = (colors == undefined ? undefined : colors['up']) || 'black';
-    cdown = (colors == undefined ? undefined : colors['down']) || 'red';
+    cup = ((typeof colors === "undefined" || colors === null) ? undefined : colors['up']) || 'black';
+    cdown = ((typeof colors === "undefined" || colors === null) ? undefined : colors['down']) || 'red';
     body_width = (typeof body_width !== "undefined" && body_width !== null) ? body_width : 5;
     _a = this.dndata['open'].length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
-      if (!((typeof (_b = this.dndata['close'][i]) !== "undefined" && _b !== null))) {
+      if (!(typeof (_b = this.dndata['close'][i]) !== "undefined" && _b !== null)) {
         continue;
       }
       upDay = this.dndata['close'][i][1] < this.dndata['open'][i][1];
@@ -174,7 +174,7 @@
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       len = this.dndata[series].length;
-      colorArray.push((colors == undefined ? undefined : colors[series]) || 'black');
+      colorArray.push(((typeof colors === "undefined" || colors === null) ? undefined : colors[series]) || 'black');
     }
     for (i = 0; (0 <= len ? i < len : i > len); (0 <= len ? i += 1 : i -= 1)) {
       bardata = [];
@@ -200,11 +200,11 @@
   };
   __extends(Sai.GeoPlot, Sai.Plot);
   Sai.GeoPlot.prototype.getRegionColor = function(colors, ridx, mainSeries) {
-    return Sai.util.multiplyColor(colors[mainSeries], (this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) || 0, this.opts.fromWhite, this.opts.fromWhite ? 0.2 : 0).str;
+    return Sai.util.multiplyColor(colors[mainSeries], (this.data[mainSeries][ridx] == null ? undefined : this.data[mainSeries][ridx][1]) || 0, this.opts.fromWhite, this.opts.fromWhite ? 0.2 : 0).str;
   };
   Sai.GeoPlot.prototype.getRegionOpacity = function(ridx, mainSeries) {
     var _a;
-    return (typeof (_a = this.data[mainSeries][ridx] == undefined ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null) ? 1 : (this.opts.fromWhite ? .15 : 0.25);
+    return (typeof (_a = this.data[mainSeries][ridx] == null ? undefined : this.data[mainSeries][ridx][1]) !== "undefined" && _a !== null) ? 1 : (this.opts.fromWhite ? .15 : 0.25);
   };
   Sai.GeoPlot.prototype.render = function(colors, map, regionSeries, mainSeries, bgcolor, shouldInteract, fSetInfo) {
     var _a, _b, _c, _d, _e, _f, _g, _h, bbox, i, region, regions, ri;
@@ -240,12 +240,12 @@
           _i = _j[series];
           if (series !== regionSeries) {
             info[series] = this.rawdata[series][ridx];
-          };
+          }
         }
         color = this.getRegionColor(colors, ridx, mainSeries);
         opacity = this.getRegionOpacity(ridx, mainSeries);
         infoSetters = Sai.util.infoSetters(fSetInfo, info);
-        return this.set.push((hoverShape = this.r.sai.prim.hoverShape((function(path, scale, x, y) {
+        return this.set.push(hoverShape = this.r.sai.prim.hoverShape((function(path, scale, x, y) {
           return function(r) {
             return r.path(path).translate(x, y).scale(scale, scale, x, y);
           };
@@ -254,14 +254,14 @@
           'stroke': this.opts.fromWhite ? 'black' : bgcolor,
           'stroke-width': 0.5,
           'opacity': opacity
-        }, (shouldInteract ? [
+        }, shouldInteract ? [
           function(target) {
             if (!(navigator.userAgent.toLowerCase().indexOf('msie') !== -1 || navigator.userAgent.toLowerCase().indexOf('opera') !== -1)) {
               target.toFront();
             }
             return infoSetters[0]();
           }, infoSetters[1]
-        ] : null), shouldInteract ? [
+        ] : null, shouldInteract ? [
           {
             'fill-opacity': .75,
             'stroke-width': (this.opts.fromWhite ? 2 : 0.5)
@@ -269,7 +269,7 @@
             'fill-opacity': 1,
             'stroke-width': 0.5
           }
-        ] : null)));
+        ] : null));
       }).call(this);
     }
     bbox = this.set.getBBox();
@@ -287,7 +287,7 @@
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      rgb = Sai.util.multiplyColor(colors[series], (this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) || 0, this.opts.fromWhite);
+      rgb = Sai.util.multiplyColor(colors[series], (this.data[series][ridx] == null ? undefined : this.data[series][ridx][1]) || 0, this.opts.fromWhite);
       r += rgb.r;
       g += rgb.g;
       b += rgb.b;
@@ -300,7 +300,7 @@
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      if ((typeof (_c = this.data[series][ridx] == undefined ? undefined : this.data[series][ridx][1]) !== "undefined" && _c !== null)) {
+      if (typeof (_c = this.data[series][ridx] == null ? undefined : this.data[series][ridx][1]) !== "undefined" && _c !== null) {
         return 1;
       }
     }

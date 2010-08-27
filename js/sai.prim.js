@@ -43,14 +43,14 @@
     _b = coords;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       coord = _b[_a];
-      if (!((typeof coord !== "undefined" && coord !== null))) {
+      if (!(typeof coord !== "undefined" && coord !== null)) {
         continue;
       }
-      if ((typeof path !== "undefined" && path !== null)) {
+      if (typeof path !== "undefined" && path !== null) {
         path += ("L" + coord[0] + " " + coord[1]);
       } else {
         path = ("M" + coord[0] + " " + coord[1]);
-      };
+      }
     }
     return this.path(path).attr({
       'stroke': color,
@@ -67,10 +67,10 @@
     _b = coords;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       coord = _b[_a];
-      if (!((typeof coord !== "undefined" && coord !== null))) {
+      if (!(typeof coord !== "undefined" && coord !== null)) {
         continue;
       }
-      if ((typeof strokePath !== "undefined" && strokePath !== null)) {
+      if (typeof strokePath !== "undefined" && strokePath !== null) {
         strokePath += ("L" + coord[0] + " " + coord[1]);
         areaPath += ("L" + coord[0] + " " + coord[1]);
       } else {
@@ -97,7 +97,7 @@
     var _a, _b, _c, _d, axisClip, bar, height, hoverfuncs, i, prev, stack, totalHeight;
     if (shouldInteract && (typeof (_a = coords[coords.length - 1]) !== "undefined" && _a !== null)) {
       totalHeight = baseline - coords[coords.length - 1][1];
-    };
+    }
     width *= .67;
     stack = this.set();
     prev = baseline;
@@ -109,7 +109,7 @@
       }
       height = prev - coords[i][1];
       axisClip = i === 0 ? 1 : 0;
-      stack.push((bar = this.rect(coords[i][0] - (width / 2.0), coords[i][1], width, height - axisClip).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000')));
+      stack.push(bar = this.rect(coords[i][0] - (width / 2.0), coords[i][1], width, height - axisClip).attr('fill', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000').attr('stroke', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000'));
       if (shouldInteract) {
         hoverfuncs = getHoverfuncs(bar, {
           'fill-opacity': '0.75'
@@ -120,7 +120,7 @@
             return function() {
               if (extras[0]) {
                 extras[0]();
-              };
+              }
               return fSetInfo({
                 '(selected)': Sai.util.prettystr(_percent) + '%'
               }, false);
@@ -141,10 +141,10 @@
     axisClip = 0.5;
     _a = coords.length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
-      if ((typeof (_b = coords[i] == undefined ? undefined : coords[i][0]) !== "undefined" && _b !== null)) {
+      if (typeof (_b = coords[i] == null ? undefined : coords[i][0]) !== "undefined" && _b !== null) {
         base = Math.min(coords[i][1], baseline);
         h = Math.max(coords[i][1], baseline) - base - axisClip;
-        group.push(this.rect(coords[i][0] - offset + (i * barwidth), base, barwidth - 1, h).attr('fill', (colors == undefined ? undefined : colors[i]) || '#000000').attr('stroke', (colors == undefined ? undefined : colors[i]) || '#000000'));
+        group.push(this.rect(coords[i][0] - offset + (i * barwidth), base, barwidth - 1, h).attr('fill', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000').attr('stroke', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000'));
       }
     }
     if (shouldInteract) {
@@ -176,10 +176,10 @@
     _a = vals.length;
     for (i = 0; (0 <= _a ? i < _a : i > _a); i += interval) {
       val = vals[i];
-      if ((typeof val !== "undefined" && val !== null)) {
+      if (typeof val !== "undefined" && val !== null) {
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color));
-        if (!(val === '')) {
+        if (val !== '') {
           label = this.text(xpos, y + ticklen + padding, Sai.util.prettystr(val));
           bbox = label.getBBox();
           label.attr('y', label.attr('y') + (bbox.height / 2.0));
@@ -188,10 +188,10 @@
           max_label_width = Math.max(bbw, max_label_width);
           if (bbox.x <= xmax) {
             rotate = true;
-          };
+          }
           if (bbox.x + bbw > xmax) {
             xmax = bbox.x + bbw;
-          };
+          }
         }
       }
       xpos += dx;
@@ -222,7 +222,7 @@
     _b = vals;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
       val = _b[_a];
-      if (!(val === null)) {
+      if (val !== null) {
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + x + " " + ypos + "l" + (right ? ticklen : -ticklen) + " 0").attr('stroke', color));
         label = this.text(x + ((right ? 1 : -1) * (ticklen + 2)), ypos, Sai.util.prettystr(val));
@@ -270,12 +270,12 @@
       text_set.push(t);
     }
     bg_width = max_width + 10;
-    rect = this.rect(x, y, bg_width, (py - y), 5).attr({
+    rect = this.rect(x, y, bg_width, py - y, 5).attr({
       'fill': 'black',
       'fill-opacity': '.85',
       'stroke': 'black'
     });
-    typeof head_text === "undefined" || head_text == undefined ? undefined : head_text.translate(bg_width / 2);
+    (typeof head_text === "undefined" || head_text === null) ? undefined : head_text.translate(bg_width / 2);
     return text_set.toFront();
   };
   Raphael.fn.sai.prim.legend = function(x, y, max_width, colors, highlightColors) {
@@ -291,12 +291,12 @@
       if (!__hasProp.call(_b, text)) continue;
       _a = _b[text];
       t = this.text(px + 14, py, text).attr({
-        fill: (typeof (_c = highlightColors == undefined ? undefined : highlightColors[text]) !== "undefined" && _c !== null) ? (highlightColors == undefined ? undefined : highlightColors[text]) : 'black'
+        fill: (typeof (_c = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _c !== null) ? _c : 'black'
       });
       t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
       r = this.rect(px, py, 9, 9).attr({
-        'fill': (typeof (_d = colors[text]) !== "undefined" && _d !== null) ? colors[text] : 'black',
-        'stroke': (typeof (_e = highlightColors == undefined ? undefined : highlightColors[text]) !== "undefined" && _e !== null) ? (highlightColors == undefined ? undefined : highlightColors[text]) : 'black'
+        'fill': (typeof (_d = colors[text]) !== "undefined" && _d !== null) ? _d : 'black',
+        'stroke': (typeof (_e = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _e !== null) ? _e : 'black'
       });
       key = this.set().push(t, r);
       if ((px - x) + spacing + key.getBBox().width > max_width) {
@@ -328,8 +328,8 @@
       if (typeof info[label] === 'string') {
         text += info[label];
       } else {
-        text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? Sai.util.prettynum(info[label]) : Sai.util.prettystr(info[label]);
-      };
+        text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? _c : Sai.util.prettystr(info[label]);
+      }
       t = this.text(px, py, text);
       tbbox = t.getBBox();
       t.translate(tbbox.width / 2, tbbox.height / 2);
@@ -363,18 +363,18 @@
     color = (typeof color !== "undefined" && color !== null) ? color : 'black';
     numBuckets = (typeof numBuckets !== "undefined" && numBuckets !== null) ? numBuckets : 10;
     set = this.set();
-    set.push((bg = this.rect(x, y - h, w, h).attr({
+    set.push(bg = this.rect(x, y - h, w, h).attr({
       'stroke-width': 0,
       'stroke-opacity': 0,
       'fill': bgcolor
-    })));
+    }));
     bartop = y - (h - 12);
     y -= 5;
     low = (typeof low !== "undefined" && low !== null) ? low : 0;
     high = (typeof high !== "undefined" && high !== null) ? high : 1;
-    set.push((lowLabel = this.text(x, y, Sai.util.prettystr(low))));
+    set.push(lowLabel = this.text(x, y, Sai.util.prettystr(low)));
     lowLabel.translate(lowLabel.getBBox().width / 2, 0);
-    set.push((highLabel = this.text(x + w, y, Sai.util.prettystr(high))));
+    set.push(highLabel = this.text(x + w, y, Sai.util.prettystr(high)));
     highLabel.translate(-highLabel.getBBox().width / 2, 0);
     y -= 7;
     buckets = {};
@@ -387,10 +387,10 @@
         buckets[idx] += 1;
       } else {
         buckets[idx] = 1;
-      };
+      }
       maxBucket = Math.max(maxBucket, buckets[idx]);
     }
-    set.push((hrule = this.path(("M" + (x) + "," + (y) + " l" + (w) + ", 0")).attr('stroke', color)));
+    set.push(hrule = this.path("M" + (x) + "," + (y) + " l" + (w) + ", 0").attr('stroke', color));
     y -= 1;
     bw = w / numBuckets;
     _e = buckets;
@@ -405,7 +405,7 @@
         'stroke': '#000000'
       }));
     }
-    set.push((lbl = this.text(x + w / 2, bartop - 6, Sai.util.prettystr(label))));
+    set.push(lbl = this.text(x + w / 2, bartop - 6, Sai.util.prettystr(label)));
     return set;
   };
 })();

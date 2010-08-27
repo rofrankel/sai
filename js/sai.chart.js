@@ -7,7 +7,7 @@
     child.prototype = new ctor();
     child.prototype.constructor = child;
     if (typeof parent.extended === "function") parent.extended(child);
-    child.__superClass__ = parent.prototype;
+    child.__super__ = parent.prototype;
   };
   Sai.Chart = function(_b, _c, _d, _e, _f, data, _g, _h) {
     var _a;
@@ -40,7 +40,7 @@
   };
   Sai.Chart.prototype.nextSeriesSuffix = function() {
     var _a;
-    this.suffixCtr = ((typeof (_a = this.suffixCtr) !== "undefined" && _a !== null) ? this.suffixCtr : 0) + 1;
+    this.suffixCtr = ((typeof (_a = this.suffixCtr) !== "undefined" && _a !== null) ? _a : 0) + 1;
     return ("[" + (this.suffixCtr) + "]");
   };
   Sai.Chart.prototype.fixSeriesName = function(seriesName) {
@@ -77,7 +77,7 @@
             _g = []; _i = data[series];
             for (_h = 0, _j = _i.length; _h < _j; _h++) {
               d = _i[_h];
-              _g.push((typeof d === 'string' && d.match(/^[+-]?[\d,]+(\.\d+)?$/) && !isNaN((pd = parseFloat(d.replace(',', '')))) ? pd : d));
+              _g.push(typeof d === 'string' && d.match(/^[+-]?[\d,]+(\.\d+)?$/) && !isNaN(pd = parseFloat(d.replace(',', ''))) ? pd : d);
             }
             return _g;
           })();
@@ -97,12 +97,12 @@
           _n = groups[group];
           for (_m = 0, _o = _n.length; _m < _o; _m++) {
             series = _n[_m];
-            if ((typeof (_q = this.data[series]) !== "undefined" && _q !== null)) {
+            if (typeof (_q = this.data[series]) !== "undefined" && _q !== null) {
               _p = this.data[series].length;
               for (i = 0; (0 <= _p ? i < _p : i > _p); (0 <= _p ? i += 1 : i -= 1)) {
                 if (this.data[series][i] < 0) {
                   this.data[series][i] *= -1;
-                };
+                }
               }
             }
           }
@@ -138,7 +138,7 @@
           _a = _c[seriesName];
           if (this.caresAbout(seriesName)) {
             _b.push(seriesName);
-          };
+          }
         }
         return _b;
       }).call(this),
@@ -149,7 +149,7 @@
           _d = _f[seriesName];
           if (seriesName.match("^__") || seriesName === this.__LABELS__) {
             _e.push(seriesName);
-          };
+          }
         }
         return _e;
       }).call(this)
@@ -167,7 +167,7 @@
     }
     min *= factor;
     max *= factor;
-    mag = Math.floor((rawmag = (Math.log(max - min) / Math.LN10) - 0.4));
+    mag = Math.floor(rawmag = (Math.log(max - min) / Math.LN10) - 0.4);
     step = Math.pow(10, mag);
     if (rawmag % 1 > 0.7 && !nopad) {
       step *= 4;
@@ -194,18 +194,18 @@
       _a = []; _c = group;
       for (_b = 0, _d = _c.length; _b < _d; _b++) {
         series = _c[_b];
-        if ((typeof (_i = data[series]) !== "undefined" && _i !== null)) {
+        if (typeof (_i = data[series]) !== "undefined" && _i !== null) {
           _a.push(Math.max.apply(Math, (function() {
             _e = []; _g = data[series];
             for (_f = 0, _h = _g.length; _f < _h; _f++) {
               d = _g[_f];
               if ((typeof d !== "undefined" && d !== null) && typeof d === "number") {
                 _e.push(d);
-              };
+              }
             }
             return _e;
           })()));
-        };
+        }
       }
       return _a;
     })());
@@ -216,18 +216,18 @@
       _a = []; _c = group;
       for (_b = 0, _d = _c.length; _b < _d; _b++) {
         series = _c[_b];
-        if ((typeof (_i = data[series]) !== "undefined" && _i !== null)) {
+        if (typeof (_i = data[series]) !== "undefined" && _i !== null) {
           _a.push(Math.min.apply(Math, (function() {
             _e = []; _g = data[series];
             for (_f = 0, _h = _g.length; _f < _h; _f++) {
               d = _g[_f];
               if ((typeof d !== "undefined" && d !== null) && typeof d === "number") {
                 _e.push(d);
-              };
+              }
             }
             return _e;
           })()));
-        };
+        }
       }
       return _a;
     })());
@@ -243,7 +243,7 @@
             series = _e[_d];
             if (series !== this.__LABELS__) {
               _c.push(data[series][i]);
-            };
+            }
           }
           return _c;
         }).call(this)));
@@ -258,9 +258,9 @@
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, all, baseline, baselines, empty, group, groups, i, max, maxf, min, minf, norm, nval, series, stackedPoint, yvals;
     groups = this.dataGroups(data);
     this.ndata = {};
-    if ((typeof (_a = this.opts.stacked) !== "undefined" && _a !== null)) {
+    if (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) {
       this.stackedNdata = {};
-    };
+    }
     norm = function(val, min, max) {
       if (typeof val === "number") {
         if (min === max) {
@@ -315,7 +315,7 @@
         continue;
       }
       this.ndata[group] = {};
-      if ((typeof (_m = this.opts.stacked) !== "undefined" && _m !== null)) {
+      if (typeof (_m = this.opts.stacked) !== "undefined" && _m !== null) {
         this.stackedNdata[group] = {};
         baselines = {};
       }
@@ -329,24 +329,24 @@
       _o = groups[group];
       for (_n = 0, _p = _o.length; _n < _p; _n++) {
         series = _o[_n];
-        if (!((typeof (_q = data[series]) !== "undefined" && _q !== null))) {
+        if (!(typeof (_q = data[series]) !== "undefined" && _q !== null)) {
           continue;
         }
         this.ndata[group][series] = (function() {
           _r = []; _s = data[series].length;
           for (i = 0; (0 <= _s ? i < _s : i > _s); (0 <= _s ? i += 1 : i -= 1)) {
-            _r.push(((typeof (_t = data[series][i]) !== "undefined" && _t !== null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null));
+            _r.push((typeof (_t = data[series][i]) !== "undefined" && _t !== null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null);
           }
           return _r;
         })();
-        if ((typeof (_w = this.opts.stacked) !== "undefined" && _w !== null)) {
+        if (typeof (_w = this.opts.stacked) !== "undefined" && _w !== null) {
           this.stackedNdata[group][series] = [];
           _u = data[series].length;
           for (i = 0; (0 <= _u ? i < _u : i > _u); (0 <= _u ? i += 1 : i -= 1)) {
             baseline = baselines[i] || 0;
             stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_v = data[series][i]) !== "undefined" && _v !== null) && (nval = norm(data[series][i], min, max)) !== null ? nval + baseline : baseline];
             this.stackedNdata[group][series].push(stackedPoint);
-            if (!(stackedPoint === null)) {
+            if (stackedPoint !== null) {
               baselines[i] = stackedPoint[1];
             }
           }
@@ -362,7 +362,7 @@
     this.axisWidth = 1.5;
     this.padding.top += 5;
     for (i = this.data[this.__LABELS__].length - 1; (this.data[this.__LABELS__].length - 1 <= 0 ? i <= 0 : i >= 0); (this.data[this.__LABELS__].length - 1 <= 0 ? i += 1 : i -= 1)) {
-      if ((typeof (_a = this.data[this.__LABELS__][i]) !== "undefined" && _a !== null)) {
+      if (typeof (_a = this.data[this.__LABELS__][i]) !== "undefined" && _a !== null) {
         tmptext = this.r.text(0, 0, Sai.util.prettystr(this.data[this.__LABELS__][i]));
         this.padding.right += tmptext.getBBox().width / 2;
         tmptext.remove();
@@ -373,14 +373,14 @@
     doLeftAxis = (typeof (_b = this.ndata[group]) !== "undefined" && _b !== null) || !(typeof (_c = this.ndata[group2]) !== "undefined" && _c !== null);
     doRightAxis = (typeof (_d = this.ndata[group2]) !== "undefined" && _d !== null);
     if (doLeftAxis) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_e = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _e !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+      _vaxis = this.r.sai.prim.vaxis((typeof (_e = (this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__)) !== "undefined" && _e !== null) ? _e : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       vaxis_width = _vaxis.getBBox().width;
       _vaxis.remove();
     } else {
       vaxis_width = 0;
     }
     if (doRightAxis) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_f = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _f !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+      _vaxis = this.r.sai.prim.vaxis((typeof (_f = (this.ndata[group2] == null ? undefined : this.ndata[group2].__YVALS__)) !== "undefined" && _f !== null) ? _f : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       vaxis2_width = _vaxis.getBBox().width;
       _vaxis.remove();
     } else {
@@ -392,17 +392,17 @@
     haxis_height = hbb.height;
     if (isNaN(haxis_height)) {
       haxis_height = 1;
-    };
+    }
     this.haxis.translate(0, -haxis_height);
     this.padding.bottom += haxis_height;
     vlen = this.h - (this.padding.bottom + this.padding.top);
     if (doLeftAxis) {
-      this.vaxis = this.r.sai.prim.vaxis((typeof (_g = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _g !== null) ? (this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+      this.vaxis = this.r.sai.prim.vaxis((typeof (_g = (this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__)) !== "undefined" && _g !== null) ? _g : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
       this.vaxis.translate(this.vaxis.getBBox().width, 0);
       this.padding.left += this.vaxis.getBBox().width;
     }
     if (doRightAxis) {
-      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_h = this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) !== "undefined" && _h !== null) ? (this.ndata[group2] == undefined ? undefined : this.ndata[group2].__YVALS__) : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, this.axisWidth, true, (typeof (_i = this.ndata[group]) !== "undefined" && _i !== null) ? (typeof (_j = this.colors.__RIGHTAXIS__) !== "undefined" && _j !== null) ? this.colors.__RIGHTAXIS__ : 'blue' : 'black');
+      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_h = (this.ndata[group2] == null ? undefined : this.ndata[group2].__YVALS__)) !== "undefined" && _h !== null) ? _h : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, this.axisWidth, true, (typeof (_i = this.ndata[group]) !== "undefined" && _i !== null) ? (typeof (_j = this.colors.__RIGHTAXIS__) !== "undefined" && _j !== null) ? _j : 'blue' : 'black');
       this.vaxis_right.translate(-this.vaxis_right.getBBox().width, 0);
       this.padding.right += this.vaxis_right.getBBox().width;
     }
@@ -444,7 +444,7 @@
   };
   Sai.Chart.prototype.drawFootnote = function(text) {
     var _a, _b, _c, _d, h, line, lines, maxChars, pixels_per_char, token, tokens;
-    text = (typeof text !== "undefined" && text !== null) ? text : ((typeof (_a = this.opts.footnote) !== "undefined" && _a !== null) ? this.opts.footnote : '');
+    text = (typeof text !== "undefined" && text !== null) ? text : ((typeof (_a = this.opts.footnote) !== "undefined" && _a !== null) ? _a : '');
     if (text.match(/^\s*$/)) {
       return null;
     }
@@ -464,7 +464,7 @@
     }
     if (line !== '') {
       lines.push(line);
-    };
+    }
     text = lines.join('\n');
     this.footnote = this.r.text(this.x + this.padding.left, this.y - this.padding.bottom, text);
     h = this.footnote.getBBox().height;
@@ -492,7 +492,7 @@
       seriesName = this.renames[series];
       if (seriesName in this.data) {
         this.colors[seriesName] = colors[series];
-      };
+      }
     }
     return this;
   };
@@ -503,7 +503,7 @@
   };
   Sai.Chart.prototype.normalizedHeight = function(h, group) {
     var _a, nh, ymax, ymin;
-    if (!((typeof (_a = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null))) {
+    if (!(typeof (_a = this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null)) {
       return null;
     }
     ymin = this.ndata[group].__YVALS__[0];
@@ -516,7 +516,7 @@
   Sai.Chart.prototype.drawGuideline = function(h, group) {
     var _a, guideline, nh;
     group = (typeof group !== "undefined" && group !== null) ? group : 'all';
-    if (!((typeof (_a = this.ndata[group] == undefined ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null))) {
+    if (!(typeof (_a = this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null)) {
       return null;
     }
     nh = this.normalizedHeight(h, group);
@@ -542,23 +542,23 @@
         if (l !== this.__LABELS__) {
           _colors[l] = colors[l];
           _highlightColors[l] = 'black';
-          if ((typeof (_h = this.opts.groups == undefined ? undefined : this.opts.groups.right) !== "undefined" && _h !== null)) {
+          if (typeof (_h = this.opts.groups == null ? undefined : this.opts.groups.right) !== "undefined" && _h !== null) {
             if ((function(){ for (var _f=0, _g=(_e = this.opts.groups.right).length; _f<_g; _f++) { if (_e[_f] === l) return true; } return false; }).call(this)) {
-              _highlightColors[l] = (typeof (_c = this.ndata.left) !== "undefined" && _c !== null) ? (typeof (_d = this.colors.__RIGHTAXIS__) !== "undefined" && _d !== null) ? this.colors.__RIGHTAXIS__ : 'blue' : 'black';
-            };
-          };
+              _highlightColors[l] = (typeof (_c = this.ndata.left) !== "undefined" && _c !== null) ? (typeof (_d = this.colors.__RIGHTAXIS__) !== "undefined" && _d !== null) ? _d : 'blue' : 'black';
+            }
+          }
         }
       }
       this.legend = this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, _colors, _highlightColors);
       if (this.legend.length > 0) {
         this.padding.bottom += this.legend.getBBox().height + 15;
-      };
+      }
       return this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0);
     }
   };
   Sai.Chart.prototype.drawTitle = function() {
     var _a;
-    if ((typeof (_a = this.opts.title) !== "undefined" && _a !== null)) {
+    if (typeof (_a = this.opts.title) !== "undefined" && _a !== null) {
       this.title = this.r.text(this.x + (this.w / 2), this.y - this.h, this.opts.title).attr({
         'font-size': 20
       });
@@ -575,20 +575,20 @@
   Sai.Chart.prototype.drawInfo = function(info, clear) {
     var _a, _b, _c, _d, label;
     clear = (typeof clear !== "undefined" && clear !== null) ? clear : true;
-    info = (typeof info !== "undefined" && info !== null) ? info : (typeof (_a = this.default_info) !== "undefined" && _a !== null) ? this.default_info() : {};
+    info = (typeof info !== "undefined" && info !== null) ? info : ((typeof (_a = this.default_info) !== "undefined" && _a !== null) ? this.default_info() : {});
     if (clear) {
       this.info_data = {};
-    };
+    }
     if (this.info) {
       this.info.remove();
-    };
+    }
     _c = info;
     for (label in _c) {
       if (!__hasProp.call(_c, label)) continue;
       _b = _c[label];
       if (!(label.match("^__"))) {
-        this.info_data[label] = (typeof (_d = info[label]) !== "undefined" && _d !== null) ? info[label] : '(no data)';
-      };
+        this.info_data[label] = (typeof (_d = info[label]) !== "undefined" && _d !== null) ? _d : '(no data)';
+      }
     }
     return (this.info = this.r.sai.prim.info(this.info_x, this.info_y, this.info_w, this.info_data));
   };
@@ -606,15 +606,15 @@
   };
   Sai.LineChart.prototype.dataGroups = function(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, groups, x;
-    groups = Sai.LineChart.__superClass__.dataGroups.apply(this, arguments);
-    if ((typeof (_i = this.opts.groups == undefined ? undefined : this.opts.groups.left) !== "undefined" && _i !== null) && (typeof (_j = this.opts.groups == undefined ? undefined : this.opts.groups.right) !== "undefined" && _j !== null)) {
+    groups = Sai.LineChart.__super__.dataGroups.apply(this, arguments);
+    if ((typeof (_i = this.opts.groups == null ? undefined : this.opts.groups.left) !== "undefined" && _i !== null) && (typeof (_j = this.opts.groups == null ? undefined : this.opts.groups.right) !== "undefined" && _j !== null)) {
       groups.left = (function() {
         _a = []; _c = this.opts.groups.left;
         for (_b = 0, _d = _c.length; _b < _d; _b++) {
           x = _c[_b];
           if (this.caresAbout(x) && x in this.data) {
             _a.push(x);
-          };
+          }
         }
         return _a;
       }).call(this);
@@ -624,7 +624,7 @@
           x = _g[_f];
           if (this.caresAbout(x) && x in this.data) {
             _e.push(x);
-          };
+          }
         }
         return _e;
       }).call(this);
@@ -642,20 +642,20 @@
       this.addAxes('left', 'right');
     } else {
       this.addAxes('all');
-    };
+    }
     this.drawBG();
     this.drawLogo();
     if (saxis) {
       if (this.ndata.left.__YVALS__[0] < 0) {
         this.drawGuideline(0, 'left');
-      };
+      }
       if (this.ndata.right.__YVALS__[0] < 0) {
         this.drawGuideline(0, 'right');
-      };
+      }
     } else {
       if (this.ndata.all.__YVALS__[0] < 0) {
         this.drawGuideline(0, 'all');
-      };
+      }
     }
     this.lines = [];
     this.dots = this.r.set();
@@ -664,12 +664,12 @@
     this.plotSets = this.r.set();
     this.plots = [];
     if (saxis) {
-      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_b = this.opts.lineWidth) !== "undefined" && _b !== null) ? this.opts.lineWidth : 2, this.opts.stacked, this.normalizedHeight(0, 'left')));
+      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_b = this.opts.lineWidth) !== "undefined" && _b !== null) ? _b : 2, this.opts.stacked, this.normalizedHeight(0, 'left')));
       this.plotSets.push(this.plots[0].set);
-      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_c = this.opts.lineWidth) !== "undefined" && _c !== null) ? this.opts.lineWidth : 2, this.opts.stacked, this.normalizedHeight(0, 'right')));
+      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_c = this.opts.lineWidth) !== "undefined" && _c !== null) ? _c : 2, this.opts.stacked, this.normalizedHeight(0, 'right')));
       this.plotSets.push(this.plots[1].set);
     } else {
-      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_d = this.opts.lineWidth) !== "undefined" && _d !== null) ? this.opts.lineWidth : 2, this.opts.stacked, this.normalizedHeight(0, 'all')));
+      this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_d = this.opts.lineWidth) !== "undefined" && _d !== null) ? _d : 2, this.opts.stacked, this.normalizedHeight(0, 'all')));
       this.plotSets.push(this.plots[0].set);
     }
     _f = ndata['all'];
@@ -678,12 +678,12 @@
       _e = _f[series];
       if (series !== '__YVALS__') {
         this.dots.push(this.r.circle(0, 0, 4).attr({
-          'fill': (typeof (_g = this.colors == undefined ? undefined : this.colors[series]) !== "undefined" && _g !== null) ? (this.colors == undefined ? undefined : this.colors[series]) : 'black'
+          'fill': (typeof (_g = (this.colors == null ? undefined : this.colors[series])) !== "undefined" && _g !== null) ? _g : 'black'
         }).hide());
-      };
+      }
     }
-    everything = this.r.set().push(this.bg, this.plotSets, this.dots, this.logo, this.guidelines).mousemove((moveDots = __bind(function(event) {
-      var _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, i, idx, info, plot, pos;
+    everything = this.r.set().push(this.bg, this.plotSets, this.dots, this.logo, this.guidelines).mousemove(moveDots = __bind(function(event) {
+      var _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, i, idx, info, plot, pos, series;
       idx = this.getIndex(event);
       info = {};
       info[this.__LABELS__] = this.data[this.__LABELS__][idx];
@@ -691,9 +691,9 @@
       for (series in _i) {
         if (!__hasProp.call(_i, series)) continue;
         _h = _i[series];
-        if ((typeof (_j = this.data[series]) !== "undefined" && _j !== null)) {
+        if (typeof (_j = this.data[series]) !== "undefined" && _j !== null) {
           info[series] = this.data[series][idx];
-        };
+        }
       }
       this.drawInfo(info);
       i = 0;
@@ -709,28 +709,28 @@
               if (series in plot.dndata) {
                 _n.push((function() {
                   pos = plot.dndata[series][idx];
-                  if ((typeof pos !== "undefined" && pos !== null)) {
+                  if (typeof pos !== "undefined" && pos !== null) {
                     this.dots[i].attr({
                       cx: pos[0],
                       cy: pos[1]
                     }).show().toFront();
                   } else {
                     this.dots[i].hide();
-                  };
+                  }
                   return i++;
                 }).call(this));
-              };
+              }
             }
             return _n;
           }).call(this));
-        };
+        }
       }
       return _l;
-    }, this))).mouseout(__bind(function(event) {
+    }, this)).mouseout(__bind(function(event) {
       this.drawInfo({}, true);
       return this.dots.hide();
     }, this));
-    this.logo == undefined ? undefined : this.logo.toFront();
+    this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
   Sai.Sparkline = function() {
@@ -758,7 +758,7 @@
   };
   __extends(Sai.BarChart, Sai.Chart);
   Sai.BarChart.prototype.getMin = function(data, group) {
-    return Math.min(Sai.BarChart.__superClass__.getMin.apply(this, arguments), 0);
+    return Math.min(Sai.BarChart.__super__.getMin.apply(this, arguments), 0);
   };
   Sai.BarChart.prototype.groupsToNullPad = function() {
     var _a, _b, _c, group;
@@ -833,8 +833,8 @@
         rawdata[series] = this.data[series];
       }
     }
-    this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render((typeof (_g = this.opts.stacked) !== "undefined" && _g !== null), this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive, this.drawInfo).set);
-    this.logo == undefined ? undefined : this.logo.toFront();
+    this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render(typeof (_g = this.opts.stacked) !== "undefined" && _g !== null, this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive, this.drawInfo).set);
+    this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
   Sai.StockChart = function() {
@@ -851,7 +851,7 @@
     };
     if ('volume' in this.data) {
       groups.volume = ['volume'];
-    };
+    }
     _b = data;
     for (seriesName in _b) {
       if (!__hasProp.call(_b, seriesName)) continue;
@@ -878,13 +878,13 @@
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
       if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !(series.match('^__') || series === this.__LABELS__)) {
-        avgColors[series] = (this.colors == undefined ? undefined : this.colors[series]) || 'black';
+        avgColors[series] = (this.colors == null ? undefined : this.colors[series]) || 'black';
         shouldDrawLegend = true;
       }
     }
     if (shouldDrawLegend) {
       this.drawLegend(avgColors);
-    };
+    }
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
     this.colors['up'] = (typeof this.colors['up'] !== "undefined" && this.colors['up'] !== null) ? this.colors['up'] : 'black';
     this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : 'red';
@@ -899,7 +899,7 @@
     }
     if (this.ndata.prices.__YVALS__[0] < 0) {
       this.drawGuideline(0, 'prices');
-    };
+    }
     this.plots = this.r.set();
     vol = {
       'up': [],
@@ -912,11 +912,11 @@
       _d = _e[p];
       if (!(p.match('^__') || p === this.__LABELS__)) {
         rawdata[p] = this.data[p];
-      };
+      }
     }
-    if ((typeof (_f = this.data['volume']) !== "undefined" && _f !== null)) {
+    if (typeof (_f = this.data['volume']) !== "undefined" && _f !== null) {
       rawdata['vol'] = this.data['volume'];
-    };
+    }
     if ('volume' in this.ndata) {
       _g = this.ndata['volume']['volume'].length;
       for (i = 0; (0 <= _g ? i < _g : i > _g); (0 <= _g ? i += 1 : i -= 1)) {
@@ -951,7 +951,7 @@
       _h = _i[series];
       if (!((('open' === series || 'close' === series || 'high' === series || 'low' === series)) || series.match("^__") || series === this.__LABELS__)) {
         avgNdata[series] = this.ndata['prices'][series];
-      };
+      }
     }
     this.plots.push((new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, avgNdata)).render(this.colors).set);
     glow_width = this.pw / (this.data[this.__LABELS__].length - 1);
@@ -961,8 +961,8 @@
       'stroke-opacity': 0
     }).toBack().hide();
     this.bg.toBack();
-    everything = this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove((moveGlow = __bind(function(event) {
-      var _j, _k, _l, _m, idx, info, notNull;
+    everything = this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove(moveGlow = __bind(function(event) {
+      var _j, _k, _l, _m, idx, info, notNull, series;
       idx = this.getIndex(event);
       info = {};
       info[this.__LABELS__] = this.data[this.__LABELS__][idx];
@@ -972,13 +972,13 @@
         if (!__hasProp.call(_k, series)) continue;
         _j = _k[series];
         if (!(series.match('^__') || series === this.__LABELS__)) {
-          if ((typeof (_l = this.data[series] == undefined ? undefined : this.data[series][idx]) !== "undefined" && _l !== null)) {
+          if (typeof (_l = this.data[series] == null ? undefined : this.data[series][idx]) !== "undefined" && _l !== null) {
             info[series] = this.data[series][idx];
             notNull = true;
           }
         }
       }
-      if ((typeof (_m = this.data['volume'] == undefined ? undefined : this.data['volume'][idx]) !== "undefined" && _m !== null)) {
+      if (typeof (_m = this.data['volume'] == null ? undefined : this.data['volume'][idx]) !== "undefined" && _m !== null) {
         info['volume'] = this.data['volume'][idx];
         notNull = true;
       }
@@ -986,11 +986,11 @@
       return notNull ? this.glow.attr({
         x: this.px + (glow_width * (idx - 0.5))
       }).show() : null;
-    }, this))).mouseout(__bind(function(event) {
+    }, this)).mouseout(__bind(function(event) {
       this.drawInfo({}, true);
       return this.glow.hide();
     }, this));
-    this.logo == undefined ? undefined : this.logo.toFront();
+    this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
   Sai.GeoChart = function() {
@@ -1021,27 +1021,27 @@
       if (series.match('^__') || series === this.__LABELS__) {
         continue;
       }
-      if (!((typeof (_c = data[series]) !== "undefined" && _c !== null))) {
+      if (!(typeof (_c = data[series]) !== "undefined" && _c !== null)) {
         continue;
       }
       dataWithoutNulls = (function() {
         _d = []; _f = data[series];
         for (_e = 0, _g = _f.length; _e < _g; _e++) {
           d = _f[_e];
-          if ((typeof d !== "undefined" && d !== null)) {
+          if (typeof d !== "undefined" && d !== null) {
             _d.push(d);
-          };
+          }
         }
         return _d;
       })();
       maxes[series] = this.getMax(dataWithoutNulls, series);
       if (!(typeof overallMax !== "undefined" && overallMax !== null) || maxes[series] > overallMax) {
         overallMax = maxes[series];
-      };
+      }
       mins[series] = this.getMin(dataWithoutNulls, series);
       if (!(typeof overallMin !== "undefined" && overallMin !== null) || mins[series] < overallMin) {
         overallMin = mins[series];
-      };
+      }
     }
     _i = []; _j = data;
     for (series in _j) {
@@ -1050,7 +1050,7 @@
       if (series.match('^__') || series === this.__LABELS__) {
         continue;
       }
-      if (!((typeof (_k = data[series]) !== "undefined" && _k !== null))) {
+      if (!(typeof (_k = data[series]) !== "undefined" && _k !== null)) {
         continue;
       }
       if (this.opts.groupedNormalization) {
@@ -1064,7 +1064,7 @@
       this.ndata[series] = (function() {
         _l = []; _m = data[series].length;
         for (i = 0; (0 <= _m ? i < _m : i > _m); (0 <= _m ? i += 1 : i -= 1)) {
-          _l.push(((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] : null));
+          _l.push((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] : null);
         }
         return _l;
       })();
@@ -1081,7 +1081,7 @@
           _a = _c[seriesName];
           if (seriesName.match("^__") || seriesName === this.__LABELS__) {
             _b.push(seriesName);
-          };
+          }
         }
         return _b;
       }).call(this)
@@ -1092,7 +1092,7 @@
       _d = _e[seriesName];
       if (!(seriesName.match("^__") || seriesName === this.__LABELS__)) {
         groups[seriesName] = [seriesName];
-      };
+      }
     }
     return groups;
   };
@@ -1109,13 +1109,13 @@
       data = (function() {
         _b = []; _c = this.ndata[series].length;
         for (j = 0; (0 <= _c ? j < _c : j > _c); (0 <= _c ? j += 1 : j -= 1)) {
-          if ((typeof (_d = this.ndata[series][j]) !== "undefined" && _d !== null)) {
+          if (typeof (_d = this.ndata[series][j]) !== "undefined" && _d !== null) {
             _b.push(this.ndata[series][j][1]);
-          };
+          }
         }
         return _b;
       }).call(this);
-      if ((typeof (_f = this.bounds == undefined ? undefined : this.bounds[series]) !== "undefined" && _f !== null)) {
+      if (typeof (_f = this.bounds == null ? undefined : this.bounds[series]) !== "undefined" && _f !== null) {
         _e = this.bounds[series];
         min = _e[0];
         max = _e[1];
@@ -1124,9 +1124,9 @@
           _g = []; _i = this.data[series];
           for (_h = 0, _j = _i.length; _h < _j; _h++) {
             x = _i[_h];
-            if ((typeof x !== "undefined" && x !== null)) {
+            if (typeof x !== "undefined" && x !== null) {
               _g.push(x);
-            };
+            }
           }
           return _g;
         }).call(this);
@@ -1137,10 +1137,10 @@
       yvals = this.getYAxisVals(min, max, true);
       minLabel = yvals[0];
       maxLabel = yvals[yvals.length - 1];
-      this.histogramLegend.push((histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white', this.opts.fromWhite)));
+      this.histogramLegend.push(histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white', this.opts.fromWhite));
       if (this.opts.interactive) {
         this.setupHistogramInteraction(histogram, series);
-      };
+      }
     }
     this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);
     return this.padding.bottom += height + 5;
@@ -1167,11 +1167,11 @@
     }, this))(histogram));
   };
   Sai.GeoChart.prototype.renderPlot = function(mainSeries) {
-    this.geoPlot == undefined ? undefined : this.geoPlot.set.remove();
+    this.geoPlot == null ? undefined : this.geoPlot.set.remove();
     this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data, {
       fromWhite: this.opts.fromWhite
     })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo);
-    return this.logo == undefined ? undefined : this.logo.toFront();
+    return this.logo == null ? undefined : this.logo.toFront();
   };
   Sai.GeoChart.prototype.default_info = function() {
     return {
@@ -1190,7 +1190,7 @@
         _a = _c[series];
         if (!(series.match('^__') || series === this.__LABELS__)) {
           _b.push(series);
-        };
+        }
       }
       return _b;
     }).call(this));

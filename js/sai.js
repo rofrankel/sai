@@ -15,7 +15,7 @@ Sai.util.sumArray = function(a) {
   sum = 0;
   _a = a.length;
   for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
-    sum += typeof a[i] === 'number' ? a[i] : 0;
+    sum += (typeof a[i] === 'number' ? a[i] : 0);
   }
   return sum;
 };
@@ -77,7 +77,7 @@ Sai.util.transformCoords = function(evt, canvas) {
     xformed = svgPoint.matrixTransform(canvas.getScreenCTM().inverse());
     if (navigator.userAgent.toLowerCase().indexOf('chrome') !== -1 || navigator.userAgent.toLowerCase().indexOf('safari') !== -1) {
       xformed.x += document.body.scrollLeft;
-    };
+    }
     return {
       x: xformed.x,
       y: xformed.y
