@@ -159,7 +159,7 @@
   };
   Raphael.fn.sai.prim.haxis = function(vals, x, y, len, width, color, ticklens) {
     var _a, _b, _c, _d, bbox, bbw, dx, i, interval, label, labels, line, max_label_width, max_labels, padding, result, rotate, ticklen, ticks, val, xmax, xpos;
-    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [10, 5];
+    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [5, 2];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     color = (typeof color !== "undefined" && color !== null) ? color : 'black';
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
@@ -210,7 +210,7 @@
   };
   Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, width, right, color, ticklens) {
     var _a, _b, _c, dy, label, labels, line, ticklen, ticks, val, ypos;
-    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [10, 5];
+    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [5, 2];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     right = (typeof right !== "undefined" && right !== null) ? right : false;

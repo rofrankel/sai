@@ -556,7 +556,7 @@ class Sai.BarChart extends Sai.Chart
     @drawBG()
     
     if @tooMuchData()
-      @showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include sampling your data\n (e.g. monthly instead of daily) or using a line chart')
+      @showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include downsampling your data\n (e.g. monthly instead of daily) or using a line chart')
       return this
     
     if 'all' of @ndata

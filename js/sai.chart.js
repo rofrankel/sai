@@ -808,7 +808,7 @@
     this.drawLogo();
     this.drawBG();
     if (this.tooMuchData()) {
-      this.showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include sampling your data\n (e.g. monthly instead of daily) or using a line chart');
+      this.showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include downsampling your data\n (e.g. monthly instead of daily) or using a line chart');
       return this;
     }
     if ('all' in this.ndata) {
