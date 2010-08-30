@@ -237,3 +237,28 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
     
     return 0.25
   
+
+class Sai.ScatterPlot extends Sai.Plot
+
+  render: (mappings, colors, radii, stroke_widths) ->
+    @set.remove()
+    
+    for series of @dndata
+      num_points = @dndata[series].length
+      break
+    
+    for i in [0...num_points]
+      alert mappings.x
+      alert @dndata[mappings.x]
+      x = @dndata[mappings.x]?[i][1] * (@w / @h)
+      y = @dndata[mappings.y]?[i][1]
+      color = if mappings.color? then Sai.util.colerp(colors[0], colors[1], @data[mappings.color]?[i][1]) else 'black'
+      radius = if mappings.radius? then (radii[0] + ((radii[1] - radii[0]) * @data[mappings.radius]?[i][1])) else '20'
+      stroke_width = if mappings.stroke_width then (stroke_widths[0] + ((stroke_widths[1] - stroke_widths[0]) * @data[mappings.stroke_width]?[i][1])) else '2'
+      
+      @set.push(
+        @r.circle(x, y, radius).attr({'fill': color, 'stroke-width': stroke_width})
+      )
+    
+    return this
+    

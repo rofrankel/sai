@@ -306,4 +306,33 @@
     }
     return 0.25;
   };
+  Sai.ScatterPlot = function() {
+    return Sai.Plot.apply(this, arguments);
+  };
+  __extends(Sai.ScatterPlot, Sai.Plot);
+  Sai.ScatterPlot.prototype.render = function(mappings, colors, radii, stroke_widths) {
+    var _a, _b, _c, _d, color, i, num_points, radius, series, stroke_width, x, y;
+    this.set.remove();
+    _b = this.dndata;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
+      num_points = this.dndata[series].length;
+      break;
+    }
+    for (i = 0; (0 <= num_points ? i < num_points : i > num_points); (0 <= num_points ? i += 1 : i -= 1)) {
+      alert(mappings.x);
+      alert(this.dndata[mappings.x]);
+      x = (this.dndata[mappings.x] == null ? undefined : this.dndata[mappings.x][i][1]) * (this.w / this.h);
+      y = this.dndata[mappings.y] == null ? undefined : this.dndata[mappings.y][i][1];
+      color = (typeof (_c = mappings.color) !== "undefined" && _c !== null) ? Sai.util.colerp(colors[0], colors[1], this.data[mappings.color] == null ? undefined : this.data[mappings.color][i][1]) : 'black';
+      radius = (typeof (_d = mappings.radius) !== "undefined" && _d !== null) ? (radii[0] + ((radii[1] - radii[0]) * (this.data[mappings.radius] == null ? undefined : this.data[mappings.radius][i][1]))) : '20';
+      stroke_width = mappings.stroke_width ? (stroke_widths[0] + ((stroke_widths[1] - stroke_widths[0]) * (this.data[mappings.stroke_width] == null ? undefined : this.data[mappings.stroke_width][i][1]))) : '2';
+      this.set.push(this.r.circle(x, y, radius).attr({
+        'fill': color,
+        'stroke-width': stroke_width
+      }));
+    }
+    return this;
+  };
 })();

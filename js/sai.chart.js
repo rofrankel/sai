@@ -1215,4 +1215,22 @@
   Sai.ChromaticGeoChart.prototype.setupHistogramInteraction = function(histogram, series) {
     return false;
   };
+  Sai.ScatterChart = function() {
+    return Sai.Chart.apply(this, arguments);
+  };
+  __extends(Sai.ScatterChart, Sai.Chart);
+  Sai.ScatterChart.prototype.render = function() {
+    var _a, _b;
+    this.drawTitle();
+    this.setupInfoSpace();
+    this.drawFootnote();
+    this.drawLegend();
+    this.addAxes('all');
+    this.drawLogo();
+    this.drawBG();
+    this.plots = this.r.set();
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data)).render(this.opts.mappings, [(typeof (_a = this.colors.__LOW__) !== "undefined" && _a !== null) ? _a : 'black', (typeof (_b = this.colors.__HIGH__) !== "undefined" && _b !== null) ? _b : 'white'], this.opts.radii, this.opts.stroke_widths).set);
+    this.logo == null ? undefined : this.logo.toFront();
+    return this;
+  };
 })();

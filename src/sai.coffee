@@ -96,6 +96,15 @@ Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding) ->
     str: "rgb(#{r}, #{g}, #{b})"
   }
 
+Sai.util.colerp = (color1, color2, alpha) ->
+  rgb1 = Raphael.getRGB(color1)
+  rgb2 = Raphael.getRGB(color2)
+  r = rgb1.r * alpha + rgb2.r * (1 - alpha)
+  g = rgb1.g * alpha + rgb2.g * (1 - alpha)
+  b = rgb1.b * alpha + rgb2.b * (1 - alpha)
+  return "rgb(#{r}, #{g}, #{b})"
+
+
 # if a channel color is 2/3 of the way from black to mirror,
 # then the result in that channel is 1/3 of the way from the mirror to white
 Sai.util.reflectColor = (color, mirror) ->

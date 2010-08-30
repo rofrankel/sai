@@ -225,7 +225,14 @@
         "Health Risk from Pollutants": olive,
         "Toxic Chemical Emissions": orange,
         "state": ucla,
-      }
+      };
+      
+      var scatterMappings = {
+        x: 'GOOG',
+        y: 'AAPL',
+        color: 'MSFT',
+        radius: 'AMZN'
+      };
       
       
       var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
@@ -251,6 +258,8 @@
       var r7 = Raphael("c7", 400, 350);
       var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
       
+      var r8 = Raphael("c8", 400, 350);
+      var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, bardata, "", {mappings: scatterMappings})).setColors({__LOW__: ucla, __HIGH__: gold}).render();
       
     </script>
   </body>

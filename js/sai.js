@@ -110,6 +110,15 @@ Sai.util.multiplyColor = function(colorStr, coeff, fromWhite, padding) {
     str: ("rgb(" + (r) + ", " + (g) + ", " + (b) + ")")
   };
 };
+Sai.util.colerp = function(color1, color2, alpha) {
+  var b, g, r, rgb1, rgb2;
+  rgb1 = Raphael.getRGB(color1);
+  rgb2 = Raphael.getRGB(color2);
+  r = rgb1.r * alpha + rgb2.r * (1 - alpha);
+  g = rgb1.g * alpha + rgb2.g * (1 - alpha);
+  b = rgb1.b * alpha + rgb2.b * (1 - alpha);
+  return ("rgb(" + (r) + ", " + (g) + ", " + (b) + ")");
+};
 Sai.util.reflectColor = function(color, mirror) {
   var _a, _b, _c, c, channel, crgb, m, max, mrgb, rgb;
   max = 255;

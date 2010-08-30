@@ -906,3 +906,31 @@ class Sai.ChromaticGeoChart extends Sai.GeoChart
     false
 
 
+class Sai.ScatterChart extends Sai.Chart
+
+  render: () ->
+    @drawTitle()
+    @setupInfoSpace()
+    @drawFootnote()
+    @drawLegend()
+    @addAxes('all')
+    @drawLogo()
+    @drawBG()
+    
+    @plots = @r.set()
+    
+    @plots.push(
+      (new Sai.ScatterPlot(@r,
+                           @px,
+                           @py,
+                           @pw,
+                           @ph,
+                           @ndata,
+                           @data))
+      .render(@opts.mappings, [@colors.__LOW__ ? 'black', @colors.__HIGH__ ? 'white'], @opts.radii, @opts.stroke_widths)
+      .set
+    )
+    
+    @logo?.toFront()
+    
+    return this
