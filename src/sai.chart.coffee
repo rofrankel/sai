@@ -916,14 +916,32 @@ class Sai.ChromaticGeoChart extends Sai.GeoChart
 
 class Sai.ScatterChart extends Sai.Chart
 
+  dataGroups: (data) ->
+    groups = {
+      '__META__': seriesName for seriesName of data when seriesName.match("^__") or seriesName is @__LABELS__
+    }
+    
+    for seriesName of data
+      unless seriesName.match("^__") or seriesName is @__LABELS__
+        groups[seriesName] = [seriesName]
+    
+    return groups
+  
+  
   render: () ->
     @drawTitle()
     @setupInfoSpace()
     @drawFootnote()
     @drawLegend()
-    @addAxes('all')
+    @__LABELS__ = '__XVALS__'
+    @data.__XVALS__ = @ndata[@opts.mappings.x].__YVALS__
+    @addAxes(@opts.mappings.y)
     @drawLogo()
     @drawBG()
+    
+    ndata = {}
+    for series of @ndata
+      ndata[series] = @ndata[series][series]
     
     @plots = @r.set()
     
@@ -934,10 +952,10 @@ class Sai.ScatterChart extends Sai.Chart
         @py,
         @pw,
         @ph,
-        @ndata,
+        ndata,
         @data)
       )
-      .render(@opts.mappings, [@colors.__LOW__ ? 'black', @colors.__HIGH__ ? 'white'], @opts.radii, @opts.stroke_widths)
+      .render(@opts.mappings, @opts.colors ? ['black', 'white'], @opts.radii ? [5, 15], @opts.stroke_widths ? [1, 5])
       .set
     )
     

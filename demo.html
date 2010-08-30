@@ -93,7 +93,7 @@
       
       var bardata = {
         'AAPL': [1100000, 1200000, 1300000, 1400000],
-        'AMZN': [1200000, null, 1400000, 1400000],
+        'AMZN': [200000, null, 1400000, 1400000],
         'GOOG': [1300000, 1500000, 1100000, 1150000],
         'MSFT': [1500000, 1100000, 1400000, -1000247],
         'Quarter': ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -259,7 +259,7 @@
       var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
       
       var r8 = Raphael("c8", 400, 350);
-      var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, bardata, "", {mappings: scatterMappings})).setColors({__LOW__: ucla, __HIGH__: gold}).render();
+      var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, bardata, "", {mappings: scatterMappings, bgcolor: tea, title: "Scatterplot test", colors: [ucla, gold]})).render();
       
     </script>
   </body>

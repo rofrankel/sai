@@ -1219,17 +1219,51 @@
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.ScatterChart, Sai.Chart);
+  Sai.ScatterChart.prototype.dataGroups = function(data) {
+    var _a, _b, _c, _d, _e, groups, seriesName;
+    groups = {
+      '__META__': (function() {
+        _b = []; _c = data;
+        for (seriesName in _c) {
+          if (!__hasProp.call(_c, seriesName)) continue;
+          _a = _c[seriesName];
+          if (seriesName.match("^__") || seriesName === this.__LABELS__) {
+            _b.push(seriesName);
+          }
+        }
+        return _b;
+      }).call(this)
+    };
+    _e = data;
+    for (seriesName in _e) {
+      if (!__hasProp.call(_e, seriesName)) continue;
+      _d = _e[seriesName];
+      if (!(seriesName.match("^__") || seriesName === this.__LABELS__)) {
+        groups[seriesName] = [seriesName];
+      }
+    }
+    return groups;
+  };
   Sai.ScatterChart.prototype.render = function() {
-    var _a, _b;
+    var _a, _b, _c, _d, _e, ndata, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
     this.drawLegend();
-    this.addAxes('all');
+    this.__LABELS__ = '__XVALS__';
+    this.data.__XVALS__ = this.ndata[this.opts.mappings.x].__YVALS__;
+    this.addAxes(this.opts.mappings.y);
     this.drawLogo();
     this.drawBG();
+    ndata = {};
+    _b = this.ndata;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
+      ndata[series] = this.ndata[series][series];
+    }
     this.plots = this.r.set();
-    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data)).render(this.opts.mappings, [(typeof (_a = this.colors.__LOW__) !== "undefined" && _a !== null) ? _a : 'black', (typeof (_b = this.colors.__HIGH__) !== "undefined" && _b !== null) ? _b : 'white'], this.opts.radii, this.opts.stroke_widths).set);
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, (typeof (_c = this.opts.colors) !== "undefined" && _c !== null) ? _c : ['black', 'white'], (typeof (_d = this.opts.radii) !== "undefined" && _d !== null) ? _d : [5, 15], (typeof (_e = this.opts.stroke_widths) !== "undefined" && _e !== null) ? _e : [1, 5]).set);
     this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
