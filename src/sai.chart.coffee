@@ -508,12 +508,14 @@ class Sai.Sparkline extends Sai.Chart
     @plots = @r.set()
     
     @plots.push(
-      (new Sai.LinePlot(@r,
-                        @x,
-                        @y,
-                        @w,
-                        @h,
-                        @ndata['data']))
+      (new Sai.LinePlot(
+        @r,
+        @x,
+        @y,
+        @w,
+        @h,
+        @ndata['data'])
+      )
       .render({data: @colors and @colors[series] or 'black'}, 1)
       .set
     )
@@ -578,13 +580,15 @@ class Sai.BarChart extends Sai.Chart
         rawdata[series] = @data[series]
     
     @plots.push(
-      (new Sai.BarPlot(@r,
-                       @px,
-                       @py,
-                       @pw,
-                       @ph,
-                       data,
-                       rawdata))
+      (new Sai.BarPlot(
+        @r,
+        @px,
+        @py,
+        @pw,
+        @ph,
+        data,
+        rawdata)
+      )
       .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive, @drawInfo)
       .set
     )
@@ -670,28 +674,32 @@ class Sai.StockChart extends Sai.Chart
           vol.down.push([0, 0])
       
       @plots.push(
-        (new Sai.BarPlot(@r
-                         @px,
-                         @py,
-                         @pw, @ph * 0.2,
-                         vol,
-                         rawdata))
+        (new Sai.BarPlot(
+          @r
+          @px,
+          @py,
+          @pw, @ph * 0.2,
+          vol,
+          rawdata)
+        )
         .render(true, @normalizedHeight(0, 'volume'), {'up': @colors['vol_up'], 'down': @colors['vol_down']})
         .set
       )
     
     @plots.push(
-      (new Sai.CandlestickPlot(@r,
-                               @px,
-                               @py,
-                               @pw, @ph,
-                               {
-                                'open': @ndata['prices']['open'],
-                                'close': @ndata['prices']['close'],
-                                'high': @ndata['prices']['high'],
-                                'low': @ndata['prices']['low']
-                               },
-                               rawdata))
+      (new Sai.CandlestickPlot(
+        @r,
+        @px,
+        @py,
+        @pw, @ph,
+        {
+         'open': @ndata['prices']['open'],
+         'close': @ndata['prices']['close'],
+         'high': @ndata['prices']['high'],
+         'low': @ndata['prices']['low']
+        },
+        rawdata)
+      )
       .render(@colors, Math.min(5, (@pw / @ndata['prices']['open'].length) - 2))
       .set
     )
@@ -714,9 +722,9 @@ class Sai.StockChart extends Sai.Chart
     
     glow_width = @pw / (@data[@__LABELS__].length - 1)
     @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
-                      .attr({fill: "0-#{@opts.bgcolor}-#DDAA99-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
-                      .toBack()
-                      .hide()
+              .attr({fill: "0-#{@opts.bgcolor}-#DDAA99-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
+              .toBack()
+              .hide()
     
     @bg.toBack()
     
@@ -920,13 +928,15 @@ class Sai.ScatterChart extends Sai.Chart
     @plots = @r.set()
     
     @plots.push(
-      (new Sai.ScatterPlot(@r,
-                           @px,
-                           @py,
-                           @pw,
-                           @ph,
-                           @ndata,
-                           @data))
+      (new Sai.ScatterPlot(
+        @r,
+        @px,
+        @py,
+        @pw,
+        @ph,
+        @ndata,
+        @data)
+      )
       .render(@opts.mappings, [@colors.__LOW__ ? 'black', @colors.__HIGH__ ? 'white'], @opts.radii, @opts.stroke_widths)
       .set
     )
