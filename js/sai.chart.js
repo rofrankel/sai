@@ -174,11 +174,11 @@
     } else if (rawmag % 1 > 0.35 && !nopad) {
       step *= 2;
     }
-    bottom = Sai.util.round(min - (nopad ? (step / 2.1) : (step / 1.9)), step);
-    if ((bottom <= 0) && (0 <= min)) {
+    bottom = Sai.util.round(min - (nopad ? (step / 2.1) : (step / 1.75)), step);
+    if ((bottom < 0) && (0 <= min)) {
       bottom = 0;
     }
-    top = Sai.util.round(max + (nopad ? (step / 2.1) : (step / 1.9)), step);
+    top = Sai.util.round(max + (nopad ? (step / 2.1) : (step / 1.75)), step);
     bottom /= factor;
     top /= factor;
     step /= factor;

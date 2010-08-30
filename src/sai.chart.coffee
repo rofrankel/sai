@@ -99,9 +99,9 @@ class Sai.Chart
     else if rawmag % 1 > 0.35 and not nopad
       step *= 2
     
-    bottom = Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.9)), step)
-    bottom = 0 if bottom <= 0 <= min
-    top = Sai.util.round(max + (if nopad then (step / 2.1) else (step / 1.9)), step)
+    bottom = Sai.util.round(min - (if nopad then (step / 2.1) else (step / 1.75)), step)
+    bottom = 0 if bottom < 0 <= min
+    top = Sai.util.round(max + (if nopad then (step / 2.1) else (step / 1.75)), step)
     
     # scale back down
     bottom /= factor
