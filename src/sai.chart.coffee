@@ -537,10 +537,10 @@ class Sai.BarChart extends Sai.Chart
   
   tooMuchData: () ->
     
-    maxBars = @w / 4
+    maxBars = @w / 3
     barsToDraw = 0
     
-    for series of @data
+    for series of @data when series isnt @__LABELS__
       barsToDraw += @data[series].length
       break if @opts.stacked
     

@@ -785,15 +785,17 @@
   };
   Sai.BarChart.prototype.tooMuchData = function() {
     var _a, _b, barsToDraw, maxBars, series;
-    maxBars = this.w / 4;
+    maxBars = this.w / 3;
     barsToDraw = 0;
     _b = this.data;
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
       _a = _b[series];
-      barsToDraw += this.data[series].length;
-      if (this.opts.stacked) {
-        break;
+      if (series !== this.__LABELS__) {
+        barsToDraw += this.data[series].length;
+        if (this.opts.stacked) {
+          break;
+        }
       }
     }
     return barsToDraw > maxBars;
