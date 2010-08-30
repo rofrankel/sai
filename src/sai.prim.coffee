@@ -229,7 +229,8 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   return result
 
 Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, right, color, ticklens) ->
-  ticklens ?= [5, 2]
+  #ticklens ?= [5, 2]
+  ticklens ?= [0, 0]
   width ?= 1
   color ?= '#000000'
   right ?= false
@@ -247,7 +248,7 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, right, color, ticklens) ->
       ticks.push(@path("M" + x + " " + ypos + "l" + (if right then ticklen else -ticklen) + " 0").attr('stroke', color))
       label = @text(x + ((if right then 1 else -1) * (ticklen + 2)), ypos, Sai.util.prettystr(val))
       label.attr({
-        'x': label.attr('x') + ((if right then 1 else -1) * label.getBBox().width / 2.0)
+        'x': label.attr('x') + ((if right then 1 else -1) * ((label.getBBox().width / 2.0) + 3))
         'fill': color
       })
       labels.push(label)

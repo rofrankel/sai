@@ -210,7 +210,7 @@
   };
   Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, width, right, color, ticklens) {
     var _a, _b, _c, dy, label, labels, line, ticklen, ticks, val, ypos;
-    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [5, 2];
+    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [0, 0];
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
     color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     right = (typeof right !== "undefined" && right !== null) ? right : false;
@@ -227,7 +227,7 @@
         ticks.push(this.path("M" + x + " " + ypos + "l" + (right ? ticklen : -ticklen) + " 0").attr('stroke', color));
         label = this.text(x + ((right ? 1 : -1) * (ticklen + 2)), ypos, Sai.util.prettystr(val));
         label.attr({
-          'x': label.attr('x') + ((right ? 1 : -1) * label.getBBox().width / 2.0),
+          'x': label.attr('x') + ((right ? 1 : -1) * ((label.getBBox().width / 2.0) + 3)),
           'fill': color
         });
         labels.push(label);
