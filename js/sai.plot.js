@@ -370,8 +370,7 @@
           'stroke-opacity': stroke_opacity
         }).attr({
           'fill-opacity': 0.8,
-          'stroke-width': 2,
-          'stroke-opacity': 0.8
+          'stroke-width': 2
         }).hover(function() {
           infoSetters[0]();
           return this.attr('fill-opacity', 0.5);

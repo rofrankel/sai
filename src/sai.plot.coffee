@@ -282,7 +282,7 @@ class Sai.ScatterPlot extends Sai.Plot
       
       @set.push(
         @r.circle(x, y, radius).attr({'fill': color, 'stroke-opacity': stroke_opacity})
-        .attr({'fill-opacity': 0.8, 'stroke-width': 2, 'stroke-opacity': 0.8})
+        .attr({'fill-opacity': 0.8, 'stroke-width': 2})
         .hover(
           ->
             infoSetters[0]()
