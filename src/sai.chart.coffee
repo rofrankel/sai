@@ -493,8 +493,6 @@ class Sai.LineChart extends Sai.Chart
         @dots.hide()
     )
     
-    @logo?.toFront()
-    
     return this
 
 
@@ -595,8 +593,6 @@ class Sai.BarChart extends Sai.Chart
       .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive, @drawInfo)
       .set
     )
-    
-    @logo?.toFront()
     
     return this
 
@@ -758,8 +754,6 @@ class Sai.StockChart extends Sai.Chart
         @glow.hide()
     )
     
-    @logo?.toFront()
-    
     return this
 
 
@@ -881,8 +875,6 @@ class Sai.GeoChart extends Sai.Chart
       {fromWhite: @opts.fromWhite}
     ))
     .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries, @opts.bgcolor, @opts.interactive, @drawInfo)
-    
-    @logo?.toFront()
   
   default_info: () ->
     {'': if @opts.interactive then 'Click histogram below to change map display' else ''}
@@ -967,7 +959,5 @@ class Sai.ScatterChart extends Sai.Chart
       .render(@opts.mappings, colors, @opts.radius ? [4, 12], @opts.stroke_opacity ? [0, 1], @drawInfo)
       .set
     )
-    
-    @logo?.toFront()
     
     return this

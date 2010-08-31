@@ -750,7 +750,6 @@
       this.drawInfo({}, true);
       return this.dots.hide();
     }, this));
-    this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
   Sai.Sparkline = function() {
@@ -856,7 +855,6 @@
       }
     }
     this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render(typeof (_g = this.opts.stacked) !== "undefined" && _g !== null, this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive, this.drawInfo).set);
-    this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
   Sai.StockChart = function() {
@@ -1012,7 +1010,6 @@
       this.drawInfo({}, true);
       return this.glow.hide();
     }, this));
-    this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
   Sai.GeoChart = function() {
@@ -1190,10 +1187,9 @@
   };
   Sai.GeoChart.prototype.renderPlot = function(mainSeries) {
     this.geoPlot == null ? undefined : this.geoPlot.set.remove();
-    this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data, {
+    return (this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data, {
       fromWhite: this.opts.fromWhite
-    })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo);
-    return this.logo == null ? undefined : this.logo.toFront();
+    })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo));
   };
   Sai.GeoChart.prototype.default_info = function() {
     return {
@@ -1292,7 +1288,6 @@
     }
     this.plots = this.r.set();
     this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [4, 12], (typeof (_f = this.opts.stroke_opacity) !== "undefined" && _f !== null) ? _f : [0, 1], this.drawInfo).set);
-    this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
 })();
