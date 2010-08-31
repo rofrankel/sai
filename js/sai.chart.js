@@ -1263,7 +1263,7 @@
       ndata[series] = this.ndata[series][series];
     }
     this.plots = this.r.set();
-    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, (typeof (_c = this.opts.colors) !== "undefined" && _c !== null) ? _c : (typeof (_d = this.colors) !== "undefined" && _d !== null) ? _d : ['black', 'white'], (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [5, 12], (typeof (_f = this.opts.stroke_opacity) !== "undefined" && _f !== null) ? _f : [0, 1], this.drawInfo).set);
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, (typeof (_c = this.opts.colors) !== "undefined" && _c !== null) ? _c : (typeof (_d = this.colors) !== "undefined" && _d !== null) ? _d : ['black', 'white'], (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [4, 12], (typeof (_f = this.opts.stroke_opacity) !== "undefined" && _f !== null) ? _f : [0, 1], this.drawInfo).set);
     this.logo == null ? undefined : this.logo.toFront();
     return this;
   };
