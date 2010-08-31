@@ -157,11 +157,11 @@
     }
     return group;
   };
-  Raphael.fn.sai.prim.haxis = function(vals, x, y, len, width, color, ticklens) {
-    var _a, _b, _c, _d, bbox, bbw, dx, i, interval, label, labels, line, max_label_width, max_labels, padding, result, rotate, ticklen, ticks, val, xmax, xpos;
-    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [5, 2];
-    width = (typeof width !== "undefined" && width !== null) ? width : 1;
-    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
+  Raphael.fn.sai.prim.haxis = function(vals, x, y, len, opts) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, bbox, bbw, color, dx, i, interval, label, labels, line, ly, max_label_width, max_labels, padding, result, rotate, ticklen, ticklens, ticks, title, val, width, xmax, xpos, ymin;
+    ticklens = (typeof (_a = opts.ticklens) !== "undefined" && _a !== null) ? _a : [5, 2];
+    width = (typeof (_b = opts.width) !== "undefined" && _b !== null) ? _b : 1;
+    color = (typeof (_c = opts.color) !== "undefined" && _c !== null) ? _c : 'black';
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
     ticks = this.set();
     labels = this.set();
@@ -173,8 +173,9 @@
     rotate = false;
     padding = 2;
     max_label_width = 0;
-    _a = vals.length;
-    for (i = 0; (0 <= _a ? i < _a : i > _a); i += interval) {
+    ymin = null;
+    _d = vals.length;
+    for (i = 0; (0 <= _d ? i < _d : i > _d); i += interval) {
       val = vals[i];
       if (typeof val !== "undefined" && val !== null) {
         ticklen = ticklens[String(val) ? 0 : 1];
@@ -182,7 +183,11 @@
         if (val !== '') {
           label = this.text(xpos, y + ticklen + padding, Sai.util.prettystr(val));
           bbox = label.getBBox();
-          label.attr('y', label.attr('y') + (bbox.height / 2.0));
+          ly = label.attr('y') + (bbox.height / 2.0);
+          label.attr('y', ly);
+          if (!(typeof ymin !== "undefined" && ymin !== null) || ly < ymin) {
+            ymin = ly;
+          }
           labels.push(label);
           bbw = bbox.width;
           max_label_width = Math.max(bbw, max_label_width);
@@ -196,11 +201,17 @@
       }
       xpos += dx;
     }
-    result = this.set().push(line, ticks, labels);
+    if (typeof (_e = opts.title) !== "undefined" && _e !== null) {
+      title = this.text(x + len / 2, ymin + 14, opts.title).attr({
+        'font-size': '12px',
+        'font-weight': 'bold'
+      });
+    }
+    result = this.set().push(line, ticks, labels, title);
     if (rotate) {
-      _c = labels.items;
-      for (_b = 0, _d = _c.length; _b < _d; _b++) {
-        label = _c[_b];
+      _g = labels.items;
+      for (_f = 0, _h = _g.length; _f < _h; _f++) {
+        label = _g[_f];
         label.rotate(-90);
         label.translate(0, label.getBBox().width / 2 - padding);
       }
@@ -208,33 +219,51 @@
     }
     return result;
   };
-  Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, width, right, color, ticklens) {
-    var _a, _b, _c, dy, label, labels, line, ticklen, ticks, val, ypos;
-    ticklens = (typeof ticklens !== "undefined" && ticklens !== null) ? ticklens : [0, 0];
-    width = (typeof width !== "undefined" && width !== null) ? width : 1;
-    color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
-    right = (typeof right !== "undefined" && right !== null) ? right : false;
+  Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, opts) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, bbox, color, dummy, dy, label, labels, line, lx, right, ticklen, ticklens, ticks, title, val, width, xmin, ypos;
+    ticklens = (typeof (_a = opts.ticklens) !== "undefined" && _a !== null) ? _a : [5, 2];
+    width = (typeof (_b = opts.width) !== "undefined" && _b !== null) ? _b : 1;
+    color = (typeof (_c = opts.color) !== "undefined" && _c !== null) ? _c : 'black';
+    right = (typeof (_d = opts.right) !== "undefined" && _d !== null) ? _d : false;
     line = this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color);
     ticks = this.set();
     labels = this.set();
     dy = len / (vals.length - 1);
     ypos = y;
-    _b = vals;
-    for (_a = 0, _c = _b.length; _a < _c; _a++) {
-      val = _b[_a];
+    xmin = null;
+    _f = vals;
+    for (_e = 0, _g = _f.length; _e < _g; _e++) {
+      val = _f[_e];
       if (val !== null) {
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + x + " " + ypos + "l" + (right ? ticklen : -ticklen) + " 0").attr('stroke', color));
-        label = this.text(x + ((right ? 1 : -1) * (ticklen + 2)), ypos, Sai.util.prettystr(val));
+        lx = x + ((right ? 1 : -1) * (ticklen + 3));
+        label = this.text(lx, ypos, Sai.util.prettystr(val));
         label.attr({
-          'x': label.attr('x') + ((right ? 1 : -1) * ((label.getBBox().width / 2.0) + 3)),
+          'text-anchor': right ? 'start' : 'end',
           'fill': color
         });
+        lx += (right ? 1 : -1) * (label.getBBox().width + 8);
+        if (!(typeof xmin !== "undefined" && xmin !== null) || lx < xmin) {
+          xmin = lx;
+        }
         labels.push(label);
       }
       ypos -= dy;
     }
-    return this.set().push(line, ticks, labels);
+    if (typeof (_h = opts.title) !== "undefined" && _h !== null) {
+      title = this.text(xmin, y - len / 2, opts.title).attr({
+        'font-size': '12px',
+        'font-weight': 'bold'
+      });
+      bbox = title.getBBox();
+      title.rotate(-90);
+      dummy = this.rect(bbox.x + (bbox.width - bbox.height) / 2, y, bbox.height, 1).attr({
+        opacity: 0
+      });
+    }
+    dummy = (typeof dummy !== "undefined" && dummy !== null) ? dummy : null;
+    return this.set().push(this.set().push(line, ticks, labels, dummy), title);
   };
   Raphael.fn.sai.prim.popup = function(x, y, texts, opts) {
     var TEXT_LINE_HEIGHT, _a, _b, bg_width, head_text, max_width, py, rect, set, t, text, text_set;
@@ -278,7 +307,7 @@
     (typeof head_text === "undefined" || head_text === null) ? undefined : head_text.translate(bg_width / 2);
     return text_set.toFront();
   };
-  Raphael.fn.sai.prim.legend = function(x, y, max_width, colors, highlightColors) {
+  Raphael.fn.sai.prim.legend = function(x, y, max_width, legend_colors, highlightColors) {
     var _a, _b, _c, _d, _e, key, line_height, px, py, r, set, spacing, t, text;
     spacing = 15;
     line_height = 14;
@@ -286,7 +315,7 @@
     set = this.set();
     px = x;
     py = y;
-    _b = colors;
+    _b = legend_colors;
     for (text in _b) {
       if (!__hasProp.call(_b, text)) continue;
       _a = _b[text];
@@ -295,7 +324,7 @@
       });
       t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
       r = this.rect(px, py, 9, 9).attr({
-        'fill': (typeof (_d = colors[text]) !== "undefined" && _d !== null) ? _d : 'black',
+        'fill': (typeof (_d = legend_colors[text]) !== "undefined" && _d !== null) ? _d : 'black',
         'stroke': (typeof (_e = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _e !== null) ? _e : 'black'
       });
       key = this.set().push(t, r);

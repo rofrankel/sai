@@ -356,8 +356,8 @@
     }
     return _c;
   };
-  Sai.Chart.prototype.addAxes = function(group, group2) {
-    var LINE_HEIGHT, _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _vaxis, doLeftAxis, doRightAxis, haxis_height, hbb, hlen, i, tmptext, vaxis2_width, vaxis_width, vlen;
+  Sai.Chart.prototype.addAxes = function(groups, titles) {
+    var LINE_HEIGHT, _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _vaxis, doLeftAxis, doRightAxis, haxis_height, hbb, hlen, i, tmptext, vaxis2_width, vaxis_width, vbbw, vlen, vrbbw;
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
     this.padding.top += 5;
@@ -370,24 +370,33 @@
       }
     }
     vlen = this.h - (this.padding.bottom + this.padding.top);
-    doLeftAxis = (typeof (_b = this.ndata[group]) !== "undefined" && _b !== null) || !(typeof (_c = this.ndata[group2]) !== "undefined" && _c !== null);
-    doRightAxis = (typeof (_d = this.ndata[group2]) !== "undefined" && _d !== null);
+    doLeftAxis = (typeof (_b = this.ndata[groups[0]]) !== "undefined" && _b !== null) || !(typeof (_c = this.ndata[groups[1]]) !== "undefined" && _c !== null);
+    doRightAxis = (typeof (_d = this.ndata[groups[1]]) !== "undefined" && _d !== null);
     if (doLeftAxis) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_e = (this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__)) !== "undefined" && _e !== null) ? _e : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
-      vaxis_width = _vaxis.getBBox().width;
+      _vaxis = this.r.sai.prim.vaxis((typeof (_e = (this.ndata[groups[0]] == null ? undefined : this.ndata[groups[0]].__YVALS__)) !== "undefined" && _e !== null) ? _e : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
+        width: this.axisWidth,
+        title: (typeof titles === "undefined" || titles === null) ? undefined : titles.left
+      });
+      vaxis_width = _vaxis.items[0].getBBox().width;
       _vaxis.remove();
     } else {
       vaxis_width = 0;
     }
     if (doRightAxis) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_f = (this.ndata[group2] == null ? undefined : this.ndata[group2].__YVALS__)) !== "undefined" && _f !== null) ? _f : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
+      _vaxis = this.r.sai.prim.vaxis((typeof (_f = (this.ndata[groups[1]] == null ? undefined : this.ndata[groups[1]].__YVALS__)) !== "undefined" && _f !== null) ? _f : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
+        width: this.axisWidth,
+        title: (typeof titles === "undefined" || titles === null) ? undefined : titles.right
+      });
       vaxis2_width = _vaxis.getBBox().width;
       _vaxis.remove();
     } else {
       vaxis2_width = 0;
     }
     hlen = this.w - this.padding.left - this.padding.right - vaxis_width - vaxis2_width;
-    this.haxis = this.r.sai.prim.haxis(this.data[this.__LABELS__], this.x + this.padding.left + vaxis_width, this.y - this.padding.bottom, hlen, this.axisWidth);
+    this.haxis = this.r.sai.prim.haxis(this.data[this.__LABELS__], this.x + this.padding.left + vaxis_width, this.y - this.padding.bottom, hlen, {
+      width: this.axisWidth,
+      title: (typeof titles === "undefined" || titles === null) ? undefined : titles.bottom
+    });
     hbb = this.haxis.getBBox();
     haxis_height = hbb.height;
     if (isNaN(haxis_height)) {
@@ -397,14 +406,24 @@
     this.padding.bottom += haxis_height;
     vlen = this.h - (this.padding.bottom + this.padding.top);
     if (doLeftAxis) {
-      this.vaxis = this.r.sai.prim.vaxis((typeof (_g = (this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__)) !== "undefined" && _g !== null) ? _g : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, this.axisWidth);
-      this.vaxis.translate(this.vaxis.getBBox().width, 0);
-      this.padding.left += this.vaxis.getBBox().width;
+      this.vaxis = this.r.sai.prim.vaxis((typeof (_g = (this.ndata[groups[0]] == null ? undefined : this.ndata[groups[0]].__YVALS__)) !== "undefined" && _g !== null) ? _g : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
+        width: this.axisWidth,
+        title: (typeof titles === "undefined" || titles === null) ? undefined : titles.left
+      });
+      vbbw = this.vaxis.items[0].getBBox().width;
+      this.vaxis.translate(vbbw, 0);
+      this.padding.left += vbbw;
     }
     if (doRightAxis) {
-      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_h = (this.ndata[group2] == null ? undefined : this.ndata[group2].__YVALS__)) !== "undefined" && _h !== null) ? _h : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, this.axisWidth, true, (typeof (_i = this.ndata[group]) !== "undefined" && _i !== null) ? (typeof (_j = this.colors.__RIGHTAXIS__) !== "undefined" && _j !== null) ? _j : 'blue' : 'black');
-      this.vaxis_right.translate(-this.vaxis_right.getBBox().width, 0);
-      this.padding.right += this.vaxis_right.getBBox().width;
+      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_h = (this.ndata[groups[1]] == null ? undefined : this.ndata[groups[1]].__YVALS__)) !== "undefined" && _h !== null) ? _h : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, {
+        width: this.axisWidth,
+        right: true,
+        title: (typeof titles === "undefined" || titles === null) ? undefined : titles.right,
+        color: (typeof (_i = this.ndata[groups[0]]) !== "undefined" && _i !== null) ? (typeof (_j = this.colors.__RIGHTAXIS__) !== "undefined" && _j !== null) ? _j : 'blue' : 'black'
+      });
+      vrbbw = this.vaxis_right.items[0].getBBox().width;
+      this.vaxis_right.translate(-vrbbw, 0);
+      this.padding.right += vrbbw;
     }
     this.setPlotCoords();
     return this.r.set().push(this.haxis).push(this.vaxis);
@@ -530,7 +549,7 @@
     return this.guidelines.push(guideline.set);
   };
   Sai.Chart.prototype.drawLegend = function(colors) {
-    var _a, _b, _c, _colors, _d, _e, _f, _g, _h, _highlightColors, l;
+    var _a, _b, _c, _colors, _d, _e, _f, _g, _h, _highlightColors, bbox, l;
     colors = (typeof colors !== "undefined" && colors !== null) ? colors : this.colors;
     if (colors) {
       _colors = {};
@@ -550,10 +569,11 @@
         }
       }
       this.legend = this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, _colors, _highlightColors);
+      bbox = this.legend.getBBox();
       if (this.legend.length > 0) {
-        this.padding.bottom += this.legend.getBBox().height + 15;
+        this.padding.bottom += bbox.height + 15;
       }
-      return this.legend.translate((this.w - this.legend.getBBox().width) / 2, 0);
+      return this.legend.translate((this.w - bbox.width) / 2, 0);
     }
   };
   Sai.Chart.prototype.drawTitle = function() {
@@ -639,9 +659,9 @@
     this.drawLegend();
     saxis = 'right' in this.ndata;
     if (saxis) {
-      this.addAxes('left', 'right');
+      this.addAxes(['left', 'right']);
     } else {
-      this.addAxes('all');
+      this.addAxes(['all']);
     }
     this.drawBG();
     this.drawLogo();
@@ -806,7 +826,7 @@
     this.setupInfoSpace();
     this.drawFootnote();
     this.drawLegend();
-    this.addAxes('all');
+    this.addAxes(['all']);
     this.drawLogo();
     this.drawBG();
     if (this.tooMuchData()) {
@@ -892,7 +912,7 @@
     this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : 'red';
     this.colors['vol_up'] = (typeof this.colors['vol_up'] !== "undefined" && this.colors['vol_up'] !== null) ? this.colors['vol_up'] : '#666666';
     this.colors['vol_down'] = (typeof this.colors['vol_down'] !== "undefined" && this.colors['vol_down'] !== null) ? this.colors['vol_down'] : '#cc6666';
-    this.addAxes('prices');
+    this.addAxes(['prices']);
     this.drawLogo();
     this.drawBG();
     if (!((typeof (_c = this.ndata.prices) !== "undefined" && _c !== null) && 'open' in this.ndata.prices && 'close' in this.ndata.prices && 'high' in this.ndata.prices && 'low' in this.ndata.prices)) {
@@ -1245,25 +1265,33 @@
     return groups;
   };
   Sai.ScatterChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, _f, ndata, series;
+    var _a, _b, _c, _d, _e, _f, colors, ndata, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
-    this.drawLegend();
+    colors = (typeof (_a = this.opts.colors) !== "undefined" && _a !== null) ? _a : (typeof (_b = this.colors) !== "undefined" && _b !== null) ? _b : ['black', 'white'];
+    if (colors instanceof Array) {
+      null;
+    } else {
+      this.drawLegend(colors);
+    }
     this.__LABELS__ = '__XVALS__';
     this.data.__XVALS__ = this.ndata[this.opts.mappings.x].__YVALS__;
-    this.addAxes(this.opts.mappings.y);
+    this.addAxes([this.opts.mappings.y], {
+      left: this.opts.mappings.y,
+      bottom: this.opts.mappings.x
+    });
     this.drawLogo();
     this.drawBG();
     ndata = {};
-    _b = this.ndata;
-    for (series in _b) {
-      if (!__hasProp.call(_b, series)) continue;
-      _a = _b[series];
+    _d = this.ndata;
+    for (series in _d) {
+      if (!__hasProp.call(_d, series)) continue;
+      _c = _d[series];
       ndata[series] = this.ndata[series][series];
     }
     this.plots = this.r.set();
-    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, (typeof (_c = this.opts.colors) !== "undefined" && _c !== null) ? _c : (typeof (_d = this.colors) !== "undefined" && _d !== null) ? _d : ['black', 'white'], (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [4, 12], (typeof (_f = this.opts.stroke_opacity) !== "undefined" && _f !== null) ? _f : [0, 1], this.drawInfo).set);
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [4, 12], (typeof (_f = this.opts.stroke_opacity) !== "undefined" && _f !== null) ? _f : [0, 1], this.drawInfo).set);
     this.logo == null ? undefined : this.logo.toFront();
     return this;
   };

@@ -180,10 +180,10 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
   
   return group
 
-Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
-  ticklens ?= [5, 2]
-  width ?= 1
-  color ?= 'black'
+Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
+  ticklens = opts.ticklens ? [5, 2]
+  width = opts.width ? 1
+  color = opts.color ? 'black'
   
   line = @path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color)
   ticks = @set()
@@ -198,6 +198,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   rotate = false
   padding = 2
   max_label_width = 0
+  ymin = null
   
   for i in [0...vals.length] by interval
     val = vals[i]
@@ -207,7 +208,9 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
       unless val is ''
         label = @text(xpos, y + ticklen + padding, Sai.util.prettystr(val))
         bbox = label.getBBox()
-        label.attr('y', label.attr('y') + (bbox.height / 2.0))
+        ly = label.attr('y') + (bbox.height / 2.0)
+        label.attr('y', ly)
+        if not ymin? or ly < ymin then ymin = ly
         labels.push(label)
         
         # handle collision detection for rotation
@@ -217,7 +220,10 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
         if bbox.x + bbw > xmax then xmax = bbox.x + bbw
     xpos += dx
   
-  result = @set().push(line, ticks, labels)
+  if opts.title?
+    title = @text(x + len/2, ymin + 14, opts.title).attr({'font-size': '12px', 'font-weight': 'bold'})
+  
+  result = @set().push(line, ticks, labels, title)
   
   if rotate
     for label in labels.items
@@ -228,12 +234,11 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, width, color, ticklens) ->
   
   return result
 
-Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, right, color, ticklens) ->
-  #ticklens ?= [5, 2]
-  ticklens ?= [0, 0]
-  width ?= 1
-  color ?= '#000000'
-  right ?= false
+Raphael.fn.sai.prim.vaxis = (vals, x, y, len, opts) ->
+  ticklens = opts.ticklens ? [5, 2]
+  width = opts.width ? 1
+  color = opts.color ? 'black'
+  right = opts.right ? false
   
   line = @path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color)
   ticks = @set()
@@ -241,20 +246,34 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, width, right, color, ticklens) ->
   
   dy = len / (vals.length - 1)
   ypos = y
+  xmin = null
   
   for val in vals
     unless val is null
       ticklen = ticklens[if String(val) then 0 else 1]
       ticks.push(@path("M" + x + " " + ypos + "l" + (if right then ticklen else -ticklen) + " 0").attr('stroke', color))
-      label = @text(x + ((if right then 1 else -1) * (ticklen + 2)), ypos, Sai.util.prettystr(val))
+      lx = x + ((if right then 1 else -1) * (ticklen + 3))
+      label = @text(lx, ypos, Sai.util.prettystr(val))
       label.attr({
-        'x': label.attr('x') + ((if right then 1 else -1) * ((label.getBBox().width / 2.0) + 3))
+        'text-anchor': if right then 'start' else 'end'
         'fill': color
       })
+      lx += (if right then 1 else -1) * (label.getBBox().width + 8)
+      if not xmin? or lx < xmin then xmin = lx
       labels.push(label)
     ypos -= dy
   
-  return @set().push(line, ticks, labels)
+  if opts.title?
+    title = @text(xmin, y - len/2, opts.title)
+    .attr({'font-size': '12px', 'font-weight': 'bold'})
+    bbox = title.getBBox()
+    title.rotate(-90)
+    # stupid broken svg implementations not updating the bounding box of rotated text...
+    dummy = @rect(bbox.x + (bbox.width - bbox.height)/2, y, bbox.height, 1).attr({opacity: 0})
+  
+  dummy ?= null
+  
+  return @set().push(@set().push(line, ticks, labels, dummy), title)
 
 
 # texts is a map that is displayed "key = value"
@@ -292,8 +311,8 @@ Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   text_set.toFront()
   
 
-# colors is a map from key names to colors
-Raphael.fn.sai.prim.legend = (x, y, max_width, colors, highlightColors) ->
+# legend_colors is a map from key names to colors
+Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) ->
   spacing = 15
   line_height = 14
   y -= line_height
@@ -303,13 +322,13 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, colors, highlightColors) ->
   px = x
   py = y
   
-  for text of colors
+  for text of legend_colors
     t = @text(px + 14, py, text).attr({
       fill: highlightColors?[text] ? 'black'
     })
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
     r = @rect(px, py, 9, 9).attr({
-      'fill': colors[text] ? 'black'
+      'fill': legend_colors[text] ? 'black'
       'stroke': highlightColors?[text] ? 'black'
     })
     key = @set().push(t, r)

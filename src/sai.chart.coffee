@@ -177,7 +177,7 @@ class Sai.Chart
         
         @ndata[group].__YVALS__ = yvals
   
-  addAxes: (group, group2) ->
+  addAxes: (groups, titles) ->
     
     LINE_HEIGHT = 10
     
@@ -195,25 +195,25 @@ class Sai.Chart
     
     vlen = @h - (@padding.bottom + @padding.top)
     
-    doLeftAxis = @ndata[group]? or not @ndata[group2]?
-    doRightAxis = @ndata[group2]?
+    doLeftAxis = @ndata[groups[0]]? or not @ndata[groups[1]]?
+    doRightAxis = @ndata[groups[1]]?
     
     if doLeftAxis
-      _vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
-      vaxis_width = _vaxis.getBBox().width
+      _vaxis = @r.sai.prim.vaxis(@ndata[groups[0]]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, {width: @axisWidth, title: titles?.left})
+      vaxis_width = _vaxis.items[0].getBBox().width
       _vaxis.remove()
     else
       vaxis_width = 0
       
     if doRightAxis
-      _vaxis = @r.sai.prim.vaxis(@ndata[group2]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
+      _vaxis = @r.sai.prim.vaxis(@ndata[groups[1]]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, {width: @axisWidth, title: titles?.right})
       vaxis2_width = _vaxis.getBBox().width
       _vaxis.remove()
     else
       vaxis2_width = 0
     
     hlen = @w - @padding.left - @padding.right - vaxis_width - vaxis2_width
-    @haxis = @r.sai.prim.haxis(@data[@__LABELS__], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen, @axisWidth)
+    @haxis = @r.sai.prim.haxis(@data[@__LABELS__], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen,  {width: @axisWidth, title: titles?.bottom})
     hbb = @haxis.getBBox()
     haxis_height = hbb.height
     if isNaN(haxis_height) then haxis_height = 1
@@ -223,14 +223,16 @@ class Sai.Chart
     vlen = @h - (@padding.bottom + @padding.top)
     
     if doLeftAxis
-      @vaxis = @r.sai.prim.vaxis(@ndata[group]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, @axisWidth)
-      @vaxis.translate(@vaxis.getBBox().width, 0)
-      @padding.left += @vaxis.getBBox().width
+      @vaxis = @r.sai.prim.vaxis(@ndata[groups[0]]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, {width: @axisWidth, title: titles?.left})
+      vbbw = @vaxis.items[0].getBBox().width
+      @vaxis.translate(vbbw, 0)
+      @padding.left += vbbw
     
     if doRightAxis
-      @vaxis_right = @r.sai.prim.vaxis(@ndata[group2]?.__YVALS__ ? [0, '?'], @w - @padding.right, @y - @padding.bottom, vlen, @axisWidth, true, if @ndata[group]? then @colors.__RIGHTAXIS__ ? 'blue' else 'black')
-      @vaxis_right.translate(-@vaxis_right.getBBox().width, 0)
-      @padding.right += @vaxis_right.getBBox().width
+      @vaxis_right = @r.sai.prim.vaxis(@ndata[groups[1]]?.__YVALS__ ? [0, '?'], @w - @padding.right, @y - @padding.bottom, vlen, {width: @axisWidth, right: true, title: titles?.right, color: if @ndata[groups[0]]? then @colors.__RIGHTAXIS__ ? 'blue' else 'black'})
+      vrbbw = @vaxis_right.items[0].getBBox().width
+      @vaxis_right.translate(-vrbbw, 0)
+      @padding.right += vrbbw
     
     @setPlotCoords()
     
@@ -347,8 +349,9 @@ class Sai.Chart
           if l in @opts.groups.right
             _highlightColors[l] = if @ndata.left? then @colors.__RIGHTAXIS__ ? 'blue' else 'black'
       @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, _colors, _highlightColors)
-      if @legend.length > 0 then @padding.bottom += @legend.getBBox().height + 15
-      @legend.translate((@w - @legend.getBBox().width) / 2, 0)
+      bbox = @legend.getBBox()
+      if @legend.length > 0 then @padding.bottom += bbox.height + 15
+      @legend.translate((@w - bbox.width) / 2, 0)
   
   drawTitle: () ->
     if @opts.title?
@@ -406,7 +409,7 @@ class Sai.LineChart extends Sai.Chart
     @drawFootnote()
     @drawLegend()
     saxis = 'right' of @ndata
-    if saxis then @addAxes('left', 'right') else @addAxes('all')
+    if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
     @drawBG()
     @drawLogo()
     
@@ -553,7 +556,7 @@ class Sai.BarChart extends Sai.Chart
     @setupInfoSpace()
     @drawFootnote()
     @drawLegend()
-    @addAxes('all')
+    @addAxes(['all'])
     @drawLogo()
     @drawBG()
     
@@ -636,7 +639,7 @@ class Sai.StockChart extends Sai.Chart
     
     # @drawLegend({up: @colors.up, down: @colors.down})
     
-    @addAxes('prices')
+    @addAxes(['prices'])
     @drawLogo()
     @drawBG()
     
@@ -932,10 +935,16 @@ class Sai.ScatterChart extends Sai.Chart
     @drawTitle()
     @setupInfoSpace()
     @drawFootnote()
-    @drawLegend()
+    
+    colors = @opts.colors ? @colors ? ['black', 'white']
+    
+    if colors instanceof Array
+      null
+    else
+      @drawLegend(colors)
     @__LABELS__ = '__XVALS__'
     @data.__XVALS__ = @ndata[@opts.mappings.x].__YVALS__
-    @addAxes(@opts.mappings.y)
+    @addAxes([@opts.mappings.y], {left: @opts.mappings.y, bottom: @opts.mappings.x})
     @drawLogo()
     @drawBG()
     
@@ -955,7 +964,7 @@ class Sai.ScatterChart extends Sai.Chart
         ndata,
         @data)
       )
-      .render(@opts.mappings, @opts.colors ? @colors ? ['black', 'white'], @opts.radius ? [4, 12], @opts.stroke_opacity ? [0, 1], @drawInfo)
+      .render(@opts.mappings, colors, @opts.radius ? [4, 12], @opts.stroke_opacity ? [0, 1], @drawInfo)
       .set
     )
     
