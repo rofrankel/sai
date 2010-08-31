@@ -240,22 +240,58 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
 
 class Sai.ScatterPlot extends Sai.Plot
 
-  render: (mappings, colors, radii, stroke_widths) ->
+  render: (mappings, colors, radii, stroke_opacities, fSetInfo) ->
     @set.remove()
     
     for series of @dndata
       num_points = @dndata[series].length
       break
     
+    lerp = (a, b, alpha) -> (b * alpha) + (a * (1 - alpha))
+    y2x = (y) => @x + (@w * ((y - @y) / -@h))
+    
     for i in [0...num_points]
-      x = @dndata[mappings.x]?[i][1] * (@w / @h)
+      x = y2x(@dndata[mappings.x]?[i][1])
       y = @dndata[mappings.y]?[i][1]
-      color = if mappings.color? then Sai.util.colerp(colors[0], colors[1], (@data[mappings.color]?[i]?[1] ? 0)) else 'black'
-      radius = if mappings.radius? then (radii[0] + ((radii[1] - radii[0]) * (@data[mappings.radius]?[i]?[1] ? 0))) else '20'
-      stroke_width = if mappings.stroke_width then (stroke_widths[0] + ((stroke_widths[1] - stroke_widths[0]) * (@data[mappings.stroke_width]?[i]?[1] ? 0))) else '2'
+      
+      if colors instanceof Array and mappings.color?
+        color = Sai.util.colerp(colors[0], colors[1], (@data[mappings.color]?[i]?[1] ? 0))
+      else if colors instanceof Object and mappings.color?
+        color = colors[@rawdata[mappings.color][i]]
+      else
+        color = 'black'
+      
+      if radii instanceof Array and mappings.radius?
+        radius = lerp(radii[0], radii[1], (@data[mappings.radius]?[i]?[1] ? 0))
+      else if radii instanceof Object and mappings.radius?
+        radius = radii[@rawdata[mappings.radius][i]]
+      else
+        radius = 5.0
+      
+      if stroke_opacities instanceof Array and mappings.stroke_opacity?
+        stroke_opacity = lerp(stroke_opacities[0], stroke_opacities[1], (@data[mappings.stroke_opacity]?[i]?[1] ? 0))
+      else if stroke_opacities instanceof Object and mappings.stroke_opacity?
+        stroke_opacity = stroke_opacities[@rawdata[mappings.stroke_opacity][i]]
+      else
+        stroke_opacity = 1.0
+      
+      info = {}
+      for series of @rawdata when not series.match('^__')
+        info[series] = @rawdata[series][i]
+      infoSetters = Sai.util.infoSetters(fSetInfo, info)
       
       @set.push(
-        @r.circle(x, y, radius).attr({'fill': color, 'stroke-width': stroke_width})
+        @r.circle(x, y, radius).attr({'fill': color, 'stroke-opacity': stroke_opacity})
+        .attr({'fill-opacity': 0.8, 'stroke-width': 2, 'stroke-opacity': 0.8})
+        .hover(
+          ->
+            infoSetters[0]()
+            this.attr('fill-opacity', 0.5)
+          ,
+          ->
+            infoSetters[1]()
+            this.attr('fill-opacity', 0.8)
+        )
       )
     
     return this

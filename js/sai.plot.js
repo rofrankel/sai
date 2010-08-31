@@ -6,6 +6,8 @@
     child.prototype.constructor = child;
     if (typeof parent.extended === "function") parent.extended(child);
     child.__super__ = parent.prototype;
+  }, __bind = function(func, context) {
+    return function(){ return func.apply(context, arguments); };
   };
   Sai.Plot = function(_a, _b, _c, _d, _e, _f, _g, _h) {
     this.opts = _h;
@@ -310,8 +312,8 @@
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.ScatterPlot, Sai.Plot);
-  Sai.ScatterPlot.prototype.render = function(mappings, colors, radii, stroke_widths) {
-    var _a, _b, _c, _d, _e, _f, _g, color, i, num_points, radius, series, stroke_width, x, y;
+  Sai.ScatterPlot.prototype.render = function(mappings, colors, radii, stroke_opacities, fSetInfo) {
+    var _a, _b, _c, i, lerp, num_points, series, y2x;
     this.set.remove();
     _b = this.dndata;
     for (series in _b) {
@@ -320,16 +322,64 @@
       num_points = this.dndata[series].length;
       break;
     }
-    for (i = 0; (0 <= num_points ? i < num_points : i > num_points); (0 <= num_points ? i += 1 : i -= 1)) {
-      x = (this.dndata[mappings.x] == null ? undefined : this.dndata[mappings.x][i][1]) * (this.w / this.h);
-      y = this.dndata[mappings.y] == null ? undefined : this.dndata[mappings.y][i][1];
-      color = (typeof (_c = mappings.color) !== "undefined" && _c !== null) ? Sai.util.colerp(colors[0], colors[1], (typeof (_d = (this.data[mappings.color] == null ? undefined : this.data[mappings.color][i] == null ? undefined : this.data[mappings.color][i][1])) !== "undefined" && _d !== null) ? _d : 0) : 'black';
-      radius = (typeof (_e = mappings.radius) !== "undefined" && _e !== null) ? (radii[0] + ((radii[1] - radii[0]) * ((typeof (_f = (this.data[mappings.radius] == null ? undefined : this.data[mappings.radius][i] == null ? undefined : this.data[mappings.radius][i][1])) !== "undefined" && _f !== null) ? _f : 0))) : '20';
-      stroke_width = mappings.stroke_width ? (stroke_widths[0] + ((stroke_widths[1] - stroke_widths[0]) * ((typeof (_g = (this.data[mappings.stroke_width] == null ? undefined : this.data[mappings.stroke_width][i] == null ? undefined : this.data[mappings.stroke_width][i][1])) !== "undefined" && _g !== null) ? _g : 0))) : '2';
-      this.set.push(this.r.circle(x, y, radius).attr({
-        'fill': color,
-        'stroke-width': stroke_width
-      }));
+    lerp = function(a, b, alpha) {
+      return (b * alpha) + (a * (1 - alpha));
+    };
+    y2x = __bind(function(y) {
+      return this.x + (this.w * ((y - this.y) / -this.h));
+    }, this);
+    for (_c = 0; (0 <= num_points ? _c < num_points : _c > num_points); (0 <= num_points ? _c += 1 : _c -= 1)) {
+      (function() {
+        var _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, color, info, infoSetters, radius, series, stroke_opacity, x, y;
+        var i = _c;
+        x = y2x(this.dndata[mappings.x] == null ? undefined : this.dndata[mappings.x][i][1]);
+        y = this.dndata[mappings.y] == null ? undefined : this.dndata[mappings.y][i][1];
+        if (colors instanceof Array && (typeof (_e = mappings.color) !== "undefined" && _e !== null)) {
+          color = Sai.util.colerp(colors[0], colors[1], (typeof (_d = (this.data[mappings.color] == null ? undefined : this.data[mappings.color][i] == null ? undefined : this.data[mappings.color][i][1])) !== "undefined" && _d !== null) ? _d : 0);
+        } else if (colors instanceof Object && (typeof (_f = mappings.color) !== "undefined" && _f !== null)) {
+          color = colors[this.rawdata[mappings.color][i]];
+        } else {
+          color = 'black';
+        }
+        if (radii instanceof Array && (typeof (_h = mappings.radius) !== "undefined" && _h !== null)) {
+          radius = lerp(radii[0], radii[1], (typeof (_g = (this.data[mappings.radius] == null ? undefined : this.data[mappings.radius][i] == null ? undefined : this.data[mappings.radius][i][1])) !== "undefined" && _g !== null) ? _g : 0);
+        } else if (radii instanceof Object && (typeof (_i = mappings.radius) !== "undefined" && _i !== null)) {
+          radius = radii[this.rawdata[mappings.radius][i]];
+        } else {
+          radius = 5.0;
+        }
+        if (stroke_opacities instanceof Array && (typeof (_k = mappings.stroke_opacity) !== "undefined" && _k !== null)) {
+          stroke_opacity = lerp(stroke_opacities[0], stroke_opacities[1], (typeof (_j = (this.data[mappings.stroke_opacity] == null ? undefined : this.data[mappings.stroke_opacity][i] == null ? undefined : this.data[mappings.stroke_opacity][i][1])) !== "undefined" && _j !== null) ? _j : 0);
+        } else if (stroke_opacities instanceof Object && (typeof (_l = mappings.stroke_opacity) !== "undefined" && _l !== null)) {
+          stroke_opacity = stroke_opacities[this.rawdata[mappings.stroke_opacity][i]];
+        } else {
+          stroke_opacity = 1.0;
+        }
+        info = {};
+        _n = this.rawdata;
+        for (series in _n) {
+          if (!__hasProp.call(_n, series)) continue;
+          _m = _n[series];
+          if (!series.match('^__')) {
+            info[series] = this.rawdata[series][i];
+          }
+        }
+        infoSetters = Sai.util.infoSetters(fSetInfo, info);
+        return this.set.push(this.r.circle(x, y, radius).attr({
+          'fill': color,
+          'stroke-opacity': stroke_opacity
+        }).attr({
+          'fill-opacity': 0.8,
+          'stroke-width': 2,
+          'stroke-opacity': 0.8
+        }).hover(function() {
+          infoSetters[0]();
+          return this.attr('fill-opacity', 0.5);
+        }, function() {
+          infoSetters[1]();
+          return this.attr('fill-opacity', 0.8);
+        }));
+      }).call(this);
     }
     return this;
   };

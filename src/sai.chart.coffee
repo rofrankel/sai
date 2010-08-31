@@ -955,7 +955,7 @@ class Sai.ScatterChart extends Sai.Chart
         ndata,
         @data)
       )
-      .render(@opts.mappings, @opts.colors ? ['black', 'white'], @opts.radii ? [5, 15], @opts.stroke_widths ? [1, 5])
+      .render(@opts.mappings, @opts.colors ? @colors ? ['black', 'white'], @opts.radius ? [5, 12], @opts.stroke_opacity ? [0, 1], @drawInfo)
       .set
     )
     

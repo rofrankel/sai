@@ -1245,7 +1245,7 @@
     return groups;
   };
   Sai.ScatterChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, ndata, series;
+    var _a, _b, _c, _d, _e, _f, ndata, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
@@ -1263,7 +1263,7 @@
       ndata[series] = this.ndata[series][series];
     }
     this.plots = this.r.set();
-    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, (typeof (_c = this.opts.colors) !== "undefined" && _c !== null) ? _c : ['black', 'white'], (typeof (_d = this.opts.radii) !== "undefined" && _d !== null) ? _d : [5, 15], (typeof (_e = this.opts.stroke_widths) !== "undefined" && _e !== null) ? _e : [1, 5]).set);
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, (typeof (_c = this.opts.colors) !== "undefined" && _c !== null) ? _c : (typeof (_d = this.colors) !== "undefined" && _d !== null) ? _d : ['black', 'white'], (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [5, 12], (typeof (_f = this.opts.stroke_opacity) !== "undefined" && _f !== null) ? _f : [0, 1], this.drawInfo).set);
     this.logo == null ? undefined : this.logo.toFront();
     return this;
   };

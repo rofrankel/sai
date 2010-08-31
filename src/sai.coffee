@@ -99,9 +99,9 @@ Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding) ->
 Sai.util.colerp = (color1, color2, alpha) ->
   rgb1 = Raphael.getRGB(color1)
   rgb2 = Raphael.getRGB(color2)
-  r = rgb1.r * alpha + rgb2.r * (1 - alpha)
-  g = rgb1.g * alpha + rgb2.g * (1 - alpha)
-  b = rgb1.b * alpha + rgb2.b * (1 - alpha)
+  r = rgb2.r * alpha + rgb1.r * (1 - alpha)
+  g = rgb2.g * alpha + rgb1.g * (1 - alpha)
+  b = rgb2.b * alpha + rgb1.b * (1 - alpha)
   return "rgb(#{r}, #{g}, #{b})"
 
 
