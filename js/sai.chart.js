@@ -472,17 +472,21 @@
     var _a, _b, _c, _d, h, line, lines, maxChars, pixels_per_char, token, tokens;
     alert('drawing footnote');
     text = (typeof text !== "undefined" && text !== null) ? text : ((typeof (_a = this.opts.footnote) !== "undefined" && _a !== null) ? _a : '');
+    alert('footnote text is ' + text);
     if (text.match(/^\s*$/)) {
       return null;
     }
+    alert('text was not empty or whitespace');
     pixels_per_char = 5.5;
     maxChars = (this.w - this.padding.left - this.padding.right) / pixels_per_char;
     tokens = text.split(' ');
     lines = [];
     line = '';
+    alert('did some calculations');
     _c = tokens;
     for (_b = 0, _d = _c.length; _b < _d; _b++) {
       token = _c[_b];
+      alert('doing token ' + token);
       if (line.length + token.length > maxChars) {
         lines.push(line);
         line = '';
@@ -493,12 +497,17 @@
       lines.push(line);
     }
     text = lines.join('\n');
+    alert('formatted text is ' + text);
     this.footnote = this.r.text(this.x + this.padding.left, this.y - this.padding.bottom, text);
+    alert('created footnote text');
     h = this.footnote.getBBox().height;
+    alert('footnote height is ' + h);
     this.padding.bottom += h + 10;
-    return this.footnote.translate(0, -h / 2).attr({
+    this.footnote.translate(0, -h / 2).attr({
       'text-anchor': 'start'
     });
+    alert('moved footnote up');
+    return alert('done with footnote');
   };
   Sai.Chart.prototype.render = function() {
     this.plot = (typeof this.plot !== "undefined" && this.plot !== null) ? this.plot : new Sai.Plot(this.r);
@@ -570,6 +579,7 @@
         if (!__hasProp.call(_b, l)) continue;
         _a = _b[l];
         if (l !== this.__LABELS__) {
+          alert('l is ' + l);
           _colors[l] = colors[l];
           _highlightColors[l] = 'black';
           if (typeof (_h = this.opts.groups == null ? undefined : this.opts.groups.right) !== "undefined" && _h !== null) {
@@ -580,12 +590,14 @@
         }
       }
       this.legend = this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, _colors, _highlightColors);
+      alert('created legend prim');
       bbox = this.legend.getBBox();
       if (this.legend.length > 0) {
         this.padding.bottom += bbox.height + 15;
       }
-      return this.legend.translate((this.w - bbox.width) / 2, 0);
+      this.legend.translate((this.w - bbox.width) / 2, 0);
     }
+    return alert('done drawing legend');
   };
   Sai.Chart.prototype.drawTitle = function() {
     var _a;

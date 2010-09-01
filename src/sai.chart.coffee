@@ -274,15 +274,23 @@ class Sai.Chart
     alert 'drawing footnote'
     text ?= @opts.footnote ? ''
     
+    alert 'footnote text is ' + text
+    
     # don't try to draw an empty footnote
     return if text.match(/^\s*$/)
+    
+    alert 'text was not empty or whitespace'
     
     pixels_per_char = 5.5
     maxChars = (@w - @padding.left - @padding.right) / pixels_per_char
     tokens = text.split(' ')
     lines = []
     line = ''
+    
+    alert 'did some calculations'
+    
     for token in tokens
+      alert 'doing token ' + token
       if line.length + token.length > maxChars
         lines.push(line)
         line = ''
@@ -291,10 +299,23 @@ class Sai.Chart
     if line isnt '' then lines.push(line)
     
     text = lines.join('\n')
+    
+    alert 'formatted text is ' + text
+    
     @footnote = @r.text(@x + @padding.left, @y - @padding.bottom, text)
+    
+    alert 'created footnote text'
+    
     h = @footnote.getBBox().height
+    
+    alert 'footnote height is ' + h
+    
     @padding.bottom += h + 10
     @footnote.translate(0,  -h/ 2).attr({'text-anchor': 'start'})
+    
+    alert 'moved footnote up'
+    
+    alert 'done with footnote'
   
   render: () ->
     @plot ?= new Sai.Plot(@r)
@@ -355,15 +376,19 @@ class Sai.Chart
       _colors = {}
       _highlightColors = {}
       for l of colors when l isnt @__LABELS__
+        alert 'l is ' + l
         _colors[l] = colors[l]
         _highlightColors[l] = 'black'
         if @opts.groups?.right?
           if l in @opts.groups.right
             _highlightColors[l] = if @ndata.left? then @colors.__RIGHTAXIS__ ? 'blue' else 'black'
       @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, _colors, _highlightColors)
+      alert 'created legend prim'
       bbox = @legend.getBBox()
       if @legend.length > 0 then @padding.bottom += bbox.height + 15
       @legend.translate((@w - bbox.width) / 2, 0)
+    
+    alert 'done drawing legend'
   
   drawTitle: () ->
     alert 'drawing title'
