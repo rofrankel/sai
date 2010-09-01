@@ -348,6 +348,8 @@ class Sai.Chart
     @guidelines.push(guideline.set)
   
   drawLegend: (colors) ->
+    alert 'drawing legend'
+    
     colors ?= @colors
     if colors
       _colors = {}
@@ -422,6 +424,7 @@ class Sai.LineChart extends Sai.Chart
     @drawFootnote()
     @drawLegend()
     saxis = 'right' of @ndata
+    alert 'second axis? ' + saxis
     if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
     @drawBG()
     @drawLogo()

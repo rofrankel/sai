@@ -560,6 +560,7 @@
   };
   Sai.Chart.prototype.drawLegend = function(colors) {
     var _a, _b, _c, _colors, _d, _e, _f, _g, _h, _highlightColors, bbox, l;
+    alert('drawing legend');
     colors = (typeof colors !== "undefined" && colors !== null) ? colors : this.colors;
     if (colors) {
       _colors = {};
@@ -670,6 +671,7 @@
     this.drawFootnote();
     this.drawLegend();
     saxis = 'right' in this.ndata;
+    alert('second axis? ' + saxis);
     if (saxis) {
       this.addAxes(['left', 'right']);
     } else {
