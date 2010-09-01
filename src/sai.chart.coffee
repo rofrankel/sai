@@ -28,7 +28,6 @@ class Sai.Chart
     return seriesName + (if seriesName.match(/^\s+$/) then @nextSeriesSuffix() else '')
   
   setData: (data) ->
-    alert 'setting data'
     @data = {}
     @renames = {}
     
@@ -82,7 +81,6 @@ class Sai.Chart
     }
   
   getYAxisVals: (min, max, nopad) ->
-    alert 'getting y-axis vals'
     if min is max then return [0, max, max * 2]
     
     nopad ?= false
@@ -128,7 +126,6 @@ class Sai.Chart
     return 0
   
   normalize: (data) ->
-    alert 'normalizing data'
     groups = @dataGroups(data)
     @ndata = {}
     if @opts.stacked? then @stackedNdata = {}
@@ -181,7 +178,6 @@ class Sai.Chart
         @ndata[group].__YVALS__ = yvals
   
   addAxes: (groups, titles) ->
-    alert 'adding axes'
     
     LINE_HEIGHT = 10
     
@@ -249,7 +245,6 @@ class Sai.Chart
     @ph = @h - @padding.bottom - @padding.top
   
   drawBG: () ->
-    alert 'drawing background'
     @bg = @r.rect(
       @px? and @px or @x,
       @py? and (@py - @ph) or (@y - @h),
@@ -258,7 +253,6 @@ class Sai.Chart
     ).attr({fill: @opts.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
   
   logoPos: () ->
-    alert 'positioning logo'
     w = 160
     h = 34
     x = if @px? and @pw? then @px + @pw - w - 5 else @w + @x - w - @padding.right
@@ -266,31 +260,21 @@ class Sai.Chart
     return [x, y, w, h]
   
   drawLogo: () ->
-    alert 'drawing logo'
     [x, y, w, h] = @logoPos()
     @logo = @r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25})
   
   drawFootnote: (text) ->
-    alert 'drawing footnote'
     text ?= @opts.footnote ? ''
-    
-    alert 'footnote text is ' + text
     
     # don't try to draw an empty footnote
     return if text.match(/^\s*$/)
-    
-    alert 'text was not empty or whitespace'
     
     pixels_per_char = 5.5
     maxChars = (@w - @padding.left - @padding.right) / pixels_per_char
     tokens = text.split(' ')
     lines = []
     line = ''
-    
-    alert 'did some calculations'
-    
     for token in tokens
-      alert 'doing token ' + token
       if line.length + token.length > maxChars
         lines.push(line)
         line = ''
@@ -299,23 +283,10 @@ class Sai.Chart
     if line isnt '' then lines.push(line)
     
     text = lines.join('\n')
-    
-    alert 'formatted text is ' + text
-    
     @footnote = @r.text(@x + @padding.left, @y - @padding.bottom, text)
-    
-    alert 'created footnote text'
-    
     h = @footnote.getBBox().height
-    
-    alert 'footnote height is ' + h
-    
     @padding.bottom += h + 10
     @footnote.translate(0,  -h/ 2).attr({'text-anchor': 'start'})
-    
-    alert 'moved footnote up'
-    
-    alert 'done with footnote'
   
   render: () ->
     @plot ?= new Sai.Plot(@r)
@@ -327,7 +298,6 @@ class Sai.Chart
   
   # map from series name to color
   setColors: (colors) ->
-    alert 'setting colors'
     @colors ?= {}
     for series of colors
       seriesName = @renames[series]
@@ -349,7 +319,6 @@ class Sai.Chart
     nh = (h - ymin) / (ymax - ymin)
   
   drawGuideline: (h, group) ->
-    alert 'drawing guideline'
     group ?= 'all'
     
     return unless @ndata[group]?.__YVALS__?
@@ -369,29 +338,22 @@ class Sai.Chart
     @guidelines.push(guideline.set)
   
   drawLegend: (colors) ->
-    alert 'drawing legend'
-    
     colors ?= @colors
     if colors
       _colors = {}
       _highlightColors = {}
       for l of colors when l isnt @__LABELS__
-        alert 'l is ' + l
         _colors[l] = colors[l]
         _highlightColors[l] = 'black'
         if @opts.groups?.right?
           if l in @opts.groups.right
             _highlightColors[l] = if @ndata.left? then @colors.__RIGHTAXIS__ ? 'blue' else 'black'
       @legend = @r.sai.prim.legend(@x, @y - @padding.bottom, @w, _colors, _highlightColors)
-      alert 'created legend prim'
       bbox = @legend.getBBox()
       if @legend.length > 0 then @padding.bottom += bbox.height + 15
       @legend.translate((@w - bbox.width) / 2, 0)
-    
-    alert 'done drawing legend'
   
   drawTitle: () ->
-    alert 'drawing title'
     if @opts.title?
       @title = @r.text(@x + (@w / 2), @y - @h, @opts.title).attr({'font-size': 20})
       @title.translate(0, @title.getBBox().height / 2)
@@ -399,8 +361,6 @@ class Sai.Chart
   
   # this reserves room for the info thing
   setupInfoSpace: () ->
-    alert 'setting up info space'
-    
     @info_y = @y - @h + @padding.top
     @info_x = @x + @padding.left
     @info_w = @w - @padding.left - @padding.right
@@ -449,7 +409,6 @@ class Sai.LineChart extends Sai.Chart
     @drawFootnote()
     @drawLegend()
     saxis = 'right' of @ndata
-    alert 'second axis? ' + saxis
     if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
     @drawBG()
     @drawLogo()

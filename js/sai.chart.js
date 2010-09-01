@@ -48,7 +48,6 @@
   };
   Sai.Chart.prototype.setData = function(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, d, group, groups, i, nngroups, pd, series, seriesName;
-    alert('setting data');
     this.data = {};
     this.renames = {};
     _b = data;
@@ -158,7 +157,6 @@
   };
   Sai.Chart.prototype.getYAxisVals = function(min, max, nopad) {
     var _a, bottom, factor, i, mag, rawmag, step, top;
-    alert('getting y-axis vals');
     if (min === max) {
       return [0, max, max * 2];
     }
@@ -258,7 +256,6 @@
   };
   Sai.Chart.prototype.normalize = function(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, all, baseline, baselines, empty, group, groups, i, max, maxf, min, minf, norm, nval, series, stackedPoint, yvals;
-    alert('normalizing data');
     groups = this.dataGroups(data);
     this.ndata = {};
     if (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) {
@@ -361,7 +358,6 @@
   };
   Sai.Chart.prototype.addAxes = function(groups, titles) {
     var LINE_HEIGHT, _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _vaxis, doLeftAxis, doRightAxis, haxis_height, hbb, hlen, i, tmptext, vaxis2_width, vaxis_width, vbbw, vlen, vrbbw;
-    alert('adding axes');
     LINE_HEIGHT = 10;
     this.axisWidth = 1.5;
     this.padding.top += 5;
@@ -440,7 +436,6 @@
   };
   Sai.Chart.prototype.drawBG = function() {
     var _a, _b, _c, _d;
-    alert('drawing background');
     return (this.bg = this.r.rect((typeof (_a = this.px) !== "undefined" && _a !== null) && this.px || this.x, (typeof (_b = this.py) !== "undefined" && _b !== null) && (this.py - this.ph) || (this.y - this.h), (typeof (_c = this.pw) !== "undefined" && _c !== null) && this.pw || this.w, (typeof (_d = this.ph) !== "undefined" && _d !== null) && this.ph || this.h).attr({
       fill: this.opts.bgcolor,
       'stroke-width': 0,
@@ -449,7 +444,6 @@
   };
   Sai.Chart.prototype.logoPos = function() {
     var _a, _b, _c, _d, h, w, x, y;
-    alert('positioning logo');
     w = 160;
     h = 34;
     x = (typeof (_a = this.px) !== "undefined" && _a !== null) && (typeof (_b = this.pw) !== "undefined" && _b !== null) ? this.px + this.pw - w - 5 : this.w + this.x - w - this.padding.right;
@@ -458,7 +452,6 @@
   };
   Sai.Chart.prototype.drawLogo = function() {
     var _a, h, w, x, y;
-    alert('drawing logo');
     _a = this.logoPos();
     x = _a[0];
     y = _a[1];
@@ -470,23 +463,18 @@
   };
   Sai.Chart.prototype.drawFootnote = function(text) {
     var _a, _b, _c, _d, h, line, lines, maxChars, pixels_per_char, token, tokens;
-    alert('drawing footnote');
     text = (typeof text !== "undefined" && text !== null) ? text : ((typeof (_a = this.opts.footnote) !== "undefined" && _a !== null) ? _a : '');
-    alert('footnote text is ' + text);
     if (text.match(/^\s*$/)) {
       return null;
     }
-    alert('text was not empty or whitespace');
     pixels_per_char = 5.5;
     maxChars = (this.w - this.padding.left - this.padding.right) / pixels_per_char;
     tokens = text.split(' ');
     lines = [];
     line = '';
-    alert('did some calculations');
     _c = tokens;
     for (_b = 0, _d = _c.length; _b < _d; _b++) {
       token = _c[_b];
-      alert('doing token ' + token);
       if (line.length + token.length > maxChars) {
         lines.push(line);
         line = '';
@@ -497,17 +485,12 @@
       lines.push(line);
     }
     text = lines.join('\n');
-    alert('formatted text is ' + text);
     this.footnote = this.r.text(this.x + this.padding.left, this.y - this.padding.bottom, text);
-    alert('created footnote text');
     h = this.footnote.getBBox().height;
-    alert('footnote height is ' + h);
     this.padding.bottom += h + 10;
-    this.footnote.translate(0, -h / 2).attr({
+    return this.footnote.translate(0, -h / 2).attr({
       'text-anchor': 'start'
     });
-    alert('moved footnote up');
-    return alert('done with footnote');
   };
   Sai.Chart.prototype.render = function() {
     this.plot = (typeof this.plot !== "undefined" && this.plot !== null) ? this.plot : new Sai.Plot(this.r);
@@ -520,7 +503,6 @@
   };
   Sai.Chart.prototype.setColors = function(colors) {
     var _a, _b, series, seriesName;
-    alert('setting colors');
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
     _b = colors;
     for (series in _b) {
@@ -552,7 +534,6 @@
   };
   Sai.Chart.prototype.drawGuideline = function(h, group) {
     var _a, guideline, nh;
-    alert('drawing guideline');
     group = (typeof group !== "undefined" && group !== null) ? group : 'all';
     if (!(typeof (_a = this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _a !== null)) {
       return null;
@@ -569,7 +550,6 @@
   };
   Sai.Chart.prototype.drawLegend = function(colors) {
     var _a, _b, _c, _colors, _d, _e, _f, _g, _h, _highlightColors, bbox, l;
-    alert('drawing legend');
     colors = (typeof colors !== "undefined" && colors !== null) ? colors : this.colors;
     if (colors) {
       _colors = {};
@@ -579,7 +559,6 @@
         if (!__hasProp.call(_b, l)) continue;
         _a = _b[l];
         if (l !== this.__LABELS__) {
-          alert('l is ' + l);
           _colors[l] = colors[l];
           _highlightColors[l] = 'black';
           if (typeof (_h = this.opts.groups == null ? undefined : this.opts.groups.right) !== "undefined" && _h !== null) {
@@ -590,18 +569,15 @@
         }
       }
       this.legend = this.r.sai.prim.legend(this.x, this.y - this.padding.bottom, this.w, _colors, _highlightColors);
-      alert('created legend prim');
       bbox = this.legend.getBBox();
       if (this.legend.length > 0) {
         this.padding.bottom += bbox.height + 15;
       }
-      this.legend.translate((this.w - bbox.width) / 2, 0);
+      return this.legend.translate((this.w - bbox.width) / 2, 0);
     }
-    return alert('done drawing legend');
   };
   Sai.Chart.prototype.drawTitle = function() {
     var _a;
-    alert('drawing title');
     if (typeof (_a = this.opts.title) !== "undefined" && _a !== null) {
       this.title = this.r.text(this.x + (this.w / 2), this.y - this.h, this.opts.title).attr({
         'font-size': 20
@@ -611,7 +587,6 @@
     }
   };
   Sai.Chart.prototype.setupInfoSpace = function() {
-    alert('setting up info space');
     this.info_y = this.y - this.h + this.padding.top;
     this.info_x = this.x + this.padding.left;
     this.info_w = this.w - this.padding.left - this.padding.right;
@@ -683,7 +658,6 @@
     this.drawFootnote();
     this.drawLegend();
     saxis = 'right' in this.ndata;
-    alert('second axis? ' + saxis);
     if (saxis) {
       this.addAxes(['left', 'right']);
     } else {

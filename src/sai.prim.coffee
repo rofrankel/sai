@@ -322,35 +322,26 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) -
   py = y
   
   for text of legend_colors
-    alert 'text is ' + text
-    alert 'x is ' + (px + 14)
-    alert 'y is ' + py
-    alert 'color will be' + (highlightColors?[text] ? 'black')
-    alert 'color type is ' + (typeof (highlightColors?[text] ? 'black'))
     t = @text(px + 14, py, text).attr({
       fill: highlightColors?[text] ? 'black'
     })
-    alert 'created svg text'
     t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
-    alert 'moved svg text'
     r = @rect(px, py, 9, 9).attr({
       'fill': legend_colors[text] ? 'black'
       'stroke': highlightColors?[text] ? 'black'
     })
-    alert 'created svg rect'
     key = @set().push(t, r)
-    alert 'created raphael set'
+    
     if (px - x) + spacing + key.getBBox().width > max_width
       set.translate(0, -line_height)
       key.translate(x - px, y - py)
       px = x
       py = y
-      alert 'newlined'
+    
     px += key.getBBox().width + spacing
     
     set.push(key)
-    alert 'added key to set'
-  alert 'legend prim done'
+  
   return set
 
 
