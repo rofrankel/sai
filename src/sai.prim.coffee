@@ -221,7 +221,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
     xpos += dx
   
   if opts.title?
-    title = @text(x + len/2, ymin + 14, opts.title).attr({'font-size': '12px'}) #, 'font-weight': 'bold'})
+    title = @text(x + len/2, ymin + 14, opts.title).attr({'font-size': '12px', 'font-weight': 'bold'})
   
   result = @set().push(line, ticks, labels, title)
   
@@ -264,8 +264,7 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, opts) ->
     ypos -= dy
   
   if opts.title?
-    title = @text(xmin, y - len/2, opts.title)
-    .attr({'font-size': '12px'}) #, 'font-weight': 'bold'})
+    title = @text(xmin, y - len/2, opts.title).attr({'font-size': '12px', 'font-weight': 'bold'})
     bbox = title.getBBox()
     title.rotate(-90)
     # stupid broken svg implementations not updating the bounding box of rotated text...
@@ -290,7 +289,7 @@ Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   py = y + 5 + (TEXT_LINE_HEIGHT / 2)
   
   if '__HEAD__' of texts
-    head_text = @text(x, py, texts['__HEAD__']).attr({'fill': '#cfc', 'font-size': '12'}) #, 'font-weight': 'bold'})
+    head_text = @text(x, py, texts['__HEAD__']).attr({'fill': '#cfc', 'font-size': '12', 'font-weight': 'bold'})
     max_width = Math.max(max_width, head_text.getBBox().width)
     text_set.push(head_text)
     py += (TEXT_LINE_HEIGHT + 2) + 5
@@ -298,7 +297,7 @@ Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   # create text and find total height
   for text of texts
     continue if text is '__HEAD__'
-    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white'}) #, 'font-weight': 'bold'})
+    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold'})
     t.translate(t.getBBox().width / 2, 0)
     max_width = Math.max(max_width, t.getBBox().width)
     py += TEXT_LINE_HEIGHT

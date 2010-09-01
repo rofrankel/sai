@@ -203,7 +203,8 @@
     }
     if (typeof (_e = opts.title) !== "undefined" && _e !== null) {
       title = this.text(x + len / 2, ymin + 14, opts.title).attr({
-        'font-size': '12px'
+        'font-size': '12px',
+        'font-weight': 'bold'
       });
     }
     result = this.set().push(line, ticks, labels, title);
@@ -252,7 +253,8 @@
     }
     if (typeof (_h = opts.title) !== "undefined" && _h !== null) {
       title = this.text(xmin, y - len / 2, opts.title).attr({
-        'font-size': '12px'
+        'font-size': '12px',
+        'font-weight': 'bold'
       });
       bbox = title.getBBox();
       title.rotate(-90);
@@ -273,7 +275,8 @@
     if ('__HEAD__' in texts) {
       head_text = this.text(x, py, texts['__HEAD__']).attr({
         'fill': '#cfc',
-        'font-size': '12'
+        'font-size': '12',
+        'font-weight': 'bold'
       });
       max_width = Math.max(max_width, head_text.getBBox().width);
       text_set.push(head_text);
@@ -287,7 +290,8 @@
         continue;
       }
       t = this.text(x + 5, py, text + " = " + texts[text]).attr({
-        'fill': 'white'
+        'fill': 'white',
+        'font-weight': 'bold'
       });
       t.translate(t.getBBox().width / 2, 0);
       max_width = Math.max(max_width, t.getBBox().width);
