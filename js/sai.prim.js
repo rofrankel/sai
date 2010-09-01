@@ -319,24 +319,32 @@
     for (text in _b) {
       if (!__hasProp.call(_b, text)) continue;
       _a = _b[text];
+      alert('text is ' + text);
       t = this.text(px + 14, py, text).attr({
         fill: (typeof (_c = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _c !== null) ? _c : 'black'
       });
+      alert('created svg text');
       t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
+      alert('moved svg text');
       r = this.rect(px, py, 9, 9).attr({
         'fill': (typeof (_d = legend_colors[text]) !== "undefined" && _d !== null) ? _d : 'black',
         'stroke': (typeof (_e = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _e !== null) ? _e : 'black'
       });
+      alert('created svg rect');
       key = this.set().push(t, r);
+      alert('created raphael set');
       if ((px - x) + spacing + key.getBBox().width > max_width) {
         set.translate(0, -line_height);
         key.translate(x - px, y - py);
         px = x;
         py = y;
+        alert('newlined');
       }
       px += key.getBBox().width + spacing;
       set.push(key);
+      alert('added key to set');
     }
+    alert('legend prim done');
     return set;
   };
   Raphael.fn.sai.prim.info = function(x, y, max_width, info) {
