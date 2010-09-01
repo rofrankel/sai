@@ -323,6 +323,10 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) -
   
   for text of legend_colors
     alert 'text is ' + text
+    alert 'x is ' + (px + 14)
+    alert 'y is ' + py
+    alert 'color will be' + (highlightColors?[text] ? 'black')
+    alert 'color type is ' + (typeof (highlightColors?[text] ? 'black'))
     t = @text(px + 14, py, text).attr({
       fill: highlightColors?[text] ? 'black'
     })

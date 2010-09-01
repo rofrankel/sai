@@ -308,7 +308,7 @@
     return text_set.toFront();
   };
   Raphael.fn.sai.prim.legend = function(x, y, max_width, legend_colors, highlightColors) {
-    var _a, _b, _c, _d, _e, key, line_height, px, py, r, set, spacing, t, text;
+    var _a, _b, _c, _d, _e, _f, _g, key, line_height, px, py, r, set, spacing, t, text;
     spacing = 15;
     line_height = 14;
     y -= line_height;
@@ -320,15 +320,19 @@
       if (!__hasProp.call(_b, text)) continue;
       _a = _b[text];
       alert('text is ' + text);
+      alert('x is ' + (px + 14));
+      alert('y is ' + py);
+      alert('color will be' + ((typeof (_c = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _c !== null) ? _c : 'black'));
+      alert('color type is ' + (typeof ((typeof (_d = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _d !== null) ? _d : 'black')));
       t = this.text(px + 14, py, text).attr({
-        fill: (typeof (_c = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _c !== null) ? _c : 'black'
+        fill: (typeof (_e = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _e !== null) ? _e : 'black'
       });
       alert('created svg text');
       t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
       alert('moved svg text');
       r = this.rect(px, py, 9, 9).attr({
-        'fill': (typeof (_d = legend_colors[text]) !== "undefined" && _d !== null) ? _d : 'black',
-        'stroke': (typeof (_e = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _e !== null) ? _e : 'black'
+        'fill': (typeof (_f = legend_colors[text]) !== "undefined" && _f !== null) ? _f : 'black',
+        'stroke': (typeof (_g = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _g !== null) ? _g : 'black'
       });
       alert('created svg rect');
       key = this.set().push(t, r);
