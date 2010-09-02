@@ -345,6 +345,36 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) -
   return set
 
 
+Raphael.fn.sai.prim.wrappedText = (x, y, w, text, delimiter, spacing, max_lines)  ->
+  delimiter ?= ' '
+  spacing ?= 1
+  text ?= ''
+  spacer = ''
+  for i in [0...spacing]
+    spacer += '\u00a0'
+  
+  # don't try to draw an empty footnote
+  return if text.match(/^\s*$/)
+  
+  pixels_per_char = 6
+  maxChars = w / pixels_per_char
+  tokens = text.split(delimiter)
+  lines = []
+  line = ''
+  for token in tokens
+    if line.length + token.length > maxChars
+      lines.push(line)
+      line = ''
+      break if lines.length is max_lines
+    line += token + spacer
+  
+  if line isnt '' then lines.push(line)
+  text = lines.join('\n')
+
+
+  return @text(x, y + (5 * lines.length), text).attr({'font-family': 'Lucida Console', 'text-anchor': 'start'})
+  
+
 # info is a map from labels to info, e.g. {'close': 123.45}
 Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
   spacing = 15
@@ -355,6 +385,8 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
   px = x
   py = y
   
+  full_text = ''
+  
   for label of info
     continue if info[label] is null
     text = label + (if label is '' then '' else ': ')
@@ -362,20 +394,10 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
       text += info[label]
     else
       text += Sai.util.prettynum(info[label]) ? Sai.util.prettystr(info[label])
-    t = @text(px, py, text)
-    tbbox = t.getBBox()
-    t.translate(tbbox.width / 2, tbbox.height / 2)
     
-    if (px - x) + spacing + tbbox.width > max_width
-      t.translate(x - px, line_height)
-      px = x
-      py += line_height
-    
-    px += tbbox.width + spacing
-    
-    set.push(t)
+    full_text += text + '#!#'
   
-  return set
+  info = @sai.prim.wrappedText(x, y, max_width, full_text, '#!#', 4)
 
 
 Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->

@@ -339,13 +339,52 @@
     }
     return set;
   };
+  Raphael.fn.sai.prim.wrappedText = function(x, y, w, text, delimiter, spacing, max_lines) {
+    var _a, _b, _c, i, line, lines, maxChars, pixels_per_char, spacer, token, tokens;
+    delimiter = (typeof delimiter !== "undefined" && delimiter !== null) ? delimiter : ' ';
+    spacing = (typeof spacing !== "undefined" && spacing !== null) ? spacing : 1;
+    text = (typeof text !== "undefined" && text !== null) ? text : '';
+    spacer = '';
+    for (i = 0; (0 <= spacing ? i < spacing : i > spacing); (0 <= spacing ? i += 1 : i -= 1)) {
+      spacer += '\u00a0';
+    }
+    if (text.match(/^\s*$/)) {
+      return null;
+    }
+    pixels_per_char = 6;
+    maxChars = w / pixels_per_char;
+    tokens = text.split(delimiter);
+    lines = [];
+    line = '';
+    _b = tokens;
+    for (_a = 0, _c = _b.length; _a < _c; _a++) {
+      token = _b[_a];
+      if (line.length + token.length > maxChars) {
+        lines.push(line);
+        line = '';
+        if (lines.length === max_lines) {
+          break;
+        }
+      }
+      line += token + spacer;
+    }
+    if (line !== '') {
+      lines.push(line);
+    }
+    text = lines.join('\n');
+    return this.text(x, y + (5 * lines.length), text).attr({
+      'font-family': 'Lucida Console',
+      'text-anchor': 'start'
+    });
+  };
   Raphael.fn.sai.prim.info = function(x, y, max_width, info) {
-    var _a, _b, _c, label, line_height, px, py, set, spacing, t, tbbox, text;
+    var _a, _b, _c, full_text, label, line_height, px, py, set, spacing, text;
     spacing = 15;
     line_height = 14;
     set = this.set();
     px = x;
     py = y;
+    full_text = '';
     _b = info;
     for (label in _b) {
       if (!__hasProp.call(_b, label)) continue;
@@ -359,18 +398,9 @@
       } else {
         text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? _c : Sai.util.prettystr(info[label]);
       }
-      t = this.text(px, py, text);
-      tbbox = t.getBBox();
-      t.translate(tbbox.width / 2, tbbox.height / 2);
-      if ((px - x) + spacing + tbbox.width > max_width) {
-        t.translate(x - px, line_height);
-        px = x;
-        py += line_height;
-      }
-      px += tbbox.width + spacing;
-      set.push(t);
+      full_text += text + '#!#';
     }
-    return set;
+    return (info = this.sai.prim.wrappedText(x, y, max_width, full_text, '#!#', 4));
   };
   Raphael.fn.sai.prim.hoverShape = function(fDraw, attrs, extras, hoverattrs) {
     var hoverfuncs, shape;

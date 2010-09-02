@@ -66,7 +66,7 @@ class Sai.Chart
   
   nullPad: (seriesName) ->
     if seriesName of @data
-      @data[seriesName] = [null].concat @data[seriesName].concat [null]
+      @data[seriesName] = [null].concat(@data[seriesName].concat([null]))
   
   # a line chart plots everything, but a stock chart only cares about e.g. high low open close avg vol
   caresAbout: (seriesName) ->
@@ -307,24 +307,10 @@ class Sai.Chart
     # don't try to draw an empty footnote
     return if text.match(/^\s*$/)
     
-    pixels_per_char = 5.5
-    maxChars = (@w - @padding.left - @padding.right) / pixels_per_char
-    tokens = text.split(' ')
-    lines = []
-    line = ''
-    for token in tokens
-      if line.length + token.length > maxChars
-        lines.push(line)
-        line = ''
-      line += token + ' '
-    
-    if line isnt '' then lines.push(line)
-    
-    text = lines.join('\n')
-    @footnote = @r.text(@x + @padding.left, @y - @padding.bottom, text)
+    @footnote = @r.sai.prim.wrappedText(@x + @padding.left, @y - @padding.bottom, @w, text, ' ')
     h = @footnote.getBBox().height
     @padding.bottom += h + 10
-    @footnote.translate(0,  -h/ 2).attr({'text-anchor': 'start'})
+    @footnote.translate(0,  -h)
   
   render: () ->
     @plot ?= new Sai.Plot(@r)
@@ -817,7 +803,7 @@ class Sai.StockChart extends Sai.Chart
         
         info = {}
         
-        info[@__LABELS__] = @data[@__LABELS__][idx]
+        if @data[@__LABELS__][idx]? then info[@__LABELS__] = @data[@__LABELS__][idx]
         
         notNull = false
         for series of @ndata['prices'] when not (series.match('^__') or series is @__LABELS__)

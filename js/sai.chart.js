@@ -472,35 +472,15 @@
     }));
   };
   Sai.Chart.prototype.drawFootnote = function(text) {
-    var _a, _b, _c, _d, h, line, lines, maxChars, pixels_per_char, token, tokens;
+    var _a, h;
     text = (typeof text !== "undefined" && text !== null) ? text : ((typeof (_a = this.opts.footnote) !== "undefined" && _a !== null) ? _a : '');
     if (text.match(/^\s*$/)) {
       return null;
     }
-    pixels_per_char = 5.5;
-    maxChars = (this.w - this.padding.left - this.padding.right) / pixels_per_char;
-    tokens = text.split(' ');
-    lines = [];
-    line = '';
-    _c = tokens;
-    for (_b = 0, _d = _c.length; _b < _d; _b++) {
-      token = _c[_b];
-      if (line.length + token.length > maxChars) {
-        lines.push(line);
-        line = '';
-      }
-      line += token + ' ';
-    }
-    if (line !== '') {
-      lines.push(line);
-    }
-    text = lines.join('\n');
-    this.footnote = this.r.text(this.x + this.padding.left, this.y - this.padding.bottom, text);
+    this.footnote = this.r.sai.prim.wrappedText(this.x + this.padding.left, this.y - this.padding.bottom, this.w, text, ' ');
     h = this.footnote.getBBox().height;
     this.padding.bottom += h + 10;
-    return this.footnote.translate(0, -h / 2).attr({
-      'text-anchor': 'start'
-    });
+    return this.footnote.translate(0, -h);
   };
   Sai.Chart.prototype.render = function() {
     this.plot = (typeof this.plot !== "undefined" && this.plot !== null) ? this.plot : new Sai.Plot(this.r);
@@ -1045,23 +1025,25 @@
     }).toBack().hide();
     this.bg.toBack();
     everything = this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove(moveGlow = __bind(function(event) {
-      var _j, _k, _l, _m, idx, info, notNull, series;
+      var _j, _k, _l, _m, _n, idx, info, notNull, series;
       idx = this.getIndex(event);
       info = {};
-      info[this.__LABELS__] = this.data[this.__LABELS__][idx];
+      if (typeof (_j = this.data[this.__LABELS__][idx]) !== "undefined" && _j !== null) {
+        info[this.__LABELS__] = this.data[this.__LABELS__][idx];
+      }
       notNull = false;
-      _k = this.ndata['prices'];
-      for (series in _k) {
-        if (!__hasProp.call(_k, series)) continue;
-        _j = _k[series];
+      _l = this.ndata['prices'];
+      for (series in _l) {
+        if (!__hasProp.call(_l, series)) continue;
+        _k = _l[series];
         if (!(series.match('^__') || series === this.__LABELS__)) {
-          if (typeof (_l = this.data[series] == null ? undefined : this.data[series][idx]) !== "undefined" && _l !== null) {
+          if (typeof (_m = this.data[series] == null ? undefined : this.data[series][idx]) !== "undefined" && _m !== null) {
             info[series] = this.data[series][idx];
             notNull = true;
           }
         }
       }
-      if (typeof (_m = this.data['volume'] == null ? undefined : this.data['volume'][idx]) !== "undefined" && _m !== null) {
+      if (typeof (_n = this.data['volume'] == null ? undefined : this.data['volume'][idx]) !== "undefined" && _n !== null) {
         info['volume'] = this.data['volume'][idx];
         notNull = true;
       }
