@@ -466,7 +466,9 @@
     w = _a[2];
     h = _a[3];
     return (this.logo = this.r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({
-      opacity: 0.25
+      opacity: 0.25,
+      href: 'http://track.com',
+      target: '_blank'
     }));
   };
   Sai.Chart.prototype.drawFootnote = function(text) {

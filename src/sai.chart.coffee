@@ -201,21 +201,39 @@ class Sai.Chart
     doRightAxis = @ndata[groups[1]]?
     
     if doLeftAxis
-      _vaxis = @r.sai.prim.vaxis(@ndata[groups[0]]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, {width: @axisWidth, title: titles?.left})
+      _vaxis = @r.sai.prim.vaxis(
+        @ndata[groups[0]]?.__YVALS__ ? [0, '?'],
+        @x + @padding.left,
+        @y - @padding.bottom,
+        vlen,
+        {width: @axisWidth, title: titles?.left}
+      )
       vaxis_width = _vaxis.items[0].getBBox().width
       _vaxis.remove()
     else
       vaxis_width = 0
       
     if doRightAxis
-      _vaxis = @r.sai.prim.vaxis(@ndata[groups[1]]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, {width: @axisWidth, title: titles?.right})
+      _vaxis = @r.sai.prim.vaxis(
+        @ndata[groups[1]]?.__YVALS__ ? [0, '?'],
+        @x + @padding.left,
+        @y - @padding.bottom,
+        vlen,
+        {width: @axisWidth, title: titles?.right}
+      )
       vaxis2_width = _vaxis.getBBox().width
       _vaxis.remove()
     else
       vaxis2_width = 0
     
     hlen = @w - @padding.left - @padding.right - vaxis_width - vaxis2_width
-    @haxis = @r.sai.prim.haxis(@data[@__LABELS__], @x + @padding.left + vaxis_width, @y - @padding.bottom, hlen,  {width: @axisWidth, title: titles?.bottom})
+    @haxis = @r.sai.prim.haxis(
+      @data[@__LABELS__],
+      @x + @padding.left + vaxis_width,
+      @y - @padding.bottom,
+      hlen,
+      {width: @axisWidth,title: titles?.bottom}
+    )
     hbb = @haxis.getBBox()
     haxis_height = hbb.height
     if isNaN(haxis_height) then haxis_height = 1
@@ -225,13 +243,25 @@ class Sai.Chart
     vlen = @h - (@padding.bottom + @padding.top)
     
     if doLeftAxis
-      @vaxis = @r.sai.prim.vaxis(@ndata[groups[0]]?.__YVALS__ ? [0, '?'], @x + @padding.left, @y - @padding.bottom, vlen, {width: @axisWidth, title: titles?.left})
+      @vaxis = @r.sai.prim.vaxis(
+        @ndata[groups[0]]?.__YVALS__ ? [0, '?'],
+        @x + @padding.left,
+        @y - @padding.bottom,
+        vlen,
+        {width: @axisWidth, title: titles?.left}
+      )
       vbbw = @vaxis.items[0].getBBox().width
       @vaxis.translate(vbbw, 0)
       @padding.left += vbbw
     
     if doRightAxis
-      @vaxis_right = @r.sai.prim.vaxis(@ndata[groups[1]]?.__YVALS__ ? [0, '?'], @w - @padding.right, @y - @padding.bottom, vlen, {width: @axisWidth, right: true, title: titles?.right, color: if @ndata[groups[0]]? then @colors.__RIGHTAXIS__ ? 'blue' else 'black'})
+      @vaxis_right = @r.sai.prim.vaxis(
+        @ndata[groups[1]]?.__YVALS__ ? [0, '?'],
+        @w - @padding.right,
+        @y - @padding.bottom,
+        vlen,
+        {width: @axisWidth, right: true, title: titles?.right, color: if @ndata[groups[0]]? then @colors.__RIGHTAXIS__ ? 'blue' else 'black'}
+      )
       vrbbw = @vaxis_right.items[0].getBBox().width
       @vaxis_right.translate(-vrbbw, 0)
       @padding.right += vrbbw
@@ -269,7 +299,7 @@ class Sai.Chart
   
   drawLogo: () ->
     [x, y, w, h] = @logoPos()
-    @logo = @r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25})
+    @logo = @r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25, href: 'http://track.com', target: '_blank'})
   
   drawFootnote: (text) ->
     text ?= @opts.footnote ? ''
