@@ -398,9 +398,9 @@ Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
   return shape
 
 
-Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) ->
+Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, colors, bgcolor, fromWhite, numBuckets) ->
   bgcolor ?= 'white'
-  color ?= 'black'
+  colors ?= ['black', 'white']
   numBuckets ?= 10
   
   set = @set()
@@ -434,16 +434,26 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, color, bgco
     if idx of buckets then buckets[idx] += 1 else buckets[idx] = 1
     maxBucket = Math.max(maxBucket, buckets[idx])
   
-  set.push(hrule = @path("M#{x},#{y} l#{w}, 0").attr('stroke', color))
+  set.push(hrule = @rect(x, y, w, 1).attr({
+    'fill': "0-#{colors[0]}-#{(colors[1] ? colors[0])}"
+    'stroke-width': 0
+    'stroke-opacity': 0
+  }))
   y -= 1
   
   bw = w / numBuckets
   for bucket of buckets
     bh = (y - bartop) * (buckets[bucket] / maxBucket)
+    
     set.push(
+      if colors.length is 1
+        fill = Sai.util.multiplyColor(colors[0], (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str
+      else
+        fill = Sai.util.colerp(colors[0], colors[1], (parseInt(bucket) + 0.5) / numBuckets)
+      
       @rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh)
       .attr({
-        'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str,
+        'fill': fill,
         'stroke-width': if fromWhite then .35 else 0,
         'stroke-opacity': if fromWhite then 1 else 0,
         'stroke': '#000000'

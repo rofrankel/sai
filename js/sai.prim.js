@@ -386,10 +386,10 @@
     shape.mouseout(hoverfuncs[1]);
     return shape;
   };
-  Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, color, bgcolor, fromWhite, numBuckets) {
-    var _a, _b, _c, _d, _e, bartop, bg, bh, bucket, buckets, bw, datum, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set;
+  Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, colors, bgcolor, fromWhite, numBuckets) {
+    var _a, _b, _c, _d, _e, _f, bartop, bg, bh, bucket, buckets, bw, datum, fill, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set;
     bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : 'white';
-    color = (typeof color !== "undefined" && color !== null) ? color : 'black';
+    colors = (typeof colors !== "undefined" && colors !== null) ? colors : ['black', 'white'];
     numBuckets = (typeof numBuckets !== "undefined" && numBuckets !== null) ? numBuckets : 10;
     set = this.set();
     set.push(bg = this.rect(x, y - h, w, h).attr({
@@ -419,16 +419,20 @@
       }
       maxBucket = Math.max(maxBucket, buckets[idx]);
     }
-    set.push(hrule = this.path("M" + (x) + "," + (y) + " l" + (w) + ", 0").attr('stroke', color));
+    set.push(hrule = this.rect(x, y, w, 1).attr({
+      'fill': ("0-" + (colors[0]) + "-" + ((typeof (_d = colors[1]) !== "undefined" && _d !== null) ? _d : colors[0])),
+      'stroke-width': 0,
+      'stroke-opacity': 0
+    }));
     y -= 1;
     bw = w / numBuckets;
-    _e = buckets;
-    for (bucket in _e) {
-      if (!__hasProp.call(_e, bucket)) continue;
-      _d = _e[bucket];
+    _f = buckets;
+    for (bucket in _f) {
+      if (!__hasProp.call(_f, bucket)) continue;
+      _e = _f[bucket];
       bh = (y - bartop) * (buckets[bucket] / maxBucket);
-      set.push(this.rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({
-        'fill': Sai.util.multiplyColor(color, (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str,
+      set.push(colors.length === 1 ? (fill = Sai.util.multiplyColor(colors[0], (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str) : (fill = Sai.util.colerp(colors[0], colors[1], (parseInt(bucket) + 0.5) / numBuckets)), this.rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({
+        'fill': fill,
         'stroke-width': fromWhite ? .35 : 0,
         'stroke-opacity': fromWhite ? 1 : 0,
         'stroke': '#000000'

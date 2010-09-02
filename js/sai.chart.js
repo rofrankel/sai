@@ -157,6 +157,9 @@
   };
   Sai.Chart.prototype.getYAxisVals = function(min, max, nopad) {
     var _a, bottom, factor, i, mag, rawmag, step, top;
+    if (!(typeof min === "number" && typeof max === "number")) {
+      return [min, max];
+    }
     if (min === max) {
       return [0, max, max * 2];
     }
@@ -429,10 +432,15 @@
     return this.r.set().push(this.haxis).push(this.vaxis);
   };
   Sai.Chart.prototype.setPlotCoords = function() {
+    var hlbb, lbb;
     this.px = this.x + this.padding.left;
     this.py = this.y - this.padding.bottom;
     this.pw = this.w - this.padding.left - this.padding.right;
-    return (this.ph = this.h - this.padding.bottom - this.padding.top);
+    this.ph = this.h - this.padding.bottom - this.padding.top;
+    lbb = this.legend == null ? undefined : this.legend.getBBox();
+    this.legend == null ? undefined : this.legend.translate(this.px + this.pw / 2 - (lbb.x + lbb.width / 2), 0);
+    hlbb = this.histogramLegend == null ? undefined : this.histogramLegend.getBBox();
+    return this.histogramLegend == null ? undefined : this.histogramLegend.translate(this.px + this.pw / 2 - (hlbb.x + hlbb.width / 2), 0);
   };
   Sai.Chart.prototype.drawBG = function() {
     var _a, _b, _c, _d;
@@ -616,6 +624,59 @@
     var tx;
     tx = Sai.util.transformCoords(evt, this.r.canvas).x;
     return Math.round((this.data[this.__LABELS__].length - 1) * (tx - this.px) / this.pw);
+  };
+  Sai.Chart.prototype.drawHistogramLegend = function(seriesNames, colors) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, color, data, dataWithoutNulls, extrapadding, height, histogram, i, j, max, maxLabel, min, minLabel, series, width, x, yvals;
+    colors = (typeof colors !== "undefined" && colors !== null) ? colors : this.colors;
+    this.histogramLegend = this.r.set();
+    extrapadding = 20;
+    height = Math.max(0.1 * (this.h - this.padding.bottom - this.padding.top), 50);
+    width = Math.min(150, (this.w - this.padding.left - this.padding.right - extrapadding) / seriesNames.length);
+    _a = seriesNames.length;
+    for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
+      series = seriesNames[i];
+      data = (function() {
+        _b = []; _c = this.ndata[series][series].length;
+        for (j = 0; (0 <= _c ? j < _c : j > _c); (0 <= _c ? j += 1 : j -= 1)) {
+          if (typeof (_d = this.ndata[series][series][j]) !== "undefined" && _d !== null) {
+            _b.push(this.ndata[series][series][j][1]);
+          }
+        }
+        return _b;
+      }).call(this);
+      if (typeof (_f = this.bounds == null ? undefined : this.bounds[series]) !== "undefined" && _f !== null) {
+        _e = this.bounds[series];
+        min = _e[0];
+        max = _e[1];
+      } else {
+        dataWithoutNulls = (function() {
+          _g = []; _i = this.data[series];
+          for (_h = 0, _j = _i.length; _h < _j; _h++) {
+            x = _i[_h];
+            if (typeof x !== "undefined" && x !== null) {
+              _g.push(x);
+            }
+          }
+          return _g;
+        }).call(this);
+        _k = [Math.min.apply(Math, dataWithoutNulls), Math.max.apply(Math, dataWithoutNulls)];
+        min = _k[0];
+        max = _k[1];
+      }
+      yvals = this.getYAxisVals(min, max, true);
+      minLabel = yvals[0];
+      maxLabel = yvals[yvals.length - 1];
+      color = colors[series];
+      this.histogramLegend.push(histogram = this.r.sai.prim.histogram(this.x + (i * width), this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, typeof color === 'object' ? [color.__LOW__, color.__HIGH__] : [color], 'white', this.opts.fromWhite));
+      if (this.opts.interactive) {
+        this.setupHistogramInteraction(histogram, series);
+      }
+    }
+    this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);
+    return this.padding.bottom += height + 5;
+  };
+  Sai.Chart.prototype.setupHistogramInteraction = function(histogram, series) {
+    return null;
   };
   Sai.LineChart = function() {
     return Sai.Chart.apply(this, arguments);
@@ -1080,7 +1141,8 @@
         min = mins[series];
       }
       this.bounds[series] = [min, max];
-      this.ndata[series] = (function() {
+      this.ndata[series] = {};
+      this.ndata[series][series] = (function() {
         _l = []; _m = data[series].length;
         for (i = 0; (0 <= _m ? i < _m : i > _m); (0 <= _m ? i += 1 : i -= 1)) {
           _l.push((typeof (_n = data[series][i]) !== "undefined" && _n !== null) ? [i / (data[series].length - 1), ((data[series][i] - min) / (max - min))] : null);
@@ -1115,55 +1177,6 @@
     }
     return groups;
   };
-  Sai.GeoChart.prototype.drawHistogramLegend = function(seriesNames) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, data, dataWithoutNulls, extrapadding, height, histogram, i, j, max, maxLabel, min, minLabel, px, series, width, x, yvals;
-    this.histogramLegend = this.r.set();
-    extrapadding = 20;
-    height = Math.max(0.1 * (this.h - this.padding.bottom - this.padding.top), 50);
-    width = Math.min(150, (this.w - this.padding.left - this.padding.right - extrapadding) / seriesNames.length);
-    _a = seriesNames.length;
-    for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
-      series = seriesNames[i];
-      px = this.x + (i * width);
-      data = (function() {
-        _b = []; _c = this.ndata[series].length;
-        for (j = 0; (0 <= _c ? j < _c : j > _c); (0 <= _c ? j += 1 : j -= 1)) {
-          if (typeof (_d = this.ndata[series][j]) !== "undefined" && _d !== null) {
-            _b.push(this.ndata[series][j][1]);
-          }
-        }
-        return _b;
-      }).call(this);
-      if (typeof (_f = this.bounds == null ? undefined : this.bounds[series]) !== "undefined" && _f !== null) {
-        _e = this.bounds[series];
-        min = _e[0];
-        max = _e[1];
-      } else {
-        dataWithoutNulls = (function() {
-          _g = []; _i = this.data[series];
-          for (_h = 0, _j = _i.length; _h < _j; _h++) {
-            x = _i[_h];
-            if (typeof x !== "undefined" && x !== null) {
-              _g.push(x);
-            }
-          }
-          return _g;
-        }).call(this);
-        _k = [Math.min.apply(Math, dataWithoutNulls), Math.max.apply(Math, dataWithoutNulls)];
-        min = _k[0];
-        max = _k[1];
-      }
-      yvals = this.getYAxisVals(min, max, true);
-      minLabel = yvals[0];
-      maxLabel = yvals[yvals.length - 1];
-      this.histogramLegend.push(histogram = this.r.sai.prim.histogram(px, this.y - this.padding.bottom, width * 0.8, height, data, minLabel, maxLabel, series, this.colors[series], 'white', this.opts.fromWhite));
-      if (this.opts.interactive) {
-        this.setupHistogramInteraction(histogram, series);
-      }
-    }
-    this.histogramLegend.translate((this.w - this.padding.left - this.padding.right - this.histogramLegend.getBBox().width) / 2, 0);
-    return this.padding.bottom += height + 5;
-  };
   Sai.GeoChart.prototype.setupHistogramInteraction = function(histogram, series) {
     return histogram.click(__bind(function() {
       return this.renderPlot(series);
@@ -1186,8 +1199,16 @@
     }, this))(histogram));
   };
   Sai.GeoChart.prototype.renderPlot = function(mainSeries) {
+    var _a, _b, ndata, series;
     this.geoPlot == null ? undefined : this.geoPlot.set.remove();
-    return (this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, this.ndata, this.data, {
+    ndata = {};
+    _b = this.ndata;
+    for (series in _b) {
+      if (!__hasProp.call(_b, series)) continue;
+      _a = _b[series];
+      ndata[series] = this.ndata[series][series];
+    }
+    return (this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data, {
       fromWhite: this.opts.fromWhite
     })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo));
   };
@@ -1261,15 +1282,35 @@
     return groups;
   };
   Sai.ScatterChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, _f, colors, ndata, series;
+    var _a, _b, _c, _d, _e, _f, colors, histogramColors, histogramSeries, ndata, radii, series, stroke_opacity;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
     colors = (typeof (_a = this.opts.colors) !== "undefined" && _a !== null) ? _a : (typeof (_b = this.colors) !== "undefined" && _b !== null) ? _b : ['black', 'white'];
+    stroke_opacity = (typeof (_c = this.opts.stroke_opacity) !== "undefined" && _c !== null) ? _c : [0, 1];
+    radii = (typeof (_d = this.opts.radius) !== "undefined" && _d !== null) ? _d : [4, 12];
+    histogramSeries = [];
+    histogramColors = {};
     if (colors instanceof Array) {
-      null;
+      histogramSeries.push(this.opts.mappings.color);
+      histogramColors[this.opts.mappings.color] = {
+        __LOW__: colors[0],
+        __HIGH__: colors[1]
+      };
     } else {
       this.drawLegend(colors);
+    }
+    /*
+    if @opts.mappings.stroke_opacity
+      histogramSeries.push(@opts.mappings.stroke_opacity)
+      so_colors = [
+        Sai.util.colerp('white', 'black', stroke_opacity[0]),
+        Sai.util.colerp('white', 'black', stroke_opacity[1]),
+      ]
+      histogramColors[@opts.mappings.stroke_opacity] = {__LOW__: so_colors[0], __HIGH__: so_colors[1]}
+    */
+    if (histogramSeries.length) {
+      this.drawHistogramLegend(histogramSeries, histogramColors);
     }
     this.__LABELS__ = '__XVALS__';
     this.data.__XVALS__ = this.ndata[this.opts.mappings.x].__YVALS__;
@@ -1280,14 +1321,14 @@
     this.drawLogo();
     this.drawBG();
     ndata = {};
-    _d = this.ndata;
-    for (series in _d) {
-      if (!__hasProp.call(_d, series)) continue;
-      _c = _d[series];
+    _f = this.ndata;
+    for (series in _f) {
+      if (!__hasProp.call(_f, series)) continue;
+      _e = _f[series];
       ndata[series] = this.ndata[series][series];
     }
     this.plots = this.r.set();
-    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [4, 12], (typeof (_f = this.opts.stroke_opacity) !== "undefined" && _f !== null) ? _f : [0, 1], this.drawInfo).set);
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, radii, stroke_opacity, this.drawInfo).set);
     return this;
   };
 })();
