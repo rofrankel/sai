@@ -345,32 +345,44 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) -
   return set
 
 
-Raphael.fn.sai.prim.wrappedText = (x, y, w, text, delimiter, spacing, max_lines)  ->
+Raphael.fn.sai.prim.wrappedText = (x, y, w, text, delimiter, max_lines)  ->
   delimiter ?= ' '
   spacing ?= 1
   text ?= ''
   spacer = ''
-  for i in [0...spacing]
-    spacer += '\u00a0'
+  #for i in [0...spacing]
+  #  spacer += '\u00a0'
   
   # don't try to draw an empty footnote
   return if text.match(/^\s*$/)
   
   pixels_per_char = 6
-  maxChars = w / pixels_per_char
+  chars_per_line = w / pixels_per_char
+  
+  ###
   tokens = text.split(delimiter)
   lines = []
   line = ''
   for token in tokens
-    if line.length + token.length > maxChars
+    if line.length + token.length > chars_per_line
       lines.push(line)
       line = ''
       break if lines.length is max_lines
     line += token + spacer
   
   if line isnt '' then lines.push(line)
+  ###
+  
+  lines = []
+  idx = 0
+  while idx < text.length - 1
+    potential_end = idx + chars_per_line
+    potential_line = text.substring(idx, potential_end + 1)
+    end = if potential_end >= text.length then potential_end  else potential_line.lastIndexOf(delimiter)
+    lines.push(potential_line.substring(0, end))
+    idx += end + 1
+  
   text = lines.join('\n')
-
 
   return @text(x, y + (5 * lines.length), text).attr({'font-family': 'Lucida Console', 'text-anchor': 'start'})
   
@@ -395,9 +407,9 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
     else
       text += Sai.util.prettynum(info[label]) ? Sai.util.prettystr(info[label])
     
-    full_text += text + '#!#'
+    full_text += text + '\u00a0\u00a0\u00a0\u00a0'
   
-  info = @sai.prim.wrappedText(x, y, max_width, full_text, '#!#', 4)
+  info = @sai.prim.wrappedText(x, y, max_width, full_text, '\u00a0')
 
 
 Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->

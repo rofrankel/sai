@@ -339,37 +339,38 @@
     }
     return set;
   };
-  Raphael.fn.sai.prim.wrappedText = function(x, y, w, text, delimiter, spacing, max_lines) {
-    var _a, _b, _c, i, line, lines, maxChars, pixels_per_char, spacer, token, tokens;
+  Raphael.fn.sai.prim.wrappedText = function(x, y, w, text, delimiter, max_lines) {
+    var chars_per_line, end, idx, lines, pixels_per_char, potential_end, potential_line, spacer, spacing;
     delimiter = (typeof delimiter !== "undefined" && delimiter !== null) ? delimiter : ' ';
     spacing = (typeof spacing !== "undefined" && spacing !== null) ? spacing : 1;
     text = (typeof text !== "undefined" && text !== null) ? text : '';
     spacer = '';
-    for (i = 0; (0 <= spacing ? i < spacing : i > spacing); (0 <= spacing ? i += 1 : i -= 1)) {
-      spacer += '\u00a0';
-    }
     if (text.match(/^\s*$/)) {
       return null;
     }
     pixels_per_char = 6;
-    maxChars = w / pixels_per_char;
-    tokens = text.split(delimiter);
+    chars_per_line = w / pixels_per_char;
+    /*
+    tokens = text.split(delimiter)
+    lines = []
+    line = ''
+    for token in tokens
+      if line.length + token.length > chars_per_line
+        lines.push(line)
+        line = ''
+        break if lines.length is max_lines
+      line += token + spacer
+
+    if line isnt '' then lines.push(line)
+    */
     lines = [];
-    line = '';
-    _b = tokens;
-    for (_a = 0, _c = _b.length; _a < _c; _a++) {
-      token = _b[_a];
-      if (line.length + token.length > maxChars) {
-        lines.push(line);
-        line = '';
-        if (lines.length === max_lines) {
-          break;
-        }
-      }
-      line += token + spacer;
-    }
-    if (line !== '') {
-      lines.push(line);
+    idx = 0;
+    while (idx < text.length - 1) {
+      potential_end = idx + chars_per_line;
+      potential_line = text.substring(idx, potential_end + 1);
+      end = potential_end >= text.length ? potential_end : potential_line.lastIndexOf(delimiter);
+      lines.push(potential_line.substring(0, end));
+      idx += end + 1;
     }
     text = lines.join('\n');
     return this.text(x, y + (5 * lines.length), text).attr({
@@ -398,9 +399,9 @@
       } else {
         text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? _c : Sai.util.prettystr(info[label]);
       }
-      full_text += text + '#!#';
+      full_text += text + '\u00a0\u00a0\u00a0\u00a0';
     }
-    return (info = this.sai.prim.wrappedText(x, y, max_width, full_text, '#!#', 4));
+    return (info = this.sai.prim.wrappedText(x, y, max_width, full_text, '\u00a0'));
   };
   Raphael.fn.sai.prim.hoverShape = function(fDraw, attrs, extras, hoverattrs) {
     var hoverfuncs, shape;
