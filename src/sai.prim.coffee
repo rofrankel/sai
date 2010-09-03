@@ -206,7 +206,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
       ticklen = ticklens[if String(val) then 0 else 1]
       ticks.push(@path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
       unless val is ''
-        label = @text(xpos, y + ticklen + padding, Sai.util.prettystr(val))
+        label = @text(xpos, y + ticklen + padding, Sai.util.prettystr(val).substring(0, 12))
         bbox = label.getBBox()
         ly = label.attr('y') + (bbox.height / 2.0)
         label.attr('y', ly)
@@ -297,8 +297,7 @@ Raphael.fn.sai.prim.popup = (x, y, texts, opts) ->
   # create text and find total height
   for text of texts
     continue if text is '__HEAD__'
-    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold'})
-    t.translate(t.getBBox().width / 2, 0)
+    t = @text(x + 5, py, text + " = " + texts[text]).attr({'fill': 'white', 'font-weight': 'bold', 'text-anchor': 'start'})
     max_width = Math.max(max_width, t.getBBox().width)
     py += TEXT_LINE_HEIGHT
     text_set.push(t)
@@ -322,23 +321,23 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) -
   py = y
   
   for text of legend_colors
-    t = @text(px + 14, py, text).attr({
+    t = @text(px + 14, py + 5, text).attr({
       fill: highlightColors?[text] ? 'black'
+      'text-anchor': 'start'
     })
-    t.translate(t.getBBox().width / 2, t.getBBox().height / 2)
     r = @rect(px, py, 9, 9).attr({
       'fill': legend_colors[text] ? 'black'
       'stroke': highlightColors?[text] ? 'black'
     })
     key = @set().push(t, r)
-    
-    if (px - x) + spacing + key.getBBox().width > max_width
+    key_width = key.getBBox().width
+    if (px - x) + spacing + key_width > max_width
       set.translate(0, -line_height)
       key.translate(x - px, y - py)
       px = x
       py = y
     
-    px += key.getBBox().width + spacing
+    px += key_width + spacing
     
     set.push(key)
   
@@ -396,6 +395,7 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
   
   px = x
   py = y
+  char_width = 6
   
   for label of info
     continue if info[label] is null
@@ -404,15 +404,15 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
       text += info[label]
     else
       text += Sai.util.prettynum(info[label]) ? Sai.util.prettystr(info[label])
-    t = @text(px, py, text).attr({'font-family': 'Lucida Console', 'text-anchor': 'start'})
-    tbbox = t.getBBox()
     
-    if (px - x) + spacing + tbbox.width > max_width
-      t.translate(x - px, line_height)
+    twidth = char_width * text.length
+    if (px - x) + twidth > max_width
       px = x
       py += line_height
     
-    px += tbbox.width + spacing
+    t = @text(px, py, text).attr({'font-family': 'Lucida Console', 'text-anchor': 'start'})
+    
+    px += twidth + spacing
     
     set.push(t)
   

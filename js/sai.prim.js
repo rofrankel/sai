@@ -181,7 +181,7 @@
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color));
         if (val !== '') {
-          label = this.text(xpos, y + ticklen + padding, Sai.util.prettystr(val));
+          label = this.text(xpos, y + ticklen + padding, Sai.util.prettystr(val).substring(0, 12));
           bbox = label.getBBox();
           ly = label.attr('y') + (bbox.height / 2.0);
           label.attr('y', ly);
@@ -291,9 +291,9 @@
       }
       t = this.text(x + 5, py, text + " = " + texts[text]).attr({
         'fill': 'white',
-        'font-weight': 'bold'
+        'font-weight': 'bold',
+        'text-anchor': 'start'
       });
-      t.translate(t.getBBox().width / 2, 0);
       max_width = Math.max(max_width, t.getBBox().width);
       py += TEXT_LINE_HEIGHT;
       text_set.push(t);
@@ -308,7 +308,7 @@
     return text_set.toFront();
   };
   Raphael.fn.sai.prim.legend = function(x, y, max_width, legend_colors, highlightColors) {
-    var _a, _b, _c, _d, _e, key, line_height, px, py, r, set, spacing, t, text;
+    var _a, _b, _c, _d, _e, key, key_width, line_height, px, py, r, set, spacing, t, text;
     spacing = 15;
     line_height = 14;
     y -= line_height;
@@ -319,22 +319,23 @@
     for (text in _b) {
       if (!__hasProp.call(_b, text)) continue;
       _a = _b[text];
-      t = this.text(px + 14, py, text).attr({
-        fill: (typeof (_c = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _c !== null) ? _c : 'black'
+      t = this.text(px + 14, py + 5, text).attr({
+        fill: (typeof (_c = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _c !== null) ? _c : 'black',
+        'text-anchor': 'start'
       });
-      t.translate(t.getBBox().width / 2, t.getBBox().height / 2);
       r = this.rect(px, py, 9, 9).attr({
         'fill': (typeof (_d = legend_colors[text]) !== "undefined" && _d !== null) ? _d : 'black',
         'stroke': (typeof (_e = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _e !== null) ? _e : 'black'
       });
       key = this.set().push(t, r);
-      if ((px - x) + spacing + key.getBBox().width > max_width) {
+      key_width = key.getBBox().width;
+      if ((px - x) + spacing + key_width > max_width) {
         set.translate(0, -line_height);
         key.translate(x - px, y - py);
         px = x;
         py = y;
       }
-      px += key.getBBox().width + spacing;
+      px += key_width + spacing;
       set.push(key);
     }
     return set;
@@ -379,12 +380,13 @@
     });
   };
   Raphael.fn.sai.prim.info = function(x, y, max_width, info) {
-    var _a, _b, _c, label, line_height, px, py, set, spacing, t, tbbox, text;
+    var _a, _b, _c, char_width, label, line_height, px, py, set, spacing, t, text, twidth;
     spacing = 15;
     line_height = 14;
     set = this.set();
     px = x;
     py = y;
+    char_width = 6;
     _b = info;
     for (label in _b) {
       if (!__hasProp.call(_b, label)) continue;
@@ -398,17 +400,16 @@
       } else {
         text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? _c : Sai.util.prettystr(info[label]);
       }
+      twidth = char_width * text.length;
+      if ((px - x) + twidth > max_width) {
+        px = x;
+        py += line_height;
+      }
       t = this.text(px, py, text).attr({
         'font-family': 'Lucida Console',
         'text-anchor': 'start'
       });
-      tbbox = t.getBBox();
-      if ((px - x) + spacing + tbbox.width > max_width) {
-        t.translate(x - px, line_height);
-        px = x;
-        py += line_height;
-      }
-      px += tbbox.width + spacing;
+      px += twidth + spacing;
       set.push(t);
     }
     return set;
