@@ -379,13 +379,12 @@
     });
   };
   Raphael.fn.sai.prim.info = function(x, y, max_width, info) {
-    var _a, _b, _c, full_text, label, line_height, px, py, set, spacing, text;
+    var _a, _b, _c, label, line_height, px, py, set, spacing, t, tbbox, text;
     spacing = 15;
     line_height = 14;
     set = this.set();
     px = x;
     py = y;
-    full_text = '';
     _b = info;
     for (label in _b) {
       if (!__hasProp.call(_b, label)) continue;
@@ -399,9 +398,20 @@
       } else {
         text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? _c : Sai.util.prettystr(info[label]);
       }
-      full_text += text + '\u00a0\u00a0\u00a0\u00a0';
+      t = this.text(px, py, text).attr({
+        'font-family': 'Lucida Console',
+        'text-anchor': 'start'
+      });
+      tbbox = t.getBBox();
+      if ((px - x) + spacing + tbbox.width > max_width) {
+        t.translate(x - px, line_height);
+        px = x;
+        py += line_height;
+      }
+      px += tbbox.width + spacing;
+      set.push(t);
     }
-    return (info = this.sai.prim.wrappedText(x, y, max_width, full_text, '\u00a0'));
+    return set;
   };
   Raphael.fn.sai.prim.hoverShape = function(fDraw, attrs, extras, hoverattrs) {
     var hoverfuncs, shape;

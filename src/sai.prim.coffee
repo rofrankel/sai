@@ -397,8 +397,6 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
   px = x
   py = y
   
-  full_text = ''
-  
   for label of info
     continue if info[label] is null
     text = label + (if label is '' then '' else ': ')
@@ -406,10 +404,19 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
       text += info[label]
     else
       text += Sai.util.prettynum(info[label]) ? Sai.util.prettystr(info[label])
+    t = @text(px, py, text).attr({'font-family': 'Lucida Console', 'text-anchor': 'start'})
+    tbbox = t.getBBox()
     
-    full_text += text + '\u00a0\u00a0\u00a0\u00a0'
+    if (px - x) + spacing + tbbox.width > max_width
+      t.translate(x - px, line_height)
+      px = x
+      py += line_height
+    
+    px += tbbox.width + spacing
+    
+    set.push(t)
   
-  info = @sai.prim.wrappedText(x, y, max_width, full_text, '\u00a0')
+  return set
 
 
 Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
