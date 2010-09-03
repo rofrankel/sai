@@ -460,10 +460,8 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, colors, bgc
   low ?= 0
   high ?= 1
   
-  set.push(lowLabel = @text(x, y, Sai.util.prettystr(low)))
-  lowLabel.translate(lowLabel.getBBox().width / 2, 0)
-  set.push(highLabel = @text(x + w, y, Sai.util.prettystr(high)))
-  highLabel.translate(-highLabel.getBBox().width / 2, 0)
+  set.push(lowLabel = @text(x, y, Sai.util.prettystr(low)).attr({'text-anchor': 'start'}))
+  set.push(highLabel = @text(x + w, y, Sai.util.prettystr(high)).attr({'text-anchor': 'end'}))
   
   y -= 7 # rest of text, plus padding
   

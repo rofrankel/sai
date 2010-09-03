@@ -443,10 +443,12 @@
     y -= 5;
     low = (typeof low !== "undefined" && low !== null) ? low : 0;
     high = (typeof high !== "undefined" && high !== null) ? high : 1;
-    set.push(lowLabel = this.text(x, y, Sai.util.prettystr(low)));
-    lowLabel.translate(lowLabel.getBBox().width / 2, 0);
-    set.push(highLabel = this.text(x + w, y, Sai.util.prettystr(high)));
-    highLabel.translate(-highLabel.getBBox().width / 2, 0);
+    set.push(lowLabel = this.text(x, y, Sai.util.prettystr(low)).attr({
+      'text-anchor': 'start'
+    }));
+    set.push(highLabel = this.text(x + w, y, Sai.util.prettystr(high)).attr({
+      'text-anchor': 'end'
+    }));
     y -= 7;
     buckets = {};
     maxBucket = 0;
