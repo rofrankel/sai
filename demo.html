@@ -7,9 +7,22 @@
     <script type="text/javascript" charset="utf-8" src="js/sai-min.js"></script>
     <script type="text/javascript" charset="utf-8" src="data/us.svg.json"></script>
     <script type="text/javascript" charset="utf-8" src="data/europe.svg.json"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+        //new_div = document.createElement('div');
+        //new_div.setAttribute('id', 'c1');
+        //document.getElementById('j').appendChild(new_div);
+        create_charts();
+      }
+      
+    </script>
+    
   </head>
   <body>
-    <div id="c1" style="width: 400px; height: 400px; float: left;"></div>
+    <p id="j">
+<!--      <div id="c1" style="width: 400px; height: 400px; float: left;"></div>  -->
+    </p>
+    <div id="c1" style="width: 400px; height: 400px; float: left;"></div> 
     <div id="c2" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c3" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c4" style="width: 400px; height: 400px; float: left;"></div>
@@ -18,267 +31,268 @@
     <div id="c7" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c8" style="width: 400px; height: 400px; float: left;"></div>
     <script type="text/javascript">
-      
-      Sai.imagePath = 'images/';
-      
-      var orange = '#AA5128';
-      var olive = '#615C3E';
-      var gold = '#CABC5C';
-      var lilac = '#B3A4B7';
-      var tea = '#E7ECE6';
-      var ucla = '#536895';
-      
-      var shipping_colors = {
-        'Track.com Shipping Index': '#087812',
-        'Baltic Dry Index': '#444444',
-      };
-      
-      var badData = {
-        "date": ["5/10/2010", "5/11/2010", "12-May"],
-        "MSFT": [30.0, 28.0, 21.0],
-        "AAPL": [5.0, 6.0, 11.0]
-      };      
-      
-      var colors = {
-        'AAPL': orange,
-        'AMZN': olive,
-        'GOOG': gold,
-        'MSFT': lilac,
-        'Month': 'red',
-        '   ': 'palegoldenrod',
-      }
-      
-      var data = {
-        'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null],
-        'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 6, 4, 2],
-        'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, -1],
-        'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 1],
-        'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-      };
-      
-      var delta_data = {
-        'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null],
-        'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 6, 4, 2],
-        //'GOOG': [700, 404, 164, 1125, 248, 217, 392, null, 256.5, 226, 698, -116],
-        'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 1],
-        'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 2000],
-      };
-      
-      var data2 = {
-        'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null, 6, 3, 6, 1, 2, 8, 2, 3, 12, 2, 4, 7, 3, 12, 4, 5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 3, 6, 1, 2, 8, 2, 3, 12, 27, 14, 10, 1, 3, 5, 7, 9],
-        'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 4, 6, 4, 2, 6, 3, 2, 8, 3, 12, 2, 1, 11, 8, 7, 6, 5, 2, 1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null, 6, 3, 6, 1, 2, 8, 2, 3, 12, 2, 4, 7, 3, 12, 4],
-        'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, 6, 3, -1, 6, 1, 12, -3, 2, 3, 12, 2, 4, 6, 8, 7, 5, 4, 5, 12, 1, -3, "hello", -6, 6, 10, 4, 6, 4, 2, 6, 3, 2, 8, 3, 12, 2, 1, 11, 8, 7, 6, 5, 2],
-        'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 3, 6, 1, 2, 8, 2, 3, 12, 27, 14, 10, 1, 3, 5, 7, 9, 7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, 6, 3, -1, 6, 1, 12, -3, 2, 3, 12, 2, 4, 6, 8, 7, 5],
-        'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'UND', 'DOD', 'TRED', 'QUTD', 'QND', 'SED', 'STD', 'OTD', 'NVD', 'VNE', 'VNU', 'VND', 'VNT', 'VNQT', 'VNQN', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'UND', 'DOD', 'TRED', 'QUTD', 'QND', 'SED', 'STD', 'OTD', 'NVD', 'VNE', 'VNU', 'VND', 'VNT', 'VNQT', 'VNQN'],
-      };
-      
-      var csdata = {
-        //'open': [2, 6, 4, 6, 3, 6, 2, 6, 4, 6, 3, 6, 2, 6, 4, 6, 3, 6],
-        'close': [4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7],
-        'high': [5, 8, 6, 6, 5, 7, 5, 8, 6, 6, 5, 7, 5, 8, 6, 6, 5, 7],
-        'low': [1, 3, 2, 1, 3, 4, 1, 3, 2, 1, 3, 4, 1, 3, 2, 1, 3, 4],
-        'price': [4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7],
-        'time': ['t1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6'],
-      };
-      
-      var msft_data = {
-        'open': [26.78, 26.16, 25.78, 25.46, 25.05, 24.51, 24.13, 23.30, 23.09, 23.36, 23.27, 23.70, 23.82, 24.34, 24.21, 23.75, 23.9, 24.58, 26.78, 26.16, 25.78, 25.46, 25.05, 24.51, 24.13, 23.30, 23.09, 23.36, 23.27, 23.70, 23.82, 24.34, 24.21, 23.75, 23.9, 24.58],
-        'close': [25.95, 25.77, 25.31, 25.00, 24.53, 24.31, 23.31, 23.01, 23.16, 23.27, 23.27, 23.82, 24.30, 23.55, 23.75, 23.81, 24.3, 24.21, 25.95, 25.77, 25.31, 25.00, 24.53, 24.31, 23.31, 23.01, 23.16, 23.27, 23.27, 23.82, 24.30, 23.55, 23.75, 23.81, 24.3, 24.21],
-        'high': [26.89, 26.45, 25.78, 25.72, 25.11, 24.61, 25.20, 23.68, 23.32, 23.48, 23.27, 24.09, 24.32, 24.55, 24.35, 23.99, 24.65, 24.58, 26.89, 26.45, 25.78, 25.72, 25.11, 24.61, 25.20, 23.68, 23.32, 23.48, 23.27, 24.09, 24.32, 24.55, 24.35, 23.99, 24.65, 24.58],
-        'low': [25.89, 25.76, 25.22, 24.93, 24.31, 24.12, 23.11, 22.95, 22.73, 23.05, 23.27, 23.58, 23.61, 23.55, 23.45, 23.7, 23.91, 24.01, 25.89, 25.76, 25.22, 24.93, 24.31, 24.12, 23.11, 22.95, 22.73, 23.05, 23.27, 23.58, 23.61, 23.55, 23.45, 23.7, 23.91, 24.01],
-        'volume': [54625218, '55986386', 61468282, 85252196, 156256672, 73787879, 119885791, 81057995, 92239399, 62489452, 0, 73594554, 81967278, 54625218, 55986386, 61468282, 85252196, 56256672, 54625218, 55986386, 61468282, 85252196, 156256672, 73787879, 119885791, 81057995, 92239399, 62489452, 0, 73594554, 81967278, 54625218, 55986386, 61468282, 85252196, 56256672],
-        '7 day avg': [26.88, 26.77, 26.60, 26.52, 26.3, 26.20, 25.76, 25.11, 24.76, 24.42, 23.81, 23.51, 23.3, 23.16, 23.21, 23.29, 23.3, 23.35, 26.88, 26.77, 26.60, 26.52, 26.3, 26.20, 25.76, 25.11, 24.76, 24.42, 23.81, 23.51, 23.3, 23.16, 23.21, 23.29, 23.3, 23.35],
-        'date': ['Jun 21', 'Jun 22', 'Jun 23', 'Jun 24', 'Jun 25', 'Jun 28', 'Jun 29', 'Jun 30', 'Jul 1', 'Jul 2', 'Jul 5', 'Jul 6', 'Jul 7', 'Jul 8', 'Jul 9', 'Jul 12', 'Jul 13', 'Jul 14', 'Jul 15', 'Jul 16', 'Jul 19', 'Jul 20', 'Jul 21', 'Jul 22', 'Jul 23', 'Jul 26', 'Jul 27', 'Jul 28', 'Jul 29', 'Jul 30', 'Aug 2', 'Aug 3', 'Aug 4', 'Aug 5', 'Aug 6', 'Aug 9'],
-      };
-      
-      var bardata = {
-        'AAPL': [1100000, 1200000, 1300000, 1400000],
-        'AMZN': [200000, null, 1400000, 1400000],
-        'GOOG': [1300000, 1500000, 1100000, 1150000],
-        'MSFT': [1500000, 1100000, 1400000, 1000247],
-        'Quarter': ['Q1', 'Q2', 'Q3', 'Q4'],
-      };
-      
-      var scatterData = {
+      create_charts = function() {
+        Sai.imagePath = 'images/';
         
-      }
-      
-      var getRandomData = function (min, max, n, ints) {
-        var result = [];
-        for(i = 0; i < n; i++) {
-          var x = Math.random() * (max-min) + min;
-          if(ints) {
-            x = Math.round(x);
-          }
-          result.push(x);
+        var orange = '#AA5128';
+        var olive = '#615C3E';
+        var gold = '#CABC5C';
+        var lilac = '#B3A4B7';
+        var tea = '#E7ECE6';
+        var ucla = '#536895';
+        
+        var shipping_colors = {
+          'Track.com Shipping Index': '#087812',
+          'Baltic Dry Index': '#444444',
+        };
+        
+        var badData = {
+          "date": ["5/10/2010", "5/11/2010", "12-May"],
+          "MSFT": [30.0, 28.0, 21.0],
+          "AAPL": [5.0, 6.0, 11.0]
+        };      
+        
+        var colors = {
+          'AAPL': orange,
+          'AMZN': olive,
+          'GOOG': gold,
+          'MSFT': lilac,
+          'Month': 'red',
+          '   ': 'palegoldenrod',
         }
         
-        return result;
+        var data = {
+          'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null],
+          'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 6, 4, 2],
+          'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, -1],
+          'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 1],
+          'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+        };
+        
+        var delta_data = {
+          'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null],
+          'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 6, 4, 2],
+          //'GOOG': [700, 404, 164, 1125, 248, 217, 392, null, 256.5, 226, 698, -116],
+          'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 1],
+          'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 2000],
+        };
+        
+        var data2 = {
+          'AAPL': [1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null, 6, 3, 6, 1, 2, 8, 2, 3, 12, 2, 4, 7, 3, 12, 4, 5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 3, 6, 1, 2, 8, 2, 3, 12, 27, 14, 10, 1, 3, 5, 7, 9],
+          'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 10, 4, 6, 4, 2, 6, 3, 2, 8, 3, 12, 2, 1, 11, 8, 7, 6, 5, 2, 1, 2, 3, null, 4, 7, 5, 1, -4, -2, -1, null, 6, 3, 6, 1, 2, 8, 2, 3, 12, 2, 4, 7, 3, 12, 4],
+          'GOOG': [7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, 6, 3, -1, 6, 1, 12, -3, 2, 3, 12, 2, 4, 6, 8, 7, 5, 4, 5, 12, 1, -3, "hello", -6, 6, 10, 4, 6, 4, 2, 6, 3, 2, 8, 3, 12, 2, 1, 11, 8, 7, 6, 5, 2],
+          'MSFT': [5, 2, null, 1, 5, 6, 3, 8, 3, 4, 7, 3, 6, 1, 2, 8, 2, 3, 12, 27, 14, 10, 1, 3, 5, 7, 9, 7, 4, 1, 11, 2, 2, 3, null, 2.5, 2, 6, 6, 3, -1, 6, 1, 12, -3, 2, 3, 12, 2, 4, 6, 8, 7, 5],
+          'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'UND', 'DOD', 'TRED', 'QUTD', 'QND', 'SED', 'STD', 'OTD', 'NVD', 'VNE', 'VNU', 'VND', 'VNT', 'VNQT', 'VNQN', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'UND', 'DOD', 'TRED', 'QUTD', 'QND', 'SED', 'STD', 'OTD', 'NVD', 'VNE', 'VNU', 'VND', 'VNT', 'VNQT', 'VNQN'],
+        };
+        
+        var csdata = {
+          //'open': [2, 6, 4, 6, 3, 6, 2, 6, 4, 6, 3, 6, 2, 6, 4, 6, 3, 6],
+          'close': [4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7],
+          'high': [5, 8, 6, 6, 5, 7, 5, 8, 6, 6, 5, 7, 5, 8, 6, 6, 5, 7],
+          'low': [1, 3, 2, 1, 3, 4, 1, 3, 2, 1, 3, 4, 1, 3, 2, 1, 3, 4],
+          'price': [4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7, 4, 4, 5, 2, 4, 7],
+          'time': ['t1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6', 't1', 't2', 't3', 't4', 't5', 't6'],
+        };
+        
+        var msft_data = {
+          'open': [26.78, 26.16, 25.78, 25.46, 25.05, 24.51, 24.13, 23.30, 23.09, 23.36, 23.27, 23.70, 23.82, 24.34, 24.21, 23.75, 23.9, 24.58, 26.78, 26.16, 25.78, 25.46, 25.05, 24.51, 24.13, 23.30, 23.09, 23.36, 23.27, 23.70, 23.82, 24.34, 24.21, 23.75, 23.9, 24.58],
+          'close': [25.95, 25.77, 25.31, 25.00, 24.53, 24.31, 23.31, 23.01, 23.16, 23.27, 23.27, 23.82, 24.30, 23.55, 23.75, 23.81, 24.3, 24.21, 25.95, 25.77, 25.31, 25.00, 24.53, 24.31, 23.31, 23.01, 23.16, 23.27, 23.27, 23.82, 24.30, 23.55, 23.75, 23.81, 24.3, 24.21],
+          'high': [26.89, 26.45, 25.78, 25.72, 25.11, 24.61, 25.20, 23.68, 23.32, 23.48, 23.27, 24.09, 24.32, 24.55, 24.35, 23.99, 24.65, 24.58, 26.89, 26.45, 25.78, 25.72, 25.11, 24.61, 25.20, 23.68, 23.32, 23.48, 23.27, 24.09, 24.32, 24.55, 24.35, 23.99, 24.65, 24.58],
+          'low': [25.89, 25.76, 25.22, 24.93, 24.31, 24.12, 23.11, 22.95, 22.73, 23.05, 23.27, 23.58, 23.61, 23.55, 23.45, 23.7, 23.91, 24.01, 25.89, 25.76, 25.22, 24.93, 24.31, 24.12, 23.11, 22.95, 22.73, 23.05, 23.27, 23.58, 23.61, 23.55, 23.45, 23.7, 23.91, 24.01],
+          'volume': [54625218, '55986386', 61468282, 85252196, 156256672, 73787879, 119885791, 81057995, 92239399, 62489452, 0, 73594554, 81967278, 54625218, 55986386, 61468282, 85252196, 56256672, 54625218, 55986386, 61468282, 85252196, 156256672, 73787879, 119885791, 81057995, 92239399, 62489452, 0, 73594554, 81967278, 54625218, 55986386, 61468282, 85252196, 56256672],
+          '7 day avg': [26.88, 26.77, 26.60, 26.52, 26.3, 26.20, 25.76, 25.11, 24.76, 24.42, 23.81, 23.51, 23.3, 23.16, 23.21, 23.29, 23.3, 23.35, 26.88, 26.77, 26.60, 26.52, 26.3, 26.20, 25.76, 25.11, 24.76, 24.42, 23.81, 23.51, 23.3, 23.16, 23.21, 23.29, 23.3, 23.35],
+          'date': ['Jun 21', 'Jun 22', 'Jun 23', 'Jun 24', 'Jun 25', 'Jun 28', 'Jun 29', 'Jun 30', 'Jul 1', 'Jul 2', 'Jul 5', 'Jul 6', 'Jul 7', 'Jul 8', 'Jul 9', 'Jul 12', 'Jul 13', 'Jul 14', 'Jul 15', 'Jul 16', 'Jul 19', 'Jul 20', 'Jul 21', 'Jul 22', 'Jul 23', 'Jul 26', 'Jul 27', 'Jul 28', 'Jul 29', 'Jul 30', 'Aug 2', 'Aug 3', 'Aug 4', 'Aug 5', 'Aug 6', 'Aug 9'],
+        };
+        
+        var bardata = {
+          'AAPL': [1100000, 1200000, 1300000, 1400000],
+          'AMZN': [200000, null, 1400000, 1400000],
+          'GOOG': [1300000, 1500000, 1100000, 1150000],
+          'MSFT': [1500000, 1100000, 1400000, 1000247],
+          'Quarter': ['Q1', 'Q2', 'Q3', 'Q4'],
+        };
+        
+        var scatterData = {
+          
+        }
+        
+        var getRandomData = function (min, max, n, ints) {
+          var result = [];
+          for(i = 0; i < n; i++) {
+            var x = Math.random() * (max-min) + min;
+            if(ints) {
+              x = Math.round(x);
+            }
+            result.push(x);
+          }
+          
+          return result;
+        }
+        
+        var states = [];
+        for(state in Sai.data.map.us.paths) {
+          states.push(state);
+        }
+        
+        var USdata = {
+          '__MAP__': Sai.data.map.us,
+          'states': states, // parallel to data arrays
+          '__DEFAULT__': 'Unemployment',
+          'Confidence': [null, null, 1, 2, 3, null, 4, 5, 9, 1, 53, null, null, null, 1, 24, null, null, null, null, 54, 12, 34, null, null, null, null, 54, 12, 34, 34, null], // getRandomData(38.4, 38.7, states.length),
+          'Unemployment': getRandomData(0, 1, states.length),
+          'Dropped calls': getRandomData(50, 150, states.length, true),
+          'Oatmeal Index': getRandomData(14, 31, states.length, true),
+          'Math sightings': getRandomData(0, 10000000, states.length, true),
+        }
+        
+        var UScolors = {
+          'Confidence': orange,
+          'Unemployment': lilac,
+          'Dropped calls': olive,
+          'Oatmeal Index': ucla,
+          'Math sightings': 'green',
+        }
+        
+        var repubs = getRandomData(44, 56, states.length);
+        var dems = getRandomData(44, 56, states.length);
+        var greens = getRandomData(0, 0.5, states.length);
+        
+        realData_repub = {
+          'HI': 27,
+          'AK': 60,
+          'FL': 48,
+          'NH': 45,
+          'MI': 41,
+          'VT': 31,
+          'ME': 40,
+          'RI': 35,
+          'NY': 36,
+          'PA': 44,
+          'NJ': 42,
+          'DE': 37,
+          'MD': 37,
+          'VA': 47,
+          'WV': 56,
+          'OH': 47,
+          'IN': 49,
+          'IL': 37,
+          'CT': 38,
+          'WI': 43,
+          'NC': 49,
+          'MA': 36,
+          'TN': 57,
+          'AR': 59,
+          'MO': 50.5,
+          'GA': 52,
+          'SC': 54,
+          'KY': 58,
+          'AL': 61,
+          'LA': 59,
+          'MS': 56,
+          'IA': 45,
+          'MN': 44,
+          'OK': 66,
+          'TX': 55,
+          'NM': 42,
+          'KS': 57,
+          'NE': 57,
+          'SD': 53,
+          'ND': 53,
+          'WY': 65,
+          'MT': 50.5,
+          'CO': 45,
+          'ID': 61,
+          'UT': 63,
+          'AZ': 54,
+          'NV': 43,
+          'OR': 41,
+          'WA': 41,
+          'CA': 37,
+          'DC': 23,
+        };
+        
+        for(i = 0; i < states.length; i++) {
+          repubs[i] = realData_repub[states[i]];
+          dems[i] = 100 - repubs[i];
+        }
+        
+        var USChromaticData = {
+          '__MAP__': Sai.data.map.us,
+          'Republican': repubs,
+          'Democrat': dems,
+          'Green Party': greens,
+          states: states
+        };
+        
+        var USChromaticColors = {
+          'Republican': '#c00',
+          'Democrat': '#00c',
+          'Green Party': '#0f0',
+        };
+        
+        var badMapData = {
+          "state": ["NJ", "ny", "dc", "ca", "ma", "md", "de", "pa", "ct", "il", "oh", "in", "ri", "mn", "ga", "mi", "va", "la", "wv", "tx", "wi", "ky", "tn", "or", "fl", "ut", "wa", "nc", "nh", "mo", "az", "co", "al", "sc", "ne", "ks", "ia", "nv", "ak", "ok", "ms", "vt", "id", "me", "nm", "nd", "sd", "mt", "wy"],
+          "Health Risk from Pollutants": [950.0, 940.0, 930.0, 890.0, 890.0, 870.0, 860.0, 860.0, 850.0, 800.0, 730.0, 720.0, 670.0, 660.0, 650.0, 640.0, 620.0, 590.0, 560.0, 550.0, 540.0, 540.0, 520.0, 520.0, 510.0, 500.0, 490.0, 480.0, 470.0, 460.0, 440.0, 440.0, 400.0, 390.0, 390.0, 360.0, 340.0, 340.0, 330.0, 330.0, 320.0, 270.0, 260.0, 240.0, 230.0, 200.0, 190.0, 180.0, 140.0],
+          "Toxic Chemical Emissions": [null, null, null, null, null, null, null, 110987443.0, null, null, 209090481.0, 136785790.0, null, null, 126580488.0, null, null, 120290949.0, null, 244460108.0, null, null, 148476319.0, null, 151374755.0, 173157779.0, null, 118729088.0, null, null, 328676277.0, null, 115716292.0, null, null, null, null, 496783770.0, 547987529.0, null, null, null, null, null, null, null, null, null, null],
+          '__MAP__': Sai.data.map.us,
+          '__DEFAULT__': "Toxic Chemical Emissions"
+        };
+        
+        var badMapColors = {
+          "Health Risk from Pollutants": olive,
+          "Toxic Chemical Emissions": orange,
+          "state": ucla,
+        };
+        
+        var irisData = {
+          'Sepal length': [5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9,5.4,4.8,4.8,4.3,5.8,5.7,5.4,5.1,5.7,5.1,5.4,5.1,4.6,5.1,4.8,5,5,5.2,5.2,4.7,4.8,5.4,5.2,5.5,4.9,5,5.5,4.9,4.4,5.1,5,4.5,4.4,5,5.1,4.8,5.1,4.6,5.3,5,7,6.4,6.9,5.5,6.5,5.7,6.3,4.9,6.6,5.2,5,5.9,6,6.1,5.6,6.7,5.6,5.8,6.2,5.6,5.9,6.1,6.3,6.1,6.4,6.6,6.8,6.7,6,5.7,5.5,5.5,5.8,6,5.4,6,6.7,6.3,5.6,5.5,5.5,6.1,5.8,5,5.6,5.7,5.7,6.2,5.1,5.7,6.3,5.8,7.1,6.3,6.5,7.6,4.9,7.3,6.7,7.2,6.5,6.4,6.8,5.7,5.8,6.4,6.5,7.7,7.7,6,6.9,5.6,7.7,6.3,6.7,7.2,6.2,6.1,6.4,7.2,7.4,7.9,6.4,6.3,6.1,7.7,6.3,6.4,6,6.9,6.7,6.9,5.8,6.8,6.7,6.7,6.3,6.5,6.2,5.9],
+          'Sepal width': [3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1,3.7,3.4,3,3,4,4.4,3.9,3.5,3.8,3.8,3.4,3.7,3.6,3.3,3.4,3,3.4,3.5,3.4,3.2,3.1,3.4,4.1,4.2,3.1,3.2,3.5,3.1,3,3.4,3.5,2.3,3.2,3.5,3.8,3,3.8,3.2,3.7,3.3,3.2,3.2,3.1,2.3,2.8,2.8,3.3,2.4,2.9,2.7,2,3,2.2,2.9,2.9,3.1,3,2.7,2.2,2.5,3.2,2.8,2.5,2.8,2.9,3,2.8,3,2.9,2.6,2.4,2.4,2.7,2.7,3,3.4,3.1,2.3,3,2.5,2.6,3,2.6,2.3,2.7,3,2.9,2.9,2.5,2.8,3.3,2.7,3,2.9,3,3,2.5,2.9,2.5,3.6,3.2,2.7,3,2.5,2.8,3.2,3,3.8,2.6,2.2,3.2,2.8,2.8,2.7,3.3,3.2,2.8,3,2.8,3,2.8,3.8,2.8,2.8,2.6,3,3.4,3.1,3,3.1,3.1,3.1,2.7,3.2,3.3,3,2.5,3,3.4,3],
+          'Petal length': [1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5,1.5,1.6,1.4,1.1,1.2,1.5,1.3,1.4,1.7,1.5,1.7,1.5,1,1.7,1.9,1.6,1.6,1.5,1.4,1.6,1.6,1.5,1.5,1.4,1.5,1.2,1.3,1.5,1.3,1.5,1.3,1.3,1.3,1.6,1.9,1.4,1.6,1.4,1.5,1.4,4.7,4.5,4.9,4,4.6,4.5,4.7,3.3,4.6,3.9,3.5,4.2,4,4.7,3.6,4.4,4.5,4.1,4.5,3.9,4.8,4,4.9,4.7,4.3,4.4,4.8,5,4.5,3.5,3.8,3.7,3.9,5.1,4.5,4.5,4.7,4.4,4.1,4,4.4,4.6,4,3.3,4.2,4.2,4.2,4.3,3,4.1,6,5.1,5.9,5.6,5.8,6.6,4.5,6.3,5.8,6.1,5.1,5.3,5.5,5,5.1,5.3,5.5,6.7,6.9,5,5.7,4.9,6.7,4.9,5.7,6,4.8,4.9,5.6,5.8,6.1,6.4,5.6,5.1,5.6,6.1,5.6,5.5,4.8,5.4,5.6,5.1,5.1,5.9,5.7,5.2,5,5.2,5.4,5.1],
+          'Petal width': [0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1,0.2,0.2,0.1,0.1,0.2,0.4,0.4,0.3,0.3,0.3,0.2,0.4,0.2,0.5,0.2,0.2,0.4,0.2,0.2,0.2,0.2,0.4,0.1,0.2,0.1,0.2,0.2,0.1,0.2,0.2,0.3,0.3,0.2,0.6,0.4,0.3,0.2,0.2,0.2,0.2,1.4,1.5,1.5,1.3,1.5,1.3,1.6,1,1.3,1.4,1,1.5,1,1.4,1.3,1.4,1.5,1,1.5,1.1,1.8,1.3,1.5,1.2,1.3,1.4,1.4,1.7,1.5,1,1.1,1,1.2,1.6,1.5,1.6,1.5,1.3,1.3,1.3,1.2,1.4,1.2,1,1.3,1.2,1.3,1.3,1.1,1.3,2.5,1.9,2.1,1.8,2.2,2.1,1.7,1.8,1.8,2.5,2,1.9,2.1,2,2.4,2.3,1.8,2.2,2.3,1.5,2.3,2,2,1.8,2.1,1.8,1.8,1.8,2.1,1.6,1.9,2,2.2,1.5,1.4,2.3,2.4,1.8,1.8,2.1,2.4,2.3,1.9,2.3,2.5,2.3,1.9,2,2.3,1.8],
+          'Species': [,'Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica'],
+        };      
+        
+        var irisColors = {
+          'Iris-setosa': ucla,
+          'Iris-versicolor': gold,
+          'Iris-virginica': lilac,
+        };
+        
+        var scatterMappings = {
+          color: 'Species',
+          x: 'Sepal length',
+          y: 'Petal width',
+          radius: 'Petal length',
+          'stroke_opacity': 'Sepal width',
+        };
+        
+        var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
+        
+        var r1 = Raphael("c1", 350, 350);
+        var chart = new Sai.LineChart(r1, 0, 350, 350, 350, delta_data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, area: true, footnote: "Source:  The most gracious leadership of the singular Robert Savage, Esq., ruler of all he surveys, a gentleman and a scholar, a true nobleman in an age of savages, and the finest violinist this side of Prague."}).setColors(colors).render();
+        
+        var r2 = Raphael("c2", 350, 350);
+        var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true, lineWidth: 1}).setColors(colors).render();
+        
+        var r3 = Raphael("c3", 350, 350);
+        var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, "date", {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'7 day avg': olive}).render();
+        
+        var r4 = Raphael("c4", 350, 350);
+        var barc = new Sai.BarChart(r4, 0, 350, 350, 350, bardata, "Quarter", {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
+        
+        var r5 = Raphael("c5", 350, 350);
+        var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
+        
+        var r6 = Raphael("c6", 400, 350);
+        var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, badMapData, "state", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(badMapColors).render();
+        
+        var r7 = Raphael("c7", 400, 350);
+        var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
+        
+        var r8 = Raphael("c8", 400, 350);
+        var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, irisData, "", {mappings: scatterMappings, bgcolor: tea, title: "Fisher's Iris Data", colors: irisColors})).render();
+        
       }
-      
-      var states = [];
-      for(state in Sai.data.map.us.paths) {
-        states.push(state);
-      }
-      
-      var USdata = {
-        '__MAP__': Sai.data.map.us,
-        'states': states, // parallel to data arrays
-        '__DEFAULT__': 'Unemployment',
-        'Confidence': [null, null, 1, 2, 3, null, 4, 5, 9, 1, 53, null, null, null, 1, 24, null, null, null, null, 54, 12, 34, null, null, null, null, 54, 12, 34, 34, null], // getRandomData(38.4, 38.7, states.length),
-        'Unemployment': getRandomData(0, 1, states.length),
-        'Dropped calls': getRandomData(50, 150, states.length, true),
-        'Oatmeal Index': getRandomData(14, 31, states.length, true),
-        'Math sightings': getRandomData(0, 10000000, states.length, true),
-      }
-      
-      var UScolors = {
-        'Confidence': orange,
-        'Unemployment': lilac,
-        'Dropped calls': olive,
-        'Oatmeal Index': ucla,
-        'Math sightings': 'green',
-      }
-      
-      var repubs = getRandomData(44, 56, states.length);
-      var dems = getRandomData(44, 56, states.length);
-      var greens = getRandomData(0, 0.5, states.length);
-      
-      realData_repub = {
-        'HI': 27,
-        'AK': 60,
-        'FL': 48,
-        'NH': 45,
-        'MI': 41,
-        'VT': 31,
-        'ME': 40,
-        'RI': 35,
-        'NY': 36,
-        'PA': 44,
-        'NJ': 42,
-        'DE': 37,
-        'MD': 37,
-        'VA': 47,
-        'WV': 56,
-        'OH': 47,
-        'IN': 49,
-        'IL': 37,
-        'CT': 38,
-        'WI': 43,
-        'NC': 49,
-        'MA': 36,
-        'TN': 57,
-        'AR': 59,
-        'MO': 50.5,
-        'GA': 52,
-        'SC': 54,
-        'KY': 58,
-        'AL': 61,
-        'LA': 59,
-        'MS': 56,
-        'IA': 45,
-        'MN': 44,
-        'OK': 66,
-        'TX': 55,
-        'NM': 42,
-        'KS': 57,
-        'NE': 57,
-        'SD': 53,
-        'ND': 53,
-        'WY': 65,
-        'MT': 50.5,
-        'CO': 45,
-        'ID': 61,
-        'UT': 63,
-        'AZ': 54,
-        'NV': 43,
-        'OR': 41,
-        'WA': 41,
-        'CA': 37,
-        'DC': 23,
-      };
-      
-      for(i = 0; i < states.length; i++) {
-        repubs[i] = realData_repub[states[i]];
-        dems[i] = 100 - repubs[i];
-      }
-      
-      var USChromaticData = {
-        '__MAP__': Sai.data.map.us,
-        'Republican': repubs,
-        'Democrat': dems,
-        'Green Party': greens,
-        states: states
-      };
-      
-      var USChromaticColors = {
-        'Republican': '#c00',
-        'Democrat': '#00c',
-        'Green Party': '#0f0',
-      };
-      
-      var badMapData = {
-        "state": ["NJ", "ny", "dc", "ca", "ma", "md", "de", "pa", "ct", "il", "oh", "in", "ri", "mn", "ga", "mi", "va", "la", "wv", "tx", "wi", "ky", "tn", "or", "fl", "ut", "wa", "nc", "nh", "mo", "az", "co", "al", "sc", "ne", "ks", "ia", "nv", "ak", "ok", "ms", "vt", "id", "me", "nm", "nd", "sd", "mt", "wy"],
-        "Health Risk from Pollutants": [950.0, 940.0, 930.0, 890.0, 890.0, 870.0, 860.0, 860.0, 850.0, 800.0, 730.0, 720.0, 670.0, 660.0, 650.0, 640.0, 620.0, 590.0, 560.0, 550.0, 540.0, 540.0, 520.0, 520.0, 510.0, 500.0, 490.0, 480.0, 470.0, 460.0, 440.0, 440.0, 400.0, 390.0, 390.0, 360.0, 340.0, 340.0, 330.0, 330.0, 320.0, 270.0, 260.0, 240.0, 230.0, 200.0, 190.0, 180.0, 140.0],
-        "Toxic Chemical Emissions": [null, null, null, null, null, null, null, 110987443.0, null, null, 209090481.0, 136785790.0, null, null, 126580488.0, null, null, 120290949.0, null, 244460108.0, null, null, 148476319.0, null, 151374755.0, 173157779.0, null, 118729088.0, null, null, 328676277.0, null, 115716292.0, null, null, null, null, 496783770.0, 547987529.0, null, null, null, null, null, null, null, null, null, null],
-        '__MAP__': Sai.data.map.us,
-        '__DEFAULT__': "Toxic Chemical Emissions"
-      };
-      
-      var badMapColors = {
-        "Health Risk from Pollutants": olive,
-        "Toxic Chemical Emissions": orange,
-        "state": ucla,
-      };
-      
-      var irisData = {
-        'Sepal length': [5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9,5.4,4.8,4.8,4.3,5.8,5.7,5.4,5.1,5.7,5.1,5.4,5.1,4.6,5.1,4.8,5,5,5.2,5.2,4.7,4.8,5.4,5.2,5.5,4.9,5,5.5,4.9,4.4,5.1,5,4.5,4.4,5,5.1,4.8,5.1,4.6,5.3,5,7,6.4,6.9,5.5,6.5,5.7,6.3,4.9,6.6,5.2,5,5.9,6,6.1,5.6,6.7,5.6,5.8,6.2,5.6,5.9,6.1,6.3,6.1,6.4,6.6,6.8,6.7,6,5.7,5.5,5.5,5.8,6,5.4,6,6.7,6.3,5.6,5.5,5.5,6.1,5.8,5,5.6,5.7,5.7,6.2,5.1,5.7,6.3,5.8,7.1,6.3,6.5,7.6,4.9,7.3,6.7,7.2,6.5,6.4,6.8,5.7,5.8,6.4,6.5,7.7,7.7,6,6.9,5.6,7.7,6.3,6.7,7.2,6.2,6.1,6.4,7.2,7.4,7.9,6.4,6.3,6.1,7.7,6.3,6.4,6,6.9,6.7,6.9,5.8,6.8,6.7,6.7,6.3,6.5,6.2,5.9],
-        'Sepal width': [3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1,3.7,3.4,3,3,4,4.4,3.9,3.5,3.8,3.8,3.4,3.7,3.6,3.3,3.4,3,3.4,3.5,3.4,3.2,3.1,3.4,4.1,4.2,3.1,3.2,3.5,3.1,3,3.4,3.5,2.3,3.2,3.5,3.8,3,3.8,3.2,3.7,3.3,3.2,3.2,3.1,2.3,2.8,2.8,3.3,2.4,2.9,2.7,2,3,2.2,2.9,2.9,3.1,3,2.7,2.2,2.5,3.2,2.8,2.5,2.8,2.9,3,2.8,3,2.9,2.6,2.4,2.4,2.7,2.7,3,3.4,3.1,2.3,3,2.5,2.6,3,2.6,2.3,2.7,3,2.9,2.9,2.5,2.8,3.3,2.7,3,2.9,3,3,2.5,2.9,2.5,3.6,3.2,2.7,3,2.5,2.8,3.2,3,3.8,2.6,2.2,3.2,2.8,2.8,2.7,3.3,3.2,2.8,3,2.8,3,2.8,3.8,2.8,2.8,2.6,3,3.4,3.1,3,3.1,3.1,3.1,2.7,3.2,3.3,3,2.5,3,3.4,3],
-        'Petal length': [1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5,1.5,1.6,1.4,1.1,1.2,1.5,1.3,1.4,1.7,1.5,1.7,1.5,1,1.7,1.9,1.6,1.6,1.5,1.4,1.6,1.6,1.5,1.5,1.4,1.5,1.2,1.3,1.5,1.3,1.5,1.3,1.3,1.3,1.6,1.9,1.4,1.6,1.4,1.5,1.4,4.7,4.5,4.9,4,4.6,4.5,4.7,3.3,4.6,3.9,3.5,4.2,4,4.7,3.6,4.4,4.5,4.1,4.5,3.9,4.8,4,4.9,4.7,4.3,4.4,4.8,5,4.5,3.5,3.8,3.7,3.9,5.1,4.5,4.5,4.7,4.4,4.1,4,4.4,4.6,4,3.3,4.2,4.2,4.2,4.3,3,4.1,6,5.1,5.9,5.6,5.8,6.6,4.5,6.3,5.8,6.1,5.1,5.3,5.5,5,5.1,5.3,5.5,6.7,6.9,5,5.7,4.9,6.7,4.9,5.7,6,4.8,4.9,5.6,5.8,6.1,6.4,5.6,5.1,5.6,6.1,5.6,5.5,4.8,5.4,5.6,5.1,5.1,5.9,5.7,5.2,5,5.2,5.4,5.1],
-        'Petal width': [0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1,0.2,0.2,0.1,0.1,0.2,0.4,0.4,0.3,0.3,0.3,0.2,0.4,0.2,0.5,0.2,0.2,0.4,0.2,0.2,0.2,0.2,0.4,0.1,0.2,0.1,0.2,0.2,0.1,0.2,0.2,0.3,0.3,0.2,0.6,0.4,0.3,0.2,0.2,0.2,0.2,1.4,1.5,1.5,1.3,1.5,1.3,1.6,1,1.3,1.4,1,1.5,1,1.4,1.3,1.4,1.5,1,1.5,1.1,1.8,1.3,1.5,1.2,1.3,1.4,1.4,1.7,1.5,1,1.1,1,1.2,1.6,1.5,1.6,1.5,1.3,1.3,1.3,1.2,1.4,1.2,1,1.3,1.2,1.3,1.3,1.1,1.3,2.5,1.9,2.1,1.8,2.2,2.1,1.7,1.8,1.8,2.5,2,1.9,2.1,2,2.4,2.3,1.8,2.2,2.3,1.5,2.3,2,2,1.8,2.1,1.8,1.8,1.8,2.1,1.6,1.9,2,2.2,1.5,1.4,2.3,2.4,1.8,1.8,2.1,2.4,2.3,1.9,2.3,2.5,2.3,1.9,2,2.3,1.8],
-        'Species': [,'Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica'],
-      };      
-      
-      var irisColors = {
-        'Iris-setosa': ucla,
-        'Iris-versicolor': gold,
-        'Iris-virginica': lilac,
-      };
-      
-      var scatterMappings = {
-        color: 'Species',
-        x: 'Sepal length',
-        y: 'Petal width',
-        radius: 'Petal length',
-        'stroke_opacity': 'Sepal width',
-      };
-      
-      var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
-      
-      var r1 = Raphael("c1", 350, 350);
-      var chart = new Sai.LineChart(r1, 0, 350, 350, 350, delta_data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, area: true, footnote: "Source:  The most gracious leadership of the singular Robert Savage, Esq., ruler of all he surveys, a gentleman and a scholar, a true nobleman in an age of savages, and the finest violinist this side of Prague."}).setColors(colors).render();
-      
-      var r2 = Raphael("c2", 350, 350);
-      var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true, lineWidth: 1}).setColors(colors).render();
-      
-      var r3 = Raphael("c3", 350, 350);
-      var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, "date", {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'7 day avg': olive}).render();
-      
-      var r4 = Raphael("c4", 350, 350);
-      var barc = new Sai.BarChart(r4, 0, 350, 350, 350, bardata, "Quarter", {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
-      
-      var r5 = Raphael("c5", 350, 350);
-      var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
-      
-      var r6 = Raphael("c6", 400, 350);
-      var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, badMapData, "state", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(badMapColors).render();
-      
-      var r7 = Raphael("c7", 400, 350);
-      var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
-      
-      var r8 = Raphael("c8", 400, 350);
-      var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, irisData, "", {mappings: scatterMappings, bgcolor: tea, title: "Fisher's Iris Data", colors: irisColors})).render();
-      
     </script>
   </body>
 </html>

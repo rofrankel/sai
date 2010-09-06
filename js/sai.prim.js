@@ -165,7 +165,7 @@
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
     ticks = this.set();
     labels = this.set();
-    max_labels = len / 20;
+    max_labels = len / 25;
     interval = max_labels < vals.length ? Math.ceil(vals.length / max_labels) : 1;
     dx = len / (vals.length - 1) * interval;
     xpos = x;
@@ -191,7 +191,7 @@
           labels.push(label);
           bbw = bbox.width;
           max_label_width = Math.max(bbw, max_label_width);
-          if (bbox.x <= xmax) {
+          if (bbox.x <= xmax + 3) {
             rotate = true;
           }
           if (bbox.x + bbw > xmax) {

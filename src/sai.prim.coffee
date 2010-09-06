@@ -4,10 +4,12 @@ getHoverfuncs = (target, attrOn, attrOff, extras) ->
   return [
     () ->
       target.attr(attrOn)
+      # TODO: use f?() once CS is updated
       if extras then extras[0](target)
     ,
     () ->
       target.attr(attrOff)
+      # TODO: use f?() once CS is updated
       if extras then extras[1](target)
   ]
 
@@ -189,7 +191,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
   ticks = @set()
   labels = @set()
   
-  max_labels = len / 20
+  max_labels = len / 25
   interval = if max_labels < vals.length then Math.ceil(vals.length / max_labels) else 1
   
   dx = len / (vals.length - 1) * interval
@@ -216,7 +218,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
         # handle collision detection for rotation
         bbw = bbox.width
         max_label_width = Math.max(bbw, max_label_width)
-        if bbox.x <= xmax then rotate = true
+        if bbox.x <= xmax + 3 then rotate = true
         if bbox.x + bbw > xmax then xmax = bbox.x + bbw
     xpos += dx
   
