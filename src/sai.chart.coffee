@@ -27,6 +27,13 @@ class Sai.Chart
   fixSeriesName: (seriesName) ->
     return seriesName + (if seriesName.match(/^\s+$/) then @nextSeriesSuffix() else '')
   
+  setSemanticRename: (seriesName) ->
+    return unless @semanticRenamePatterns?
+    @semanticRenames ?= {}
+    for rename of @semanticRenamePatterns
+      if seriesName.match(@semanticRenamePatterns[rename])
+        @semanticRenames[rename] = seriesName
+  
   setData: (data) ->
     @data = {}
     @renames = {}
@@ -35,6 +42,7 @@ class Sai.Chart
     for series of data
       loop
         seriesName = @fixSeriesName(series)
+        @setSemanticRename(seriesName)
         break if seriesName is series or seriesName not of data
       
       @renames[series] = seriesName
@@ -668,6 +676,14 @@ class Sai.BarChart extends Sai.Chart
 
 class Sai.StockChart extends Sai.Chart
   
+  semanticRenamePatterns: {
+    'open': /^open$/i
+    'close': /^close$/i
+    'high': /^high$/i
+    'low': /^low$/i
+    'volume': /^vol(ume)?$/i
+  }
+  
   groupsToNullPad: () ->
     return ['prices', 'volume', '__META__']
   
@@ -675,8 +691,9 @@ class Sai.StockChart extends Sai.Chart
     groups = {
       '__META__': [@__LABELS__]
     }
-    if 'volume' of @data then groups.volume = ['volume']
-    for seriesName of data when @caresAbout(seriesName) and seriesName not in [@__LABELS__, 'volume']
+    volume_name = @semanticRenames['volume'] ? 'volume'
+    if volume_name of @data then groups['volume'] = [volume_name]
+    for seriesName of data when @caresAbout(seriesName) and seriesName not in [@__LABELS__, volume_name]
       groups.prices ?= []
       groups.prices.push(seriesName)
     return groups
@@ -689,9 +706,15 @@ class Sai.StockChart extends Sai.Chart
     @setupInfoSpace()
     @drawFootnote()
     
+    open_name = @semanticRenames['open'] ? 'open'
+    close_name = @semanticRenames['close'] ? 'close'
+    high_name = @semanticRenames['high'] ? 'high'
+    low_name = @semanticRenames['low'] ? 'low'
+    volume_name = @semanticRenames['volume'] ? 'volume'
+    
     avgColors = {}
     shouldDrawLegend = false
-    for series of @ndata['prices'] when series not in ['open', 'close', 'high', 'low'] and not (series.match('^__') or series is @__LABELS__)
+    for series of @ndata['prices'] when series not in [open_name, close_name, high_name, low_name] and not (series.match('^__') or series is @__LABELS__)
       avgColors[series] = @colors?[series] or 'black'
       shouldDrawLegend = true
     if shouldDrawLegend then @drawLegend(avgColors)
@@ -708,7 +731,7 @@ class Sai.StockChart extends Sai.Chart
     @drawLogo()
     @drawBG()
     
-    unless @ndata.prices? and 'open' of @ndata.prices and 'close' of @ndata.prices and 'high' of @ndata.prices and 'low' of @ndata.prices 
+    unless @ndata.prices? and open_name of @ndata.prices and close_name of @ndata.prices and high_name of @ndata.prices and low_name of @ndata.prices 
       @showError("This chart requires data series named\nopen, close, high, and low.\n \nOnce you add series with these names, the chart will display.")
       return
     
@@ -726,17 +749,17 @@ class Sai.StockChart extends Sai.Chart
     for p of @ndata['prices']
       unless p.match('^__') or p is @__LABELS__
         rawdata[p] = @data[p]
-    if @data['volume']? then rawdata['vol'] = @data['volume']
+    if @data[volume_name]? then rawdata['vol'] = @data[volume_name]
     
     if 'volume' of @ndata
-      for i in [0...@ndata['volume']['volume'].length]
-        if @ndata['volume']['volume'][i] isnt null
-          if i and @ndata['prices']['close'][i-1] and (@ndata['prices']['close'][i][1] < @ndata['prices']['close'][i-1][1])
-            vol.down.push(@ndata['volume']['volume'][i])
-            vol.up.push([@ndata['volume']['volume'][i][0], 0])
+      for i in [0...@ndata['volume'][volume_name].length]
+        if @ndata['volume'][volume_name][i] isnt null
+          if i and @ndata['prices'][close_name][i-1] and (@ndata['prices'][close_name][i][1] < @ndata['prices'][close_name][i-1][1])
+            vol.down.push(@ndata['volume'][volume_name][i])
+            vol.up.push([@ndata['volume'][volume_name][i][0], 0])
           else
-            vol.up.push(@ndata['volume']['volume'][i])
-            vol.down.push([@ndata['volume']['volume'][i][0], 0])
+            vol.up.push(@ndata['volume'][volume_name][i])
+            vol.down.push([@ndata['volume'][volume_name][i][0], 0])
         else
           vol.up.push([0, 0])
           vol.down.push([0, 0])
@@ -750,7 +773,7 @@ class Sai.StockChart extends Sai.Chart
           vol,
           rawdata)
         )
-        .render(true, @normalizedHeight(0, 'volume'), {'up': @colors['vol_up'], 'down': @colors['vol_down']})
+        .render(true, @normalizedHeight(0, volume_name), {'up': @colors['vol_up'], 'down': @colors['vol_down']})
         .set
       )
     
@@ -761,21 +784,21 @@ class Sai.StockChart extends Sai.Chart
         @py,
         @pw, @ph,
         {
-         'open': @ndata['prices']['open'],
-         'close': @ndata['prices']['close'],
-         'high': @ndata['prices']['high'],
-         'low': @ndata['prices']['low']
+         'open': @ndata['prices'][open_name],
+         'close': @ndata['prices'][close_name],
+         'high': @ndata['prices'][high_name],
+         'low': @ndata['prices'][low_name]
         },
         rawdata)
       )
-      .render(@colors, Math.min(5, (@pw / @ndata['prices']['open'].length) - 2))
+      .render(@colors, Math.min(5, (@pw / @ndata['prices'][open_name].length) - 2))
       .set
     )
     
     
     avgNdata = {}
     for series of @ndata['prices']
-      unless (series in ['open', 'close', 'high', 'low']) or series.match("^__") or series is @__LABELS__
+      unless (series in [open_name, close_name, high_name, low_name]) or series.match("^__") or series is @__LABELS__
         avgNdata[series] = @ndata['prices'][series]
     
     @plots.push(
@@ -810,8 +833,8 @@ class Sai.StockChart extends Sai.Chart
           if @data[series]?[idx]?
             info[series] = @data[series][idx]
             notNull = true
-        if @data['volume']?[idx]?
-          info['volume'] = @data['volume'][idx]
+        if @data[volume_name]?[idx]?
+          info[volume_name] = @data[volume_name][idx]
           notNull = true
         @drawInfo(info)
         if notNull

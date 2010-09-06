@@ -46,6 +46,20 @@
   Sai.Chart.prototype.fixSeriesName = function(seriesName) {
     return seriesName + (seriesName.match(/^\s+$/) ? this.nextSeriesSuffix() : '');
   };
+  Sai.Chart.prototype.setSemanticRename = function(seriesName) {
+    var _a, _b, _c, _d, rename;
+    if (!(typeof (_a = this.semanticRenamePatterns) !== "undefined" && _a !== null)) {
+      return null;
+    }
+    this.semanticRenames = (typeof this.semanticRenames !== "undefined" && this.semanticRenames !== null) ? this.semanticRenames : {};
+    _c = []; _d = this.semanticRenamePatterns;
+    for (rename in _d) {
+      if (!__hasProp.call(_d, rename)) continue;
+      _b = _d[rename];
+      _c.push(seriesName.match(this.semanticRenamePatterns[rename]) ? (this.semanticRenames[rename] = seriesName) : null);
+    }
+    return _c;
+  };
   Sai.Chart.prototype.setData = function(data) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, d, group, groups, i, nngroups, pd, series, seriesName;
     this.data = {};
@@ -56,6 +70,7 @@
       _a = _b[series];
       while (true) {
         seriesName = this.fixSeriesName(series);
+        this.setSemanticRename(seriesName);
         if (seriesName === series || !(seriesName in data)) {
           break;
         }
@@ -904,22 +919,30 @@
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.StockChart, Sai.Chart);
+  Sai.StockChart.prototype.semanticRenamePatterns = {
+    'open': /^open$/i,
+    'close': /^close$/i,
+    'high': /^high$/i,
+    'low': /^low$/i,
+    'volume': /^vol(ume)?$/i
+  };
   Sai.StockChart.prototype.groupsToNullPad = function() {
     return ['prices', 'volume', '__META__'];
   };
   Sai.StockChart.prototype.dataGroups = function(data) {
-    var _a, _b, groups, seriesName;
+    var _a, _b, _c, groups, seriesName, volume_name;
     groups = {
       '__META__': [this.__LABELS__]
     };
-    if ('volume' in this.data) {
-      groups.volume = ['volume'];
+    volume_name = (typeof (_a = this.semanticRenames['volume']) !== "undefined" && _a !== null) ? _a : 'volume';
+    if (volume_name in this.data) {
+      groups['volume'] = [volume_name];
     }
-    _b = data;
-    for (seriesName in _b) {
-      if (!__hasProp.call(_b, seriesName)) continue;
-      _a = _b[seriesName];
-      if (this.caresAbout(seriesName) && !(this.__LABELS__ === seriesName || 'volume' === seriesName)) {
+    _c = data;
+    for (seriesName in _c) {
+      if (!__hasProp.call(_c, seriesName)) continue;
+      _b = _c[seriesName];
+      if (this.caresAbout(seriesName) && !(this.__LABELS__ === seriesName || volume_name === seriesName)) {
         groups.prices = (typeof groups.prices !== "undefined" && groups.prices !== null) ? groups.prices : [];
         groups.prices.push(seriesName);
       }
@@ -930,17 +953,22 @@
     return ['volume'];
   };
   Sai.StockChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, avgColors, avgNdata, everything, glow_width, i, moveGlow, p, rawdata, series, shouldDrawLegend, vol;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, avgColors, avgNdata, close_name, everything, glow_width, high_name, i, low_name, moveGlow, open_name, p, rawdata, series, shouldDrawLegend, vol, volume_name;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
+    open_name = (typeof (_a = this.semanticRenames['open']) !== "undefined" && _a !== null) ? _a : 'open';
+    close_name = (typeof (_b = this.semanticRenames['close']) !== "undefined" && _b !== null) ? _b : 'close';
+    high_name = (typeof (_c = this.semanticRenames['high']) !== "undefined" && _c !== null) ? _c : 'high';
+    low_name = (typeof (_d = this.semanticRenames['low']) !== "undefined" && _d !== null) ? _d : 'low';
+    volume_name = (typeof (_e = this.semanticRenames['volume']) !== "undefined" && _e !== null) ? _e : 'volume';
     avgColors = {};
     shouldDrawLegend = false;
-    _b = this.ndata['prices'];
-    for (series in _b) {
-      if (!__hasProp.call(_b, series)) continue;
-      _a = _b[series];
-      if (!('open' === series || 'close' === series || 'high' === series || 'low' === series) && !(series.match('^__') || series === this.__LABELS__)) {
+    _g = this.ndata['prices'];
+    for (series in _g) {
+      if (!__hasProp.call(_g, series)) continue;
+      _f = _g[series];
+      if (!(open_name === series || close_name === series || high_name === series || low_name === series) && !(series.match('^__') || series === this.__LABELS__)) {
         avgColors[series] = (this.colors == null ? undefined : this.colors[series]) || 'black';
         shouldDrawLegend = true;
       }
@@ -956,7 +984,7 @@
     this.addAxes(['prices']);
     this.drawLogo();
     this.drawBG();
-    if (!((typeof (_c = this.ndata.prices) !== "undefined" && _c !== null) && 'open' in this.ndata.prices && 'close' in this.ndata.prices && 'high' in this.ndata.prices && 'low' in this.ndata.prices)) {
+    if (!((typeof (_h = this.ndata.prices) !== "undefined" && _h !== null) && open_name in this.ndata.prices && close_name in this.ndata.prices && high_name in this.ndata.prices && low_name in this.ndata.prices)) {
       this.showError("This chart requires data series named\nopen, close, high, and low.\n \nOnce you add series with these names, the chart will display.");
       return null;
     }
@@ -969,50 +997,50 @@
       'down': []
     };
     rawdata = {};
-    _e = this.ndata['prices'];
-    for (p in _e) {
-      if (!__hasProp.call(_e, p)) continue;
-      _d = _e[p];
+    _j = this.ndata['prices'];
+    for (p in _j) {
+      if (!__hasProp.call(_j, p)) continue;
+      _i = _j[p];
       if (!(p.match('^__') || p === this.__LABELS__)) {
         rawdata[p] = this.data[p];
       }
     }
-    if (typeof (_f = this.data['volume']) !== "undefined" && _f !== null) {
-      rawdata['vol'] = this.data['volume'];
+    if (typeof (_k = this.data[volume_name]) !== "undefined" && _k !== null) {
+      rawdata['vol'] = this.data[volume_name];
     }
     if ('volume' in this.ndata) {
-      _g = this.ndata['volume']['volume'].length;
-      for (i = 0; (0 <= _g ? i < _g : i > _g); (0 <= _g ? i += 1 : i -= 1)) {
-        if (this.ndata['volume']['volume'][i] !== null) {
-          if (i && this.ndata['prices']['close'][i - 1] && (this.ndata['prices']['close'][i][1] < this.ndata['prices']['close'][i - 1][1])) {
-            vol.down.push(this.ndata['volume']['volume'][i]);
-            vol.up.push([this.ndata['volume']['volume'][i][0], 0]);
+      _l = this.ndata['volume'][volume_name].length;
+      for (i = 0; (0 <= _l ? i < _l : i > _l); (0 <= _l ? i += 1 : i -= 1)) {
+        if (this.ndata['volume'][volume_name][i] !== null) {
+          if (i && this.ndata['prices'][close_name][i - 1] && (this.ndata['prices'][close_name][i][1] < this.ndata['prices'][close_name][i - 1][1])) {
+            vol.down.push(this.ndata['volume'][volume_name][i]);
+            vol.up.push([this.ndata['volume'][volume_name][i][0], 0]);
           } else {
-            vol.up.push(this.ndata['volume']['volume'][i]);
-            vol.down.push([this.ndata['volume']['volume'][i][0], 0]);
+            vol.up.push(this.ndata['volume'][volume_name][i]);
+            vol.down.push([this.ndata['volume'][volume_name][i][0], 0]);
           }
         } else {
           vol.up.push([0, 0]);
           vol.down.push([0, 0]);
         }
       }
-      this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph * 0.2, vol, rawdata)).render(true, this.normalizedHeight(0, 'volume'), {
+      this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph * 0.2, vol, rawdata)).render(true, this.normalizedHeight(0, volume_name), {
         'up': this.colors['vol_up'],
         'down': this.colors['vol_down']
       }).set);
     }
     this.plots.push((new Sai.CandlestickPlot(this.r, this.px, this.py, this.pw, this.ph, {
-      'open': this.ndata['prices']['open'],
-      'close': this.ndata['prices']['close'],
-      'high': this.ndata['prices']['high'],
-      'low': this.ndata['prices']['low']
-    }, rawdata)).render(this.colors, Math.min(5, (this.pw / this.ndata['prices']['open'].length) - 2)).set);
+      'open': this.ndata['prices'][open_name],
+      'close': this.ndata['prices'][close_name],
+      'high': this.ndata['prices'][high_name],
+      'low': this.ndata['prices'][low_name]
+    }, rawdata)).render(this.colors, Math.min(5, (this.pw / this.ndata['prices'][open_name].length) - 2)).set);
     avgNdata = {};
-    _i = this.ndata['prices'];
-    for (series in _i) {
-      if (!__hasProp.call(_i, series)) continue;
-      _h = _i[series];
-      if (!((('open' === series || 'close' === series || 'high' === series || 'low' === series)) || series.match("^__") || series === this.__LABELS__)) {
+    _n = this.ndata['prices'];
+    for (series in _n) {
+      if (!__hasProp.call(_n, series)) continue;
+      _m = _n[series];
+      if (!(((open_name === series || close_name === series || high_name === series || low_name === series)) || series.match("^__") || series === this.__LABELS__)) {
         avgNdata[series] = this.ndata['prices'][series];
       }
     }
@@ -1025,26 +1053,26 @@
     }).toBack().hide();
     this.bg.toBack();
     everything = this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove(moveGlow = __bind(function(event) {
-      var _j, _k, _l, _m, _n, idx, info, notNull, series;
+      var _o, _p, _q, _r, _s, idx, info, notNull, series;
       idx = this.getIndex(event);
       info = {};
-      if (typeof (_j = this.data[this.__LABELS__][idx]) !== "undefined" && _j !== null) {
+      if (typeof (_o = this.data[this.__LABELS__][idx]) !== "undefined" && _o !== null) {
         info[this.__LABELS__] = this.data[this.__LABELS__][idx];
       }
       notNull = false;
-      _l = this.ndata['prices'];
-      for (series in _l) {
-        if (!__hasProp.call(_l, series)) continue;
-        _k = _l[series];
+      _q = this.ndata['prices'];
+      for (series in _q) {
+        if (!__hasProp.call(_q, series)) continue;
+        _p = _q[series];
         if (!(series.match('^__') || series === this.__LABELS__)) {
-          if (typeof (_m = this.data[series] == null ? undefined : this.data[series][idx]) !== "undefined" && _m !== null) {
+          if (typeof (_r = this.data[series] == null ? undefined : this.data[series][idx]) !== "undefined" && _r !== null) {
             info[series] = this.data[series][idx];
             notNull = true;
           }
         }
       }
-      if (typeof (_n = this.data['volume'] == null ? undefined : this.data['volume'][idx]) !== "undefined" && _n !== null) {
-        info['volume'] = this.data['volume'][idx];
+      if (typeof (_s = this.data[volume_name] == null ? undefined : this.data[volume_name][idx]) !== "undefined" && _s !== null) {
+        info[volume_name] = this.data[volume_name][idx];
         notNull = true;
       }
       this.drawInfo(info);

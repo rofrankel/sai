@@ -210,7 +210,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
       unless val is ''
         label = @text(xpos, y + ticklen + padding, Sai.util.prettystr(val).substring(0, 12))
         bbox = label.getBBox()
-        ly = label.attr('y') + (bbox.height / 2.0)
+        ly = label.attr('y') + 5
         label.attr('y', ly)
         if not ymin? or ly < ymin then ymin = ly
         labels.push(label)
