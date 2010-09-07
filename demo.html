@@ -28,7 +28,7 @@
     <div id="c3" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c4" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c5" style="width: 400px; height: 400px; float: left;"></div>
-    <div id="c6" style="width: 400px; height: 400px; float: left;"></div>
+    <div id="c6" style="width: 800px; height: 650px; float: left;"></div>
     <div id="c7" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c8" style="width: 400px; height: 400px; float: left;"></div>
     <script type="text/javascript">
@@ -135,6 +135,11 @@
           states.push(state);
         }
         
+        var countries = [];
+        for(country in Sai.data.map.world.paths) {
+          countries.push(country);
+        }
+        
         var USdata = {
           '__MAP__': Sai.data.map.us,
           'states': states, // parallel to data arrays
@@ -144,6 +149,17 @@
           'Dropped calls': getRandomData(50, 150, states.length, true),
           'Oatmeal Index': getRandomData(14, 31, states.length, true),
           'Math sightings': getRandomData(0, 10000000, states.length, true),
+        }
+        
+        var WorldData = {
+          '__MAP__': Sai.data.map.world,
+          'countries': countries, // parallel to data arrays
+          '__DEFAULT__': 'Unemployment',
+          'Confidence': getRandomData(38.4, 38.7, countries.length),
+          'Unemployment': getRandomData(0, 1, countries.length),
+          'Dropped calls': getRandomData(50, 150, countries.length, true),
+          'Oatmeal Index': getRandomData(14, 31, countries.length, true),
+          'Math sightings': getRandomData(0, 10000000, countries.length, true),
         }
         
         var UScolors = {
@@ -284,8 +300,8 @@
         var r5 = Raphael("c5", 350, 350);
         var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
         
-        var r6 = Raphael("c6", 400, 650);
-        var uschart = new Sai.GeoChart(r6, 0, 650, 400, 650, badMapData, "state", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(badMapColors).render();
+        var r6 = Raphael("c6", 800, 650);
+        var uschart = new Sai.GeoChart(r6, 0, 650, 800, 650, WorldData, "countries", {bgcolor: tea, title: "Track.com Worldwide Fun Indices", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(UScolors).render();
         
         var r7 = Raphael("c7", 400, 350);
         var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();
