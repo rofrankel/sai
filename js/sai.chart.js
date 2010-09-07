@@ -61,9 +61,27 @@
     return _c;
   };
   Sai.Chart.prototype.setData = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, d, group, groups, i, nngroups, pd, series, seriesName;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, d, empty, group, groups, i, nngroups, pd, series, seriesName;
     this.data = {};
     this.renames = {};
+    empty = function(obj) {
+      var _a, _b, e;
+      _b = obj;
+      for (e in _b) {
+        if (!__hasProp.call(_b, e)) continue;
+        _a = _b[e];
+        if (obj.hasOwnProperty(e)) {
+          return false;
+        }
+      }
+      return true;
+    };
+    if (empty(data)) {
+      this.render = function() {
+        return this.showError("(no data -> empty chart)");
+      };
+      return null;
+    }
     _b = data;
     for (series in _b) {
       if (!__hasProp.call(_b, series)) continue;
@@ -503,8 +521,8 @@
     return this;
   };
   Sai.Chart.prototype.showError = function(error) {
-    var err;
-    return (err = this.r.text(this.x + this.padding.left + (this.pw / 2), this.y - this.padding.bottom - (this.ph / 2), error));
+    var _a, _b, err;
+    return (err = this.r.text(this.x + this.padding.left + (((typeof (_a = this.pw) !== "undefined" && _a !== null) ? _a : this.w) / 2), this.y - this.padding.bottom - (((typeof (_b = this.ph) !== "undefined" && _b !== null) ? _b : this.h) / 2), error));
   };
   Sai.Chart.prototype.setColors = function(colors) {
     var _a, _b, series, seriesName;

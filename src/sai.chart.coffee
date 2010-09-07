@@ -35,8 +35,19 @@ class Sai.Chart
         @semanticRenames[rename] = seriesName
   
   setData: (data) ->
+    
     @data = {}
     @renames = {}
+    
+    empty = (obj) ->
+      for e of obj
+        if obj.hasOwnProperty(e) then return false
+      return true
+    
+    if empty(data)
+      @render = ->
+        @showError("(no data -> empty chart)")
+      return
     
     # deep copy
     for series of data
@@ -326,7 +337,7 @@ class Sai.Chart
     return this
   
   showError: (error) ->
-    err = this.r.text(@x + @padding.left + (@pw/2), @y - @padding.bottom - (@ph/2), error)
+    err = this.r.text(@x + @padding.left + ((@pw ? @w)/2), @y - @padding.bottom - ((@ph ? @h)/2), error)
   
   # map from series name to color
   setColors: (colors) ->
