@@ -7,6 +7,7 @@
     <script type="text/javascript" charset="utf-8" src="js/sai-min.js"></script>
     <script type="text/javascript" charset="utf-8" src="data/us.svg.json"></script>
     <script type="text/javascript" charset="utf-8" src="data/europe.svg.json"></script>
+    <script type="text/javascript" charset="utf-8" src="data/world.svg.json"></script>
     <script type="text/javascript">
       window.onload = function() {
         //new_div = document.createElement('div');
@@ -234,7 +235,7 @@
           "state": ["NJ", "ny", "dc", "ca", "ma", "md", "de", "pa", "ct", "il", "oh", "in", "ri", "mn", "ga", "mi", "va", "la", "wv", "tx", "wi", "ky", "tn", "or", "fl", "ut", "wa", "nc", "nh", "mo", "az", "co", "al", "sc", "ne", "ks", "ia", "nv", "ak", "ok", "ms", "vt", "id", "me", "nm", "nd", "sd", "mt", "wy"],
           "Health Risk from Pollutants": [950.0, 940.0, 930.0, 890.0, 890.0, 870.0, 860.0, 860.0, 850.0, 800.0, 730.0, 720.0, 670.0, 660.0, 650.0, 640.0, 620.0, 590.0, 560.0, 550.0, 540.0, 540.0, 520.0, 520.0, 510.0, 500.0, 490.0, 480.0, 470.0, 460.0, 440.0, 440.0, 400.0, 390.0, 390.0, 360.0, 340.0, 340.0, 330.0, 330.0, 320.0, 270.0, 260.0, 240.0, 230.0, 200.0, 190.0, 180.0, 140.0],
           "Toxic Chemical Emissions": [null, null, null, null, null, null, null, 110987443.0, null, null, 209090481.0, 136785790.0, null, null, 126580488.0, null, null, 120290949.0, null, 244460108.0, null, null, 148476319.0, null, 151374755.0, 173157779.0, null, 118729088.0, null, null, 328676277.0, null, 115716292.0, null, null, null, null, 496783770.0, 547987529.0, null, null, null, null, null, null, null, null, null, null],
-          '__MAP__': Sai.data.map.us,
+          '__MAP__': Sai.data.map.world,
           '__DEFAULT__': "Toxic Chemical Emissions"
         };
         
@@ -283,8 +284,8 @@
         var r5 = Raphael("c5", 350, 350);
         var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
         
-        var r6 = Raphael("c6", 400, 350);
-        var uschart = new Sai.GeoChart(r6, 0, 350, 400, 350, badMapData, "state", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(badMapColors).render();
+        var r6 = Raphael("c6", 400, 650);
+        var uschart = new Sai.GeoChart(r6, 0, 650, 400, 650, badMapData, "state", {bgcolor: tea, title: "MAP OF US", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(badMapColors).render();
         
         var r7 = Raphael("c7", 400, 350);
         var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, USChromaticData, "states", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(USChromaticColors).render();

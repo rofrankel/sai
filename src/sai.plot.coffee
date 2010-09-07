@@ -166,8 +166,8 @@ class Sai.GeoPlot extends Sai.Plot
   render: (colors, map, regionSeries, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
     @set.remove()
-    
     regions = region.toUpperCase() for region in @rawdata[regionSeries]
+    
     ri = {}
     for i in [0...regions.length]
       ri[regions[i]] = i
