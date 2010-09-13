@@ -298,7 +298,7 @@
         };
         
         var badSmallData =  {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
-        
+        /*
         var r1 = Raphael("c1", 350, 350);
         var chart = new Sai.LineChart(r1, 0, 350, 350, 350, delta_data, "Month", {bgcolor: tea, title: "Monthly average adjusted close", interactive: true, area: true, footnote: "Source:  The most gracious leadership of the singular Robert Savage, Esq., ruler of all he surveys, a gentleman and a scholar, a true nobleman in an age of knavery, and the finest violinist this side of Prague."}).setColors(colors).render();
         
@@ -313,9 +313,9 @@
         
         var r5 = Raphael("c5", 350, 350);
         var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
-        
+        */
         var r6 = Raphael("c6", 800, 650);
-        var uschart = new Sai.GeoChart(r6, 0, 650, 800, 650, WorldData, "countries", {bgcolor: tea, title: "Track.com Worldwide Fun Indices", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(UScolors).render();
+        var uschart = new Sai.GeoChart(r6, 0, 650, 800, 650, WorldData, "countries", {href: 'http://track.com', bgcolor: tea, title: "Track.com Worldwide Fun Indices", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(UScolors).render();
         
         var r7 = Raphael("c7", 400, 350);
         var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, US2008data, "State", {bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(US2008ChromaticColors).render();

@@ -581,6 +581,11 @@ class Sai.LineChart extends Sai.Chart
         @dots.hide()
     )
     
+    if @opts.href then everything.attr({
+      href: @opts.href
+      target: '_blank'
+    })
+    
     return this
 
 
@@ -681,6 +686,18 @@ class Sai.BarChart extends Sai.Chart
       .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive, @drawInfo)
       .set
     )
+    
+    everything = @r.set().push(
+      @plots,
+      @bg,
+      @logo,
+      @guidelines
+    )
+    
+    if @opts.href then everything.attr({
+      href: @opts.href
+      target: '_blank'
+    })
     
     return this
 
@@ -943,6 +960,11 @@ class Sai.GeoChart extends Sai.Chart
       {fromWhite: @opts.fromWhite}
     ))
     .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries, @opts.bgcolor, @opts.interactive, @drawInfo)
+    
+    @geoPlot.set.attr({
+      href: @opts.href
+      target: '_blank'
+    })
   
   default_info: () ->
     {'': if @opts.interactive then 'Click histogram below to change map display' else ''}
@@ -961,6 +983,19 @@ class Sai.GeoChart extends Sai.Chart
     @drawInfo()
     
     @renderPlot(@data['__DEFAULT__'])
+    
+    everything = @r.set().push(
+      @geoPlot.set,
+      @bg,
+      @logo,
+      @info,
+      @footnote
+    )
+    
+    if @opts.href then everything.attr({
+      href: @opts.href
+      target: '_blank'
+    })
     
     return this
 

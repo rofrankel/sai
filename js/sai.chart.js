@@ -826,6 +826,12 @@
       this.drawInfo({}, true);
       return this.dots.hide();
     }, this));
+    if (this.opts.href) {
+      everything.attr({
+        href: this.opts.href,
+        target: '_blank'
+      });
+    }
     return this;
   };
   Sai.Sparkline = function() {
@@ -896,7 +902,7 @@
     return barsToDraw > maxBars;
   };
   Sai.BarChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, _f, _g, data, ndata, rawdata, series, yval;
+    var _a, _b, _c, _d, _e, _f, _g, data, everything, ndata, rawdata, series, yval;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
@@ -931,6 +937,13 @@
       }
     }
     this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render(typeof (_g = this.opts.stacked) !== "undefined" && _g !== null, this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive, this.drawInfo).set);
+    everything = this.r.set().push(this.plots, this.bg, this.logo, this.guidelines);
+    if (this.opts.href) {
+      everything.attr({
+        href: this.opts.href,
+        target: '_blank'
+      });
+    }
     return this;
   };
   Sai.StockChart = function() {
@@ -1238,9 +1251,13 @@
       _a = _b[series];
       ndata[series] = this.ndata[series][series];
     }
-    return (this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data, {
+    this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data, {
       fromWhite: this.opts.fromWhite
-    })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo));
+    })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo);
+    return this.geoPlot.set.attr({
+      href: this.opts.href,
+      target: '_blank'
+    });
   };
   Sai.GeoChart.prototype.default_info = function() {
     return {
@@ -1248,7 +1265,7 @@
     };
   };
   Sai.GeoChart.prototype.render = function() {
-    var _a, _b, _c, series;
+    var _a, _b, _c, everything, series;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
@@ -1268,6 +1285,13 @@
     this.drawBG();
     this.drawInfo();
     this.renderPlot(this.data['__DEFAULT__']);
+    everything = this.r.set().push(this.geoPlot.set, this.bg, this.logo, this.info, this.footnote);
+    if (this.opts.href) {
+      everything.attr({
+        href: this.opts.href,
+        target: '_blank'
+      });
+    }
     return this;
   };
   Sai.ChromaticGeoChart = function() {
