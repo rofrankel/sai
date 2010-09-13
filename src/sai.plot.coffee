@@ -166,8 +166,8 @@ class Sai.GeoPlot extends Sai.Plot
   render: (colors, map, regionSeries, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
     
     @set.remove()
-    regions = region.toUpperCase() for region in @rawdata[regionSeries]
     
+    regions = region.toUpperCase() for region in @rawdata[regionSeries]
     ri = {}
     for i in [0...regions.length]
       ri[regions[i]] = i
@@ -209,7 +209,7 @@ class Sai.GeoPlot extends Sai.Plot
             ]
           else
             null),
-          if shouldInteract then [{'fill-opacity': .75, 'stroke-width': (if @opts.fromWhite then 2 else 0.5)}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
+          if shouldInteract then [{'fill-opacity': .75, 'stroke-width': (if @opts.fromWhite then 1.5 else 0.5)}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
         )
       )
       
@@ -240,7 +240,7 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
 
 class Sai.ScatterPlot extends Sai.Plot
 
-  render: (mappings, colors, radii, stroke_opacities, fSetInfo) ->
+  render: (mappings, colors, radii, stroke_opacities, stroke_colors, fSetInfo) ->
     @set.remove()
     
     for series of @dndata
@@ -260,6 +260,13 @@ class Sai.ScatterPlot extends Sai.Plot
         color = colors[@rawdata[mappings.color][i]]
       else
         color = 'black'
+      
+      if stroke_colors instanceof Array and mappings.stroke_color?
+        stroke_color = Sai.util.colerp(stroke_colors[0], stroke_colors[1], (@data[mappings.stroke_color]?[i]?[1] ? 0))
+      else if colors instanceof Object and mappings.color?
+        stroke_color = stroke_colors[@rawdata[mappings.stroke_color][i]]
+      else
+        stroke_color = 'black'
       
       if radii instanceof Array and mappings.radius?
         radius = lerp(radii[0], radii[1], (@data[mappings.radius]?[i]?[1] ? 0))
@@ -281,8 +288,14 @@ class Sai.ScatterPlot extends Sai.Plot
       infoSetters = Sai.util.infoSetters(fSetInfo, info)
       
       @set.push(
-        @r.circle(x, y, radius).attr({'fill': color, 'stroke-opacity': stroke_opacity})
-        .attr({'fill-opacity': 0.8, 'stroke-width': 2})
+        @r.circle(x, y, radius)
+        .attr({
+          'fill': color
+          'stroke-opacity': stroke_opacity
+          'stroke': stroke_color
+          'fill-opacity': 0.8
+          'stroke-width': 2
+        })
         .hover(
           ->
             infoSetters[0]()

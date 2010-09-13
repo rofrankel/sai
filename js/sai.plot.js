@@ -266,7 +266,7 @@
         ] : null, shouldInteract ? [
           {
             'fill-opacity': .75,
-            'stroke-width': (this.opts.fromWhite ? 2 : 0.5)
+            'stroke-width': (this.opts.fromWhite ? 1.5 : 0.5)
           }, {
             'fill-opacity': 1,
             'stroke-width': 0.5
@@ -312,7 +312,7 @@
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.ScatterPlot, Sai.Plot);
-  Sai.ScatterPlot.prototype.render = function(mappings, colors, radii, stroke_opacities, fSetInfo) {
+  Sai.ScatterPlot.prototype.render = function(mappings, colors, radii, stroke_opacities, stroke_colors, fSetInfo) {
     var _a, _b, _c, i, lerp, num_points, series, y2x;
     this.set.remove();
     _b = this.dndata;
@@ -330,7 +330,7 @@
     }, this);
     for (_c = 0; (0 <= num_points ? _c < num_points : _c > num_points); (0 <= num_points ? _c += 1 : _c -= 1)) {
       (function() {
-        var _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, color, info, infoSetters, radius, series, stroke_opacity, x, y;
+        var _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, color, info, infoSetters, radius, series, stroke_color, stroke_opacity, x, y;
         var i = _c;
         x = y2x(this.dndata[mappings.x] == null ? undefined : this.dndata[mappings.x][i][1]);
         y = this.dndata[mappings.y] == null ? undefined : this.dndata[mappings.y][i][1];
@@ -341,25 +341,32 @@
         } else {
           color = 'black';
         }
-        if (radii instanceof Array && (typeof (_h = mappings.radius) !== "undefined" && _h !== null)) {
-          radius = lerp(radii[0], radii[1], (typeof (_g = (this.data[mappings.radius] == null ? undefined : this.data[mappings.radius][i] == null ? undefined : this.data[mappings.radius][i][1])) !== "undefined" && _g !== null) ? _g : 0);
-        } else if (radii instanceof Object && (typeof (_i = mappings.radius) !== "undefined" && _i !== null)) {
+        if (stroke_colors instanceof Array && (typeof (_h = mappings.stroke_color) !== "undefined" && _h !== null)) {
+          stroke_color = Sai.util.colerp(stroke_colors[0], stroke_colors[1], (typeof (_g = (this.data[mappings.stroke_color] == null ? undefined : this.data[mappings.stroke_color][i] == null ? undefined : this.data[mappings.stroke_color][i][1])) !== "undefined" && _g !== null) ? _g : 0);
+        } else if (colors instanceof Object && (typeof (_i = mappings.color) !== "undefined" && _i !== null)) {
+          stroke_color = stroke_colors[this.rawdata[mappings.stroke_color][i]];
+        } else {
+          stroke_color = 'black';
+        }
+        if (radii instanceof Array && (typeof (_k = mappings.radius) !== "undefined" && _k !== null)) {
+          radius = lerp(radii[0], radii[1], (typeof (_j = (this.data[mappings.radius] == null ? undefined : this.data[mappings.radius][i] == null ? undefined : this.data[mappings.radius][i][1])) !== "undefined" && _j !== null) ? _j : 0);
+        } else if (radii instanceof Object && (typeof (_l = mappings.radius) !== "undefined" && _l !== null)) {
           radius = radii[this.rawdata[mappings.radius][i]];
         } else {
           radius = 5.0;
         }
-        if (stroke_opacities instanceof Array && (typeof (_k = mappings.stroke_opacity) !== "undefined" && _k !== null)) {
-          stroke_opacity = lerp(stroke_opacities[0], stroke_opacities[1], (typeof (_j = (this.data[mappings.stroke_opacity] == null ? undefined : this.data[mappings.stroke_opacity][i] == null ? undefined : this.data[mappings.stroke_opacity][i][1])) !== "undefined" && _j !== null) ? _j : 0);
-        } else if (stroke_opacities instanceof Object && (typeof (_l = mappings.stroke_opacity) !== "undefined" && _l !== null)) {
+        if (stroke_opacities instanceof Array && (typeof (_n = mappings.stroke_opacity) !== "undefined" && _n !== null)) {
+          stroke_opacity = lerp(stroke_opacities[0], stroke_opacities[1], (typeof (_m = (this.data[mappings.stroke_opacity] == null ? undefined : this.data[mappings.stroke_opacity][i] == null ? undefined : this.data[mappings.stroke_opacity][i][1])) !== "undefined" && _m !== null) ? _m : 0);
+        } else if (stroke_opacities instanceof Object && (typeof (_o = mappings.stroke_opacity) !== "undefined" && _o !== null)) {
           stroke_opacity = stroke_opacities[this.rawdata[mappings.stroke_opacity][i]];
         } else {
           stroke_opacity = 1.0;
         }
         info = {};
-        _n = this.rawdata;
-        for (series in _n) {
-          if (!__hasProp.call(_n, series)) continue;
-          _m = _n[series];
+        _q = this.rawdata;
+        for (series in _q) {
+          if (!__hasProp.call(_q, series)) continue;
+          _p = _q[series];
           if (!series.match('^__')) {
             info[series] = this.rawdata[series][i];
           }
@@ -367,8 +374,8 @@
         infoSetters = Sai.util.infoSetters(fSetInfo, info);
         return this.set.push(this.r.circle(x, y, radius).attr({
           'fill': color,
-          'stroke-opacity': stroke_opacity
-        }).attr({
+          'stroke-opacity': stroke_opacity,
+          'stroke': stroke_color,
           'fill-opacity': 0.8,
           'stroke-width': 2
         }).hover(function() {

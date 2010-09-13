@@ -63,7 +63,7 @@ class Sai.Chart
           @__LABELS__ = seriesName
           @data[seriesName] = String(d) for d in data[series]
         else
-          @data[seriesName] = (if typeof d is 'string' and d.match(/^[+-]?[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d.replace(',', ''))) then pd else d) for d in data[series]
+          @data[seriesName] = (if typeof d is 'string' and d.match(/^[+-]?[\d,]+(\.\d+)?$/) and not isNaN(pd = parseFloat(d.replace(/,/g, ''))) then pd else d) for d in data[series]
       else
         @data[seriesName] = data[series]
     
@@ -998,6 +998,7 @@ class Sai.ScatterChart extends Sai.Chart
     
     colors = @opts.colors ? @colors ? ['black', 'white']
     stroke_opacity = @opts.stroke_opacity ? [0, 1]
+    stroke_colors = @opts.stroke_colors ? ['black', 'black']
     radii = @opts.radius ? [4, 12]
     
     histogramSeries = []
@@ -1007,20 +1008,35 @@ class Sai.ScatterChart extends Sai.Chart
       histogramSeries.push(@opts.mappings.color)
       histogramColors[@opts.mappings.color] = {__LOW__: colors[0], __HIGH__: colors[1]}
     else
-      @drawLegend(colors)
+      legend_colors ?= {}
+      draw_legend = true
+      for c of colors
+        legend_colors[c] = colors[c]
+    
+    if stroke_colors instanceof Array
+      histogramSeries.push(@opts.mappings.stroke_color)
+      histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
+    else
+      legend_colors ?= {}
+      draw_legend = true
+      for c of colors
+        legend_colors[c] = stroke_colors[c]
     
     ###
     if @opts.mappings.stroke_opacity
       histogramSeries.push(@opts.mappings.stroke_opacity)
       so_colors = [
-        Sai.util.colerp('white', 'black', stroke_opacity[0]),
-        Sai.util.colerp('white', 'black', stroke_opacity[1]),
+        Sai.util.colerp(stroke_colors[0], stroke_colors[1], stroke_opacity[0]),
+        Sai.util.colerp(stroke_colors[0], stroke_colors[1], stroke_opacity[1]),
       ]
       histogramColors[@opts.mappings.stroke_opacity] = {__LOW__: so_colors[0], __HIGH__: so_colors[1]}
     ###
     
     if histogramSeries.length
       @drawHistogramLegend(histogramSeries, histogramColors)
+    
+    if draw_legend
+      @drawLegend(colors)
     
     @__LABELS__ = '__XVALS__'
     @data.__XVALS__ = @ndata[@opts.mappings.x].__YVALS__
@@ -1044,7 +1060,7 @@ class Sai.ScatterChart extends Sai.Chart
         ndata,
         @data)
       )
-      .render(@opts.mappings, colors, radii, stroke_opacity, @drawInfo)
+      .render(@opts.mappings, colors, radii, stroke_opacity, stroke_colors, @drawInfo)
       .set
     )
     

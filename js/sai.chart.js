@@ -110,7 +110,7 @@
             _g = []; _i = data[series];
             for (_h = 0, _j = _i.length; _h < _j; _h++) {
               d = _i[_h];
-              _g.push(typeof d === 'string' && d.match(/^[+-]?[\d,]+(\.\d+)?$/) && !isNaN(pd = parseFloat(d.replace(',', ''))) ? pd : d);
+              _g.push(typeof d === 'string' && d.match(/^[+-]?[\d,]+(\.\d+)?$/) && !isNaN(pd = parseFloat(d.replace(/,/g, ''))) ? pd : d);
             }
             return _g;
           })();
@@ -1312,13 +1312,14 @@
     return groups;
   };
   Sai.ScatterChart.prototype.render = function() {
-    var _a, _b, _c, _d, _e, _f, colors, histogramColors, histogramSeries, ndata, radii, series, stroke_opacity;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, c, colors, draw_legend, histogramColors, histogramSeries, legend_colors, ndata, radii, series, stroke_colors, stroke_opacity;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
     colors = (typeof (_a = this.opts.colors) !== "undefined" && _a !== null) ? _a : (typeof (_b = this.colors) !== "undefined" && _b !== null) ? _b : ['black', 'white'];
     stroke_opacity = (typeof (_c = this.opts.stroke_opacity) !== "undefined" && _c !== null) ? _c : [0, 1];
-    radii = (typeof (_d = this.opts.radius) !== "undefined" && _d !== null) ? _d : [4, 12];
+    stroke_colors = (typeof (_d = this.opts.stroke_colors) !== "undefined" && _d !== null) ? _d : ['black', 'black'];
+    radii = (typeof (_e = this.opts.radius) !== "undefined" && _e !== null) ? _e : [4, 12];
     histogramSeries = [];
     histogramColors = {};
     if (colors instanceof Array) {
@@ -1328,19 +1329,45 @@
         __HIGH__: colors[1]
       };
     } else {
-      this.drawLegend(colors);
+      legend_colors = (typeof legend_colors !== "undefined" && legend_colors !== null) ? legend_colors : {};
+      draw_legend = true;
+      _g = colors;
+      for (c in _g) {
+        if (!__hasProp.call(_g, c)) continue;
+        _f = _g[c];
+        legend_colors[c] = colors[c];
+      }
+    }
+    if (stroke_colors instanceof Array) {
+      histogramSeries.push(this.opts.mappings.stroke_color);
+      histogramColors[this.opts.mappings.stroke_color] = {
+        __LOW__: stroke_colors[0],
+        __HIGH__: stroke_colors[1]
+      };
+    } else {
+      legend_colors = (typeof legend_colors !== "undefined" && legend_colors !== null) ? legend_colors : {};
+      draw_legend = true;
+      _i = colors;
+      for (c in _i) {
+        if (!__hasProp.call(_i, c)) continue;
+        _h = _i[c];
+        legend_colors[c] = stroke_colors[c];
+      }
     }
     /*
     if @opts.mappings.stroke_opacity
       histogramSeries.push(@opts.mappings.stroke_opacity)
       so_colors = [
-        Sai.util.colerp('white', 'black', stroke_opacity[0]),
-        Sai.util.colerp('white', 'black', stroke_opacity[1]),
+        Sai.util.colerp(stroke_colors[0], stroke_colors[1], stroke_opacity[0]),
+        Sai.util.colerp(stroke_colors[0], stroke_colors[1], stroke_opacity[1]),
       ]
       histogramColors[@opts.mappings.stroke_opacity] = {__LOW__: so_colors[0], __HIGH__: so_colors[1]}
     */
     if (histogramSeries.length) {
       this.drawHistogramLegend(histogramSeries, histogramColors);
+    }
+    if (draw_legend) {
+      this.drawLegend(colors);
     }
     this.__LABELS__ = '__XVALS__';
     this.data.__XVALS__ = this.ndata[this.opts.mappings.x].__YVALS__;
@@ -1351,14 +1378,14 @@
     this.drawLogo();
     this.drawBG();
     ndata = {};
-    _f = this.ndata;
-    for (series in _f) {
-      if (!__hasProp.call(_f, series)) continue;
-      _e = _f[series];
+    _k = this.ndata;
+    for (series in _k) {
+      if (!__hasProp.call(_k, series)) continue;
+      _j = _k[series];
       ndata[series] = this.ndata[series][series];
     }
     this.plots = this.r.set();
-    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, radii, stroke_opacity, this.drawInfo).set);
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, radii, stroke_opacity, stroke_colors, this.drawInfo).set);
     return this;
   };
 })();
