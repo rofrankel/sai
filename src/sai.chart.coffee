@@ -502,9 +502,9 @@ class Sai.LineChart extends Sai.Chart
     @drawLogo()
     
     if saxis
-      if @ndata.left.__YVALS__[0] < 0
+      if @ndata.left?.__YVALS__[0] < 0
         @drawGuideline(0, 'left')
-      if @ndata.right.__YVALS__[0] < 0
+      if @ndata.right?.__YVALS__[0] < 0
         @drawGuideline(0, 'right')
     else
       if @ndata.all.__YVALS__[0] < 0
@@ -521,25 +521,27 @@ class Sai.LineChart extends Sai.Chart
     @plots = []
     
     if saxis
-      @plots.push(
-        (new plotType(
-          @r,
-          @px, @py, @pw, @ph,
-          ndata['left'],
-        ))
-        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'left'))
-      )
-      @plotSets.push(@plots[0].set)
+      if ndata.left?
+        @plots.push(
+          (new plotType(
+            @r,
+            @px, @py, @pw, @ph,
+            ndata['left'],
+          ))
+          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'left'))
+        )
+        @plotSets.push(@plots[@plots.length - 1].set)
       
-      @plots.push(
-        (new plotType(
-          @r,
-          @px, @py, @pw, @ph,
-          ndata['right'],
-        ))
-        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'right'))
-      )
-      @plotSets.push(@plots[1].set)
+      if ndata.right?
+        @plots.push(
+          (new plotType(
+            @r,
+            @px, @py, @pw, @ph,
+            ndata['right'],
+          ))
+          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'right'))
+        )
+        @plotSets.push(@plots[@plots.length - 1].set)
     else
       @plots.push(
         (new plotType(
@@ -1098,5 +1100,20 @@ class Sai.ScatterChart extends Sai.Chart
       .render(@opts.mappings, colors, radii, stroke_opacity, stroke_colors, @drawInfo)
       .set
     )
+    
+    everything = @r.set().push(
+      @plots,
+      @bg,
+      @logo,
+      @info,
+      @footnote,
+      @histogramLegend,
+      @legend
+    )
+    
+    if @opts.href then everything.attr({
+      href: @opts.href
+      target: '_blank'
+    })
     
     return this
