@@ -20,7 +20,6 @@
     this.r = _b;
     _a = this;
     this.drawInfo = function(){ return Sai.Chart.prototype.drawInfo.apply(_a, arguments); };
-    this.getStackedMax = function(){ return Sai.Chart.prototype.getStackedMax.apply(_a, arguments); };
     this.opts = (typeof this.opts !== "undefined" && this.opts !== null) ? this.opts : {};
     this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : 'white';
     this.setData(data);
@@ -277,7 +276,7 @@
           _c = []; _e = group;
           for (_d = 0, _f = _e.length; _d < _f; _d++) {
             series = _e[_d];
-            if (series !== this.__LABELS__) {
+            if (series !== this.__LABELS__ && (data[series][i] >= 0)) {
               _c.push(data[series][i]);
             }
           }
@@ -288,10 +287,26 @@
     }).call(this));
   };
   Sai.Chart.prototype.getStackedMin = function(data, group) {
-    return 0;
+    var _a, _b, _c, _d, _e, _f, i, series;
+    return Math.min.apply(Math, (function() {
+      _a = []; _b = data[this.__LABELS__].length;
+      for (i = 0; (0 <= _b ? i < _b : i > _b); (0 <= _b ? i += 1 : i -= 1)) {
+        _a.push(Sai.util.sumArray((function() {
+          _c = []; _e = group;
+          for (_d = 0, _f = _e.length; _d < _f; _d++) {
+            series = _e[_d];
+            if (series !== this.__LABELS__ && data[series][i] < 0) {
+              _c.push(data[series][i]);
+            }
+          }
+          return _c;
+        }).call(this)));
+      }
+      return _a;
+    }).call(this));
   };
   Sai.Chart.prototype.normalize = function(data) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, all, baseline, baselines, empty, group, groups, i, max, maxf, min, minf, norm, nval, series, stackedPoint, yvals;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, all, baseline, baselines, bli, empty, group, groups, i, max, maxf, min, minf, norm, norm0, nval, series, stackedPoint, yvals;
     groups = this.dataGroups(data);
     this.ndata = {};
     if (typeof (_a = this.opts.stacked) !== "undefined" && _a !== null) {
@@ -329,61 +344,69 @@
       }
       return true;
     };
-    _c = []; _d = groups;
-    for (group in _d) {
-      if (!__hasProp.call(_d, group)) continue;
-      _b = _d[group];
+    _c = []; _e = groups;
+    for (_d in _e) {
+      if (!__hasProp.call(_e, _d)) continue;
+      var group = _d;
+      var _b = _e[_d];
       if (group.match('^__') || Sai.util.sumArray((function() {
-        _e = []; _g = groups[group];
-        for (_f = 0, _h = _g.length; _f < _h; _f++) {
-          series = _g[_f];
-          _e.push(this.data[series].length);
+        _f = []; _h = groups[group];
+        for (_g = 0, _i = _h.length; _g < _i; _g++) {
+          series = _h[_g];
+          _f.push(this.data[series].length);
         }
-        return _e;
+        return _f;
       }).call(this)) === 0 || all(empty, (function() {
-        _i = []; _k = groups[group];
-        for (_j = 0, _l = _k.length; _j < _l; _j++) {
-          series = _k[_j];
-          _i.push(this.data[series]);
+        _j = []; _l = groups[group];
+        for (_k = 0, _m = _l.length; _k < _m; _k++) {
+          series = _l[_k];
+          _j.push(this.data[series]);
         }
-        return _i;
+        return _j;
       }).call(this))) {
         continue;
       }
       this.ndata[group] = {};
-      if (typeof (_m = this.opts.stacked) !== "undefined" && _m !== null) {
+      if (typeof (_n = this.opts.stacked) !== "undefined" && _n !== null) {
         this.stackedNdata[group] = {};
         baselines = {};
       }
-      minf = this.opts.stacked ? this.getStackedMin : this.getMin;
-      maxf = this.opts.stacked ? this.getStackedMax : this.getMax;
+      minf = this.opts.stacked ? __bind(function(d, g) {
+        return this.getStackedMin(d, g);
+      }, this) : this.getMin;
+      maxf = this.opts.stacked ? __bind(function(d, g) {
+        return this.getStackedMax(d, g);
+      }, this) : this.getMax;
       min = minf(data, groups[group]);
       max = maxf(data, groups[group]);
       yvals = this.getYAxisVals(min, max);
       min = yvals[0];
       max = yvals[yvals.length - 1];
-      _o = groups[group];
-      for (_n = 0, _p = _o.length; _n < _p; _n++) {
-        series = _o[_n];
-        if (!(typeof (_q = data[series]) !== "undefined" && _q !== null)) {
+      _p = groups[group];
+      for (_o = 0, _q = _p.length; _o < _q; _o++) {
+        series = _p[_o];
+        if (!(typeof (_r = data[series]) !== "undefined" && _r !== null)) {
           continue;
         }
         this.ndata[group][series] = (function() {
-          _r = []; _s = data[series].length;
-          for (i = 0; (0 <= _s ? i < _s : i > _s); (0 <= _s ? i += 1 : i -= 1)) {
-            _r.push((typeof (_t = data[series][i]) !== "undefined" && _t !== null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null);
+          _s = []; _t = data[series].length;
+          for (i = 0; (0 <= _t ? i < _t : i > _t); (0 <= _t ? i += 1 : i -= 1)) {
+            _s.push((typeof (_u = data[series][i]) !== "undefined" && _u !== null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null);
           }
-          return _r;
+          return _s;
         })();
-        if (typeof (_w = this.opts.stacked) !== "undefined" && _w !== null) {
+        if (typeof (_y = this.opts.stacked) !== "undefined" && _y !== null) {
+          norm0 = norm(0, min, max);
           this.stackedNdata[group][series] = [];
-          _u = data[series].length;
-          for (i = 0; (0 <= _u ? i < _u : i > _u); (0 <= _u ? i += 1 : i -= 1)) {
-            baseline = baselines[i] || 0;
-            stackedPoint = [i / (data[series].length - 1 || 1), (typeof (_v = data[series][i]) !== "undefined" && _v !== null) && (nval = norm(data[series][i], min, max)) !== null ? nval + baseline : baseline];
+          _v = data[series].length;
+          for (i = 0; (0 <= _v ? i < _v : i > _v); (0 <= _v ? i += 1 : i -= 1)) {
+            bli = (typeof (_w = data[series][i]) !== "undefined" && _w !== null) && data[series][i] < 0 ? 0 : 1;
+            baselines[i] = (typeof baselines[i] !== "undefined" && baselines[i] !== null) ? baselines[i] : [norm0, norm0];
+            baseline = baselines[i][bli];
+            stackedPoint = [i / (data[series].length - 1 || 1), ((typeof (_x = norm(data[series][i], min, max)) !== "undefined" && _x !== null) ? _x : norm0) + baseline - norm0];
             this.stackedNdata[group][series].push(stackedPoint);
             if (stackedPoint !== null) {
-              baselines[i] = stackedPoint[1];
+              baselines[i][bli] = stackedPoint[1];
             }
           }
         }
@@ -499,9 +522,7 @@
     w = _a[2];
     h = _a[3];
     return (this.logo = this.r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({
-      opacity: 0.25,
-      href: 'http://track.com',
-      target: '_blank'
+      opacity: 0.25
     }));
   };
   Sai.Chart.prototype.drawFootnote = function(text) {
@@ -786,13 +807,15 @@
       var _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, i, idx, info, plot, pos, series;
       idx = this.getIndex(event);
       info = {};
-      info[this.__LABELS__] = this.data[this.__LABELS__][idx];
-      _k = ndata['all'];
-      for (series in _k) {
-        if (!__hasProp.call(_k, series)) continue;
-        _j = _k[series];
-        if (typeof (_l = this.data[series]) !== "undefined" && _l !== null) {
-          info[series] = this.data[series][idx];
+      if (((this.data[this.__LABELS__] == null ? undefined : this.data[this.__LABELS__].length) > idx) && (idx >= 0)) {
+        info[this.__LABELS__] = this.data[this.__LABELS__][idx];
+        _k = ndata['all'];
+        for (series in _k) {
+          if (!__hasProp.call(_k, series)) continue;
+          _j = _k[series];
+          if (typeof (_l = this.data[series]) !== "undefined" && _l !== null) {
+            info[series] = this.data[series][idx];
+          }
         }
       }
       this.drawInfo(info);
@@ -856,9 +879,6 @@
     return this;
   };
   Sai.BarChart = function() {
-    var _a;
-    _a = this;
-    this.getMin = function(){ return Sai.BarChart.prototype.getMin.apply(_a, arguments); };
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.BarChart, Sai.Chart);
@@ -874,19 +894,6 @@
       _b.push(group);
     }
     return _b;
-  };
-  Sai.BarChart.prototype.nonNegativeGroups = function() {
-    var _a, _b, _c, group;
-    if (this.opts.stacked) {
-      _b = []; _c = this.dataGroups();
-      for (group in _c) {
-        if (!__hasProp.call(_c, group)) continue;
-        _a = _c[group];
-        _b.push(group);
-      }
-      return _b;
-    }
-    return [];
   };
   Sai.BarChart.prototype.tooMuchData = function() {
     var _a, _b, barsToDraw, maxBars, series;

@@ -77,6 +77,7 @@ Sai.util.transformCoords = function(evt, canvas) {
     xformed = svgPoint.matrixTransform(canvas.getScreenCTM().inverse());
     if (navigator.userAgent.toLowerCase().indexOf('chrome') !== -1 || navigator.userAgent.toLowerCase().indexOf('safari') !== -1) {
       xformed.x += document.body.scrollLeft;
+      xformed.y += document.body.scrollTop;
     }
     return {
       x: xformed.x,

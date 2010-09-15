@@ -73,7 +73,9 @@ Sai.util.transformCoords = (evt, canvas) ->
     svgPoint.y = evt.clientY
     xformed = svgPoint.matrixTransform(canvas.getScreenCTM().inverse())
     # stupid WebKit bug
-    if navigator.userAgent.toLowerCase().indexOf('chrome') isnt -1 or navigator.userAgent.toLowerCase().indexOf('safari') isnt -1 then xformed.x += document.body.scrollLeft
+    if navigator.userAgent.toLowerCase().indexOf('chrome') isnt -1 or navigator.userAgent.toLowerCase().indexOf('safari') isnt -1
+      xformed.x += document.body.scrollLeft
+      xformed.y += document.body.scrollTop
     return {x: xformed.x, y: xformed.y}
   else
     {x: evt.x, y: evt.y}

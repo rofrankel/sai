@@ -67,7 +67,6 @@ class Sai.Chart
       else
         @data[seriesName] = data[series]
     
-    # do any necessary null padding
     groups = @dataGroups(@data)
     nngroups = @nonNegativeGroups()
     for group of groups when groups[group].length > 0
@@ -77,6 +76,7 @@ class Sai.Chart
             for i in [0...@data[series].length]
               if @data[series][i] < 0 then @data[series][i] *= -1
     
+    # do any necessary null padding
     for group in @groupsToNullPad() when group of groups
       for series in groups[group]
         @nullPad(series)
@@ -139,12 +139,12 @@ class Sai.Chart
   getMin: (data, group) ->
     return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
   
-  getStackedMax: (data, group) =>
-    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__) for i in [0...data[@__LABELS__].length])
+  getStackedMax: (data, group) ->
+    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__ and data[series][i] >= 0) for i in [0...data[@__LABELS__].length])
   
   # stacked charts generally have a 0 baseline
   getStackedMin: (data, group) ->
-    return 0
+    return Math.min.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__ and data[series][i] < 0) for i in [0...data[@__LABELS__].length])
   
   normalize: (data) ->
     groups = @dataGroups(data)
@@ -178,8 +178,8 @@ class Sai.Chart
         @stackedNdata[group] = {}
         baselines = {}
       
-      minf = if @opts.stacked then @getStackedMin else @getMin
-      maxf = if @opts.stacked then @getStackedMax else @getMax
+      minf = if @opts.stacked then (d, g) => return @getStackedMin(d, g) else @getMin
+      maxf = if @opts.stacked then (d, g) => return @getStackedMax(d, g) else @getMax
       min = minf(data, groups[group])
       max = maxf(data, groups[group])
       yvals = @getYAxisVals(min, max)
@@ -189,12 +189,15 @@ class Sai.Chart
         continue unless data[series]?
         @ndata[group][series] = (if data[series][i]? and (nval = norm(data[series][i], min, max)) isnt null then [i / (data[series].length - 1 or 1), nval] else null) for i in [0...data[series].length]
         if @opts.stacked?
+          norm0 = norm(0, min, max)
           @stackedNdata[group][series] = []
           for i in [0...data[series].length]
-            baseline = baselines[i] or 0
-            stackedPoint = [i / (data[series].length - 1 or 1), if data[series][i]? and (nval = norm(data[series][i], min, max)) isnt null then nval + baseline else baseline]
+            bli = if data[series][i]? and data[series][i] < 0 then 0 else 1
+            baselines[i] ?= [norm0, norm0]
+            baseline = baselines[i][bli]
+            stackedPoint = [i / (data[series].length - 1 or 1), (norm(data[series][i], min, max) ? norm0) + baseline - norm0]
             @stackedNdata[group][series].push(stackedPoint)
-            baselines[i] = stackedPoint[1] unless stackedPoint is null
+            baselines[i][bli] = stackedPoint[1] unless stackedPoint is null
         
         @ndata[group].__YVALS__ = yvals
   
@@ -318,7 +321,7 @@ class Sai.Chart
   
   drawLogo: () ->
     [x, y, w, h] = @logoPos()
-    @logo = @r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25, href: 'http://track.com', target: '_blank'})
+    @logo = @r.image(Sai.imagePath + 'logo.png', x, y, w, h).attr({opacity: 0.25})
   
   drawFootnote: (text) ->
     text ?= @opts.footnote ? ''
@@ -563,10 +566,11 @@ class Sai.LineChart extends Sai.Chart
         idx = @getIndex(event)
         
         info = {}
-        info[@__LABELS__] = @data[@__LABELS__][idx]
-        
-        for series of ndata['all']
-          if @data[series]? then info[series] = @data[series][idx]
+        if @data[@__LABELS__]?.length > idx >= 0
+          info[@__LABELS__] = @data[@__LABELS__][idx]
+          
+          for series of ndata['all']
+            if @data[series]? then info[series] = @data[series][idx]
         
         @drawInfo(info)
         
@@ -621,17 +625,20 @@ class Sai.Sparkline extends Sai.Chart
 
 class Sai.BarChart extends Sai.Chart
   
-  getMin: (data, group) =>
+  getMin: (data, group) ->
     return Math.min(super, 0)
+
+  #getStackedMin: (data, group) ->
+  #  return @getMin(data, group)
   
   groupsToNullPad: () ->
     return group for group of @dataGroups()
 
-  nonNegativeGroups: () ->
-    if @opts.stacked
-      return group for group of @dataGroups()
-    
-    return []
+  #nonNegativeGroups: () ->
+  #  if @opts.stacked
+  #    return group for group of @dataGroups()
+  #  
+  #  return []
   
   tooMuchData: () ->
     

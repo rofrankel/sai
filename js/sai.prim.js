@@ -94,22 +94,28 @@
     return this.set().push(area, stroke);
   };
   Raphael.fn.sai.prim.stackedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
-    var _a, _b, _c, _d, axisClip, bar, height, hoverfuncs, i, prev, stack, totalHeight;
+    var _a, _b, _c, _d, axisClip, bar, height, hoverfuncs, i, is_positive, offset, pi, prev, segment_baseline, stack, totalHeight;
     if (shouldInteract && (typeof (_a = coords[coords.length - 1]) !== "undefined" && _a !== null)) {
       totalHeight = baseline - coords[coords.length - 1][1];
     }
     width *= .67;
     stack = this.set();
-    prev = baseline;
+    prev = [baseline, baseline];
+    offset = [0, 0];
+    pi = function(val) {
+      return (val < baseline ? 1 : 0);
+    };
     _c = coords.length;
     for (_b = 0; (0 <= _c ? _b < _c : _b > _c); (0 <= _c ? _b += 1 : _b -= 1)) {
       var i = _b;
       if (!((typeof (_d = coords[i]) !== "undefined" && _d !== null) && coords[i][1] !== baseline)) {
         continue;
       }
-      height = prev - coords[i][1];
-      axisClip = i === 0 ? 1 : 0;
-      stack.push(bar = this.rect(coords[i][0] - (width / 2.0), coords[i][1], width, height - axisClip).attr('fill', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000').attr('stroke', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000'));
+      is_positive = pi(coords[i][1]);
+      height = Math.abs(prev[is_positive] - coords[i][1]);
+      axisClip = prev[is_positive] === baseline ? 1 : 0;
+      segment_baseline = coords[i][1] - (is_positive ? 0 : height - axisClip);
+      stack.push(bar = this.rect(coords[i][0] - (width / 2.0), segment_baseline, width, height - axisClip).attr('fill', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000').attr('stroke', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000'));
       if (shouldInteract) {
         hoverfuncs = getHoverfuncs(bar, {
           'fill-opacity': '0.75'
@@ -129,7 +135,7 @@
         ]);
         bar.hover(hoverfuncs[0], hoverfuncs[1]);
       }
-      prev = coords[i][1];
+      prev[is_positive] = coords[i][1];
     }
     return stack;
   };
