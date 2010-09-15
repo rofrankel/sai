@@ -94,9 +94,20 @@
     return this.set().push(area, stroke);
   };
   Raphael.fn.sai.prim.stackedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
-    var _a, _b, _c, _d, axisClip, bar, height, hoverfuncs, i, is_positive, offset, pi, prev, segment_baseline, stack, totalHeight;
-    if (shouldInteract && (typeof (_a = coords[coords.length - 1]) !== "undefined" && _a !== null)) {
-      totalHeight = baseline - coords[coords.length - 1][1];
+    var _a, _b, _c, _d, _e, _f, axisClip, bar, c, height, hoverfuncs, i, is_positive, max, min, offset, pi, prev, segment_baseline, stack, totalHeight;
+    if (shouldInteract) {
+      max = (min = null);
+      _b = coords;
+      for (_a = 0, _c = _b.length; _a < _c; _a++) {
+        c = _b[_a];
+        if (!(typeof max !== "undefined" && max !== null) || max < c[1]) {
+          max = c[1];
+        }
+        if (!(typeof min !== "undefined" && min !== null) || min > c[1]) {
+          min = c[1];
+        }
+      }
+      totalHeight = (max - min) || 1;
     }
     width *= .67;
     stack = this.set();
@@ -105,10 +116,10 @@
     pi = function(val) {
       return (val < baseline ? 1 : 0);
     };
-    _c = coords.length;
-    for (_b = 0; (0 <= _c ? _b < _c : _b > _c); (0 <= _c ? _b += 1 : _b -= 1)) {
-      var i = _b;
-      if (!((typeof (_d = coords[i]) !== "undefined" && _d !== null) && coords[i][1] !== baseline)) {
+    _e = coords.length;
+    for (_d = 0; (0 <= _e ? _d < _e : _d > _e); (0 <= _e ? _d += 1 : _d -= 1)) {
+      var i = _d;
+      if (!((typeof (_f = coords[i]) !== "undefined" && _f !== null) && coords[i][1] !== baseline)) {
         continue;
       }
       is_positive = pi(coords[i][1]);

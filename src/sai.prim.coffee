@@ -92,8 +92,12 @@ Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
 # colors is a list parallel to coords
 Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
 
-  if shouldInteract and coords[coords.length - 1]?
-    totalHeight = baseline - coords[coords.length - 1][1]
+  if shouldInteract
+    max = min = null
+    for c in coords
+      if not max? or max < c[1] then max = c[1]
+      if not min? or min > c[1] then min = c[1]
+    totalHeight = (max - min) or 1
 
   width *= .67
   stack = @set()
