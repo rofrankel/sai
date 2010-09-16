@@ -858,7 +858,6 @@ class Sai.StockChart extends Sai.Chart
     @drawTitle()
     @setupInfoSpace()
     @drawFootnote()
-    @addAxes(['prices'])
     
     open_name = @semanticRenames['open'] ? 'open'
     close_name = @semanticRenames['close'] ? 'close'
@@ -873,7 +872,9 @@ class Sai.StockChart extends Sai.Chart
       shouldDrawLegend = true
     if shouldDrawLegend then @drawLegend(avgColors)
     
-    @renderPlot()
+    @addAxes(['prices'])
+    
+    @renderPlots()
     
     glow_width = @pw / (@data[@__LABELS__].length - 1)
     @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
@@ -982,7 +983,14 @@ class Sai.GeoChart extends Sai.Chart
   
   renderPlots: (mainSeries) =>
     
+    @setPlotCoords() unless @px?
+    
+    @bg?.remove()
+    @logo?.remove()
     @geoPlot?.set.remove()
+    
+    @drawBG()
+    @drawLogo()
     
     ndata = {}
     for series of @ndata
@@ -995,12 +1003,9 @@ class Sai.GeoChart extends Sai.Chart
       @data,
       {fromWhite: @opts.fromWhite}
     ))
-    .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries, @opts.bgcolor, @opts.interactive, @drawInfo)
+    .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries ? @data['__DEFAULT__'], @opts.bgcolor, @opts.interactive and not @opts.simple, @drawInfo)
     
-    @geoPlot.set.attr({
-      href: @opts.href
-      target: '_blank'
-    })
+    return this
   
   default_info: () ->
     {'': if @opts.interactive then 'Click histogram below to change map display' else ''}
@@ -1014,11 +1019,9 @@ class Sai.GeoChart extends Sai.Chart
     
     @setPlotCoords()
     
-    @drawLogo()
-    @drawBG()
     @drawInfo()
     
-    @renderPlots(@data['__DEFAULT__'])
+    @renderPlots()
     
     everything = @r.set().push(
       @geoPlot.set,
@@ -1061,6 +1064,39 @@ class Sai.ScatterChart extends Sai.Chart
     
     return groups
   
+  renderPlots: () ->
+    
+    @setPlotCoords() unless @px?
+    
+    colors = @opts.colors ? @colors ? ['black', 'white']
+    stroke_opacity = @opts.stroke_opacity ? [0, 1]
+    stroke_colors = @opts.stroke_colors ? ['black', 'black']
+    radii = @opts.radius ? [4, 12]
+    
+    @drawLogo()
+    @drawBG()
+    
+    ndata = {}
+    for series of @ndata
+      ndata[series] = @ndata[series][series]
+    
+    @plots = @r.set()
+    
+    @plots.push(
+      (new Sai.ScatterPlot(
+        @r,
+        @px,
+        @py,
+        @pw,
+        @ph,
+        ndata,
+        @data)
+      )
+      .render(@opts.mappings, colors, radii, stroke_opacity, stroke_colors, @opts.interactive and not @opts.simple, @drawInfo)
+      .set
+    )
+    
+    return this
   
   renderFull: () ->
     @drawTitle()
@@ -1112,28 +1148,8 @@ class Sai.ScatterChart extends Sai.Chart
     @__LABELS__ = '__XVALS__'
     @data.__XVALS__ = @ndata[@opts.mappings.x].__YVALS__
     @addAxes([@opts.mappings.y], {left: @opts.mappings.y, bottom: @opts.mappings.x})
-    @drawLogo()
-    @drawBG()
     
-    ndata = {}
-    for series of @ndata
-      ndata[series] = @ndata[series][series]
-    
-    @plots = @r.set()
-    
-    @plots.push(
-      (new Sai.ScatterPlot(
-        @r,
-        @px,
-        @py,
-        @pw,
-        @ph,
-        ndata,
-        @data)
-      )
-      .render(@opts.mappings, colors, radii, stroke_opacity, stroke_colors, @drawInfo)
-      .set
-    )
+    @renderPlots()
     
     everything = @r.set().push(
       @plots,

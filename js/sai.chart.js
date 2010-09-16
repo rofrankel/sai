@@ -1101,7 +1101,6 @@
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
-    this.addAxes(['prices']);
     open_name = (typeof (_a = this.semanticRenames['open']) !== "undefined" && _a !== null) ? _a : 'open';
     close_name = (typeof (_b = this.semanticRenames['close']) !== "undefined" && _b !== null) ? _b : 'close';
     high_name = (typeof (_c = this.semanticRenames['high']) !== "undefined" && _c !== null) ? _c : 'high';
@@ -1121,7 +1120,8 @@
     if (shouldDrawLegend) {
       this.drawLegend(avgColors);
     }
-    this.renderPlot();
+    this.addAxes(['prices']);
+    this.renderPlots();
     glow_width = this.pw / (this.data[this.__LABELS__].length - 1);
     this.glow = this.r.rect(this.px - (glow_width / 2), this.py - this.ph, glow_width, this.ph).attr({
       fill: ("0-" + (this.opts.bgcolor) + "-#DDAA99-" + (this.opts.bgcolor)),
@@ -1288,22 +1288,26 @@
     }, this))(histogram));
   };
   Sai.GeoChart.prototype.renderPlots = function(mainSeries) {
-    var _a, _b, ndata, series;
+    var _a, _b, _c, ndata, series;
+    if (!(typeof (_a = this.px) !== "undefined" && _a !== null)) {
+      this.setPlotCoords();
+    }
+    this.bg == null ? undefined : this.bg.remove();
+    this.logo == null ? undefined : this.logo.remove();
     this.geoPlot == null ? undefined : this.geoPlot.set.remove();
+    this.drawBG();
+    this.drawLogo();
     ndata = {};
-    _b = this.ndata;
-    for (series in _b) {
-      if (!__hasProp.call(_b, series)) continue;
-      _a = _b[series];
+    _c = this.ndata;
+    for (series in _c) {
+      if (!__hasProp.call(_c, series)) continue;
+      _b = _c[series];
       ndata[series] = this.ndata[series][series];
     }
     this.geoPlot = (new this.plotType(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data, {
       fromWhite: this.opts.fromWhite
-    })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, mainSeries, this.opts.bgcolor, this.opts.interactive, this.drawInfo);
-    return this.geoPlot.set.attr({
-      href: this.opts.href,
-      target: '_blank'
-    });
+    })).render(this.colors || {}, this.data['__MAP__'], this.__LABELS__, (typeof mainSeries !== "undefined" && mainSeries !== null) ? mainSeries : this.data['__DEFAULT__'], this.opts.bgcolor, this.opts.interactive && !this.opts.simple, this.drawInfo);
+    return this;
   };
   Sai.GeoChart.prototype.default_info = function() {
     return {
@@ -1327,10 +1331,8 @@
       return _b;
     }).call(this));
     this.setPlotCoords();
-    this.drawLogo();
-    this.drawBG();
     this.drawInfo();
-    this.renderPlots(this.data['__DEFAULT__']);
+    this.renderPlots();
     everything = this.r.set().push(this.geoPlot.set, this.bg, this.logo, this.info, this.footnote);
     if (this.opts.href) {
       everything.attr({
@@ -1381,8 +1383,30 @@
     }
     return groups;
   };
+  Sai.ScatterChart.prototype.renderPlots = function() {
+    var _a, _b, _c, _d, _e, _f, _g, _h, colors, ndata, radii, series, stroke_colors, stroke_opacity;
+    if (!(typeof (_a = this.px) !== "undefined" && _a !== null)) {
+      this.setPlotCoords();
+    }
+    colors = (typeof (_b = this.opts.colors) !== "undefined" && _b !== null) ? _b : (typeof (_c = this.colors) !== "undefined" && _c !== null) ? _c : ['black', 'white'];
+    stroke_opacity = (typeof (_d = this.opts.stroke_opacity) !== "undefined" && _d !== null) ? _d : [0, 1];
+    stroke_colors = (typeof (_e = this.opts.stroke_colors) !== "undefined" && _e !== null) ? _e : ['black', 'black'];
+    radii = (typeof (_f = this.opts.radius) !== "undefined" && _f !== null) ? _f : [4, 12];
+    this.drawLogo();
+    this.drawBG();
+    ndata = {};
+    _h = this.ndata;
+    for (series in _h) {
+      if (!__hasProp.call(_h, series)) continue;
+      _g = _h[series];
+      ndata[series] = this.ndata[series][series];
+    }
+    this.plots = this.r.set();
+    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, radii, stroke_opacity, stroke_colors, this.opts.interactive && !this.opts.simple, this.drawInfo).set);
+    return this;
+  };
   Sai.ScatterChart.prototype.renderFull = function() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, c, colors, draw_legend, everything, histogramColors, histogramSeries, legend_colors, ndata, radii, series, stroke_colors, stroke_opacity;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, c, colors, draw_legend, everything, histogramColors, histogramSeries, legend_colors, radii, stroke_colors, stroke_opacity;
     this.drawTitle();
     this.setupInfoSpace();
     this.drawFootnote();
@@ -1445,17 +1469,7 @@
       left: this.opts.mappings.y,
       bottom: this.opts.mappings.x
     });
-    this.drawLogo();
-    this.drawBG();
-    ndata = {};
-    _k = this.ndata;
-    for (series in _k) {
-      if (!__hasProp.call(_k, series)) continue;
-      _j = _k[series];
-      ndata[series] = this.ndata[series][series];
-    }
-    this.plots = this.r.set();
-    this.plots.push((new Sai.ScatterPlot(this.r, this.px, this.py, this.pw, this.ph, ndata, this.data)).render(this.opts.mappings, colors, radii, stroke_opacity, stroke_colors, this.drawInfo).set);
+    this.renderPlots();
     everything = this.r.set().push(this.plots, this.bg, this.logo, this.info, this.footnote, this.histogramLegend, this.legend);
     if (this.opts.href) {
       everything.attr({

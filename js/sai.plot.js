@@ -312,7 +312,7 @@
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.ScatterPlot, Sai.Plot);
-  Sai.ScatterPlot.prototype.render = function(mappings, colors, radii, stroke_opacities, stroke_colors, fSetInfo) {
+  Sai.ScatterPlot.prototype.render = function(mappings, colors, radii, stroke_opacities, stroke_colors, shouldInteract, fSetInfo) {
     var _a, _b, _c, i, lerp, num_points, series, y2x;
     this.set.remove();
     _b = this.dndata;
@@ -330,7 +330,7 @@
     }, this);
     for (_c = 0; (0 <= num_points ? _c < num_points : _c > num_points); (0 <= num_points ? _c += 1 : _c -= 1)) {
       (function() {
-        var _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, color, info, infoSetters, radius, series, stroke_color, stroke_opacity, x, y;
+        var _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, circle, color, info, infoSetters, radius, series, stroke_color, stroke_opacity, x, y;
         var i = _c;
         x = y2x(this.dndata[mappings.x] == null ? undefined : this.dndata[mappings.x][i][1]);
         y = this.dndata[mappings.y] == null ? undefined : this.dndata[mappings.y][i][1];
@@ -362,29 +362,31 @@
         } else {
           stroke_opacity = 1.0;
         }
-        info = {};
-        _q = this.rawdata;
-        for (series in _q) {
-          if (!__hasProp.call(_q, series)) continue;
-          _p = _q[series];
-          if (!series.match('^__')) {
-            info[series] = this.rawdata[series][i];
+        if (shouldInteract) {
+          info = {};
+          _q = this.rawdata;
+          for (series in _q) {
+            if (!__hasProp.call(_q, series)) continue;
+            _p = _q[series];
+            if (!series.match('^__')) {
+              info[series] = this.rawdata[series][i];
+            }
           }
+          infoSetters = Sai.util.infoSetters(fSetInfo, info);
         }
-        infoSetters = Sai.util.infoSetters(fSetInfo, info);
-        return this.set.push(this.r.circle(x, y, radius).attr({
+        return this.set.push(circle = this.r.circle(x, y, radius).attr({
           'fill': color,
           'stroke-opacity': stroke_opacity,
           'stroke': stroke_color,
           'fill-opacity': 0.8,
           'stroke-width': 2
-        }).hover(function() {
+        }), shouldInteract ? circle.hover(function() {
           infoSetters[0]();
           return this.attr('fill-opacity', 0.5);
         }, function() {
           infoSetters[1]();
           return this.attr('fill-opacity', 0.8);
-        }));
+        }) : null);
       }).call(this);
     }
     return this;

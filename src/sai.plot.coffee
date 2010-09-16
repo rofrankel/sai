@@ -240,7 +240,7 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
 
 class Sai.ScatterPlot extends Sai.Plot
 
-  render: (mappings, colors, radii, stroke_opacities, stroke_colors, fSetInfo) ->
+  render: (mappings, colors, radii, stroke_opacities, stroke_colors, shouldInteract, fSetInfo) ->
     @set.remove()
     
     for series of @dndata
@@ -282,13 +282,14 @@ class Sai.ScatterPlot extends Sai.Plot
       else
         stroke_opacity = 1.0
       
-      info = {}
-      for series of @rawdata when not series.match('^__')
-        info[series] = @rawdata[series][i]
-      infoSetters = Sai.util.infoSetters(fSetInfo, info)
+      if shouldInteract
+        info = {}
+        for series of @rawdata when not series.match('^__')
+          info[series] = @rawdata[series][i]
+        infoSetters = Sai.util.infoSetters(fSetInfo, info)
       
       @set.push(
-        @r.circle(x, y, radius)
+        circle = @r.circle(x, y, radius)
         .attr({
           'fill': color
           'stroke-opacity': stroke_opacity
@@ -296,15 +297,17 @@ class Sai.ScatterPlot extends Sai.Plot
           'fill-opacity': 0.8
           'stroke-width': 2
         })
-        .hover(
-          ->
-            infoSetters[0]()
-            this.attr('fill-opacity', 0.5)
-          ,
-          ->
-            infoSetters[1]()
-            this.attr('fill-opacity', 0.8)
-        )
+        
+        if shouldInteract
+          circle.hover(
+            ->
+              infoSetters[0]()
+              this.attr('fill-opacity', 0.5)
+            ,
+            ->
+              infoSetters[1]()
+              this.attr('fill-opacity', 0.8)
+          )
       )
     
     return this
