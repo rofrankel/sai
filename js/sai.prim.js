@@ -5,11 +5,13 @@
   getHoverfuncs = function(target, attrOn, attrOff, extras) {
     return [
       function() {
+        var _a;
         target.attr(attrOn);
-        return extras ? extras[0](target) : null;
+        return (typeof (_a = (typeof extras === "undefined" || extras === null) ? undefined : extras[0]) === "function" ? _a(target) : undefined);
       }, function() {
+        var _a;
         target.attr(attrOff);
-        return extras ? extras[1](target) : null;
+        return (typeof (_a = (typeof extras === "undefined" || extras === null) ? undefined : extras[1]) === "function" ? _a(target) : undefined);
       }
     ];
   };
@@ -368,8 +370,7 @@
     }
     pixels_per_char = 6;
     chars_per_line = w / pixels_per_char;
-    /*
-    tokens = text.split(delimiter)
+    /*tokens = text.split(delimiter)
     lines = []
     line = ''
     for token in tokens
@@ -435,8 +436,7 @@
     var hoverfuncs, shape;
     shape = fDraw(this).attr(attrs);
     hoverfuncs = getHoverfuncs(shape, hoverattrs && hoverattrs[0] || {}, hoverattrs && hoverattrs[1] || {}, extras);
-    /*
-    shape.hover(
+    /*shape.hover(
       hoverfuncs[0],
       hoverfuncs[1]
     )

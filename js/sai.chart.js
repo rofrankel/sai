@@ -1448,8 +1448,7 @@
         legend_colors[c] = stroke_colors[c];
       }
     }
-    /*
-    if @opts.mappings.stroke_opacity
+    /*if @opts.mappings.stroke_opacity
       histogramSeries.push(@opts.mappings.stroke_opacity)
       so_colors = [
         Sai.util.colerp(stroke_colors[0], stroke_colors[1], stroke_opacity[0]),

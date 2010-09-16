@@ -4,13 +4,11 @@ getHoverfuncs = (target, attrOn, attrOff, extras) ->
   return [
     () ->
       target.attr(attrOn)
-      # TODO: use f?() once CS is updated
-      if extras then extras[0](target)
+      extras?[0]?(target)
     ,
     () ->
       target.attr(attrOff)
-      # TODO: use f?() once CS is updated
-      if extras then extras[1](target)
+      extras?[1]?(target)
   ]
 
 Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fill, shouldInteract, fSetInfo, extras) ->
