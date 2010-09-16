@@ -335,8 +335,8 @@ class Sai.Chart
     @footnote.translate(0,  -h)
   
   render: () ->
-    if @opts.simple and @renderPlot?
-      @renderPlot()
+    if @opts.simple and @renderPlots?
+      @renderPlots()
     else
       @renderFull()
     
@@ -503,7 +503,7 @@ class Sai.LineChart extends Sai.Chart
     
     return groups
   
-  renderPlot: () ->
+  renderPlots: () ->
     @setPlotCoords() unless @px?
     
     @drawBG()
@@ -562,7 +562,7 @@ class Sai.LineChart extends Sai.Chart
     saxis = 'right' of @ndata
     if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
     
-    @renderPlot()
+    @renderPlots()
     @plotSets = @r.set()
     @plotSets.push(plot.set) for plot in @plots
     
@@ -662,17 +662,14 @@ class Sai.BarChart extends Sai.Chart
     
     return barsToDraw > maxBars
   
-  renderFull: () ->
-    @drawTitle()
-    @setupInfoSpace()
-    @drawFootnote()
-    @drawLegend()
-    @addAxes(['all'])
+  renderPlots: () ->
+    @setPlotCoords() unless @px?
+    
     @drawLogo()
     @drawBG()
     
     if @tooMuchData()
-      @showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include downsampling your data\n (e.g. monthly instead of daily) or using a line chart')
+      @showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include downsampling your data\n (e.g. weekly instead of daily) or using a line chart')
       return this
     
     if 'all' of @ndata
@@ -703,9 +700,19 @@ class Sai.BarChart extends Sai.Chart
         data,
         rawdata)
       )
-      .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive, @drawInfo)
+      .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive and not @opts.simple, @drawInfo)
       .set
     )
+  
+  
+  renderFull: () ->
+    @drawTitle()
+    @setupInfoSpace()
+    @drawFootnote()
+    @drawLegend()
+    @addAxes(['all'])
+    
+    @renderPlots()
     
     everything = @r.set().push(
       @plots,
@@ -748,24 +755,15 @@ class Sai.StockChart extends Sai.Chart
   
   nonNegativeGroups: () ->
     ['volume']
-
-  renderFull: () ->
-    @drawTitle()
-    @setupInfoSpace()
-    @drawFootnote()
+  
+  renderPlots: () ->
+    @setPlotCoords() unless @px?
     
     open_name = @semanticRenames['open'] ? 'open'
     close_name = @semanticRenames['close'] ? 'close'
     high_name = @semanticRenames['high'] ? 'high'
     low_name = @semanticRenames['low'] ? 'low'
     volume_name = @semanticRenames['volume'] ? 'volume'
-    
-    avgColors = {}
-    shouldDrawLegend = false
-    for series of @ndata['prices'] when series not in [open_name, close_name, high_name, low_name] and not (series.match('^__') or series is @__LABELS__)
-      avgColors[series] = @colors?[series] or 'black'
-      shouldDrawLegend = true
-    if shouldDrawLegend then @drawLegend(avgColors)
     
     @colors ?= {}
     @colors['up'] ?= 'black'
@@ -775,7 +773,6 @@ class Sai.StockChart extends Sai.Chart
     
     # @drawLegend({up: @colors.up, down: @colors.down})
     
-    @addAxes(['prices'])
     @drawLogo()
     @drawBG()
     
@@ -856,8 +853,27 @@ class Sai.StockChart extends Sai.Chart
       .render(@colors)
       .set
     )
+  
+  renderFull: () ->
+    @drawTitle()
+    @setupInfoSpace()
+    @drawFootnote()
+    @addAxes(['prices'])
     
+    open_name = @semanticRenames['open'] ? 'open'
+    close_name = @semanticRenames['close'] ? 'close'
+    high_name = @semanticRenames['high'] ? 'high'
+    low_name = @semanticRenames['low'] ? 'low'
+    volume_name = @semanticRenames['volume'] ? 'volume'
     
+    avgColors = {}
+    shouldDrawLegend = false
+    for series of @ndata['prices'] when series not in [open_name, close_name, high_name, low_name] and not (series.match('^__') or series is @__LABELS__)
+      avgColors[series] = @colors?[series] or 'black'
+      shouldDrawLegend = true
+    if shouldDrawLegend then @drawLegend(avgColors)
+    
+    @renderPlot()
     
     glow_width = @pw / (@data[@__LABELS__].length - 1)
     @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
@@ -949,7 +965,7 @@ class Sai.GeoChart extends Sai.Chart
     return groups
   
   setupHistogramInteraction: (histogram, series) ->  
-    histogram.click( () => @renderPlot(series) )
+    histogram.click( () => @renderPlots(series) )
     .hover(
       ((set) =>
         () =>
@@ -964,7 +980,7 @@ class Sai.GeoChart extends Sai.Chart
       )(histogram)
     )
   
-  renderPlot: (mainSeries) =>
+  renderPlots: (mainSeries) =>
     
     @geoPlot?.set.remove()
     
@@ -1002,7 +1018,7 @@ class Sai.GeoChart extends Sai.Chart
     @drawBG()
     @drawInfo()
     
-    @renderPlot(@data['__DEFAULT__'])
+    @renderPlots(@data['__DEFAULT__'])
     
     everything = @r.set().push(
       @geoPlot.set,

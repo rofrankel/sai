@@ -307,13 +307,13 @@
         var stackedchart = new Sai.LineChart(r2, 0, 350, 350, 350, data, "Month", {simple: 1, bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true, lineWidth: 1}).setColors(colors).render();
         
         var r3 = Raphael("c3", 350, 350);
-        var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, "Date", {bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'5-day moving average': olive, '55-day moving average': ucla}).render();
+        var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, "Date", {simple: 1, bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'5-day moving average': olive, '55-day moving average': ucla}).render();
         
         var r4 = Raphael("c4", 350, 350);
-        var barc = new Sai.BarChart(r4, 0, 350, 350, 350, bardata, "Quarter", {bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
+        var barc = new Sai.BarChart(r4, 0, 350, 350, 350, bardata, "Quarter", {simple: 1, bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
         
         var r5 = Raphael("c5", 350, 350);
-        var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
+        var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {simple: 1, bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
         
         var r6 = Raphael("c6", 800, 650);
         var uschart = new Sai.GeoChart(r6, 0, 650, 800, 650, WorldData, "countries", {href: 'http://track.com', bgcolor: tea, title: "Track.com Worldwide Fun Indices", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(UScolors).render();

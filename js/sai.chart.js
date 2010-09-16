@@ -538,8 +538,8 @@
   };
   Sai.Chart.prototype.render = function() {
     var _a;
-    if (this.opts.simple && (typeof (_a = this.renderPlot) !== "undefined" && _a !== null)) {
-      this.renderPlot();
+    if (this.opts.simple && (typeof (_a = this.renderPlots) !== "undefined" && _a !== null)) {
+      this.renderPlots();
     } else {
       this.renderFull();
     }
@@ -757,7 +757,7 @@
     }
     return groups;
   };
-  Sai.LineChart.prototype.renderPlot = function() {
+  Sai.LineChart.prototype.renderPlots = function() {
     var _a, _b, _c, _d, _e, _f, _g, ndata, plotType, saxis;
     if (!(typeof (_a = this.px) !== "undefined" && _a !== null)) {
       this.setPlotCoords();
@@ -801,7 +801,7 @@
     } else {
       this.addAxes(['all']);
     }
-    this.renderPlot();
+    this.renderPlots();
     this.plotSets = this.r.set();
     _b = this.plots;
     for (_a = 0, _c = _b.length; _a < _c; _a++) {
@@ -928,24 +928,22 @@
     }
     return barsToDraw > maxBars;
   };
-  Sai.BarChart.prototype.renderFull = function() {
-    var _a, _b, _c, _d, _e, _f, _g, data, everything, ndata, rawdata, series, yval;
-    this.drawTitle();
-    this.setupInfoSpace();
-    this.drawFootnote();
-    this.drawLegend();
-    this.addAxes(['all']);
+  Sai.BarChart.prototype.renderPlots = function() {
+    var _a, _b, _c, _d, _e, _f, _g, _h, data, ndata, rawdata, series, yval;
+    if (!(typeof (_a = this.px) !== "undefined" && _a !== null)) {
+      this.setPlotCoords();
+    }
     this.drawLogo();
     this.drawBG();
     if (this.tooMuchData()) {
-      this.showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include downsampling your data\n (e.g. monthly instead of daily) or using a line chart');
+      this.showError('Sorry, the chart isn\'t wide enough to plot this much data.\n \nPossible solutions include downsampling your data\n (e.g. weekly instead of daily) or using a line chart');
       return this;
     }
     if ('all' in this.ndata) {
       this.guidelines = this.r.set();
-      _b = this.ndata['all']['__YVALS__'].slice(1, this.ndata['all']['__YVALS__'].length - 1);
-      for (_a = 0, _c = _b.length; _a < _c; _a++) {
-        yval = _b[_a];
+      _c = this.ndata['all']['__YVALS__'].slice(1, this.ndata['all']['__YVALS__'].length - 1);
+      for (_b = 0, _d = _c.length; _b < _d; _b++) {
+        yval = _c[_b];
         this.drawGuideline(yval);
       }
     }
@@ -953,17 +951,26 @@
     data = {};
     rawdata = {};
     rawdata[this.__LABELS__] = this.data[this.__LABELS__];
-    ndata = (typeof (_d = this.opts.stacked) !== "undefined" && _d !== null) ? this.stackedNdata : this.ndata;
-    _f = ndata['all'];
-    for (series in _f) {
-      if (!__hasProp.call(_f, series)) continue;
-      _e = _f[series];
+    ndata = (typeof (_e = this.opts.stacked) !== "undefined" && _e !== null) ? this.stackedNdata : this.ndata;
+    _g = ndata['all'];
+    for (series in _g) {
+      if (!__hasProp.call(_g, series)) continue;
+      _f = _g[series];
       if (!(series.match('^__') || series === this.__LABELS__)) {
         data[series] = ndata['all'][series];
         rawdata[series] = this.data[series];
       }
     }
-    this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render(typeof (_g = this.opts.stacked) !== "undefined" && _g !== null, this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive, this.drawInfo).set);
+    return this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render(typeof (_h = this.opts.stacked) !== "undefined" && _h !== null, this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive && !this.opts.simple, this.drawInfo).set);
+  };
+  Sai.BarChart.prototype.renderFull = function() {
+    var everything;
+    this.drawTitle();
+    this.setupInfoSpace();
+    this.drawFootnote();
+    this.drawLegend();
+    this.addAxes(['all']);
+    this.renderPlots();
     everything = this.r.set().push(this.plots, this.bg, this.logo, this.guidelines);
     if (this.opts.href) {
       everything.attr({
@@ -1010,39 +1017,24 @@
   Sai.StockChart.prototype.nonNegativeGroups = function() {
     return ['volume'];
   };
-  Sai.StockChart.prototype.renderFull = function() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, avgColors, avgNdata, close_name, everything, glow_width, high_name, i, low_name, moveGlow, open_name, p, rawdata, series, shouldDrawLegend, vol, volume_name;
-    this.drawTitle();
-    this.setupInfoSpace();
-    this.drawFootnote();
-    open_name = (typeof (_a = this.semanticRenames['open']) !== "undefined" && _a !== null) ? _a : 'open';
-    close_name = (typeof (_b = this.semanticRenames['close']) !== "undefined" && _b !== null) ? _b : 'close';
-    high_name = (typeof (_c = this.semanticRenames['high']) !== "undefined" && _c !== null) ? _c : 'high';
-    low_name = (typeof (_d = this.semanticRenames['low']) !== "undefined" && _d !== null) ? _d : 'low';
-    volume_name = (typeof (_e = this.semanticRenames['volume']) !== "undefined" && _e !== null) ? _e : 'volume';
-    avgColors = {};
-    shouldDrawLegend = false;
-    _g = this.ndata['prices'];
-    for (series in _g) {
-      if (!__hasProp.call(_g, series)) continue;
-      _f = _g[series];
-      if (!(open_name === series || close_name === series || high_name === series || low_name === series) && !(series.match('^__') || series === this.__LABELS__)) {
-        avgColors[series] = (this.colors == null ? undefined : this.colors[series]) || 'black';
-        shouldDrawLegend = true;
-      }
+  Sai.StockChart.prototype.renderPlots = function() {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, avgNdata, close_name, high_name, i, low_name, open_name, p, rawdata, series, vol, volume_name;
+    if (!(typeof (_a = this.px) !== "undefined" && _a !== null)) {
+      this.setPlotCoords();
     }
-    if (shouldDrawLegend) {
-      this.drawLegend(avgColors);
-    }
+    open_name = (typeof (_b = this.semanticRenames['open']) !== "undefined" && _b !== null) ? _b : 'open';
+    close_name = (typeof (_c = this.semanticRenames['close']) !== "undefined" && _c !== null) ? _c : 'close';
+    high_name = (typeof (_d = this.semanticRenames['high']) !== "undefined" && _d !== null) ? _d : 'high';
+    low_name = (typeof (_e = this.semanticRenames['low']) !== "undefined" && _e !== null) ? _e : 'low';
+    volume_name = (typeof (_f = this.semanticRenames['volume']) !== "undefined" && _f !== null) ? _f : 'volume';
     this.colors = (typeof this.colors !== "undefined" && this.colors !== null) ? this.colors : {};
     this.colors['up'] = (typeof this.colors['up'] !== "undefined" && this.colors['up'] !== null) ? this.colors['up'] : 'black';
     this.colors['down'] = (typeof this.colors['down'] !== "undefined" && this.colors['down'] !== null) ? this.colors['down'] : 'red';
     this.colors['vol_up'] = (typeof this.colors['vol_up'] !== "undefined" && this.colors['vol_up'] !== null) ? this.colors['vol_up'] : '#666666';
     this.colors['vol_down'] = (typeof this.colors['vol_down'] !== "undefined" && this.colors['vol_down'] !== null) ? this.colors['vol_down'] : '#cc6666';
-    this.addAxes(['prices']);
     this.drawLogo();
     this.drawBG();
-    if (!((typeof (_h = this.ndata.prices) !== "undefined" && _h !== null) && open_name in this.ndata.prices && close_name in this.ndata.prices && high_name in this.ndata.prices && low_name in this.ndata.prices)) {
+    if (!((typeof (_g = this.ndata.prices) !== "undefined" && _g !== null) && open_name in this.ndata.prices && close_name in this.ndata.prices && high_name in this.ndata.prices && low_name in this.ndata.prices)) {
       this.showError("This chart requires data series named\nopen, close, high, and low.\n \nOnce you add series with these names, the chart will display.");
       return null;
     }
@@ -1055,20 +1047,20 @@
       'down': []
     };
     rawdata = {};
-    _j = this.ndata['prices'];
-    for (p in _j) {
-      if (!__hasProp.call(_j, p)) continue;
-      _i = _j[p];
+    _i = this.ndata['prices'];
+    for (p in _i) {
+      if (!__hasProp.call(_i, p)) continue;
+      _h = _i[p];
       if (!(p.match('^__') || p === this.__LABELS__)) {
         rawdata[p] = this.data[p];
       }
     }
-    if (typeof (_k = this.data[volume_name]) !== "undefined" && _k !== null) {
+    if (typeof (_j = this.data[volume_name]) !== "undefined" && _j !== null) {
       rawdata['vol'] = this.data[volume_name];
     }
     if ('volume' in this.ndata) {
-      _l = this.ndata['volume'][volume_name].length;
-      for (i = 0; (0 <= _l ? i < _l : i > _l); (0 <= _l ? i += 1 : i -= 1)) {
+      _k = this.ndata['volume'][volume_name].length;
+      for (i = 0; (0 <= _k ? i < _k : i > _k); (0 <= _k ? i += 1 : i -= 1)) {
         if (this.ndata['volume'][volume_name][i] !== null) {
           if (i && this.ndata['prices'][close_name][i - 1] && (this.ndata['prices'][close_name][i][1] < this.ndata['prices'][close_name][i - 1][1])) {
             vol.down.push(this.ndata['volume'][volume_name][i]);
@@ -1094,15 +1086,42 @@
       'low': this.ndata['prices'][low_name]
     }, rawdata)).render(this.colors, Math.min(5, (this.pw / this.ndata['prices'][open_name].length) - 2)).set);
     avgNdata = {};
-    _n = this.ndata['prices'];
-    for (series in _n) {
-      if (!__hasProp.call(_n, series)) continue;
-      _m = _n[series];
+    _m = this.ndata['prices'];
+    for (series in _m) {
+      if (!__hasProp.call(_m, series)) continue;
+      _l = _m[series];
       if (!(((open_name === series || close_name === series || high_name === series || low_name === series)) || series.match("^__") || series === this.__LABELS__)) {
         avgNdata[series] = this.ndata['prices'][series];
       }
     }
-    this.plots.push((new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, avgNdata)).render(this.colors).set);
+    return this.plots.push((new Sai.LinePlot(this.r, this.px, this.py, this.pw, this.ph, avgNdata)).render(this.colors).set);
+  };
+  Sai.StockChart.prototype.renderFull = function() {
+    var _a, _b, _c, _d, _e, _f, _g, avgColors, close_name, everything, glow_width, high_name, low_name, moveGlow, open_name, series, shouldDrawLegend, volume_name;
+    this.drawTitle();
+    this.setupInfoSpace();
+    this.drawFootnote();
+    this.addAxes(['prices']);
+    open_name = (typeof (_a = this.semanticRenames['open']) !== "undefined" && _a !== null) ? _a : 'open';
+    close_name = (typeof (_b = this.semanticRenames['close']) !== "undefined" && _b !== null) ? _b : 'close';
+    high_name = (typeof (_c = this.semanticRenames['high']) !== "undefined" && _c !== null) ? _c : 'high';
+    low_name = (typeof (_d = this.semanticRenames['low']) !== "undefined" && _d !== null) ? _d : 'low';
+    volume_name = (typeof (_e = this.semanticRenames['volume']) !== "undefined" && _e !== null) ? _e : 'volume';
+    avgColors = {};
+    shouldDrawLegend = false;
+    _g = this.ndata['prices'];
+    for (series in _g) {
+      if (!__hasProp.call(_g, series)) continue;
+      _f = _g[series];
+      if (!(open_name === series || close_name === series || high_name === series || low_name === series) && !(series.match('^__') || series === this.__LABELS__)) {
+        avgColors[series] = (this.colors == null ? undefined : this.colors[series]) || 'black';
+        shouldDrawLegend = true;
+      }
+    }
+    if (shouldDrawLegend) {
+      this.drawLegend(avgColors);
+    }
+    this.renderPlot();
     glow_width = this.pw / (this.data[this.__LABELS__].length - 1);
     this.glow = this.r.rect(this.px - (glow_width / 2), this.py - this.ph, glow_width, this.ph).attr({
       fill: ("0-" + (this.opts.bgcolor) + "-#DDAA99-" + (this.opts.bgcolor)),
@@ -1111,25 +1130,25 @@
     }).toBack().hide();
     this.bg.toBack();
     everything = this.r.set().push(this.bg, this.plots, this.logo, this.glow, this.guidelines).mousemove(moveGlow = __bind(function(event) {
-      var _o, _p, _q, _r, _s, idx, info, notNull, series;
+      var _h, _i, _j, _k, _l, idx, info, notNull, series;
       idx = this.getIndex(event);
       info = {};
-      if (typeof (_o = this.data[this.__LABELS__][idx]) !== "undefined" && _o !== null) {
+      if (typeof (_h = this.data[this.__LABELS__][idx]) !== "undefined" && _h !== null) {
         info[this.__LABELS__] = this.data[this.__LABELS__][idx];
       }
       notNull = false;
-      _q = this.ndata['prices'];
-      for (series in _q) {
-        if (!__hasProp.call(_q, series)) continue;
-        _p = _q[series];
+      _j = this.ndata['prices'];
+      for (series in _j) {
+        if (!__hasProp.call(_j, series)) continue;
+        _i = _j[series];
         if (!(series.match('^__') || series === this.__LABELS__)) {
-          if (typeof (_r = this.data[series] == null ? undefined : this.data[series][idx]) !== "undefined" && _r !== null) {
+          if (typeof (_k = this.data[series] == null ? undefined : this.data[series][idx]) !== "undefined" && _k !== null) {
             info[series] = this.data[series][idx];
             notNull = true;
           }
         }
       }
-      if (typeof (_s = this.data[volume_name] == null ? undefined : this.data[volume_name][idx]) !== "undefined" && _s !== null) {
+      if (typeof (_l = this.data[volume_name] == null ? undefined : this.data[volume_name][idx]) !== "undefined" && _l !== null) {
         info[volume_name] = this.data[volume_name][idx];
         notNull = true;
       }
@@ -1146,7 +1165,7 @@
   Sai.GeoChart = function() {
     var _a;
     _a = this;
-    this.renderPlot = function(){ return Sai.GeoChart.prototype.renderPlot.apply(_a, arguments); };
+    this.renderPlots = function(){ return Sai.GeoChart.prototype.renderPlots.apply(_a, arguments); };
     return Sai.Chart.apply(this, arguments);
   };
   __extends(Sai.GeoChart, Sai.Chart);
@@ -1249,7 +1268,7 @@
   };
   Sai.GeoChart.prototype.setupHistogramInteraction = function(histogram, series) {
     return histogram.click(__bind(function() {
-      return this.renderPlot(series);
+      return this.renderPlots(series);
     }, this)).hover((__bind(function(set) {
       return __bind(function() {
         set.attr({
@@ -1268,7 +1287,7 @@
       }, this);
     }, this))(histogram));
   };
-  Sai.GeoChart.prototype.renderPlot = function(mainSeries) {
+  Sai.GeoChart.prototype.renderPlots = function(mainSeries) {
     var _a, _b, ndata, series;
     this.geoPlot == null ? undefined : this.geoPlot.set.remove();
     ndata = {};
@@ -1311,7 +1330,7 @@
     this.drawLogo();
     this.drawBG();
     this.drawInfo();
-    this.renderPlot(this.data['__DEFAULT__']);
+    this.renderPlots(this.data['__DEFAULT__']);
     everything = this.r.set().push(this.geoPlot.set, this.bg, this.logo, this.info, this.footnote);
     if (this.opts.href) {
       everything.attr({
