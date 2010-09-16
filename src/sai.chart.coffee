@@ -335,9 +335,18 @@ class Sai.Chart
     @footnote.translate(0,  -h)
   
   render: () ->
+    if @opts.simple and @renderPlot?
+      @renderPlot()
+    else
+      @renderFull()
+    
+    return this
+  
+  renderFull: () ->
     @plot ?= new Sai.Plot(@r)
     @plot.render()
     return this
+
   
   showError: (error) ->
     err = this.r.text(@x + @padding.left + ((@pw ? @w)/2), @y - @padding.bottom - ((@ph ? @h)/2), error)
@@ -494,15 +503,14 @@ class Sai.LineChart extends Sai.Chart
     
     return groups
   
-  render: () ->
-    @drawTitle()
-    @setupInfoSpace()
-    @drawFootnote()
-    @drawLegend()
-    saxis = 'right' of @ndata
-    if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
+  renderPlot: () ->
+    @setPlotCoords() unless @px?
+    
     @drawBG()
     @drawLogo()
+    saxis = 'right' of @ndata
+    ndata = if @opts.stacked? then @stackedNdata else @ndata
+    plotType = if @opts.area then Sai.AreaPlot else Sai.LinePlot
     
     if saxis
       if @ndata.left?.__YVALS__[0] < 0
@@ -513,14 +521,6 @@ class Sai.LineChart extends Sai.Chart
       if @ndata.all.__YVALS__[0] < 0
         @drawGuideline(0, 'all')
     
-    @lines = []
-    @dots = @r.set()
-    
-    ndata = if @opts.stacked? then @stackedNdata else @ndata
-    
-    plotType = if @opts.area then Sai.AreaPlot else Sai.LinePlot
-    
-    @plotSets = @r.set()
     @plots = []
     
     if saxis
@@ -533,7 +533,6 @@ class Sai.LineChart extends Sai.Chart
           ))
           .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'left'))
         )
-        @plotSets.push(@plots[@plots.length - 1].set)
       
       if ndata.right?
         @plots.push(
@@ -544,7 +543,6 @@ class Sai.LineChart extends Sai.Chart
           ))
           .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'right'))
         )
-        @plotSets.push(@plots[@plots.length - 1].set)
     else
       @plots.push(
         (new plotType(
@@ -554,10 +552,23 @@ class Sai.LineChart extends Sai.Chart
         ))
         .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'all'))
       )
-      @plotSets.push(@plots[0].set)
       
+  
+  renderFull: () ->
+    @drawTitle()
+    @setupInfoSpace()
+    @drawFootnote()
+    @drawLegend()
+    saxis = 'right' of @ndata
+    if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
     
-    for series of ndata['all'] when series isnt '__YVALS__'
+    @renderPlot()
+    @plotSets = @r.set()
+    @plotSets.push(plot.set) for plot in @plots
+    
+    @dots = @r.set()
+    
+    for series of @ndata['all'] when series isnt '__YVALS__'
       @dots.push(@r.circle(0, 0, 4).attr({'fill': @colors?[series] ? 'black'}).hide())
     
     everything = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines).mousemove(
@@ -569,13 +580,13 @@ class Sai.LineChart extends Sai.Chart
         if @data[@__LABELS__]?.length > idx >= 0
           info[@__LABELS__] = @data[@__LABELS__][idx]
           
-          for series of ndata['all']
+          for series of @ndata['all']
             if @data[series]? then info[series] = @data[series][idx]
         
         @drawInfo(info)
         
         i = 0
-        for series of ndata['all'] when series isnt '__YVALS__'
+        for series of @ndata['all'] when series isnt '__YVALS__'
           for plot in @plots when series of plot.dndata
             pos = plot.dndata[series][idx]
             if pos? then @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else @dots[i].hide()
@@ -602,7 +613,7 @@ class Sai.Sparkline extends Sai.Chart
       'data': ['data']
     }
   
-  render: () ->
+  renderFull: () ->
     @drawBG()
     
     @plots = @r.set()
@@ -651,7 +662,7 @@ class Sai.BarChart extends Sai.Chart
     
     return barsToDraw > maxBars
   
-  render: () ->
+  renderFull: () ->
     @drawTitle()
     @setupInfoSpace()
     @drawFootnote()
@@ -738,7 +749,7 @@ class Sai.StockChart extends Sai.Chart
   nonNegativeGroups: () ->
     ['volume']
 
-  render: () ->
+  renderFull: () ->
     @drawTitle()
     @setupInfoSpace()
     @drawFootnote()
@@ -978,7 +989,7 @@ class Sai.GeoChart extends Sai.Chart
   default_info: () ->
     {'': if @opts.interactive then 'Click histogram below to change map display' else ''}
 
-  render: () ->
+  renderFull: () ->
     
     @drawTitle()
     @setupInfoSpace()
@@ -1035,7 +1046,7 @@ class Sai.ScatterChart extends Sai.Chart
     return groups
   
   
-  render: () ->
+  renderFull: () ->
     @drawTitle()
     @setupInfoSpace()
     @drawFootnote()
