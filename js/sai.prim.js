@@ -5,13 +5,13 @@
   getHoverfuncs = function(target, attrOn, attrOff, extras) {
     return [
       function() {
-        var _a;
+        var _ref;
         target.attr(attrOn);
-        return (typeof (_a = (typeof extras === "undefined" || extras === null) ? undefined : extras[0]) === "function" ? _a(target) : undefined);
+        return (typeof (_ref = (typeof extras === "undefined" || extras === null) ? undefined : extras[0]) === "function" ? _ref(target) : undefined);
       }, function() {
-        var _a;
+        var _ref;
         target.attr(attrOff);
-        return (typeof (_a = (typeof extras === "undefined" || extras === null) ? undefined : extras[1]) === "function" ? _a(target) : undefined);
+        return (typeof (_ref = (typeof extras === "undefined" || extras === null) ? undefined : extras[1]) === "function" ? _ref(target) : undefined);
       }
     ];
   };
@@ -39,12 +39,12 @@
     return candlestick;
   };
   Raphael.fn.sai.prim.line = function(coords, color, width) {
-    var _a, _b, _c, coord, path;
+    var _i, _len, _ref, coord, path;
     color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
-    _b = coords;
-    for (_a = 0, _c = _b.length; _a < _c; _a++) {
-      coord = _b[_a];
+    _ref = coords;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      coord = _ref[_i];
       if (!(typeof coord !== "undefined" && coord !== null)) {
         continue;
       }
@@ -60,15 +60,15 @@
     });
   };
   Raphael.fn.sai.prim.area = function(coords, color, width, baseline) {
-    var _a, _b, _c, area, areaPath, coord, i, stroke, strokePath;
+    var _i, _len, _ref, area, areaPath, coord, i, stroke, strokePath;
     if (coords.length < 2) {
       return this.set();
     }
     color = (typeof color !== "undefined" && color !== null) ? color : '#000000';
     width = (typeof width !== "undefined" && width !== null) ? width : 1;
-    _b = coords;
-    for (_a = 0, _c = _b.length; _a < _c; _a++) {
-      coord = _b[_a];
+    _ref = coords;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      coord = _ref[_i];
       if (!(typeof coord !== "undefined" && coord !== null)) {
         continue;
       }
@@ -96,12 +96,12 @@
     return this.set().push(area, stroke);
   };
   Raphael.fn.sai.prim.stackedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
-    var _a, _b, _c, _d, _e, _f, axisClip, bar, c, height, hoverfuncs, i, is_positive, max, min, offset, pi, prev, segment_baseline, stack, totalHeight;
+    var _i, _len, _ref, _ref2, axisClip, bar, c, height, hoverfuncs, i, is_positive, max, min, offset, pi, prev, segment_baseline, stack, totalHeight;
     if (shouldInteract) {
       max = (min = null);
-      _b = coords;
-      for (_a = 0, _c = _b.length; _a < _c; _a++) {
-        c = _b[_a];
+      _ref = coords;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        c = _ref[_i];
         if (!(typeof max !== "undefined" && max !== null) || max < c[1]) {
           max = c[1];
         }
@@ -118,10 +118,10 @@
     pi = function(val) {
       return (val < baseline ? 1 : 0);
     };
-    _e = coords.length;
-    for (_d = 0; (0 <= _e ? _d < _e : _d > _e); (0 <= _e ? _d += 1 : _d -= 1)) {
-      var i = _d;
-      if (!((typeof (_f = coords[i]) !== "undefined" && _f !== null) && coords[i][1] !== baseline)) {
+    _ref = coords.length;
+    for (_i = 0; (0 <= _ref ? _i < _ref : _i > _ref); (0 <= _ref ? _i += 1 : _i -= 1)) {
+      var i = _i;
+      if (!((typeof (_ref2 = coords[i]) !== "undefined" && _ref2 !== null) && coords[i][1] !== baseline)) {
         continue;
       }
       is_positive = pi(coords[i][1]);
@@ -153,14 +153,14 @@
     return stack;
   };
   Raphael.fn.sai.prim.groupedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
-    var _a, _b, axisClip, barwidth, base, group, h, hoverfuncs, i, offset;
+    var _ref, _ref2, axisClip, barwidth, base, group, h, hoverfuncs, i, offset;
     group = this.set();
     barwidth = width / (coords.length + 1);
     offset = ((width - barwidth) / 2);
     axisClip = 0.5;
-    _a = coords.length;
-    for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
-      if (typeof (_b = coords[i] == null ? undefined : coords[i][0]) !== "undefined" && _b !== null) {
+    _ref = coords.length;
+    for (i = 0; (0 <= _ref ? i < _ref : i > _ref); (0 <= _ref ? i += 1 : i -= 1)) {
+      if (typeof (_ref2 = coords[i] == null ? undefined : coords[i][0]) !== "undefined" && _ref2 !== null) {
         base = Math.min(coords[i][1], baseline);
         h = Math.max(coords[i][1], baseline) - base - axisClip;
         group.push(this.rect(coords[i][0] - offset + (i * barwidth), base, barwidth - 1, h).attr('fill', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000').attr('stroke', ((typeof colors === "undefined" || colors === null) ? undefined : colors[i]) || '#000000'));
@@ -177,10 +177,10 @@
     return group;
   };
   Raphael.fn.sai.prim.haxis = function(vals, x, y, len, opts) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, bbox, bbw, color, dx, i, interval, label, labels, line, ly, max_label_width, max_labels, padding, result, rotate, ticklen, ticklens, ticks, title, val, width, xmax, xpos, ymin;
-    ticklens = (typeof (_a = opts.ticklens) !== "undefined" && _a !== null) ? _a : [5, 2];
-    width = (typeof (_b = opts.width) !== "undefined" && _b !== null) ? _b : 1;
-    color = (typeof (_c = opts.color) !== "undefined" && _c !== null) ? _c : 'black';
+    var _i, _len, _ref, bbox, bbw, color, dx, i, interval, label, labels, line, ly, max_label_width, max_labels, padding, result, rotate, ticklen, ticklens, ticks, title, val, width, xmax, xpos, ymin;
+    ticklens = (typeof (_ref = opts.ticklens) !== "undefined" && _ref !== null) ? _ref : [5, 2];
+    width = (typeof (_ref = opts.width) !== "undefined" && _ref !== null) ? _ref : 1;
+    color = (typeof (_ref = opts.color) !== "undefined" && _ref !== null) ? _ref : 'black';
     line = this.path("M" + x + " " + y + "l" + len + " 0").attr('stroke', color);
     ticks = this.set();
     labels = this.set();
@@ -193,8 +193,8 @@
     padding = 2;
     max_label_width = 0;
     ymin = null;
-    _d = vals.length;
-    for (i = 0; (0 <= _d ? i < _d : i > _d); i += interval) {
+    _ref = vals.length;
+    for (i = 0; (0 <= _ref ? i < _ref : i > _ref); i += interval) {
       val = vals[i];
       if (typeof val !== "undefined" && val !== null) {
         ticklen = ticklens[String(val) ? 0 : 1];
@@ -220,7 +220,7 @@
       }
       xpos += dx;
     }
-    if (typeof (_e = opts.title) !== "undefined" && _e !== null) {
+    if (typeof (_ref = opts.title) !== "undefined" && _ref !== null) {
       title = this.text(x + len / 2, ymin + 14, opts.title).attr({
         'font-size': '12px',
         'font-weight': 'bold'
@@ -228,9 +228,9 @@
     }
     result = this.set().push(line, ticks, labels, title);
     if (rotate) {
-      _g = labels.items;
-      for (_f = 0, _h = _g.length; _f < _h; _f++) {
-        label = _g[_f];
+      _ref = labels.items;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        label = _ref[_i];
         label.rotate(-90);
         label.translate(0, label.getBBox().width / 2 - padding);
       }
@@ -239,20 +239,20 @@
     return result;
   };
   Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, opts) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, bbox, color, dummy, dy, label, labels, line, lx, right, ticklen, ticklens, ticks, title, val, width, xmin, ypos;
-    ticklens = (typeof (_a = opts.ticklens) !== "undefined" && _a !== null) ? _a : [5, 2];
-    width = (typeof (_b = opts.width) !== "undefined" && _b !== null) ? _b : 1;
-    color = (typeof (_c = opts.color) !== "undefined" && _c !== null) ? _c : 'black';
-    right = (typeof (_d = opts.right) !== "undefined" && _d !== null) ? _d : false;
+    var _i, _len, _ref, bbox, color, dummy, dy, label, labels, line, lx, right, ticklen, ticklens, ticks, title, val, width, xmin, ypos;
+    ticklens = (typeof (_ref = opts.ticklens) !== "undefined" && _ref !== null) ? _ref : [5, 2];
+    width = (typeof (_ref = opts.width) !== "undefined" && _ref !== null) ? _ref : 1;
+    color = (typeof (_ref = opts.color) !== "undefined" && _ref !== null) ? _ref : 'black';
+    right = (typeof (_ref = opts.right) !== "undefined" && _ref !== null) ? _ref : false;
     line = this.path("M" + x + " " + y + "l0 " + (-len)).attr('stroke', color);
     ticks = this.set();
     labels = this.set();
     dy = len / (vals.length - 1);
     ypos = y;
     xmin = null;
-    _f = vals;
-    for (_e = 0, _g = _f.length; _e < _g; _e++) {
-      val = _f[_e];
+    _ref = vals;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      val = _ref[_i];
       if (val !== null) {
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + x + " " + ypos + "l" + (right ? ticklen : -ticklen) + " 0").attr('stroke', color));
@@ -270,7 +270,7 @@
       }
       ypos -= dy;
     }
-    if (typeof (_h = opts.title) !== "undefined" && _h !== null) {
+    if (typeof (_ref = opts.title) !== "undefined" && _ref !== null) {
       title = this.text(xmin, y - len / 2, opts.title).attr({
         'font-size': '12px',
         'font-weight': 'bold'
@@ -285,7 +285,7 @@
     return this.set().push(this.set().push(line, ticks, labels, dummy), title);
   };
   Raphael.fn.sai.prim.popup = function(x, y, texts, opts) {
-    var TEXT_LINE_HEIGHT, _a, _b, bg_width, head_text, max_width, py, rect, set, t, text, text_set;
+    var TEXT_LINE_HEIGHT, _i, _ref, bg_width, head_text, max_width, py, rect, set, t, text, text_set;
     TEXT_LINE_HEIGHT = 10;
     set = this.set();
     text_set = this.set();
@@ -301,10 +301,10 @@
       text_set.push(head_text);
       py += (TEXT_LINE_HEIGHT + 2) + 5;
     }
-    _b = texts;
-    for (text in _b) {
-      if (!__hasProp.call(_b, text)) continue;
-      _a = _b[text];
+    _ref = texts;
+    for (text in _ref) {
+      if (!__hasProp.call(_ref, text)) continue;
+      _i = _ref[text];
       if (text === '__HEAD__') {
         continue;
       }
@@ -327,24 +327,24 @@
     return text_set.toFront();
   };
   Raphael.fn.sai.prim.legend = function(x, y, max_width, legend_colors, highlightColors) {
-    var _a, _b, _c, _d, _e, key, key_width, line_height, px, py, r, set, spacing, t, text;
+    var _i, _ref, _ref2, key, key_width, line_height, px, py, r, set, spacing, t, text;
     spacing = 15;
     line_height = 14;
     y -= line_height;
     set = this.set();
     px = x;
     py = y;
-    _b = legend_colors;
-    for (text in _b) {
-      if (!__hasProp.call(_b, text)) continue;
-      _a = _b[text];
+    _ref = legend_colors;
+    for (text in _ref) {
+      if (!__hasProp.call(_ref, text)) continue;
+      _i = _ref[text];
       t = this.text(px + 14, py + 5, text).attr({
-        fill: (typeof (_c = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _c !== null) ? _c : 'black',
+        fill: (typeof (_ref2 = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _ref2 !== null) ? _ref2 : 'black',
         'text-anchor': 'start'
       });
       r = this.rect(px, py, 9, 9).attr({
-        'fill': (typeof (_d = legend_colors[text]) !== "undefined" && _d !== null) ? _d : 'black',
-        'stroke': (typeof (_e = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _e !== null) ? _e : 'black'
+        'fill': (typeof (_ref2 = legend_colors[text]) !== "undefined" && _ref2 !== null) ? _ref2 : 'black',
+        'stroke': (typeof (_ref2 = ((typeof highlightColors === "undefined" || highlightColors === null) ? undefined : highlightColors[text])) !== "undefined" && _ref2 !== null) ? _ref2 : 'black'
       });
       key = this.set().push(t, r);
       key_width = key.getBBox().width;
@@ -370,7 +370,8 @@
     }
     pixels_per_char = 6;
     chars_per_line = w / pixels_per_char;
-    /*tokens = text.split(delimiter)
+    /*
+    tokens = text.split(delimiter)
     lines = []
     line = ''
     for token in tokens
@@ -398,17 +399,17 @@
     });
   };
   Raphael.fn.sai.prim.info = function(x, y, max_width, info) {
-    var _a, _b, _c, char_width, label, line_height, px, py, set, spacing, t, text, twidth;
+    var _i, _ref, _ref2, char_width, label, line_height, px, py, set, spacing, t, text, twidth;
     spacing = 15;
     line_height = 14;
     set = this.set();
     px = x;
     py = y;
     char_width = 6;
-    _b = info;
-    for (label in _b) {
-      if (!__hasProp.call(_b, label)) continue;
-      _a = _b[label];
+    _ref = info;
+    for (label in _ref) {
+      if (!__hasProp.call(_ref, label)) continue;
+      _i = _ref[label];
       if (info[label] === null) {
         continue;
       }
@@ -416,7 +417,7 @@
       if (typeof info[label] === 'string') {
         text += info[label];
       } else {
-        text += (typeof (_c = Sai.util.prettynum(info[label])) !== "undefined" && _c !== null) ? _c : Sai.util.prettystr(info[label]);
+        text += (typeof (_ref2 = Sai.util.prettynum(info[label])) !== "undefined" && _ref2 !== null) ? _ref2 : Sai.util.prettystr(info[label]);
       }
       twidth = char_width * text.length;
       if ((px - x) + twidth > max_width) {
@@ -436,7 +437,8 @@
     var hoverfuncs, shape;
     shape = fDraw(this).attr(attrs);
     hoverfuncs = getHoverfuncs(shape, hoverattrs && hoverattrs[0] || {}, hoverattrs && hoverattrs[1] || {}, extras);
-    /*shape.hover(
+    /*
+    shape.hover(
       hoverfuncs[0],
       hoverfuncs[1]
     )
@@ -446,7 +448,7 @@
     return shape;
   };
   Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, colors, bgcolor, fromWhite, numBuckets) {
-    var _a, _b, _c, _d, _e, _f, bartop, bg, bh, bucket, buckets, bw, datum, fill, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set;
+    var _i, _len, _ref, bartop, bg, bh, bucket, buckets, bw, datum, fill, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set;
     bgcolor = (typeof bgcolor !== "undefined" && bgcolor !== null) ? bgcolor : 'white';
     colors = (typeof colors !== "undefined" && colors !== null) ? colors : ['black', 'white'];
     numBuckets = (typeof numBuckets !== "undefined" && numBuckets !== null) ? numBuckets : 10;
@@ -469,9 +471,9 @@
     y -= 7;
     buckets = {};
     maxBucket = 0;
-    _b = data;
-    for (_a = 0, _c = _b.length; _a < _c; _a++) {
-      datum = _b[_a];
+    _ref = data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      datum = _ref[_i];
       idx = Math.min(numBuckets - 1, Math.floor(numBuckets * datum / 1));
       if (idx in buckets) {
         buckets[idx] += 1;
@@ -481,16 +483,16 @@
       maxBucket = Math.max(maxBucket, buckets[idx]);
     }
     set.push(hrule = this.rect(x, y, w, 1).attr({
-      'fill': ("0-" + (colors[0]) + "-" + ((typeof (_d = colors[1]) !== "undefined" && _d !== null) ? _d : colors[0])),
+      'fill': ("0-" + (colors[0]) + "-" + ((typeof (_ref = colors[1]) !== "undefined" && _ref !== null) ? _ref : colors[0])),
       'stroke-width': 0,
       'stroke-opacity': 0
     }));
     y -= 1;
     bw = w / numBuckets;
-    _f = buckets;
-    for (bucket in _f) {
-      if (!__hasProp.call(_f, bucket)) continue;
-      _e = _f[bucket];
+    _ref = buckets;
+    for (bucket in _ref) {
+      if (!__hasProp.call(_ref, bucket)) continue;
+      _i = _ref[bucket];
       bh = (y - bartop) * (buckets[bucket] / maxBucket);
       set.push(colors.length === 1 ? (fill = Sai.util.multiplyColor(colors[0], (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str) : (fill = Sai.util.colerp(colors[0], colors[1], (parseInt(bucket) + 0.5) / numBuckets)), this.rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh).attr({
         'fill': fill,
@@ -502,4 +504,4 @@
     set.push(lbl = this.text(x + w / 2, bartop - 6, Sai.util.prettystr(label)));
     return set;
   };
-})();
+}).call(this);

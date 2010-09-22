@@ -11,10 +11,10 @@ Sai.util.round = function(x, target) {
   return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.ceil(-1 * Math.log(target) / Math.LN10))));
 };
 Sai.util.sumArray = function(a) {
-  var _a, i, sum;
+  var _ref, i, sum;
   sum = 0;
-  _a = a.length;
-  for (i = 0; (0 <= _a ? i < _a : i > _a); (0 <= _a ? i += 1 : i -= 1)) {
+  _ref = a.length;
+  for (i = 0; (0 <= _ref ? i < _ref : i > _ref); (0 <= _ref ? i += 1 : i -= 1)) {
     sum += (typeof a[i] === 'number' ? a[i] : 0);
   }
   return sum;
@@ -121,14 +121,14 @@ Sai.util.colerp = function(color1, color2, alpha) {
   return ("rgb(" + (r) + ", " + (g) + ", " + (b) + ")");
 };
 Sai.util.reflectColor = function(color, mirror) {
-  var _a, _b, _c, c, channel, crgb, m, max, mrgb, rgb;
+  var _i, _len, _ref, c, channel, crgb, m, max, mrgb, rgb;
   max = 255;
   crgb = Raphael.getRGB(color);
   mrgb = Raphael.getRGB(mirror);
   rgb = {};
-  _b = ['r', 'g', 'b'];
-  for (_a = 0, _c = _b.length; _a < _c; _a++) {
-    channel = _b[_a];
+  _ref = ['r', 'g', 'b'];
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    channel = _ref[_i];
     c = crgb[channel];
     m = mrgb[channel];
     if (c === m) {
