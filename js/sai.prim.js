@@ -239,7 +239,7 @@
     return result;
   };
   Raphael.fn.sai.prim.vaxis = function(vals, x, y, len, opts) {
-    var _i, _len, _ref, bbox, color, dummy, dy, label, labels, line, lx, right, ticklen, ticklens, ticks, title, val, width, xmin, ypos;
+    var _i, _j, _len, _len2, _ref, _result, bbox, color, dummy, dy, label, label_strs, labels, labels_unique, line, lx, pos, right, str, ticklen, ticklens, ticks, title, val, width, xmin, ypos;
     ticklens = (typeof (_ref = opts.ticklens) !== "undefined" && _ref !== null) ? _ref : [5, 2];
     width = (typeof (_ref = opts.width) !== "undefined" && _ref !== null) ? _ref : 1;
     color = (typeof (_ref = opts.color) !== "undefined" && _ref !== null) ? _ref : 'black';
@@ -250,6 +250,31 @@
     dy = len / (vals.length - 1);
     ypos = y;
     xmin = null;
+    label_strs = [];
+    labels_unique = true;
+    _ref = vals;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      val = _ref[_i];
+      if (val !== null) {
+        str = Sai.util.prettystr(val);
+        if ((function(){ for (var _j=0, _len2=label_strs.length; _j<_len2; _j++) { if (label_strs[_j] === str) return true; } return false; }).call(this)) {
+          labels_unique = false;
+          break;
+        }
+        label_strs.push(str);
+      }
+    }
+    if (!(labels_unique)) {
+      label_strs = (function() {
+        _result = []; _ref = vals;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          val = _ref[_i];
+          _result.push(Sai.util.prettystr(val, 2));
+        }
+        return _result;
+      })();
+    }
+    pos = 0;
     _ref = vals;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       val = _ref[_i];
@@ -257,7 +282,7 @@
         ticklen = ticklens[String(val) ? 0 : 1];
         ticks.push(this.path("M" + x + " " + ypos + "l" + (right ? ticklen : -ticklen) + " 0").attr('stroke', color));
         lx = x + ((right ? 1 : -1) * (ticklen + 3));
-        label = this.text(lx, ypos, Sai.util.prettystr(val));
+        label = this.text(lx, ypos, label_strs[pos++]);
         label.attr({
           'text-anchor': right ? 'start' : 'end',
           'fill': color

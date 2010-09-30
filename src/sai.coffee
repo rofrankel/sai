@@ -20,6 +20,7 @@ Sai.util.sumArray = (a) ->
   return sum
 
 Sai.util.prettystr = (x, precision) ->
+  abbrev_precision = precision ? 1
   precision ?= 2
   if typeof x is 'number'
     suffix = ''
@@ -38,7 +39,7 @@ Sai.util.prettystr = (x, precision) ->
     else
       return String(parseFloat(x.toFixed(precision)))
     
-    return parseFloat(x.toFixed(1)) + suffix
+    return parseFloat(x.toFixed(abbrev_precision)) + suffix
   
   return x
 

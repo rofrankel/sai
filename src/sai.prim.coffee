@@ -259,12 +259,25 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, opts) ->
   ypos = y
   xmin = null
   
+  label_strs = []
+  labels_unique = true
+  for val in vals when val isnt null
+    str = Sai.util.prettystr(val)
+    if str in label_strs
+      labels_unique = false
+      break
+    label_strs.push(str)
+  
+  unless labels_unique
+    label_strs = Sai.util.prettystr(val, 2) for val in vals
+  
+  pos = 0
   for val in vals
     unless val is null
       ticklen = ticklens[if String(val) then 0 else 1]
       ticks.push(@path("M" + x + " " + ypos + "l" + (if right then ticklen else -ticklen) + " 0").attr('stroke', color))
       lx = x + ((if right then 1 else -1) * (ticklen + 3))
-      label = @text(lx, ypos, Sai.util.prettystr(val))
+      label = @text(lx, ypos, label_strs[pos++])
       label.attr({
         'text-anchor': if right then 'start' else 'end'
         'fill': color

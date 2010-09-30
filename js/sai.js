@@ -20,7 +20,8 @@ Sai.util.sumArray = function(a) {
   return sum;
 };
 Sai.util.prettystr = function(x, precision) {
-  var suffix;
+  var abbrev_precision, suffix;
+  abbrev_precision = (typeof precision !== "undefined" && precision !== null) ? precision : 1;
   precision = (typeof precision !== "undefined" && precision !== null) ? precision : 2;
   if (typeof x === 'number') {
     suffix = '';
@@ -39,7 +40,7 @@ Sai.util.prettystr = function(x, precision) {
     } else {
       return String(parseFloat(x.toFixed(precision)));
     }
-    return parseFloat(x.toFixed(1)) + suffix;
+    return parseFloat(x.toFixed(abbrev_precision)) + suffix;
   }
   return x;
 };

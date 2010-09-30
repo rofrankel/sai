@@ -36,7 +36,11 @@ task 'build', 'build all of the source files', ->
     #args.push("--externs")
     #args.push("externs.js")
     
-    require('child_process').spawn("java", args)
+    gclosure = require('child_process').spawn("java", args)
+    
+    # gclosure.stderr.setEncoding('utf8')
+    # gclosure.on('exit', (code, signal) => puts "Google Closure finished with code=#{code} and signal=#{signal}"; @done = true)
+    
   catch err
     puts "Error generating minified JavaScript: #{err}"
 
