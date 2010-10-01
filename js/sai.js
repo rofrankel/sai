@@ -29,12 +29,21 @@ Sai.util.prettystr = function(x, precision) {
       suffix = 't';
       x /= 1000000000000;
     } else if (Math.abs(x) >= 1000000000) {
+      if (abbrev_precision >= 8) {
+        return x;
+      }
       suffix = 'b';
       x /= 1000000000;
     } else if (Math.abs(x) >= 1000000) {
+      if (abbrev_precision >= 5) {
+        return x;
+      }
       suffix = 'm';
       x /= 1000000;
     } else if (Math.abs(x) >= 1000) {
+      if (abbrev_precision >= 2) {
+        return x;
+      }
       suffix = 'k';
       x /= 1000;
     } else {

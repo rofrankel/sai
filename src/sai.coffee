@@ -28,12 +28,15 @@ Sai.util.prettystr = (x, precision) ->
       suffix = 't'
       x /= 1000000000000
     else if Math.abs(x) >= 1000000000
+      if abbrev_precision >= 8 then return x
       suffix = 'b'
       x /= 1000000000
     else if Math.abs(x) >= 1000000
+      if abbrev_precision >= 5 then return x
       suffix = 'm'
       x /= 1000000
     else if Math.abs(x) >= 1000
+      if abbrev_precision >= 2 then return x
       suffix = 'k'
       x /= 1000
     else
