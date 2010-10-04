@@ -320,6 +320,8 @@ class Sai.Chart
     return [x, y, w, h]
   
   drawLogo: () ->
+    return if @opts.simple
+    
     [x, y, w, h] = @logoPos()
     
     path_width = 344

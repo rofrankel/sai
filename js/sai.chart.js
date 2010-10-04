@@ -516,6 +516,9 @@
   };
   Sai.Chart.prototype.drawLogo = function() {
     var _ref, h, logo_path, path_height, path_start_offset, path_width, scale, w, x, y;
+    if (this.opts.simple) {
+      return null;
+    }
     _ref = this.logoPos();
     x = _ref[0];
     y = _ref[1];
