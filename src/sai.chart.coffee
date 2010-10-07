@@ -663,18 +663,9 @@ class Sai.BarChart extends Sai.Chart
   getMin: (data, group) ->
     return Math.min(super, 0)
 
-  #getStackedMin: (data, group) ->
-  #  return @getMin(data, group)
-  
   groupsToNullPad: () ->
     return group for group of @dataGroups()
 
-  #nonNegativeGroups: () ->
-  #  if @opts.stacked
-  #    return group for group of @dataGroups()
-  #  
-  #  return []
-  
   tooMuchData: () ->
     
     maxBars = @w / 3
@@ -724,7 +715,7 @@ class Sai.BarChart extends Sai.Chart
         data,
         rawdata)
       )
-      .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive and not @opts.simple, @drawInfo)
+      .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive and not @opts.simple, @drawInfo, @__LABELS__)
       .set
     )
   

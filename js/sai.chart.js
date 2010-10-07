@@ -976,7 +976,7 @@
         rawdata[series] = this.data[series];
       }
     }
-    return this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render(typeof (_ref = this.opts.stacked) !== "undefined" && _ref !== null, this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive && !this.opts.simple, this.drawInfo).set);
+    return this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph, data, rawdata)).render(typeof (_ref = this.opts.stacked) !== "undefined" && _ref !== null, this.normalizedHeight(0, 'all'), this.colors, this.opts.interactive && !this.opts.simple, this.drawInfo, this.__LABELS__).set);
   };
   Sai.BarChart.prototype.renderFull = function() {
     var everything;

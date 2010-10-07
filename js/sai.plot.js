@@ -164,8 +164,8 @@
     return Sai.Plot.apply(this, arguments);
   };
   __extends(Sai.BarPlot, Sai.Plot);
-  Sai.BarPlot.prototype.render = function(stacked, baseline, colors, shouldInteract, fSetInfo) {
-    var _i, _ref, bardata, barfunc, colorArray, i, info, len, p, series;
+  Sai.BarPlot.prototype.render = function(stacked, baseline, colors, shouldInteract, fSetInfo, __LABELS__) {
+    var _i, _ref, bardata, barfunc, colorArray, i, info, len, magnitude, net, p, series;
     this.set.remove();
     baseline = this.denormalize([0, baseline])[1];
     len = 0;
@@ -175,7 +175,7 @@
     for (series in _ref) {
       if (!__hasProp.call(_ref, series)) continue;
       _i = _ref[series];
-      len = this.dndata[series].length;
+      len = Math.max(len, this.dndata[series].length);
       colorArray.push(((typeof colors === "undefined" || colors === null) ? undefined : colors[series]) || 'black');
     }
     for (i = 0; (0 <= len ? i < len : i > len); (0 <= len ? i += 1 : i -= 1)) {
@@ -192,6 +192,23 @@
         if (!__hasProp.call(_ref, p)) continue;
         _i = _ref[p];
         info[p] = this.rawdata[p][i];
+      }
+      if (stacked) {
+        magnitude = 0;
+        net = 0;
+        _ref = this.rawdata;
+        for (series in _ref) {
+          if (!__hasProp.call(_ref, series)) continue;
+          _i = _ref[series];
+          if (series !== __LABELS__) {
+            if (!(isNaN(this.rawdata[series][i]))) {
+              magnitude += Math.abs(this.rawdata[series][i]);
+              net += this.rawdata[series][i];
+            }
+          }
+        }
+        info['(magnitude)'] = magnitude;
+        info['(net)'] = net;
       }
       this.set.push(barfunc(bardata, colorArray, this.w / len, baseline, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
     }
