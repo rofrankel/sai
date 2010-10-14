@@ -208,7 +208,6 @@
           }
         }
         info['(magnitude)'] = magnitude;
-        info['(net)'] = net;
       }
       this.set.push(barfunc(bardata, colorArray, this.w / len, baseline, shouldInteract, fSetInfo, Sai.util.infoSetters(fSetInfo, info)));
     }

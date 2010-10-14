@@ -98,14 +98,14 @@
   Raphael.fn.sai.prim.stackedBar = function(coords, colors, width, baseline, shouldInteract, fSetInfo, extras) {
     var _i, _len, _ref, _ref2, axisClip, bar, c, height, hoverfuncs, i, is_positive, max, min, offset, pi, prev, segment_baseline, stack, totalHeight;
     if (shouldInteract) {
-      max = (min = null);
+      max = (min = baseline);
       _ref = coords;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         c = _ref[_i];
-        if (!(typeof max !== "undefined" && max !== null) || max < c[1]) {
+        if (max < c[1]) {
           max = c[1];
         }
-        if (!(typeof min !== "undefined" && min !== null) || min > c[1]) {
+        if (min > c[1]) {
           min = c[1];
         }
       }
@@ -144,7 +144,7 @@
                 '(selected)': Sai.util.prettystr(_percent) + '%'
               }, false);
             };
-          })(100 * height / totalHeight), extras[1]
+          })(100 * (height / totalHeight)), extras[1]
         ]);
         bar.hover(hoverfuncs[0], hoverfuncs[1]);
       }

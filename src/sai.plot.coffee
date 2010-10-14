@@ -146,7 +146,7 @@ class Sai.BarPlot extends Sai.Plot
             magnitude += Math.abs(@rawdata[series][i])
             net += @rawdata[series][i]
         info['(magnitude)'] = magnitude
-        info['(net)'] = net
+        # info['(net)'] = net
       
       @set.push(
         barfunc(
