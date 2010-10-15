@@ -7,11 +7,13 @@ class Sai.Chart
     
     @setData(data)
     
+    init_padding = if @opts.simple then 0 else 5
+    
     @padding = {
-      left: 5
-      right: 5
-      top: 5
-      bottom: 5
+      left: init_padding
+      right: init_padding
+      top: init_padding
+      bottom: init_padding
     }
   
   groupsToNullPad: () ->

@@ -10,7 +10,7 @@
     child.__super__ = parent.prototype;
   };
   Sai.Chart = function(_arg, _arg2, _arg3, _arg4, _arg5, data, _arg6, _arg7) {
-    var _this;
+    var _this, init_padding;
     this.opts = _arg7;
     this.__LABELS__ = _arg6;
     this.h = _arg5;
@@ -23,11 +23,12 @@
     this.opts = (typeof this.opts !== "undefined" && this.opts !== null) ? this.opts : {};
     this.opts.bgcolor = (typeof this.opts.bgcolor !== "undefined" && this.opts.bgcolor !== null) ? this.opts.bgcolor : 'white';
     this.setData(data);
+    init_padding = this.opts.simple ? 0 : 5;
     this.padding = {
-      left: 5,
-      right: 5,
-      top: 5,
-      bottom: 5
+      left: init_padding,
+      right: init_padding,
+      top: init_padding,
+      bottom: init_padding
     };
     return this;
   };
