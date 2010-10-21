@@ -402,7 +402,9 @@ class Sai.Chart
     
     ymin = @ndata[group].__YVALS__[0]
     ymax = @ndata[group].__YVALS__[@ndata[group].__YVALS__.length - 1]
-    return unless h > ymin 
+    
+    if h < ymin then h = ymin else if h > ymax then h = ymax
+    
     nh = (h - ymin) / (ymax - ymin)
   
   drawGuideline: (h, group) ->
@@ -557,32 +559,35 @@ class Sai.LineChart extends Sai.Chart
     
     if saxis
       if ndata.left?
+        nh0 = @normalizedHeight(0, 'left')
         @plots.push(
           (new plotType(
             @r,
             @px, @py, @pw, @ph,
             ndata['left'],
           ))
-          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'left'))
+          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, [[0,nh0],[1,nh0]])
         )
       
       if ndata.right?
+        nh0 = @normalizedHeight(0, 'right')
         @plots.push(
           (new plotType(
             @r,
             @px, @py, @pw, @ph,
             ndata['right'],
           ))
-          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'right'))
+          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, [[0,nh0],[1,nh0]])
         )
     else
+      nh0 = @normalizedHeight(0, 'all')
       @plots.push(
         (new plotType(
           @r,
           @px, @py, @pw, @ph,
           ndata['all'],
         ))
-        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @normalizedHeight(0, 'all'))
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, [[0,nh0],[1,nh0]])
       )
       
   
@@ -621,7 +626,7 @@ class Sai.LineChart extends Sai.Chart
         for series of @ndata['all'] when series isnt '__YVALS__'
           for plot in @plots when series of plot.dndata
             pos = plot.dndata[series][idx]
-            if pos? then @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else @dots[i].hide()
+            if @data[series][idx]? then @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else @dots[i].hide()
             i++
         
     ).mouseout(

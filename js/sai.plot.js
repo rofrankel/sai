@@ -93,10 +93,17 @@
     return Sai.LinePlot.apply(this, arguments);
   };
   __extends(Sai.AreaPlot, Sai.LinePlot);
-  Sai.AreaPlot.prototype.render = function(colors, width, stacked, zeroline) {
-    var _i, _j, _len, _ref, _ref2, _result, baseline, d, denzel, first, i, last, series;
+  Sai.AreaPlot.prototype.render = function(colors, width, stacked, baseline) {
+    var _baseline, _i, _j, _len, _ref, _ref2, _result, dnbl, first, i, last, p, series;
     this.set.remove();
-    denzel = [this.denormalize([0, zeroline]), this.denormalize([1, zeroline])];
+    dnbl = (function() {
+      _result = []; _ref = baseline;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        p = _ref[_i];
+        _result.push(this.denormalize(p));
+      }
+      return _result;
+    }).call(this);
     _ref = this.dndata;
     for (series in _ref) {
       if (!__hasProp.call(_ref, series)) continue;
@@ -115,19 +122,17 @@
             break;
           }
         }
-        if (!((typeof baseline !== "undefined" && baseline !== null) && stacked)) {
-          baseline = [[first[0], denzel[0][1]], [last[0], denzel[1][1]]];
-        }
-        this.set.push(this.r.sai.prim.area(this.dndata[series], ((typeof colors === "undefined" || colors === null) ? undefined : colors[series]) || 'black', width || 1, baseline));
+        _baseline = (function() {
+          _result = []; _ref2 = dnbl;
+          for (_j = 0, _len = _ref2.length; _j < _len; _j++) {
+            p = _ref2[_j];
+            _result.push([Math.max(Math.min(last[0], p[0]), first[0]), p[1]]);
+          }
+          return _result;
+        })();
+        this.set.push(this.r.sai.prim.area(this.dndata[series], ((typeof colors === "undefined" || colors === null) ? undefined : colors[series]) || 'black', width || 1, _baseline));
         if (stacked) {
-          baseline = (function() {
-            _result = []; _ref2 = this.dndata[series];
-            for (_j = 0, _len = _ref2.length; _j < _len; _j++) {
-              d = _ref2[_j];
-              _result.push([d[0], d[1] - width / 2]);
-            }
-            return _result;
-          }).call(this);
+          dnbl = this.dndata[series];
         }
       }
     }

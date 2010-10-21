@@ -79,7 +79,9 @@ Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
       areaPath = ("M" + coord[0] + " " + coord[1])
   
   for i in [baseline.length-1..0] by -1
-    areaPath += "L#{baseline[i][0]},#{baseline[i][1]}"
+    x = baseline[i][0]
+    y = baseline[i][1]
+    areaPath += "L#{x},#{y}"
   
   area = @path(areaPath).attr({'fill': color, 'stroke-width': 0, 'stroke-opacity': 0, 'fill-opacity': 0.35})
   stroke = @path(strokePath).attr({'stroke': color, 'stroke-width': width})

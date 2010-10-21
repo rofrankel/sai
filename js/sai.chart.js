@@ -598,8 +598,10 @@
     }
     ymin = this.ndata[group].__YVALS__[0];
     ymax = this.ndata[group].__YVALS__[this.ndata[group].__YVALS__.length - 1];
-    if (!(h > ymin)) {
-      return null;
+    if (h < ymin) {
+      h = ymin;
+    } else if (h > ymax) {
+      h = ymax;
     }
     return (nh = (h - ymin) / (ymax - ymin));
   };
@@ -776,7 +778,7 @@
     return groups;
   };
   Sai.LineChart.prototype.renderPlots = function() {
-    var _ref, ndata, plotType, saxis;
+    var _ref, ndata, nh0, plotType, saxis;
     if (!(typeof (_ref = this.px) !== "undefined" && _ref !== null)) {
       this.setPlotCoords();
     }
@@ -800,11 +802,16 @@
     this.plots = [];
     if (saxis) {
       if (typeof (_ref = ndata.left) !== "undefined" && _ref !== null) {
-        this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, this.normalizedHeight(0, 'left')));
+        nh0 = this.normalizedHeight(0, 'left');
+        this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, [[0, nh0], [1, nh0]]));
       }
-      return (typeof (_ref = ndata.right) !== "undefined" && _ref !== null) ? this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, this.normalizedHeight(0, 'right'))) : null;
+      if (typeof (_ref = ndata.right) !== "undefined" && _ref !== null) {
+        nh0 = this.normalizedHeight(0, 'right');
+        return this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, [[0, nh0], [1, nh0]]));
+      }
     } else {
-      return this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, this.normalizedHeight(0, 'all')));
+      nh0 = this.normalizedHeight(0, 'all');
+      return this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, [[0, nh0], [1, nh0]]));
     }
   };
   Sai.LineChart.prototype.renderFull = function() {
@@ -838,7 +845,7 @@
       }
     }
     everything = this.r.set().push(this.bg, this.plotSets, this.dots, this.logo, this.guidelines).mousemove(moveDots = __bind(function(event) {
-      var _j, _k, _len2, _ref3, _ref4, _result, _result2, i, idx, info, plot, pos, series;
+      var _j, _k, _len2, _ref3, _ref4, _ref5, _result, _result2, i, idx, info, plot, pos, series;
       idx = this.getIndex(event);
       info = {};
       if (((this.data[this.__LABELS__] == null ? undefined : this.data[this.__LABELS__].length) > idx) && (idx >= 0)) {
@@ -866,7 +873,7 @@
               if (series in plot.dndata) {
                 _result2.push((function() {
                   pos = plot.dndata[series][idx];
-                  if (typeof pos !== "undefined" && pos !== null) {
+                  if (typeof (_ref5 = this.data[series][idx]) !== "undefined" && _ref5 !== null) {
                     this.dots[i].attr({
                       cx: pos[0],
                       cy: pos[1]

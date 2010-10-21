@@ -60,7 +60,7 @@
     });
   };
   Raphael.fn.sai.prim.area = function(coords, color, width, baseline) {
-    var _i, _len, _ref, area, areaPath, coord, i, stroke, strokePath;
+    var _i, _len, _ref, area, areaPath, coord, i, stroke, strokePath, x, y;
     if (coords.length < 2) {
       return this.set();
     }
@@ -81,7 +81,9 @@
       }
     }
     for (i = baseline.length - 1; (baseline.length - 1 <= 0 ? i <= 0 : i >= 0); i += -1) {
-      areaPath += ("L" + (baseline[i][0]) + "," + (baseline[i][1]));
+      x = baseline[i][0];
+      y = baseline[i][1];
+      areaPath += ("L" + (x) + "," + (y));
     }
     area = this.path(areaPath).attr({
       'fill': color,
