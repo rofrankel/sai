@@ -1483,6 +1483,10 @@
     }
     this.__LABELS__ = '__XVALS__';
     this.data.__XVALS__ = this.ndata[this.opts.mappings.x].__YVALS__;
+    this.addAxes([this.opts.mappings.y], {
+      left: this.opts.mappings.y,
+      bottom: this.opts.mappings.x
+    });
     this.renderPlots();
     everything = this.r.set().push(this.plots, this.bg, this.logo, this.info, this.footnote, this.histogramLegend, this.legend);
     if (this.opts.href) {
