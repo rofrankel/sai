@@ -189,7 +189,7 @@
     };
   };
   Sai.Chart.prototype.getYAxisVals = function(min, max, nopad) {
-    var _result, bottom, factor, i, mag, rawmag, step, top;
+    var bottom, factor, i, mag, rawmag, step, top, vals;
     if (!(typeof min === "number" && typeof max === "number")) {
       return [min, max];
     }
@@ -218,11 +218,13 @@
     bottom /= factor;
     top /= factor;
     step /= factor;
-    _result = [];
-    for (i = bottom; (bottom <= top ? i <= top : i >= top); i += step) {
-      _result.push(Sai.util.round(i, step));
+    i = bottom;
+    vals = [i];
+    while (i < top) {
+      i = Sai.util.round(i + step, step);
+      vals.push(i);
     }
-    return _result;
+    return vals;
   };
   Sai.Chart.prototype.getMax = function(data, group) {
     var _i, _j, _len, _len2, _ref, _ref2, _result, _result2, d, series;
@@ -1481,10 +1483,6 @@
     }
     this.__LABELS__ = '__XVALS__';
     this.data.__XVALS__ = this.ndata[this.opts.mappings.x].__YVALS__;
-    this.addAxes([this.opts.mappings.y], {
-      left: this.opts.mappings.y,
-      bottom: this.opts.mappings.x
-    });
     this.renderPlots();
     everything = this.r.set().push(this.plots, this.bg, this.logo, this.info, this.footnote, this.histogramLegend, this.legend);
     if (this.opts.href) {

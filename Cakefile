@@ -38,6 +38,8 @@ task 'build', 'build all of the source files', ->
     
     gclosure = require('child_process').spawn("java", args)
     
+    # puts "java #{args.join(' ')}"
+    
     # gclosure.stderr.setEncoding('utf8')
     # gclosure.on('exit', (code, signal) => puts "Google Closure finished with code=#{code} and signal=#{signal}"; @done = true)
     

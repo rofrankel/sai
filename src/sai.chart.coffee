@@ -131,7 +131,13 @@ class Sai.Chart
     top /= factor
     step /= factor
     
-    return Sai.util.round(i, step) for i in [bottom..top] by step
+    i = bottom
+    vals = [i]
+    while i < top
+      i = Sai.util.round(i + step, step)
+      vals.push(i)
+    
+    return vals
   
   # takes e.g. groups[group], not just a group name
   getMax: (data, group) ->

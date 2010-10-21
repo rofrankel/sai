@@ -7,8 +7,8 @@ Sai.util.roundToMag = function(x, mag) {
   target = Math.pow(10, mag);
   return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)));
 };
-Sai.util.round = function(x, target) {
-  return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, Math.ceil(-1 * Math.log(target) / Math.LN10))));
+Sai.util.round = function(x, step) {
+  return parseFloat((Math.round(x / step) * step).toFixed(Math.max(0, Math.ceil(-1 * Math.log(step) / Math.LN10))));
 };
 Sai.util.sumArray = function(a) {
   var _ref, i, sum;
