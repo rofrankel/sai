@@ -931,7 +931,7 @@
     return naive - stackedMax;
   };
   Sai.StreamChart.prototype.normalize = function(data) {
-    var _i, _j, _ref, _ref2, _ref3, _result, group, groups, i, nh0, offset, point, series, stackedMin, topSeries;
+    var _i, _j, _len, _ref, _ref2, _ref3, _result, _result2, group, groups, i, nh0, offset, point, series, stackedMin, topSeries, v;
     Sai.StreamChart.__super__.normalize.apply(this, arguments);
     groups = this.dataGroups(this.data);
     this.baselines = (typeof this.baselines !== "undefined" && this.baselines !== null) ? this.baselines : {};
@@ -942,8 +942,16 @@
       nh0 = this.normalizedHeight(0, (typeof group !== "undefined" && group !== null) ? group : 'all');
       stackedMin = this.normalizedHeight(this.getStackedMin(data, groups[group]), group);
       this.baselines[group] = [];
+      this.ndata[group]['__YVALS__'] = (function() {
+        _result2 = []; _ref2 = this.ndata[group]['__YVALS__'];
+        for (_j = 0, _len = _ref2.length; _j < _len; _j++) {
+          v = _ref2[_j];
+          _result2.push(Math.abs(v));
+        }
+        return _result2;
+      }).call(this);
       /*
-      # real stream graph, but not 100% working
+      # Real stream graph, but doesn't match the yvals...
       n = 0
       for series of @stackedNdata[group]
         topSeries = series

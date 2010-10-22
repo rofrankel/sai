@@ -674,8 +674,10 @@ class Sai.StreamChart extends Sai.LineChart
       stackedMin = @normalizedHeight(@getStackedMin(data, groups[group]), group)
       @baselines[group] = []
       
+      @ndata[group]['__YVALS__'] = Math.abs(v) for v in @ndata[group]['__YVALS__']
+      
       ###
-      # real stream graph, but not 100% working
+      # Real stream graph, but doesn't match the yvals...
       n = 0
       for series of @stackedNdata[group]
         topSeries = series
