@@ -394,7 +394,7 @@
       yvals = this.getYAxisVals(min, max);
       min = yvals[0];
       max = yvals[yvals.length - 1];
-      this.ndata[group].__YVALS__ = yvals;
+      this.ndata[group]['__YVALS__'] = yvals;
       _ref2 = groups[group];
       for (_k = 0, _len = _ref2.length; _k < _len; _k++) {
         series = _ref2[_k];
@@ -444,7 +444,7 @@
     doLeftAxis = (typeof (_ref = this.ndata[groups[0]]) !== "undefined" && _ref !== null) || !(typeof (_ref = this.ndata[groups[1]]) !== "undefined" && _ref !== null);
     doRightAxis = (typeof (_ref = this.ndata[groups[1]]) !== "undefined" && _ref !== null);
     if (doLeftAxis) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[0]] == null ? undefined : this.ndata[groups[0]].__YVALS__)) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
+      _vaxis = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[0]] == null ? undefined : this.ndata[groups[0]]['__YVALS__'])) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
         width: this.axisWidth,
         title: (typeof titles === "undefined" || titles === null) ? undefined : titles.left
       });
@@ -454,7 +454,7 @@
       vaxis_width = 0;
     }
     if (doRightAxis) {
-      _vaxis = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[1]] == null ? undefined : this.ndata[groups[1]].__YVALS__)) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
+      _vaxis = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[1]] == null ? undefined : this.ndata[groups[1]]['__YVALS__'])) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
         width: this.axisWidth,
         title: (typeof titles === "undefined" || titles === null) ? undefined : titles.right
       });
@@ -477,7 +477,7 @@
     this.padding.bottom += haxis_height;
     vlen = this.h - (this.padding.bottom + this.padding.top);
     if (doLeftAxis) {
-      this.vaxis = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[0]] == null ? undefined : this.ndata[groups[0]].__YVALS__)) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
+      this.vaxis = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[0]] == null ? undefined : this.ndata[groups[0]]['__YVALS__'])) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.x + this.padding.left, this.y - this.padding.bottom, vlen, {
         width: this.axisWidth,
         title: (typeof titles === "undefined" || titles === null) ? undefined : titles.left
       });
@@ -486,7 +486,7 @@
       this.padding.left += vbbw;
     }
     if (doRightAxis) {
-      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[1]] == null ? undefined : this.ndata[groups[1]].__YVALS__)) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, {
+      this.vaxis_right = this.r.sai.prim.vaxis((typeof (_ref = (this.ndata[groups[1]] == null ? undefined : this.ndata[groups[1]]['__YVALS__'])) !== "undefined" && _ref !== null) ? _ref : [0, '?'], this.w - this.padding.right, this.y - this.padding.bottom, vlen, {
         width: this.axisWidth,
         right: true,
         title: (typeof titles === "undefined" || titles === null) ? undefined : titles.right,
@@ -602,11 +602,11 @@
   };
   Sai.Chart.prototype.normalizedHeight = function(h, group) {
     var _ref, nh, ymax, ymin;
-    if (!(typeof (_ref = this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _ref !== null)) {
+    if (!(typeof (_ref = this.ndata[group] == null ? undefined : this.ndata[group]['__YVALS__']) !== "undefined" && _ref !== null)) {
       return null;
     }
-    ymin = this.ndata[group].__YVALS__[0];
-    ymax = this.ndata[group].__YVALS__[this.ndata[group].__YVALS__.length - 1];
+    ymin = this.ndata[group]['__YVALS__'][0];
+    ymax = this.ndata[group]['__YVALS__'][this.ndata[group]['__YVALS__'].length - 1];
     if (h < ymin) {
       h = ymin;
     } else if (h > ymax) {
@@ -617,7 +617,7 @@
   Sai.Chart.prototype.drawGuideline = function(h, group) {
     var _ref, guideline, nh;
     group = (typeof group !== "undefined" && group !== null) ? group : 'all';
-    if (!(typeof (_ref = this.ndata[group] == null ? undefined : this.ndata[group].__YVALS__) !== "undefined" && _ref !== null)) {
+    if (!(typeof (_ref = this.ndata[group] == null ? undefined : this.ndata[group]['__YVALS__']) !== "undefined" && _ref !== null)) {
       return null;
     }
     nh = this.normalizedHeight(h, group);
@@ -797,14 +797,14 @@
     ndata = (typeof (_ref = this.opts.stacked) !== "undefined" && _ref !== null) ? this.stackedNdata : this.ndata;
     plotType = this.opts.area ? Sai.AreaPlot : Sai.LinePlot;
     if (saxis) {
-      if ((this.ndata.left == null ? undefined : this.ndata.left.__YVALS__[0]) < 0) {
+      if ((this.ndata.left == null ? undefined : this.ndata.left['__YVALS__'][0]) < 0) {
         this.drawGuideline(0, 'left');
       }
-      if ((this.ndata.right == null ? undefined : this.ndata.right.__YVALS__[0]) < 0) {
+      if ((this.ndata.right == null ? undefined : this.ndata.right['__YVALS__'][0]) < 0) {
         this.drawGuideline(0, 'right');
       }
     } else {
-      if (this.ndata.all.__YVALS__[0] < 0) {
+      if (this.ndata.all['__YVALS__'][0] < 0) {
         this.drawGuideline(0, 'all');
       }
     }
@@ -995,6 +995,13 @@
     }
     return _result;
   };
+  Sai.StreamChart.prototype.addAxes = function(groups, titles) {
+    titles = (typeof titles !== "undefined" && titles !== null) ? titles : {};
+    if (!('left' in titles)) {
+      titles['left'] = 'magnitude';
+    }
+    return Sai.StreamChart.__super__.addAxes.call(this, groups, titles);
+  };
   Sai.StreamChart.prototype.getBaseline = function(group) {
     return this.baselines[group];
   };
@@ -1159,7 +1166,7 @@
       this.showError("This chart requires data series named\nopen, close, high, and low.\n \nOnce you add series with these names, the chart will display.");
       return null;
     }
-    if (this.ndata.prices.__YVALS__[0] < 0) {
+    if (this.ndata.prices['__YVALS__'][0] < 0) {
       this.drawGuideline(0, 'prices');
     }
     this.plots = this.r.set();
@@ -1554,11 +1561,7 @@
       }
     }
     if (stroke_colors instanceof Array) {
-      histogramSeries.push(this.opts.mappings.stroke_color);
-      histogramColors[this.opts.mappings.stroke_color] = {
-        __LOW__: stroke_colors[0],
-        __HIGH__: stroke_colors[1]
-      };
+      null;
     } else {
       legend_colors = (typeof legend_colors !== "undefined" && legend_colors !== null) ? legend_colors : {};
       draw_legend = true;
@@ -1585,7 +1588,7 @@
       this.drawLegend(colors);
     }
     this.__LABELS__ = '__XVALS__';
-    this.data.__XVALS__ = this.ndata[this.opts.mappings.x].__YVALS__;
+    this.data.__XVALS__ = this.ndata[this.opts.mappings.x]['__YVALS__'];
     this.addAxes([this.opts.mappings.y], {
       left: this.opts.mappings.y,
       bottom: this.opts.mappings.x

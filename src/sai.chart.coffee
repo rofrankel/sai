@@ -201,7 +201,7 @@ class Sai.Chart
       yvals = @getYAxisVals(min, max)
       min = yvals[0]
       max = yvals[yvals.length - 1]
-      @ndata[group].__YVALS__ = yvals
+      @ndata[group]['__YVALS__'] = yvals
       
       for series in groups[group]
         continue unless data[series]?
@@ -240,7 +240,7 @@ class Sai.Chart
     
     if doLeftAxis
       _vaxis = @r.sai.prim.vaxis(
-        @ndata[groups[0]]?.__YVALS__ ? [0, '?'],
+        @ndata[groups[0]]?['__YVALS__'] ? [0, '?'],
         @x + @padding.left,
         @y - @padding.bottom,
         vlen,
@@ -253,7 +253,7 @@ class Sai.Chart
       
     if doRightAxis
       _vaxis = @r.sai.prim.vaxis(
-        @ndata[groups[1]]?.__YVALS__ ? [0, '?'],
+        @ndata[groups[1]]?['__YVALS__'] ? [0, '?'],
         @x + @padding.left,
         @y - @padding.bottom,
         vlen,
@@ -282,7 +282,7 @@ class Sai.Chart
     
     if doLeftAxis
       @vaxis = @r.sai.prim.vaxis(
-        @ndata[groups[0]]?.__YVALS__ ? [0, '?'],
+        @ndata[groups[0]]?['__YVALS__'] ? [0, '?'],
         @x + @padding.left,
         @y - @padding.bottom,
         vlen,
@@ -294,7 +294,7 @@ class Sai.Chart
     
     if doRightAxis
       @vaxis_right = @r.sai.prim.vaxis(
-        @ndata[groups[1]]?.__YVALS__ ? [0, '?'],
+        @ndata[groups[1]]?['__YVALS__'] ? [0, '?'],
         @w - @padding.right,
         @y - @padding.bottom,
         vlen,
@@ -406,10 +406,10 @@ class Sai.Chart
     return this
 
   normalizedHeight: (h, group) ->  
-    return unless @ndata[group]?.__YVALS__?
+    return unless @ndata[group]?['__YVALS__']?
     
-    ymin = @ndata[group].__YVALS__[0]
-    ymax = @ndata[group].__YVALS__[@ndata[group].__YVALS__.length - 1]
+    ymin = @ndata[group]['__YVALS__'][0]
+    ymax = @ndata[group]['__YVALS__'][@ndata[group]['__YVALS__'].length - 1]
     
     if h < ymin then h = ymin else if h > ymax then h = ymax
     
@@ -418,7 +418,7 @@ class Sai.Chart
   drawGuideline: (h, group) ->
     group ?= 'all'
     
-    return unless @ndata[group]?.__YVALS__?
+    return unless @ndata[group]?['__YVALS__']?
     
     nh = @normalizedHeight(h, group)
     
@@ -555,12 +555,12 @@ class Sai.LineChart extends Sai.Chart
     plotType = if @opts.area then Sai.AreaPlot else Sai.LinePlot
     
     if saxis
-      if @ndata.left?.__YVALS__[0] < 0
+      if @ndata.left?['__YVALS__'][0] < 0
         @drawGuideline(0, 'left')
-      if @ndata.right?.__YVALS__[0] < 0
+      if @ndata.right?['__YVALS__'][0] < 0
         @drawGuideline(0, 'right')
     else
-      if @ndata.all.__YVALS__[0] < 0
+      if @ndata.all['__YVALS__'][0] < 0
         @drawGuideline(0, 'all')
     
     @plots = []
@@ -710,7 +710,11 @@ class Sai.StreamChart extends Sai.LineChart
           point[1] -= offset
         @baselines[group].push([point[0], nh0 - offset])
  
-  
+  addAxes: (groups, titles) ->
+    titles ?= {}
+    if 'left' not of titles then titles['left'] = 'magnitude'
+    super(groups, titles)
+
   getBaseline: (group) ->
     return @baselines[group]
   
@@ -880,7 +884,7 @@ class Sai.StockChart extends Sai.Chart
       @showError("This chart requires data series named\nopen, close, high, and low.\n \nOnce you add series with these names, the chart will display.")
       return
     
-    if @ndata.prices.__YVALS__[0] < 0
+    if @ndata.prices['__YVALS__'][0] < 0
       @drawGuideline(0, 'prices')
     
     @plots = @r.set()
@@ -1221,8 +1225,9 @@ class Sai.ScatterChart extends Sai.Chart
         legend_colors[c] = colors[c]
     
     if stroke_colors instanceof Array
-      histogramSeries.push(@opts.mappings.stroke_color)
-      histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
+      null
+      # histogramSeries.push(@opts.mappings.stroke_color)
+      # histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
     else
       legend_colors ?= {}
       draw_legend = true
@@ -1246,7 +1251,7 @@ class Sai.ScatterChart extends Sai.Chart
       @drawLegend(colors)
     
     @__LABELS__ = '__XVALS__'
-    @data.__XVALS__ = @ndata[@opts.mappings.x].__YVALS__
+    @data.__XVALS__ = @ndata[@opts.mappings.x]['__YVALS__']
     @addAxes([@opts.mappings.y], {left: @opts.mappings.y, bottom: @opts.mappings.x})
     
     @renderPlots()
