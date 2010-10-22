@@ -36,6 +36,10 @@ class Sai.Chart
       if seriesName.match(@semanticRenamePatterns[rename])
         @semanticRenames[rename] = seriesName
   
+  getBaseline: (group) ->
+    nh0 = @normalizedHeight(0, group ? 'all')
+    return [[0,nh0],[1,nh0]]
+  
   setData: (data) ->
     
     @data = {}
@@ -148,11 +152,15 @@ class Sai.Chart
     return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
   
   getStackedMax: (data, group) ->
-    return Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__ and data[series][i] >= 0) for i in [0...data[@__LABELS__].length])
+    @stackedMax ?= {}
+    @stackedMax[group] = @stackedMax[group] ? Math.max.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__ and data[series][i] >= 0) for i in [0...data[@__LABELS__].length])
+    return @stackedMax[group]
   
   # stacked charts generally have a 0 baseline
   getStackedMin: (data, group) ->
-    return Math.min.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__ and data[series][i] < 0) for i in [0...data[@__LABELS__].length])
+    @stackedMin ?= {}
+    @stackedMin[group] = @stackedMin[group] ? Math.min.apply(Math, Sai.util.sumArray(data[series][i] for series in group when series isnt @__LABELS__ and data[series][i] < 0) for i in [0...data[@__LABELS__].length])
+    return @stackedMin[group]
   
   normalize: (data) ->
     groups = @dataGroups(data)
@@ -193,6 +201,8 @@ class Sai.Chart
       yvals = @getYAxisVals(min, max)
       min = yvals[0]
       max = yvals[yvals.length - 1]
+      @ndata[group].__YVALS__ = yvals
+      
       for series in groups[group]
         continue unless data[series]?
         @ndata[group][series] = (if data[series][i]? and (nval = norm(data[series][i], min, max)) isnt null then [i / (data[series].length - 1 or 1), nval] else null) for i in [0...data[series].length]
@@ -203,11 +213,9 @@ class Sai.Chart
             bli = if data[series][i]? and data[series][i] < 0 then 0 else 1
             baselines[i] ?= [norm0, norm0]
             baseline = baselines[i][bli]
-            stackedPoint = [i / (data[series].length - 1 or 1), (norm(data[series][i], min, max) ? norm0) + baseline - norm0]
+            stackedPoint = [i / (data[series].length - 1 or 1), ((norm(data[series][i], min, max) ? norm0) - norm0) + baseline]
             @stackedNdata[group][series].push(stackedPoint)
             baselines[i][bli] = stackedPoint[1] unless stackedPoint is null
-        
-        @ndata[group].__YVALS__ = yvals
   
   addAxes: (groups, titles) ->
     
@@ -559,37 +567,33 @@ class Sai.LineChart extends Sai.Chart
     
     if saxis
       if ndata.left?
-        nh0 = @normalizedHeight(0, 'left')
         @plots.push(
           (new plotType(
             @r,
             @px, @py, @pw, @ph,
             ndata['left'],
           ))
-          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, [[0,nh0],[1,nh0]])
+          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @getBaseline('left'))
         )
       
       if ndata.right?
-        nh0 = @normalizedHeight(0, 'right')
         @plots.push(
           (new plotType(
             @r,
             @px, @py, @pw, @ph,
             ndata['right'],
           ))
-          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, [[0,nh0],[1,nh0]])
+          .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @getBaseline('right'))
         )
     else
-      nh0 = @normalizedHeight(0, 'all')
       @plots.push(
         (new plotType(
           @r,
           @px, @py, @pw, @ph,
           ndata['all'],
         ))
-        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, [[0,nh0],[1,nh0]])
+        .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @getBaseline('all'))
       )
-      
   
   renderFull: () ->
     @drawTitle()
@@ -643,6 +647,72 @@ class Sai.LineChart extends Sai.Chart
     return this
 
 
+class Sai.StreamChart extends Sai.LineChart
+  
+  constructor: (@r, @x, @y, @w, @h, data, @__LABELS__, @opts) ->
+    @opts.stacked = true
+    super
+  
+  getStackedMax: (data, group) ->
+    naive = super
+    return naive / 2.0
+  
+  # stacked charts generally have a 0 baseline
+  getStackedMin: (data, group) ->
+    naive = super
+    stackedMax = @getStackedMax(data, group)
+    return naive - stackedMax
+  
+  normalize: (data) ->
+    super
+    
+    groups = @dataGroups(@data)
+    @baselines ?= {}
+    
+    for group of @stackedNdata
+      nh0 = @normalizedHeight(0, group ? 'all')
+      stackedMin = @normalizedHeight(@getStackedMin(data, groups[group]), group)
+      @baselines[group] = []
+      
+      ###
+      # real stream graph, but not 100% working
+      n = 0
+      for series of @stackedNdata[group]
+        topSeries = series
+        n++
+      
+      for i in [0...@stackedNdata[group][series].length]
+        #offset = (@stackedNdata[group][topSeries][i][1] - nh0) / 2
+        offset = 0
+        j = 0
+        for series of @stackedNdata[group]
+          j++
+          offset += (n - j + 1) * (@stackedNdata[group][series][i][1] - nh0)
+        offset /= n + 1
+        for series of @stackedNdata[group]
+          point = @stackedNdata[group][series][i]
+          continue unless point?
+          point[1] -= offset
+        @baselines[group].push([point[0], nh0 - offset])
+      ###
+      
+      # ThemeRiver
+      for series of @stackedNdata[group]
+        topSeries = series
+      
+      for i in [0...@stackedNdata[group][series].length]
+        offset = (@stackedNdata[group][topSeries][i][1] - nh0) / 2
+        for series of @stackedNdata[group]
+          point = @stackedNdata[group][series][i]
+          continue unless point?
+          point[1] -= offset
+        @baselines[group].push([point[0], nh0 - offset])
+ 
+  
+  getBaseline: (group) ->
+    return @baselines[group]
+  
+  
 class Sai.Sparkline extends Sai.Chart
   
   dataGroups: (data) ->

@@ -73,6 +73,7 @@ class Sai.AreaPlot extends Sai.LinePlot
     
     return this
 
+
 class Sai.CandlestickPlot extends Sai.Plot
 
   render: (colors, body_width, shouldInteract, fSetInfo) ->

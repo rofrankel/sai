@@ -60,6 +60,11 @@
     }
     return _result;
   };
+  Sai.Chart.prototype.getBaseline = function(group) {
+    var nh0;
+    nh0 = this.normalizedHeight(0, (typeof group !== "undefined" && group !== null) ? group : 'all');
+    return [[0, nh0], [1, nh0]];
+  };
   Sai.Chart.prototype.setData = function(data) {
     var _i, _j, _len, _len2, _ref, _ref2, _ref3, _result, d, empty, group, groups, i, nngroups, pd, series, seriesName;
     this.data = {};
@@ -271,14 +276,15 @@
     })());
   };
   Sai.Chart.prototype.getStackedMax = function(data, group) {
-    var _i, _len, _ref, _ref2, _result, _result2, i, series;
-    return Math.max.apply(Math, (function() {
-      _result = []; _ref = data[this.__LABELS__].length;
-      for (i = 0; (0 <= _ref ? i < _ref : i > _ref); (0 <= _ref ? i += 1 : i -= 1)) {
+    var _i, _len, _ref, _ref2, _ref3, _result, _result2, i, series;
+    this.stackedMax = (typeof this.stackedMax !== "undefined" && this.stackedMax !== null) ? this.stackedMax : {};
+    this.stackedMax[group] = (typeof (_ref = this.stackedMax[group]) !== "undefined" && _ref !== null) ? _ref : Math.max.apply(Math, (function() {
+      _result = []; _ref2 = data[this.__LABELS__].length;
+      for (i = 0; (0 <= _ref2 ? i < _ref2 : i > _ref2); (0 <= _ref2 ? i += 1 : i -= 1)) {
         _result.push(Sai.util.sumArray((function() {
-          _result2 = []; _ref2 = group;
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            series = _ref2[_i];
+          _result2 = []; _ref3 = group;
+          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+            series = _ref3[_i];
             if (series !== this.__LABELS__ && (data[series][i] >= 0)) {
               _result2.push(data[series][i]);
             }
@@ -288,16 +294,18 @@
       }
       return _result;
     }).call(this));
+    return this.stackedMax[group];
   };
   Sai.Chart.prototype.getStackedMin = function(data, group) {
-    var _i, _len, _ref, _ref2, _result, _result2, i, series;
-    return Math.min.apply(Math, (function() {
-      _result = []; _ref = data[this.__LABELS__].length;
-      for (i = 0; (0 <= _ref ? i < _ref : i > _ref); (0 <= _ref ? i += 1 : i -= 1)) {
+    var _i, _len, _ref, _ref2, _ref3, _result, _result2, i, series;
+    this.stackedMin = (typeof this.stackedMin !== "undefined" && this.stackedMin !== null) ? this.stackedMin : {};
+    this.stackedMin[group] = (typeof (_ref = this.stackedMin[group]) !== "undefined" && _ref !== null) ? _ref : Math.min.apply(Math, (function() {
+      _result = []; _ref2 = data[this.__LABELS__].length;
+      for (i = 0; (0 <= _ref2 ? i < _ref2 : i > _ref2); (0 <= _ref2 ? i += 1 : i -= 1)) {
         _result.push(Sai.util.sumArray((function() {
-          _result2 = []; _ref2 = group;
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            series = _ref2[_i];
+          _result2 = []; _ref3 = group;
+          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+            series = _ref3[_i];
             if (series !== this.__LABELS__ && data[series][i] < 0) {
               _result2.push(data[series][i]);
             }
@@ -307,6 +315,7 @@
       }
       return _result;
     }).call(this));
+    return this.stackedMin[group];
   };
   Sai.Chart.prototype.normalize = function(data) {
     var _i, _j, _k, _len, _ref, _ref2, _ref3, _ref4, _result, _result2, all, baseline, baselines, bli, empty, group, groups, i, max, maxf, min, minf, norm, norm0, nval, series, stackedPoint, yvals;
@@ -385,6 +394,7 @@
       yvals = this.getYAxisVals(min, max);
       min = yvals[0];
       max = yvals[yvals.length - 1];
+      this.ndata[group].__YVALS__ = yvals;
       _ref2 = groups[group];
       for (_k = 0, _len = _ref2.length; _k < _len; _k++) {
         series = _ref2[_k];
@@ -406,14 +416,13 @@
             bli = (typeof (_ref4 = data[series][i]) !== "undefined" && _ref4 !== null) && data[series][i] < 0 ? 0 : 1;
             baselines[i] = (typeof baselines[i] !== "undefined" && baselines[i] !== null) ? baselines[i] : [norm0, norm0];
             baseline = baselines[i][bli];
-            stackedPoint = [i / (data[series].length - 1 || 1), ((typeof (_ref4 = norm(data[series][i], min, max)) !== "undefined" && _ref4 !== null) ? _ref4 : norm0) + baseline - norm0];
+            stackedPoint = [i / (data[series].length - 1 || 1), (((typeof (_ref4 = norm(data[series][i], min, max)) !== "undefined" && _ref4 !== null) ? _ref4 : norm0) - norm0) + baseline];
             this.stackedNdata[group][series].push(stackedPoint);
             if (stackedPoint !== null) {
               baselines[i][bli] = stackedPoint[1];
             }
           }
         }
-        this.ndata[group].__YVALS__ = yvals;
       }
     }
     return _result;
@@ -778,7 +787,7 @@
     return groups;
   };
   Sai.LineChart.prototype.renderPlots = function() {
-    var _ref, ndata, nh0, plotType, saxis;
+    var _ref, ndata, plotType, saxis;
     if (!(typeof (_ref = this.px) !== "undefined" && _ref !== null)) {
       this.setPlotCoords();
     }
@@ -802,16 +811,11 @@
     this.plots = [];
     if (saxis) {
       if (typeof (_ref = ndata.left) !== "undefined" && _ref !== null) {
-        nh0 = this.normalizedHeight(0, 'left');
-        this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, [[0, nh0], [1, nh0]]));
+        this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['left'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, this.getBaseline('left')));
       }
-      if (typeof (_ref = ndata.right) !== "undefined" && _ref !== null) {
-        nh0 = this.normalizedHeight(0, 'right');
-        return this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, [[0, nh0], [1, nh0]]));
-      }
+      return (typeof (_ref = ndata.right) !== "undefined" && _ref !== null) ? this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['right'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, this.getBaseline('right'))) : null;
     } else {
-      nh0 = this.normalizedHeight(0, 'all');
-      return this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, [[0, nh0], [1, nh0]]));
+      return this.plots.push((new plotType(this.r, this.px, this.py, this.pw, this.ph, ndata['all'])).render(this.colors, (typeof (_ref = this.opts.lineWidth) !== "undefined" && _ref !== null) ? _ref : 2, this.opts.stacked, this.getBaseline('all')));
     }
   };
   Sai.LineChart.prototype.renderFull = function() {
@@ -901,6 +905,90 @@
       });
     }
     return this;
+  };
+  Sai.StreamChart = function(_arg, _arg2, _arg3, _arg4, _arg5, data, _arg6, _arg7) {
+    this.opts = _arg7;
+    this.__LABELS__ = _arg6;
+    this.h = _arg5;
+    this.w = _arg4;
+    this.y = _arg3;
+    this.x = _arg2;
+    this.r = _arg;
+    this.opts.stacked = true;
+    Sai.StreamChart.__super__.constructor.apply(this, arguments);
+    return this;
+  };
+  __extends(Sai.StreamChart, Sai.LineChart);
+  Sai.StreamChart.prototype.getStackedMax = function(data, group) {
+    var naive;
+    naive = Sai.StreamChart.__super__.getStackedMax.apply(this, arguments);
+    return naive / 2.0;
+  };
+  Sai.StreamChart.prototype.getStackedMin = function(data, group) {
+    var naive, stackedMax;
+    naive = Sai.StreamChart.__super__.getStackedMin.apply(this, arguments);
+    stackedMax = this.getStackedMax(data, group);
+    return naive - stackedMax;
+  };
+  Sai.StreamChart.prototype.normalize = function(data) {
+    var _i, _j, _ref, _ref2, _ref3, _result, group, groups, i, nh0, offset, point, series, stackedMin, topSeries;
+    Sai.StreamChart.__super__.normalize.apply(this, arguments);
+    groups = this.dataGroups(this.data);
+    this.baselines = (typeof this.baselines !== "undefined" && this.baselines !== null) ? this.baselines : {};
+    _result = []; _ref = this.stackedNdata;
+    for (group in _ref) {
+      if (!__hasProp.call(_ref, group)) continue;
+      _i = _ref[group];
+      nh0 = this.normalizedHeight(0, (typeof group !== "undefined" && group !== null) ? group : 'all');
+      stackedMin = this.normalizedHeight(this.getStackedMin(data, groups[group]), group);
+      this.baselines[group] = [];
+      /*
+      # real stream graph, but not 100% working
+      n = 0
+      for series of @stackedNdata[group]
+        topSeries = series
+        n++
+
+      for i in [0...@stackedNdata[group][series].length]
+        #offset = (@stackedNdata[group][topSeries][i][1] - nh0) / 2
+        offset = 0
+        j = 0
+        for series of @stackedNdata[group]
+          j++
+          offset += (n - j + 1) * (@stackedNdata[group][series][i][1] - nh0)
+        offset /= n + 1
+        for series of @stackedNdata[group]
+          point = @stackedNdata[group][series][i]
+          continue unless point?
+          point[1] -= offset
+        @baselines[group].push([point[0], nh0 - offset])
+      */
+      _ref2 = this.stackedNdata[group];
+      for (series in _ref2) {
+        if (!__hasProp.call(_ref2, series)) continue;
+        _j = _ref2[series];
+        topSeries = series;
+      }
+      _ref2 = this.stackedNdata[group][series].length;
+      for (i = 0; (0 <= _ref2 ? i < _ref2 : i > _ref2); (0 <= _ref2 ? i += 1 : i -= 1)) {
+        offset = (this.stackedNdata[group][topSeries][i][1] - nh0) / 2;
+        _ref3 = this.stackedNdata[group];
+        for (series in _ref3) {
+          if (!__hasProp.call(_ref3, series)) continue;
+          _j = _ref3[series];
+          point = this.stackedNdata[group][series][i];
+          if (!(typeof point !== "undefined" && point !== null)) {
+            continue;
+          }
+          point[1] -= offset;
+        }
+        this.baselines[group].push([point[0], nh0 - offset]);
+      }
+    }
+    return _result;
+  };
+  Sai.StreamChart.prototype.getBaseline = function(group) {
+    return this.baselines[group];
   };
   Sai.Sparkline = function() {
     return Sai.Chart.apply(this, arguments);
