@@ -115,7 +115,7 @@
             _result = []; _ref2 = data[series];
             for (_j = 0, _len = _ref2.length; _j < _len; _j++) {
               d = _ref2[_j];
-              _result.push(typeof d === 'string' && d.match(/^[+-]?[\d,]+(\.\d+)?$/) && !isNaN(pd = parseFloat(d.replace(/,/g, ''))) ? pd : d);
+              _result.push(typeof d === 'string' && d.match(/^( +)?[+-]?[\d,]+(\.\d+)?( +)?$/) && !isNaN(pd = parseFloat(d.replace(/,/g, ''))) ? pd : d);
             }
             return _result;
           })();
