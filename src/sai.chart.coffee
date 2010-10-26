@@ -630,7 +630,10 @@ class Sai.LineChart extends Sai.Chart
         for series of @ndata['all'] when series isnt '__YVALS__'
           for plot in @plots when series of plot.dndata
             pos = plot.dndata[series][idx]
-            if @data[series][idx]? then @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront() else @dots[i].hide()
+            if pos?
+              @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront()
+            else
+              @dots[i].hide()
             i++
         
     ).mouseout(
@@ -1225,7 +1228,7 @@ class Sai.ScatterChart extends Sai.Chart
         legend_colors[c] = colors[c]
     
     if stroke_colors instanceof Array
-      null
+      0
       # histogramSeries.push(@opts.mappings.stroke_color)
       # histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
     else

@@ -304,7 +304,7 @@
         var linebreaker = {"category": "line", "title": "", "footnote": "SOURCE: Eurostat", "data": {"oct": ["nov", "dec", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep"], "108.41": [108.54000000000001, 108.88, 108.05, 108.39, 109.37, 109.87, 110.01000000000001, 110.02, 109.65000000000001, null, null]}, "height": 350, "DEFAULT": "108.41", "type": "line", "label": "oct", "optional": {"area": true, "line_size": "2", "axis": {"right": [], "left": ["oct", "108.41"]}}, "width": 350, "color": {"oct": "#429380", "108.41": "#A8502C"}};
         
         var r1 = Raphael("c1", 350, 350);
-        var chart = new Sai.LineChart(r1, 0, 350, 350, 350, linebreaker.data, "oct", linebreaker.optional).setColors(linebreaker.color).render();
+        var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, groups: {left: ['AAPL', 'GOOG', 'MSFT'], right: ['AMZN']}}).setColors(colors).render();
         
         var r2 = Raphael("c2", 350, 350);
         var stackedchart = new Sai.StreamChart(r2, 0, 350, 350, 350, data, "Month", {simple: 0, bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true, lineWidth: 1}).setColors(colors).render();

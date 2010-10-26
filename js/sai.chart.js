@@ -849,7 +849,7 @@
       }
     }
     everything = this.r.set().push(this.bg, this.plotSets, this.dots, this.logo, this.guidelines).mousemove(moveDots = __bind(function(event) {
-      var _j, _k, _len2, _ref3, _ref4, _ref5, _result, _result2, i, idx, info, plot, pos, series;
+      var _j, _k, _len2, _ref3, _ref4, _result, _result2, i, idx, info, plot, pos, series;
       idx = this.getIndex(event);
       info = {};
       if (((this.data[this.__LABELS__] == null ? undefined : this.data[this.__LABELS__].length) > idx) && (idx >= 0)) {
@@ -877,7 +877,7 @@
               if (series in plot.dndata) {
                 _result2.push((function() {
                   pos = plot.dndata[series][idx];
-                  if (typeof (_ref5 = this.data[series][idx]) !== "undefined" && _ref5 !== null) {
+                  if (typeof pos !== "undefined" && pos !== null) {
                     this.dots[i].attr({
                       cx: pos[0],
                       cy: pos[1]
@@ -1561,7 +1561,7 @@
       }
     }
     if (stroke_colors instanceof Array) {
-      null;
+      0;
     } else {
       legend_colors = (typeof legend_colors !== "undefined" && legend_colors !== null) ? legend_colors : {};
       draw_legend = true;
