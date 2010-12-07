@@ -52,8 +52,7 @@ Raphael.fn.sai.prim.line = (coords, color, width) ->
   color ?= '#000000'
   width ?= 1
   
-  for coord in coords
-    continue unless coord?
+  for coord in coords when coord?
     if path?
       path += ("L" + coord[0] + " " + coord[1])
     else

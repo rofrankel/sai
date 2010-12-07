@@ -38,15 +38,15 @@
         (_ref2 = this.dndata) != null ? _ref2 : this.dndata = {};
         _results2 = [];
         for (series in this.data) {
-          _results2.push(function() {
+          _results2.push(this.dndata[series] = (function() {
             _ref3 = this.data[series];
             _results3 = [];
             for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
               dnPoint = _ref3[_j];
-              _results3.push(this.dndata[series] = this.denormalize(dnPoint));
+              _results3.push(this.denormalize(dnPoint));
             }
             return _results3;
-          }.call(this));
+          }.call(this)));
         }
         return _results2;
       }

@@ -47,13 +47,12 @@
     width != null ? width : width = 1;
     for (_i = 0, _len = coords.length; _i < _len; _i++) {
       coord = coords[_i];
-      if (coord == null) {
-        continue;
-      }
-      if (typeof path != "undefined" && path !== null) {
-        path += "L" + coord[0] + " " + coord[1];
-      } else {
-        path = "M" + coord[0] + " " + coord[1];
+      if (coord != null) {
+        if (typeof path != "undefined" && path !== null) {
+          path += "L" + coord[0] + " " + coord[1];
+        } else {
+          path = "M" + coord[0] + " " + coord[1];
+        }
       }
     }
     return this.path(path).attr({

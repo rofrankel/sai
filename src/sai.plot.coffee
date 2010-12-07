@@ -11,7 +11,7 @@ class Sai.Plot
     else
       @dndata ?= {}
       for series of @data
-        @dndata[series] = @denormalize(dnPoint) for dnPoint in @data[series]
+        @dndata[series] = (@denormalize(dnPoint) for dnPoint in @data[series])
   
   denormalize: (point) ->
     if point instanceof Array
