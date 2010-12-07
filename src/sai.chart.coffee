@@ -67,7 +67,7 @@ class Sai.Chart
       if data[series] instanceof Array
         if @__LABELS__ is series
           @__LABELS__ = seriesName
-          @data[seriesName] = String(d) for d in data[series]
+          @data[seriesName] = (String(d) for d in data[series])
         else
           @data[seriesName] = (if typeof d is 'string' and d.match(/^( +)?[+-]?[\d,]+(\.\d+)?( +)?$/) and not isNaN(pd = parseFloat(d.replace(/,/g, ''))) then pd else d) for d in data[series]
       else
@@ -101,8 +101,8 @@ class Sai.Chart
   # For example, in a stock chart, volume doesn't scale the chart.
   dataGroups: (data) ->
     {
-      'all': seriesName for seriesName of data when @caresAbout(seriesName)
-      '__META__': seriesName for seriesName of data when seriesName.match("^__") or seriesName is @__LABELS__
+      'all': (seriesName for seriesName of data when @caresAbout(seriesName))
+      '__META__': (seriesName for seriesName of data when seriesName.match("^__") or seriesName is @__LABELS__)
     }
   
   getYAxisVals: (min, max, nopad) ->
@@ -495,12 +495,12 @@ class Sai.Chart
     
     for i in [0...seriesNames.length]
       series = seriesNames[i]
-      data = @ndata[series][series][j][1] for j in [0...@ndata[series][series].length] when @ndata[series][series][j]?
+      data = (@ndata[series][series][j][1] for j in [0...@ndata[series][series].length] when @ndata[series][series][j]?)
       
       if @bounds?[series]?
         [min, max] = @bounds[series]
       else
-        dataWithoutNulls = x for x in @data[series] when x?
+        dataWithoutNulls = (x for x in @data[series] when x?)
         [min, max] = [Math.min.apply(Math, dataWithoutNulls), Math.max.apply(Math, dataWithoutNulls)]
       
       yvals =  @getYAxisVals(min, max, true)
@@ -540,8 +540,8 @@ class Sai.LineChart extends Sai.Chart
     groups = super
     
     if @opts.groups?.left? and @opts.groups?.right?
-      groups.left = x for x in @opts.groups.left when @caresAbout(x) and x of @data
-      groups.right = x for x in @opts.groups.right when @caresAbout(x) and x of @data
+      groups.left = (x for x in @opts.groups.left when @caresAbout(x) and x of @data)
+      groups.right = (x for x in @opts.groups.right when @caresAbout(x) and x of @data)
     
     return groups
   
@@ -618,7 +618,7 @@ class Sai.LineChart extends Sai.Chart
         idx = @getIndex(event)
         
         info = {}
-        if @data[@__LABELS__]?.length > idx >= 0
+        if @data[@__LABELS__]?.length > idx and idx >= 0
           info[@__LABELS__] = @data[@__LABELS__][idx]
           
           for series of @ndata['all']
@@ -677,7 +677,7 @@ class Sai.StreamChart extends Sai.LineChart
       stackedMin = @normalizedHeight(@getStackedMin(data, groups[group]), group)
       @baselines[group] = []
       
-      @ndata[group]['__YVALS__'] = Math.abs(v) for v in @ndata[group]['__YVALS__']
+      @ndata[group]['__YVALS__'] = (Math.abs(v) for v in @ndata[group]['__YVALS__'])
       
       ###
       # Real stream graph, but doesn't match the yvals...
@@ -756,7 +756,7 @@ class Sai.BarChart extends Sai.Chart
     return Math.min(super, 0)
 
   groupsToNullPad: () ->
-    return group for group of @dataGroups()
+    return (group for group of @dataGroups())
 
   tooMuchData: () ->
     
@@ -1058,7 +1058,7 @@ class Sai.GeoChart extends Sai.Chart
         min = mins[series]
       @bounds[series] = [min, max]
       @ndata[series] = {}
-      @ndata[series][series] = (if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length]
+      @ndata[series][series] = ((if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length])
   
   
   dataGroups: (data) ->

@@ -10,9 +10,6 @@
     <script type="text/javascript" charset="utf-8" src="data/world.svg.json"></script>
     <script type="text/javascript">
       window.onload = function() {
-        //new_div = document.createElement('div');
-        //new_div.setAttribute('id', 'c1');
-        //document.getElementById('j').appendChild(new_div);
         create_charts();
       }
       
@@ -20,18 +17,14 @@
     
   </head>
   <body>
-    <p id="j">
-<!--      <div id="c1" style="width: 400px; height: 400px; float: left;"></div>  -->
-    </p>
-    
     <div id="c1" style="width: 400px; height: 400px; float: left;"></div> 
     <div id="c2" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c3" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c4" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c5" style="width: 400px; height: 400px; float: left;"></div>
+    <div id="c8" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c6" style="width: 800px; height: 650px; float: left;"></div>
     <div id="c7" style="width: 400px; height: 400px; float: left;"></div>
-    <div id="c8" style="width: 400px; height: 400px; float: left;"></div>
     <script type="text/javascript">
       create_charts = function() {
         Sai.imagePath = 'images/';
@@ -323,10 +316,10 @@
         /*
         var r6 = Raphael("c7", 800, 650);
         var uschart = new Sai.GeoChart(r6, 0, 650, 800, 650, WorldData, "countries", {simple: 0, href: 'http://track.com', bgcolor: tea, title: "Track.com Worldwide Fun Indices", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(UScolors).render();
-        
+        */
         var r7 = Raphael("c8", 400, 350);
         var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, US2008data, "State", {simple: 0, bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(US2008ChromaticColors).render();
-        */
+        
       }
     </script>
   </body>

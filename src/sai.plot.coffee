@@ -7,7 +7,7 @@ class Sai.Plot
   
   setDenormalizedData: () ->
     if @data instanceof Array
-      @dndata = @denormalize(dnPoint) for dnPoint in @data
+      @dndata = (@denormalize(dnPoint) for dnPoint in @data)
     else
       @dndata ?= {}
       for series of @data
@@ -50,7 +50,7 @@ class Sai.AreaPlot extends Sai.LinePlot
     
     @set.remove()
     
-    dnbl = @denormalize(p) for p in baseline
+    dnbl = (@denormalize(p) for p in baseline)
     
     for series of @dndata when not series.match('^__')
       for i in [0...@dndata[series].length]
@@ -63,7 +63,7 @@ class Sai.AreaPlot extends Sai.LinePlot
         if last?
           break
       
-      _baseline = [Math.max(Math.min(last[0], p[0]), first[0]), p[1]] for p in dnbl
+      _baseline = ([Math.max(Math.min(last[0], p[0]), first[0]), p[1]] for p in dnbl)
       
       @set.push(
         @r.sai.prim.area(@dndata[series], colors?[series] or 'black', width or 1, _baseline)
@@ -178,7 +178,7 @@ class Sai.GeoPlot extends Sai.Plot
     
     @set.remove()
     
-    regions = region.toUpperCase() for region in @rawdata[regionSeries]
+    regions = (region.toUpperCase() for region in @rawdata[regionSeries])
     ri = {}
     for i in [0...regions.length]
       ri[regions[i]] = i

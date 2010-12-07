@@ -271,7 +271,7 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, opts) ->
     label_strs.push(str)
   
   unless labels_unique
-    label_strs = Sai.util.prettystr(val, 2) for val in vals
+    label_strs = (Sai.util.prettystr(val, 2) for val in vals)
   
   pos = 0
   for val in vals
