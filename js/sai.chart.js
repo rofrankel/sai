@@ -66,7 +66,7 @@
       return [[0, nh0], [1, nh0]];
     };
     Chart.prototype.setData = function(data) {
-      var d, empty, group, groups, i, nngroups, pd, series, seriesName, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _m, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _results;
+      var d, empty, group, groups, i, nngroups, pd, series, seriesName, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _m, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _results, _results2;
       this.data = {};
       this.renames = {};
       empty = function(obj) {
@@ -106,11 +106,15 @@
               return _results;
             }());
           } else {
-            _ref2 = data[series];
-            for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-              d = _ref2[_j];
-              this.data[seriesName] = (typeof d === 'string' && d.match(/^( +)?[+-]?[\d,]+(\.\d+)?( +)?$/) && !isNaN(pd = parseFloat(d.replace(/,/g, ''))) ? pd : d);
-            }
+            this.data[seriesName] = (function() {
+              _ref2 = data[series];
+              _results2 = [];
+              for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+                d = _ref2[_j];
+                _results2.push((typeof d === 'string' && d.match(/^( +)?[+-]?[\d,]+(\.\d+)?( +)?$/) && !isNaN(pd = parseFloat(d.replace(/,/g, ''))) ? pd : d));
+              }
+              return _results2;
+            }());
           }
         } else {
           this.data[seriesName] = data[series];
