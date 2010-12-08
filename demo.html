@@ -295,16 +295,16 @@
         
         
         var linebreaker = {"category": "line", "title": "", "footnote": "SOURCE: Eurostat", "data": {"oct": ["nov", "dec", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep"], "108.41": [108.54000000000001, 108.88, 108.05, 108.39, 109.37, 109.87, 110.01000000000001, 110.02, 109.65000000000001, null, null]}, "height": 350, "DEFAULT": "108.41", "type": "line", "label": "oct", "optional": {"area": true, "line_size": "2", "axis": {"right": [], "left": ["oct", "108.41"]}}, "width": 350, "color": {"oct": "#429380", "108.41": "#A8502C"}};
-        /*
+        
         var r1 = Raphael("c1", 350, 350);
         var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, groups: {left: ['AAPL', 'GOOG', 'MSFT'], right: ['AMZN']}}).setColors(colors).render();
         
         var r2 = Raphael("c2", 350, 350);
         var stackedchart = new Sai.StreamChart(r2, 0, 350, 350, 350, data, "Month", {simple: 0, bgcolor: tea, title: "Monthly average adjusted close", interactive: true, stacked: true, area: true, lineWidth: 1}).setColors(colors).render();
-        */
+        
         var r3 = Raphael("c3", 350, 350);
         var stockchart = new Sai.StockChart(r3, 0, 350, 350, 350, msft_data, "Date", {simple: 0, bgcolor: tea, title: "MSFT (NASDAQ)"}).setColors({'5-day moving average': olive, '55-day moving average': ucla}).render();
-        /*
+        
         var r4 = Raphael("c4", 350, 350);
         var barc = new Sai.BarChart(r4, 0, 350, 350, 350, bardata, "Quarter", {simple: 0, bgcolor: tea, title: "Some titled bar chart", interactive: true}).setColors(colors).render(true);
         
@@ -314,15 +314,15 @@
         
         var r8 = Raphael("c6", 400, 350);
         var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, irisData, "", {simple: 0, mappings: scatterMappings, bgcolor: tea, title: "Fisher's Iris Data", colors: irisColors, stroke_colors: [orange, ucla], interactive: true})).render();
-        */
-        /*
+        
+        
         var r6 = Raphael("c7", 800, 650);
         var uschart = new Sai.GeoChart(r6, 0, 650, 800, 650, WorldData, "countries", {simple: 0, href: 'http://track.com', bgcolor: tea, title: "Track.com Worldwide Fun Indices", interactive: true, fromWhite: true, footnote: 'Data sources:  Google Finance, EPA, BLS, USC, US ARMY, MIT, BBQ, BYOB, TLA'}).setColors(UScolors).render();
-        */
-        /*
+        
+        
         var r7 = Raphael("c8", 400, 350);
         var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, US2008data, "State", {simple: 0, bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(US2008ChromaticColors).render();
-        */
+        
       }
     </script>
   </body>
