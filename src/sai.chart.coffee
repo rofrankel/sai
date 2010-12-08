@@ -1041,7 +1041,7 @@ class Sai.GeoChart extends Sai.Chart
     for series of data
       continue if series.match('^__') or series is @__LABELS__
       continue unless data[series]?
-      dataWithoutNulls = d for d in data[series] when d?
+      dataWithoutNulls = (d for d in data[series] when d?)
       maxes[series] = @getMax(dataWithoutNulls, series)
       if not overallMax? or maxes[series] > overallMax then overallMax = maxes[series]
       mins[series] = @getMin(dataWithoutNulls, series)

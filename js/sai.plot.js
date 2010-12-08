@@ -267,12 +267,16 @@
           'stroke-width': 0.5,
           'opacity': opacity
         }, (shouldInteract ? [
-          function(target) {
-            if (!(navigator.userAgent.toLowerCase().indexOf('msie') !== -1 || navigator.userAgent.toLowerCase().indexOf('opera') !== -1)) {
-              target.toFront();
-            }
-            return infoSetters[0]();
-          }, infoSetters[1]
+          (function(infoSetter) {
+            return function(target) {
+              if (!(navigator.userAgent.toLowerCase().indexOf('msie') !== -1 || navigator.userAgent.toLowerCase().indexOf('opera') !== -1)) {
+                target.toFront();
+              }
+              return infoSetter();
+            };
+          })(infoSetters[0]), (function(infoSetter) {
+            return infoSetter;
+          })(infoSetters[1])
         ] : null), shouldInteract ? [
           {
             'fill-opacity': .75,

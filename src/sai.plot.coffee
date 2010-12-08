@@ -211,12 +211,16 @@ class Sai.GeoPlot extends Sai.Plot
           },
           (if shouldInteract
             [
-              (target) ->
-                # opera and IE have a bug where calling toFront() blocks the mouseout event
-                target.toFront() unless navigator.userAgent.toLowerCase().indexOf('msie') isnt -1 or navigator.userAgent.toLowerCase().indexOf('opera') isnt -1
-                infoSetters[0]()
+              ((infoSetter) ->
+                (target) ->
+                  # opera and IE have a bug where calling toFront() blocks the mouseout event
+                  target.toFront() unless navigator.userAgent.toLowerCase().indexOf('msie') isnt -1 or navigator.userAgent.toLowerCase().indexOf('opera') isnt -1
+                  infoSetter()
+              )(infoSetters[0])
               ,
-              infoSetters[1]
+              ((infoSetter) ->
+                infoSetter
+              )(infoSetters[1])
             ]
           else
             null),

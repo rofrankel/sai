@@ -1271,7 +1271,7 @@
       return Math.min.apply(Math, data);
     };
     GeoChart.prototype.normalize = function(data) {
-      var d, dataWithoutNulls, i, max, maxes, min, mins, overallMax, overallMin, series, _i, _len, _ref, _ref2, _results, _results2;
+      var d, dataWithoutNulls, i, max, maxes, min, mins, overallMax, overallMin, series, _i, _len, _ref, _ref2, _results, _results2, _results3;
       this.ndata = {};
       this.bounds = {};
       maxes = {};
@@ -1283,13 +1283,17 @@
         if (data[series] == null) {
           continue;
         }
-        _ref = data[series];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          d = _ref[_i];
-          if (d != null) {
-            dataWithoutNulls = d;
+        dataWithoutNulls = (function() {
+          _ref = data[series];
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            d = _ref[_i];
+            if (d != null) {
+              _results.push(d);
+            }
           }
-        }
+          return _results;
+        }());
         maxes[series] = this.getMax(dataWithoutNulls, series);
         if (!(typeof overallMax != "undefined" && overallMax !== null) || maxes[series] > overallMax) {
           overallMax = maxes[series];
@@ -1299,7 +1303,7 @@
           overallMin = mins[series];
         }
       }
-      _results = [];
+      _results2 = [];
       for (series in data) {
         if (series.match('^__') || series === this.__LABELS__) {
           continue;
@@ -1316,15 +1320,15 @@
         }
         this.bounds[series] = [min, max];
         this.ndata[series] = {};
-        _results.push(this.ndata[series][series] = (function() {
-          _results2 = [];
+        _results2.push(this.ndata[series][series] = (function() {
+          _results3 = [];
           for (i = 0, _ref2 = data[series].length; (0 <= _ref2 ? i < _ref2 : i > _ref2); (0 <= _ref2 ? i += 1 : i -= 1)) {
-            _results2.push((data[series][i] != null ? [i / (data[series].length - 1), (data[series][i] - min) / (max - min)] : null));
+            _results3.push((data[series][i] != null ? [i / (data[series].length - 1), (data[series][i] - min) / (max - min)] : null));
           }
-          return _results2;
+          return _results3;
         }()));
       }
-      return _results;
+      return _results2;
     };
     GeoChart.prototype.dataGroups = function(data) {
       var groups, seriesName, _results;
