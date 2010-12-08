@@ -4,7 +4,9 @@
   (_ref = Sai.imagePath) != null ? _ref : Sai.imagePath = '/static/images/sai/';
   Sai.util.roundToMag = function(x, mag) {
     var target;
-    mag != null ? mag : mag = 0;
+    if (mag == null) {
+      mag = 0;
+    }
     target = Math.pow(10, mag);
     return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)));
   };
@@ -102,7 +104,9 @@
   };
   Sai.util.multiplyColor = function(colorStr, coeff, fromWhite, padding) {
     var b, g, r, rgb;
-    padding != null ? padding : padding = 0;
+    if (padding == null) {
+      padding = 0;
+    }
     coeff = padding + (1.0 - padding) * coeff;
     rgb = Raphael.getRGB(colorStr);
     if (fromWhite) {

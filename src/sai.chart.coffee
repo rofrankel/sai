@@ -1,8 +1,7 @@
 # A chart composes plots and organizes them with e.g. axes
 class Sai.Chart
   
-  constructor: (@r, @x, @y, @w, @h, data, @__LABELS__, @opts) ->
-    @opts ?= {}
+  constructor: (@r, @x, @y, @w, @h, data, @__LABELS__, @opts={}) ->
     @opts.bgcolor ?= 'white'
     
     @setData(data)
@@ -105,12 +104,11 @@ class Sai.Chart
       '__META__': (seriesName for seriesName of data when seriesName.match("^__") or seriesName is @__LABELS__)
     }
   
-  getYAxisVals: (min, max, nopad) ->
+  getYAxisVals: (min, max, nopad=false) ->
     return [min, max] unless typeof min is "number" and typeof max is "number"
     
     if min is max then return [0, max, max * 2]
     
-    nopad ?= false
     factor = 1
     while((max - min) * factor) < 10
       factor *= 10
@@ -415,9 +413,7 @@ class Sai.Chart
     
     nh = (h - ymin) / (ymax - ymin)
   
-  drawGuideline: (h, group) ->
-    group ?= 'all'
-    
+  drawGuideline: (h, group='all') ->
     return unless @ndata[group]?['__YVALS__']?
     
     nh = @normalizedHeight(h, group)
@@ -463,9 +459,7 @@ class Sai.Chart
     @info_w = @w - @padding.left - @padding.right
     @padding.top += 30
   
-  drawInfo: (info, clear) =>  
-    clear ?= true
-    
+  drawInfo: (info, clear=true) =>  
     info ?= if @default_info? then @default_info() else {}
     
     # clear out anything that already exists
@@ -713,8 +707,7 @@ class Sai.StreamChart extends Sai.LineChart
           point[1] -= offset
         @baselines[group].push([point[0], nh0 - offset])
  
-  addAxes: (groups, titles) ->
-    titles ?= {}
+  addAxes: (groups, titles={}) ->
     if 'left' not of titles then titles['left'] = 'magnitude'
     super(groups, titles)
 

@@ -9,7 +9,6 @@
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   Sai.Plot = function() {
     function Plot(r, x, y, w, h, data, rawdata, opts) {
-      var _ref;
       this.r = r;
       this.x = x;
       this.y = y;
@@ -17,8 +16,7 @@
       this.h = h;
       this.data = data;
       this.rawdata = rawdata;
-      this.opts = opts;
-      (_ref = this.opts) != null ? _ref : this.opts = {};
+      this.opts = opts != null ? opts : {};
       this.setDenormalizedData();
       this.set = this.r.set();
     }
@@ -143,10 +141,12 @@
     __extends(CandlestickPlot, Sai.Plot);
     CandlestickPlot.prototype.render = function(colors, body_width, shouldInteract, fSetInfo) {
       var cdown, cup, i, info, p, upDay, _ref;
+      if (body_width == null) {
+        body_width = 5;
+      }
       this.set.remove();
       cup = (colors != null ? colors['up'] : void 0) || 'black';
       cdown = (colors != null ? colors['down'] : void 0) || 'red';
-      body_width != null ? body_width : body_width = 5;
       for (i = 0, _ref = this.dndata['open'].length; (0 <= _ref ? i < _ref : i > _ref); (0 <= _ref ? i += 1 : i -= 1)) {
         if (this.dndata['close'][i] == null) {
           continue;

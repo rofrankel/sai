@@ -11,8 +11,7 @@ getHoverfuncs = (target, attrOn, attrOff, extras) ->
       extras?[1]?(target)
   ]
 
-Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fill, shouldInteract, fSetInfo, extras) ->
-  color ?= '#000000'
+Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color='black', fill, shouldInteract, fSetInfo, extras) ->
   body_width++ unless body_width % 2
   bx = x - (body_width / 2.0)
   
@@ -48,10 +47,7 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color, fil
   return candlestick
 
 
-Raphael.fn.sai.prim.line = (coords, color, width) ->
-  color ?= '#000000'
-  width ?= 1
-  
+Raphael.fn.sai.prim.line = (coords, color='black', width=1) ->
   for coord in coords when coord?
     if path?
       path += ("L" + coord[0] + " " + coord[1])
@@ -61,12 +57,9 @@ Raphael.fn.sai.prim.line = (coords, color, width) ->
   return @path(path).attr({'stroke': color, 'stroke-width': width})
 
 
-Raphael.fn.sai.prim.area = (coords, color, width, baseline) ->
+Raphael.fn.sai.prim.area = (coords, color='black', width=1, baseline) ->
 
   return @set() if coords.length < 2
-  
-  color ?= '#000000'
-  width ?= 1
   
   for coord in coords
     continue unless coord?
@@ -369,10 +362,8 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) -
   return set
 
 
-Raphael.fn.sai.prim.wrappedText = (x, y, w, text, delimiter, max_lines)  ->
-  delimiter ?= ' '
+Raphael.fn.sai.prim.wrappedText = (x, y, w, text='', delimiter=' ', max_lines)  ->
   spacing ?= 1
-  text ?= ''
   spacer = ''
   #for i in [0...spacing]
   #  spacer += '\u00a0'
@@ -464,11 +455,7 @@ Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
   return shape
 
 
-Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, colors, bgcolor, fromWhite, numBuckets) ->
-  bgcolor ?= 'white'
-  colors ?= ['black', 'white']
-  numBuckets ?= 10
-  
+Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low=0, high=1, label, colors=['black', 'white'], bgcolor='white', fromWhite, numBuckets=10) ->
   set = @set()
   
   set.push(
@@ -481,9 +468,6 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low, high, label, colors, bgc
   
   bartop = y - (h - 12) # leave room for text at top
   y -= 5 # text height / 2
-  
-  low ?= 0
-  high ?= 1
   
   set.push(lowLabel = @text(x, y, Sai.util.prettystr(low)).attr({'text-anchor': 'start'}))
   set.push(highLabel = @text(x + w, y, Sai.util.prettystr(high)).attr({'text-anchor': 'end'}))

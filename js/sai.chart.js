@@ -14,17 +14,16 @@
   };
   Sai.Chart = function() {
     function Chart(r, x, y, w, h, data, __LABELS__, opts) {
-      var init_padding, _base, _ref, _ref2;
+      var init_padding, _base, _ref;
       this.r = r;
       this.x = x;
       this.y = y;
       this.w = w;
       this.h = h;
       this.__LABELS__ = __LABELS__;
-      this.opts = opts;
+      this.opts = opts != null ? opts : {};
       this.drawInfo = __bind(this.drawInfo, this);;
-      (_ref = this.opts) != null ? _ref : this.opts = {};
-      (_ref2 = (_base = this.opts).bgcolor) != null ? _ref2 : _base.bgcolor = 'white';
+      (_ref = (_base = this.opts).bgcolor) != null ? _ref : _base.bgcolor = 'white';
       this.setData(data);
       init_padding = this.opts.simple ? 0 : 5;
       this.padding = {
@@ -185,13 +184,15 @@
     };
     Chart.prototype.getYAxisVals = function(min, max, nopad) {
       var bottom, factor, i, mag, rawmag, step, top, vals;
+      if (nopad == null) {
+        nopad = false;
+      }
       if (!(typeof min === "number" && typeof max === "number")) {
         return [min, max];
       }
       if (min === max) {
         return [0, max, max * 2];
       }
-      nopad != null ? nopad : nopad = false;
       factor = 1;
       while (((max - min) * factor) < 10) {
         factor *= 10;
@@ -605,7 +606,9 @@
     };
     Chart.prototype.drawGuideline = function(h, group) {
       var guideline, nh, _ref, _ref2;
-      group != null ? group : group = 'all';
+      if (group == null) {
+        group = 'all';
+      }
       if (((_ref = this.ndata[group]) != null ? _ref['__YVALS__'] : void 0) == null) {
         return;
       }
@@ -661,7 +664,9 @@
     };
     Chart.prototype.drawInfo = function(info, clear) {
       var label, _ref;
-      clear != null ? clear : clear = true;
+      if (clear == null) {
+        clear = true;
+      }
       info != null ? info : info = this.default_info != null ? this.default_info() : {};
       if (clear) {
         this.info_data = {};
@@ -974,7 +979,9 @@
       return _results;
     };
     StreamChart.prototype.addAxes = function(groups, titles) {
-      titles != null ? titles : titles = {};
+      if (titles == null) {
+        titles = {};
+      }
       if (!('left' in titles)) {
         titles['left'] = 'magnitude';
       }

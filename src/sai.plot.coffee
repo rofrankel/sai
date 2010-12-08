@@ -1,7 +1,6 @@
 # A plot is a primitive visualization of data
 class Sai.Plot
-  constructor: (@r, @x, @y, @w, @h, @data, @rawdata, @opts) ->
-    @opts ?= {}
+  constructor: (@r, @x, @y, @w, @h, @data, @rawdata, @opts={}) ->
     @setDenormalizedData()
     @set = @r.set()
   
@@ -76,13 +75,12 @@ class Sai.AreaPlot extends Sai.LinePlot
 
 class Sai.CandlestickPlot extends Sai.Plot
 
-  render: (colors, body_width, shouldInteract, fSetInfo) ->
+  render: (colors, body_width=5, shouldInteract, fSetInfo) ->
     
     @set.remove()
     
     cup = colors?['up'] or 'black'
     cdown = colors?['down'] or 'red'
-    body_width ?= 5
     
     for i in [0...@dndata['open'].length]
       

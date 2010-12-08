@@ -3,8 +3,7 @@ Sai.util = {}
 
 Sai.imagePath ?= '/static/images/sai/'
 
-Sai.util.roundToMag = (x, mag) ->
-  mag ?= 0
+Sai.util.roundToMag = (x, mag=0) ->
   target = Math.pow(10, mag)
   return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)))
 
@@ -85,8 +84,7 @@ Sai.util.transformCoords = (evt, canvas) ->
     {x: evt.x, y: evt.y}
 
 
-Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding) ->
-  padding ?= 0
+Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding=0) ->
   coeff = padding + (1.0 - padding) * coeff
   rgb = Raphael.getRGB(colorStr)
   if fromWhite

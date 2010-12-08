@@ -20,7 +20,9 @@
   };
   Raphael.fn.sai.prim.candlestick = function(x, by0, by1, sy0, sy1, body_width, color, fill, shouldInteract, fSetInfo, extras) {
     var body, bx, candlestick, hoverfuncs, shadow;
-    color != null ? color : color = '#000000';
+    if (color == null) {
+      color = 'black';
+    }
     if (!(body_width % 2)) {
       body_width++;
     }
@@ -43,8 +45,12 @@
   };
   Raphael.fn.sai.prim.line = function(coords, color, width) {
     var coord, path, _i, _len;
-    color != null ? color : color = '#000000';
-    width != null ? width : width = 1;
+    if (color == null) {
+      color = 'black';
+    }
+    if (width == null) {
+      width = 1;
+    }
     for (_i = 0, _len = coords.length; _i < _len; _i++) {
       coord = coords[_i];
       if (coord != null) {
@@ -62,11 +68,15 @@
   };
   Raphael.fn.sai.prim.area = function(coords, color, width, baseline) {
     var area, areaPath, coord, i, stroke, strokePath, x, y, _i, _len, _ref;
+    if (color == null) {
+      color = 'black';
+    }
+    if (width == null) {
+      width = 1;
+    }
     if (coords.length < 2) {
       return this.set();
     }
-    color != null ? color : color = '#000000';
-    width != null ? width : width = 1;
     for (_i = 0, _len = coords.length; _i < _len; _i++) {
       coord = coords[_i];
       if (coord == null) {
@@ -381,9 +391,13 @@
   };
   Raphael.fn.sai.prim.wrappedText = function(x, y, w, text, delimiter, max_lines) {
     var chars_per_line, end, idx, lines, pixels_per_char, potential_end, potential_line, spacer;
-    delimiter != null ? delimiter : delimiter = ' ';
+    if (text == null) {
+      text = '';
+    }
+    if (delimiter == null) {
+      delimiter = ' ';
+    }
     typeof spacing != "undefined" && spacing !== null ? spacing : spacing = 1;
-    text != null ? text : text = '';
     spacer = '';
     if (text.match(/^\s*$/)) {
       return;
@@ -466,9 +480,21 @@
   };
   Raphael.fn.sai.prim.histogram = function(x, y, w, h, data, low, high, label, colors, bgcolor, fromWhite, numBuckets) {
     var bartop, bg, bh, bucket, buckets, bw, datum, fill, highLabel, hrule, idx, lbl, lowLabel, maxBucket, set, _i, _len, _ref;
-    bgcolor != null ? bgcolor : bgcolor = 'white';
-    colors != null ? colors : colors = ['black', 'white'];
-    numBuckets != null ? numBuckets : numBuckets = 10;
+    if (low == null) {
+      low = 0;
+    }
+    if (high == null) {
+      high = 1;
+    }
+    if (colors == null) {
+      colors = ['black', 'white'];
+    }
+    if (bgcolor == null) {
+      bgcolor = 'white';
+    }
+    if (numBuckets == null) {
+      numBuckets = 10;
+    }
     set = this.set();
     set.push(bg = this.rect(x, y - h, w, h).attr({
       'stroke-width': 0,
@@ -477,8 +503,6 @@
     }));
     bartop = y - (h - 12);
     y -= 5;
-    low != null ? low : low = 0;
-    high != null ? high : high = 1;
     set.push(lowLabel = this.text(x, y, Sai.util.prettystr(low)).attr({
       'text-anchor': 'start'
     }));
