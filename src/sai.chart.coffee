@@ -205,7 +205,7 @@ class Sai.Chart
       
       for series in groups[group]
         continue unless data[series]?
-        @ndata[group][series] = (if data[series][i]? and (nval = norm(data[series][i], min, max)) isnt null then [i / (data[series].length - 1 or 1), nval] else null) for i in [0...data[series].length]
+        @ndata[group][series] = ((if data[series][i]? and (nval = norm(data[series][i], min, max)) isnt null then [i / (data[series].length - 1 or 1), nval] else null) for i in [0...data[series].length])
         if @opts.stacked?
           norm0 = norm(0, min, max)
           @stackedNdata[group][series] = []

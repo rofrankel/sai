@@ -310,7 +310,7 @@
       return this.stackedMin[group];
     };
     Chart.prototype.normalize = function(data) {
-      var all, baseline, baselines, bli, empty, group, groups, i, max, maxf, min, minf, norm, norm0, nval, series, stackedPoint, yvals, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results, _results2, _results3, _results4, _results5;
+      var all, baseline, baselines, bli, empty, group, groups, i, max, maxf, min, minf, norm, norm0, nval, series, stackedPoint, yvals, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results, _results2, _results3, _results4, _results5, _results6;
       groups = this.dataGroups(data);
       this.ndata = {};
       if (this.opts.stacked != null) {
@@ -392,23 +392,27 @@
             if (data[series] == null) {
               continue;
             }
-            for (i = 0, _ref4 = data[series].length; (0 <= _ref4 ? i < _ref4 : i > _ref4); (0 <= _ref4 ? i += 1 : i -= 1)) {
-              this.ndata[group][series] = ((data[series][i] != null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null);
-            }
+            this.ndata[group][series] = (function() {
+              _results5 = [];
+              for (i = 0, _ref4 = data[series].length; (0 <= _ref4 ? i < _ref4 : i > _ref4); (0 <= _ref4 ? i += 1 : i -= 1)) {
+                _results5.push(((data[series][i] != null) && (nval = norm(data[series][i], min, max)) !== null ? [i / (data[series].length - 1 || 1), nval] : null));
+              }
+              return _results5;
+            }());
             _results4.push(function() {
               if (this.opts.stacked != null) {
                 norm0 = norm(0, min, max);
                 this.stackedNdata[group][series] = [];
-                _results5 = [];
+                _results6 = [];
                 for (i = 0, _ref5 = data[series].length; (0 <= _ref5 ? i < _ref5 : i > _ref5); (0 <= _ref5 ? i += 1 : i -= 1)) {
                   bli = (data[series][i] != null) && data[series][i] < 0 ? 0 : 1;
                   (_ref6 = baselines[i]) != null ? _ref6 : baselines[i] = [norm0, norm0];
                   baseline = baselines[i][bli];
                   stackedPoint = [i / (data[series].length - 1 || 1), (((_ref7 = norm(data[series][i], min, max)) != null ? _ref7 : norm0) - norm0) + baseline];
                   this.stackedNdata[group][series].push(stackedPoint);
-                  _results5.push(stackedPoint !== null ? baselines[i][bli] = stackedPoint[1] : void 0);
+                  _results6.push(stackedPoint !== null ? baselines[i][bli] = stackedPoint[1] : void 0);
                 }
-                return _results5;
+                return _results6;
               }
             }.call(this));
           }
