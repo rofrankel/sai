@@ -838,7 +838,7 @@
         var i, idx, info, plot, pos, series, _i, _len, _ref, _ref2, _results, _results2;
         idx = this.getIndex(event);
         info = {};
-        if (((_ref = this.data[this.__LABELS__]) != null ? _ref.length : void 0) > idx && idx >= 0) {
+        if ((((_ref = this.data[this.__LABELS__]) != null ? _ref.length : void 0) > idx && idx >= 0)) {
           info[this.__LABELS__] = this.data[this.__LABELS__][idx];
           for (series in this.ndata['all']) {
             if (this.data[series] != null) {

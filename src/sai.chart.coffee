@@ -618,7 +618,7 @@ class Sai.LineChart extends Sai.Chart
         idx = @getIndex(event)
         
         info = {}
-        if @data[@__LABELS__]?.length > idx and idx >= 0
+        if @data[@__LABELS__]?.length > idx >= 0
           info[@__LABELS__] = @data[@__LABELS__][idx]
           
           for series of @ndata['all']

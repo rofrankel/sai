@@ -383,13 +383,17 @@
           'stroke': stroke_color,
           'fill-opacity': 0.8,
           'stroke-width': 2
-        }), shouldInteract ? circle.hover(function() {
-          infoSetters[0]();
-          return this.attr('fill-opacity', 0.5);
-        }, function() {
-          infoSetters[1]();
-          return this.attr('fill-opacity', 0.8);
-        }) : void 0);
+        }), shouldInteract ? circle.hover((function(infoSetter) {
+          return function() {
+            infoSetter();
+            return this.attr('fill-opacity', 0.5);
+          };
+        })(infoSetters[0]), (function(infoSetter) {
+          return function() {
+            infoSetter();
+            return this.attr('fill-opacity', 0.8);
+          };
+        })(infoSetters[1])) : void 0);
       };
       for (i = 0; (0 <= num_points ? i < num_points : i > num_points); (0 <= num_points ? i += 1 : i -= 1)) {
         _fn.call(this, i);
