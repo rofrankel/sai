@@ -405,7 +405,7 @@ class Sai.Chart
     @colors[@renames[series]] = color
     return this
 
-  normalizedHeight: (h, group) ->  
+  normalizedHeight: (h, group) ->
     return unless @ndata[group]?['__YVALS__']?
     
     ymin = @ndata[group]['__YVALS__'][0]
@@ -921,11 +921,12 @@ class Sai.StockChart extends Sai.Chart
           @r
           @px,
           @py,
-          @pw, @ph * 0.2,
+          @pw,
+          @ph * 0.2,
           vol,
           rawdata)
         )
-        .render(true, @normalizedHeight(0, volume_name), {'up': @colors['vol_up'], 'down': @colors['vol_down']})
+        .render(true, @normalizedHeight(0, 'volume'), {'up': @colors['vol_up'], 'down': @colors['vol_down']})
         .set
       )
     

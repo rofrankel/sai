@@ -120,6 +120,7 @@ class Sai.BarPlot extends Sai.Plot
   render: (stacked, baseline, colors, shouldInteract, fSetInfo, __LABELS__) ->
     
     @set.remove()
+    
     baseline = @denormalize([0, baseline])[1]
     
     len = 0

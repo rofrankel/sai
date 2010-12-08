@@ -1174,7 +1174,7 @@
             vol.down.push([0, 0]);
           }
         }
-        this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph * 0.2, vol, rawdata)).render(true, this.normalizedHeight(0, volume_name), {
+        this.plots.push((new Sai.BarPlot(this.r, this.px, this.py, this.pw, this.ph * 0.2, vol, rawdata)).render(true, this.normalizedHeight(0, 'volume'), {
           'up': this.colors['vol_up'],
           'down': this.colors['vol_down']
         }).set);
