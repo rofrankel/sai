@@ -8,15 +8,13 @@ libDir = 'lib'
 mainFile = 'sai.coffee'
 
 VERBOSE = true
+inform = (msg) -> puts msg if VERBOSE
 
+# this does a dependency-based topological sort of the different chart modules
 tsort = (edges, callback) ->
     ts = require('child_process').exec('tsort')
-    result = []
 
-    ts.stdout.on(
-        'data',
-        callback
-    )
+    ts.stdout.on('data', callback)
     
     ts.stdin.write(edges.join(' '))
     ts.stdin.end()
@@ -40,12 +38,12 @@ gclosure = (dirs) ->
         #args.push("--externs")
         #args.push("externs.js")
         
+        inform "java " + args.join(" ")
+        
         gclosure = require('child_process').spawn("java", args)
         
-        puts "java #{args.join(' ')}"
-        
         gclosure.stderr.setEncoding('utf8')
-        gclosure.on('exit', (code, signal) => puts "Google Closure finished with code=#{code} and signal=#{signal}"; @done = true)
+        gclosure.on('exit', (code, signal) -> inform if code then "Google Closure finished with code=#{code} and signal=#{signal}" else "built.")
         
     catch err
         puts "Error generating minified JavaScript: #{err}"
@@ -53,10 +51,10 @@ gclosure = (dirs) ->
 
 task 'build', 'build Sai', ->
     # first, compile all .coffee files
-    first_step = require('child_process').spawn("coffee", ['-o', targetDir, '-c', sourceDir])
+    compile_coffeescript = require('child_process').spawn("coffee", ['-b', '-o', targetDir, '-c', sourceDir])
     
     # now, collect dependencies
-    second_step = ->
+    combine_and_minify = ->
         dependencies = []
         files = fs.readdirSync sourceDir
         for file in files
@@ -67,20 +65,17 @@ task 'build', 'build Sai', ->
                         dependencies.push(dependency)
                         dependencies.push(file)
         
-        if VERBOSE then puts 'dependencies are:', dependencies.join(' ')
-        
+        # sort the modules and then combine and minify them with Google Closure
         tsort(dependencies, (data) ->
             gclosure data.split(/\s+/)
         )
     
-    first_step.on('exit', second_step)
+    compile_coffeescript.on('exit', combine_and_minify)
 
-task 'clean', 'clean up', ->
-    try
-        fs.rmdirSync targetDir
-        puts 'cleaned'
-    catch err
-        puts 'nothing to do.'
+task 'clean', 'clean up intermediate JS', ->
+    # sadly, fs.rmdir is non-recursive and fails if the directory isn't empty
+    rm = require('child_process').exec("rm -rf #{targetDir}")
+    rm.on('exit', -> inform 'cleaned')
 
     
     
