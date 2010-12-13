@@ -1,17 +1,5 @@
 Raphael.fn.sai.prim ?= {}
 
-getHoverfuncs = (target, attrOn, attrOff, extras) ->
-  return [
-    () ->
-      target.attr(attrOn)
-      extras?[0]?(target)
-    ,
-    () ->
-      target.attr(attrOff)
-      extras?[1]?(target)
-  ]
-
-
 Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
   ticklens = opts.ticklens ? [5, 2]
   width = opts.width ? 1
@@ -265,7 +253,7 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
 Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
   shape = fDraw(this).attr(attrs)
   
-  hoverfuncs = getHoverfuncs(
+  hoverfuncs = Sai.util.getHoverfuncs(
     shape,
     hoverattrs and hoverattrs[0] or {},
     hoverattrs and hoverattrs[1] or {},

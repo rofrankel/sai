@@ -3,17 +3,19 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color='bla
   bx = x - (body_width / 2.0)
   
   body = @rect(bx, by0, body_width, by1-by0 or 1).attr('stroke', color)
-  shadow = @path("M" + x + " " + sy0 +
-                 "L" + x + " " + by0 +
-                 "M" + x + " " + by1 +
-                 "L" + x + " " + sy1).attr('stroke', color)
+  shadow = @path(
+    "M" + x + " " + sy0 +
+    "L" + x + " " + by0 +
+    "M" + x + " " + by1 +
+    "L" + x + " " + sy1
+  ).attr('stroke', color)
   
   body.attr('fill', if fill then color else '#ffffff')
   
   candlestick = @set().push(body, shadow)
   
   if shouldInteract
-    hoverfuncs = getHoverfuncs(
+    hoverfuncs = Sai.util.getHoverfuncs(
       candlestick,
       {
         scale: '1.5,1.5,' + x + ',' + (by0 + (by1 - by0) / 2)

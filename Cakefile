@@ -51,7 +51,7 @@ gclosure = (dirs) ->
 
 task 'build', 'build Sai', ->
     # first, compile all .coffee files
-    compile_coffeescript = require('child_process').spawn("coffee", ['-b', '-o', targetDir, '-c', sourceDir])
+    compile_coffeescript = require('child_process').spawn("coffee", ['-o', targetDir, '-c', sourceDir])
     
     # now, collect dependencies
     combine_and_minify = ->

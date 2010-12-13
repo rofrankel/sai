@@ -130,6 +130,19 @@ Sai.util.reflectColor = (color, mirror) ->
   
   return "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
 
+
+Sai.util.getHoverfuncs = (target, attrOn, attrOff, extras) ->
+  return [
+    () ->
+      target.attr(attrOn)
+      extras?[0]?(target)
+    ,
+    () ->
+      target.attr(attrOff)
+      extras?[1]?(target)
+  ]
+
+
 # for maps
 Sai.data ?= {}
 Sai.data.map ?= {}
@@ -145,4 +158,3 @@ Raphael.fn.sai.chart = (x, y, w, h, type, data) ->
   
   chart = new type(this, x, y, w, h, data)
   chart.render()
-  

@@ -22,6 +22,9 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
     height = Math.abs(prev[is_positive] - coords[i][1])
     axisClip = if prev[is_positive] is baseline then 1 else 0 # visual hack to prevent bars covering x axis
     segment_baseline = coords[i][1] - (if is_positive then 0 else height - axisClip)
+    
+    prev[is_positive] = coords[i][1]
+    
     stack.push(
       bar = @rect(
         coords[i][0] - (width / 2.0),
@@ -33,18 +36,14 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
     )
     
     if shouldInteract
-      hoverfuncs = getHoverfuncs(
+      hoverfuncs = Sai.util.getHoverfuncs(
         bar,
-        {
-          'fill-opacity': '0.75'
-        },
-        {
-          'fill-opacity': '1.0'
-        },
+        {'fill-opacity': '0.75'},
+        {'fill-opacity': '1.0'},
         [
           ((_percent) ->
             () ->
-              if extras[0] then extras[0]()
+              extras[0]?()
               fSetInfo({'(selected)': Sai.util.prettystr(_percent) + '%'}, false)
           )(100 * (height / totalHeight))
           ,
@@ -56,8 +55,6 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
         hoverfuncs[0],
         hoverfuncs[1]
       )
-    
-    prev[is_positive] = coords[i][1]
   
   return stack
 
@@ -84,7 +81,7 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
       )
   
   if shouldInteract
-    hoverfuncs = getHoverfuncs(
+    hoverfuncs = Sai.util.getHoverfuncs(
       group,
       {
         'fill-opacity': '0.75'
