@@ -1,7 +1,8 @@
-fs = require('fs')
-{puts} = require 'util'
+fs = require 'fs' 
 path = require 'path'
-coffee = require('coffee-script')
+coffee = require 'coffee-script'
+{puts} = require 'util'
+
 sourceDir = 'src'
 targetDir = 'js'
 libDir = 'lib'
@@ -38,12 +39,20 @@ gclosure = (dirs) ->
         #args.push("--externs")
         #args.push("externs.js")
         
-        inform "java " + args.join(" ")
-        
         gclosure = require('child_process').spawn("java", args)
         
         gclosure.stderr.setEncoding('utf8')
-        gclosure.on('exit', (code, signal) -> inform if code then "Google Closure finished with code=#{code} and signal=#{signal}" else "built.")
+        gclosure.on(
+            'exit',
+            (code, signal) ->
+                if code
+                    inform "Google Closure finished with code=#{code} and signal=#{signal}"
+                else
+                    try
+                        inform "built minified JS, size is " + fs.statSync('lib/sai-min.js').size
+                    catch err
+                        puts "something went wrong: #{err}"
+        )
         
     catch err
         puts "Error generating minified JavaScript: #{err}"
