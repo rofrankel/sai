@@ -30,13 +30,18 @@ class Sai.GeoPlot extends Sai.Plot
             
             infoSetters = Sai.util.infoSetters(fSetInfo, info)
             
+            path = map.paths[region]
+            scale = Math.min(@w / map.width, @h / map.height)
+            region_x = @x
+            region_y = @y - @h
+            
             @set.push(
                 # fDraw, attrs, extras, hoverattrs
                 hoverShape = @r.sai.prim.hoverShape(
-                    ((path, scale, x, y) ->
+                    do (path, scale, region_x, region_y) ->
                         return (r) ->
-                            r.path(path).translate(x, y).scale(scale, scale, x, y)
-                    )(map.paths[region], Math.min(@w / map.width, @h / map.height), @x, @y - @h),
+                            r.path(path).translate(region_x, region_y).scale(scale, scale, region_x, region_y)
+                    ,
                     {
                         'fill': color
                         'stroke': if @opts.fromWhite then 'black' else bgcolor
@@ -45,16 +50,14 @@ class Sai.GeoPlot extends Sai.Plot
                     },
                     (if shouldInteract
                         [
-                            ((infoSetter) ->
+                            do (infoSetters) ->
                                 (target) ->
                                     # opera and IE have a bug where calling toFront() blocks the mouseout event
                                     target.toFront() unless navigator.userAgent.toLowerCase().indexOf('msie') isnt -1 or navigator.userAgent.toLowerCase().indexOf('opera') isnt -1
-                                    infoSetter()
-                            )(infoSetters[0])
+                                    infoSetters[0]()
                             ,
-                            ((infoSetter) ->
-                                infoSetter
-                            )(infoSetters[1])
+                            do (infoSetters) ->
+                                infoSetters[1]
                         ]
                     else
                         null),

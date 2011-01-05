@@ -60,17 +60,15 @@ class Sai.ScatterPlot extends Sai.Plot
                 
                 if shouldInteract
                     circle.hover(
-                        ((infoSetter) ->
+                        do (infoSetters) ->
                             ->
-                                infoSetter()
+                                infoSetters[0]()
                                 this.attr('fill-opacity', 0.5)
-                        )(infoSetters[0])
                         ,
-                        ((infoSetter) ->
+                        do (infoSetters) ->
                             ->
-                                infoSetter()
+                                infoSetters[1]()
                                 this.attr('fill-opacity', 0.8)
-                        )(infoSetters[1])
                     )
             )
         

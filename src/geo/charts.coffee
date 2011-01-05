@@ -52,17 +52,15 @@ class Sai.GeoChart extends Sai.Chart
     setupHistogramInteraction: (histogram, series) ->    
         histogram.click( () => @renderPlots(series) )
         .hover(
-            ((set) =>
+            do (histogram) =>
                 () =>
-                    set.attr({'fill-opacity': 0.75})
+                    histogram.attr({'fill-opacity': 0.75})
                     @drawInfo({'Click to display on map': series})
-            )(histogram)
             ,
-            ((set) =>
+            do (histogram) =>
                 () =>
                     set.attr({'fill-opacity': 1.0})
                     @drawInfo()
-            )(histogram)
         )
     
     renderPlots: (mainSeries) =>
