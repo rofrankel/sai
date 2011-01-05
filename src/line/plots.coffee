@@ -20,7 +20,6 @@ class Sai.LinePlot extends Sai.Plot
 class Sai.AreaPlot extends Sai.LinePlot
   
   render: (colors, width, stacked, baseline) ->
-    
     @set.remove()
     
     dnbl = (@denormalize(p) for p in baseline)

@@ -1,4 +1,4 @@
-`Sai = {};`
+`Sai = {};` # create a global Sai object
 Sai.util = {}
 
 Sai.imagePath ?= '/static/images/sai/'
@@ -74,12 +74,12 @@ Sai.util.transformCoords = (evt, canvas) ->
     svgPoint = canvas.createSVGPoint();
     svgPoint.x = evt.clientX
     svgPoint.y = evt.clientY
-    xformed = svgPoint.matrixTransform(canvas.getScreenCTM().inverse())
+    coords = svgPoint.matrixTransform(canvas.getScreenCTM().inverse())
     # stupid WebKit bug
     if navigator.userAgent.toLowerCase().indexOf('chrome') isnt -1 or navigator.userAgent.toLowerCase().indexOf('safari') isnt -1
-      xformed.x += document.body.scrollLeft
-      xformed.y += document.body.scrollTop
-    return {x: xformed.x, y: xformed.y}
+      coords.x += document.body.scrollLeft
+      coords.y += document.body.scrollTop
+    return {x: coords.x, y: coords.y}
   else
     {x: evt.x, y: evt.y}
 
