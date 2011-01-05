@@ -1,8 +1,6 @@
 `Sai = {};` # create a global Sai object
 Sai.util = {}
 
-Sai.imagePath ?= '/static/images/sai/'
-
 Sai.util.roundToMag = (x, mag=0) ->
     target = Math.pow(10, mag)
     return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)))
