@@ -1,4 +1,4 @@
-Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color='black', fill, shouldInteract, fSetInfo, extras) ->
+Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color='black', fill, interactive, fSetInfo, extras) ->
     body_width++ unless body_width % 2
     bx = x - (body_width / 2.0)
     
@@ -14,7 +14,7 @@ Raphael.fn.sai.prim.candlestick = (x, by0, by1, sy0, sy1, body_width, color='bla
     
     candlestick = @set().push(body, shadow)
     
-    if shouldInteract
+    if interactive
         hoverfuncs = Sai.util.getHoverfuncs(
             candlestick,
             {

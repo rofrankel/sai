@@ -1,6 +1,6 @@
 class Sai.CandlestickPlot extends Sai.Plot
 
-    render: (colors, body_width=5, shouldInteract, fSetInfo) ->
+    render: (colors, body_width=5, interactive, fSetInfo) ->
         
         @set.remove()
         
@@ -28,7 +28,7 @@ class Sai.CandlestickPlot extends Sai.Plot
                     body_width or 5,
                     if (i and @dndata['close'][i-1]? and (@dndata['close'][i-1][1] < @dndata['close'][i][1])) then cdown else cup,
                     not upDay,
-                    shouldInteract,
+                    interactive,
                     fSetInfo,
                     Sai.util.infoSetters(fSetInfo, info)
                 )

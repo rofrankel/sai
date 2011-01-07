@@ -8,7 +8,7 @@ class Sai.GeoPlot extends Sai.Plot
     getRegionOpacity: (ridx, mainSeries) ->
         if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then .15 else 0.25)
     
-    render: (colors, map, regionSeries, mainSeries, bgcolor, shouldInteract, fSetInfo) ->
+    render: (colors, map, regionSeries, mainSeries, bgcolor, interactive, fSetInfo) ->
         
         @set.remove()
         
@@ -48,7 +48,7 @@ class Sai.GeoPlot extends Sai.Plot
                         'stroke-width': 0.5
                         'opacity': opacity
                     },
-                    (if shouldInteract
+                    (if interactive
                         [
                             do (infoSetters) ->
                                 (target) ->
@@ -61,7 +61,7 @@ class Sai.GeoPlot extends Sai.Plot
                         ]
                     else
                         null),
-                    if shouldInteract then [{'fill-opacity': .75, 'stroke-width': (if @opts.fromWhite then 1.5 else 0.5)}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
+                    if interactive then [{'fill-opacity': .75, 'stroke-width': (if @opts.fromWhite then 1.5 else 0.5)}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
                 )
             )
             

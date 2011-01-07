@@ -1,6 +1,6 @@
 class Sai.ScatterPlot extends Sai.Plot
 
-    render: (mappings, colors, radii, stroke_opacities, stroke_colors, shouldInteract, fSetInfo) ->
+    render: (mappings, colors, radii, stroke_opacities, stroke_colors, interactive, fSetInfo) ->
         @set.remove()
         
         for series of @dndata
@@ -42,7 +42,7 @@ class Sai.ScatterPlot extends Sai.Plot
             else
                 stroke_opacity = 1.0
             
-            if shouldInteract
+            if interactive
                 info = {}
                 for series of @rawdata when not series.match('^__')
                     info[series] = @rawdata[series][i]
@@ -58,7 +58,7 @@ class Sai.ScatterPlot extends Sai.Plot
                     'stroke-width': 2
                 })
                 
-                if shouldInteract
+                if interactive
                     circle.hover(
                         do (infoSetters) ->
                             ->

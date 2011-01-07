@@ -1,7 +1,7 @@
 # colors is a list parallel to coords
-Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
+Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, interactive, fSetInfo, extras) ->
     
-    if shouldInteract
+    if interactive
         max = min = baseline
         for c in coords
             if max < c[1] then max = c[1]
@@ -35,7 +35,7 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
             .attr('stroke', colors?[i] or '#000000')
         )
         
-        if shouldInteract
+        if interactive
             hoverfuncs = Sai.util.getHoverfuncs(
                 bar,
                 {'fill-opacity': '0.75'},
@@ -45,7 +45,7 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
                     do (percent) ->
                         () ->
                             extras[0]?()
-                            fSetInfo({'(selected)': Sai.util.prettystr(percent) + '%'}, false)
+                            fSetInfo({'(selected)': Sai.util.num_abbrev(percent) + '%'}, false)
                     ,
                     extras[1]
                 ]
@@ -60,7 +60,7 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, shouldInterac
 
 
 # colors is a list parallel to coords
-Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInteract, fSetInfo, extras) ->
+Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, interactive, fSetInfo, extras) ->
     group = @set()
     barwidth = width / (coords.length + 1)
     offset = ((width - barwidth) / 2)
@@ -80,7 +80,7 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, shouldInterac
                 .attr('stroke', colors?[i] or '#000000')
             )
     
-    if shouldInteract
+    if interactive
         hoverfuncs = Sai.util.getHoverfuncs(
             group,
             {

@@ -226,7 +226,7 @@ class Sai.Chart
         # (over)estimate how much padding we need for the last label
         for i in [@data[@__LABELS__].length-1..0]
             if @data[@__LABELS__][i]?
-                tmptext = @r.text(0, 0, Sai.util.prettystr(@data[@__LABELS__][i]))
+                tmptext = @r.text(0, 0, Sai.util.num_abbrev(@data[@__LABELS__][i]))
                 @padding.right += tmptext.getBBox().width / 2
                 tmptext.remove()
                 break

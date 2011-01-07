@@ -26,7 +26,7 @@ Raphael.fn.sai.prim.haxis = (vals, x, y, len, opts) ->
             ticklen = ticklens[if String(val) then 0 else 1]
             ticks.push(@path("M" + xpos + " " + y + "l0 " + ticklen).attr('stroke', color))
             unless val is ''
-                label = @text(xpos, y + ticklen + padding, Sai.util.prettystr(val).substring(0, 12))
+                label = @text(xpos, y + ticklen + padding, Sai.util.num_abbrev(val).substring(0, 12))
                 bbox = label.getBBox()
                 ly = label.attr('y') + 5
                 label.attr('y', ly)
@@ -71,14 +71,14 @@ Raphael.fn.sai.prim.vaxis = (vals, x, y, len, opts) ->
     label_strs = []
     labels_unique = true
     for val in vals when val isnt null
-        str = Sai.util.prettystr(val)
+        str = Sai.util.num_abbrev(val)
         if str in label_strs
             labels_unique = false
             break
         label_strs.push(str)
     
     unless labels_unique
-        label_strs = (Sai.util.prettystr(val, 2) for val in vals)
+        label_strs = (Sai.util.num_abbrev(val, 2, 2) for val in vals)
     
     pos = 0
     for val in vals
@@ -234,7 +234,7 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
         if typeof info[label] is 'string'
             text += info[label]
         else
-            text += Sai.util.prettynum(info[label]) ? Sai.util.prettystr(info[label])
+            text += Sai.util.num_pretty(info[label]) ? Sai.util.num_abbrev(info[label])
         
         twidth = char_width * text.length
         if (px - x) + twidth > max_width
@@ -284,8 +284,8 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low=0, high=1, label, colors=
     bartop = y - (h - 12) # leave room for text at top
     y -= 5 # text height / 2
     
-    set.push(lowLabel = @text(x, y, Sai.util.prettystr(low)).attr({'text-anchor': 'start'}))
-    set.push(highLabel = @text(x + w, y, Sai.util.prettystr(high)).attr({'text-anchor': 'end'}))
+    set.push(lowLabel = @text(x, y, Sai.util.num_abbrev(low)).attr({'text-anchor': 'start'}))
+    set.push(highLabel = @text(x + w, y, Sai.util.num_abbrev(high)).attr({'text-anchor': 'end'}))
     
     y -= 7 # rest of text, plus padding
     
@@ -323,7 +323,7 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low=0, high=1, label, colors=
             })
         )
     
-    set.push(lbl = @text(x + w/2, bartop - 6, Sai.util.prettystr(label)))
+    set.push(lbl = @text(x + w/2, bartop - 6, Sai.util.num_abbrev(label)))
     
     return set
     

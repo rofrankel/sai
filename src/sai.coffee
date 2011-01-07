@@ -1,49 +1,37 @@
 `Sai = {};` # create a global Sai object
 Sai.util = {}
 
-Sai.util.roundToMag = (x, mag=0) ->
-    target = Math.pow(10, mag)
-    return parseFloat((Math.round(x / target) * target).toFixed(Math.max(0, mag)))
-
 Sai.util.round = (x, step) ->
     return parseFloat((Math.round(x / step) * step).toFixed(Math.max(0, Math.ceil(-1 * Math.log(step) / Math.LN10))))
 
-# why isn't this already in JS? :/
 Sai.util.sumArray = (a) ->
     sum = 0
-    for i in [0...a.length]
-        sum += if typeof a[i] is 'number' then a[i] else 0
+    for e in a
+        sum += e if typeof e is 'number'
     
     return sum
 
-Sai.util.prettystr = (x, precision) ->
-    abbrev_precision = precision ? 1
-    precision ?= 2
+Sai.util.num_abbrev = (x, precision=2, abbrev_precision=1) ->
     if typeof x is 'number'
-        suffix = ''
-        if Math.abs(x) >= 1000000000000
-            suffix = 't'
-            x /= 1000000000000
-        else if Math.abs(x) >= 1000000000
-            if abbrev_precision >= 8 then return x
-            suffix = 'b'
-            x /= 1000000000
-        else if Math.abs(x) >= 1000000
-            if abbrev_precision >= 5 then return x
-            suffix = 'm'
-            x /= 1000000
-        else if Math.abs(x) >= 1000
-            if abbrev_precision >= 2 then return x
-            suffix = 'k'
-            x /= 1000
-        else
-            return String(parseFloat(x.toFixed(precision)))
+        suffixes = ['k', 'm', 'b', 't']
+        for magnitude in [suffixes.length-1 .. 0] by -1
+            zeroes = 3 * (magnitude + 1)
+            threshold = Math.pow(10, zeroes)
+            
+            # if our precision includes the whole number, then don't abbreviate it
+            if abbrev_precision > zeroes
+                return x
+            
+            if Math.abs(x) >= threshold
+                return parseFloat((x / threshold).toFixed(abbrev_precision)) + suffixes[magnitude]
         
-        return parseFloat(x.toFixed(abbrev_precision)) + suffix
+        # if we got here then x is under 1000, so we can't really abbreviate it
+        return String(parseFloat(x.toFixed(precision)))
     
+    # if we got here then x is not a number, so just return it
     return x
 
-Sai.util.prettynum = (num) ->
+Sai.util.num_pretty = (num) ->
     if isNaN(parseFloat(num)) or not String(num).match(/^[-+]?\d+(\.\d+)?$/)
         return undefined
     
@@ -51,10 +39,6 @@ Sai.util.prettynum = (num) ->
     rgx = /(\d+)(\d{3})/
     while rgx.test(num[0])
         num[0] = num[0].replace(rgx, '$1,$2')
-    
-    if num.length > 1 and false
-        alert num[1]
-        alert "bbb" + parseFloat("0." + num[1]).toFixed(2).slice(1)
     
     return num[0] + (if num.length > 1 then parseFloat("0." +num[1]).toFixed(2).slice(1) else '')
 
@@ -74,6 +58,7 @@ Sai.util.transformCoords = (evt, canvas) ->
         svgPoint.y = evt.clientY
         coords = svgPoint.matrixTransform(canvas.getScreenCTM().inverse())
         # stupid WebKit bug
+        # todo: make this detection a little cleaner?
         if navigator.userAgent.toLowerCase().indexOf('chrome') isnt -1 or navigator.userAgent.toLowerCase().indexOf('safari') isnt -1
             coords.x += document.body.scrollLeft
             coords.y += document.body.scrollTop
@@ -107,24 +92,33 @@ Sai.util.colerp = (color1, color2, alpha) ->
     return "rgb(#{r}, #{g}, #{b})"
 
 
-# if a channel color is 2/3 of the way from black to mirror,
-# then the result in that channel is 1/3 of the way from the mirror to white
+# if a channel is 2/3 of the way from black to mirror, then the result in that
+# channel is 2/3 of the way from white to the mirror, or 1/3 of the way from
+# the mirror to white
 Sai.util.reflectColor = (color, mirror) ->
     max = 255
-    
     crgb = Raphael.getRGB(color)
     mrgb = Raphael.getRGB(mirror)
     rgb = {}
+    
     for channel in ['r', 'g', 'b']
         c = crgb[channel]
         m = mrgb[channel]
         if c == m
             rgb[channel] = c
-        # if c is .9 and m is .2 then we want 2 * (1 - 7/8) = 1.75
+        
+        # if c is .9 and m is .2 then c is 1/8 of the way from white to m, so
+        # we want 1/8 of the way from 0 to .2 = .2 * (1-.9)/(1-.2) = .2 * 1/8
         else if c > m 
-            rgb[channel] =    m * ((max - c) / (max - m))
+            rgb[channel] = m * ((max - c) / (max - m))
+        
+        # otherwise, we want to invert that, so solving for c we get
+        # c' = m * ((max - c) / (max - m))
+        # c' / m = (max - c) / (max - m)
+        # c' * (max - m) / m = (max - c)
+        # c = max - (c' * (max - m) / m)
         else
-            rgb[channel] = (max * (m - c) + (m * c)) / m
+            rgb[channel] = max - (c * (max - m) / m)
     
     return "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
 
@@ -144,15 +138,3 @@ Sai.util.getHoverfuncs = (target, attrOn, attrOff, extras) ->
 # for maps
 Sai.data ?= {}
 Sai.data.map ?= {}
-
-Raphael.fn.sai ?= {}
-
-Raphael.fn.sai.chart = (x, y, w, h, type, data) ->
-    type = {
-        'line': Sai.LineChart
-    }[type] ? type
-    
-    type ?= Sai.Chart
-    
-    chart = new type(this, x, y, w, h, data)
-    chart.render()
