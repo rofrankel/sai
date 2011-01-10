@@ -460,7 +460,7 @@ class Sai.Chart
         @padding.top += 30
     
     drawInfo: (info, clear=true) =>    
-        info ?= if @default_info? then @default_info() else {}
+        info ?= @default_info?() ? {}
         
         # clear out anything that already exists
         if clear

@@ -2,7 +2,7 @@ class Sai.BarPlot extends Sai.Plot
     
     # if stacked, plot is rendered stacked...else, grouped
     # colors maps from series name to color string
-    render: (stacked, baseline, colors, interactive, fSetInfo, __LABELS__) ->
+    render: (stacked, baseline, colors, interactive, setInfo, __LABELS__) ->
         
         @set.remove()
         
@@ -42,8 +42,8 @@ class Sai.BarPlot extends Sai.Plot
                     @w / len,
                     baseline,
                     interactive,
-                    fSetInfo,
-                    Sai.util.infoSetters(fSetInfo, info)
+                    setInfo,
+                    Sai.util.infoSetters(setInfo, info)
                 )
             )
         

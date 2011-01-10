@@ -42,13 +42,13 @@ Sai.util.num_pretty = (num) ->
     
     return num[0] + (if num.length > 1 then parseFloat("0." +num[1]).toFixed(2).slice(1) else '')
 
-Sai.util.infoSetters = (fSetInfo, info) ->
+Sai.util.infoSetters = (setInfo, info) ->
     [
         () ->
-            fSetInfo(info)
+            setInfo(info)
         ,
         () ->
-            fSetInfo()
+            setInfo()
     ]
 
 Sai.util.transformCoords = (evt, canvas) ->
@@ -115,7 +115,7 @@ Sai.util.reflectColor = (color, mirror) ->
         # otherwise, we want to invert that, so solving for c we get
         # c' = m * ((max - c) / (max - m))
         # c' / m = (max - c) / (max - m)
-        # c' * (max - m) / m = (max - c)
+        # c' * (max - m) / m = max - c
         # c = max - (c' * (max - m) / m)
         else
             rgb[channel] = max - (c * (max - m) / m)
@@ -123,8 +123,8 @@ Sai.util.reflectColor = (color, mirror) ->
     return "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
 
 
-Sai.util.getHoverfuncs = (target, attrOn, attrOff, extras) ->
-    return [
+Sai.util.setHover = (target, attrOn, attrOff, extras) ->
+    return target.hover(
         () ->
             target.attr(attrOn)
             extras?[0]?(target)
@@ -132,9 +132,12 @@ Sai.util.getHoverfuncs = (target, attrOn, attrOff, extras) ->
         () ->
             target.attr(attrOff)
             extras?[1]?(target)
-    ]
+    )
 
 
 # for maps
 Sai.data ?= {}
 Sai.data.map ?= {}
+
+
+Raphael.fn.sai ?= {}

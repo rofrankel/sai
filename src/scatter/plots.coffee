@@ -1,6 +1,6 @@
 class Sai.ScatterPlot extends Sai.Plot
 
-    render: (mappings, colors, radii, stroke_opacities, stroke_colors, interactive, fSetInfo) ->
+    render: (mappings, colors, radii, stroke_opacities, stroke_colors, interactive, setInfo) ->
         @set.remove()
         
         for series of @dndata
@@ -46,7 +46,7 @@ class Sai.ScatterPlot extends Sai.Plot
                 info = {}
                 for series of @rawdata when not series.match('^__')
                     info[series] = @rawdata[series][i]
-                infoSetters = Sai.util.infoSetters(fSetInfo, info)
+                infoSetters = Sai.util.infoSetters(setInfo, info)
             
             @set.push(
                 circle = @r.circle(x, y, radius)

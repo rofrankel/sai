@@ -8,7 +8,7 @@ class Sai.GeoPlot extends Sai.Plot
     getRegionOpacity: (ridx, mainSeries) ->
         if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then .15 else 0.25)
     
-    render: (colors, map, regionSeries, mainSeries, bgcolor, interactive, fSetInfo) ->
+    render: (colors, map, regionSeries, mainSeries, bgcolor, interactive, setInfo) ->
         
         @set.remove()
         
@@ -28,7 +28,7 @@ class Sai.GeoPlot extends Sai.Plot
             color = @getRegionColor(colors, ridx, mainSeries)
             opacity = @getRegionOpacity(ridx, mainSeries)
             
-            infoSetters = Sai.util.infoSetters(fSetInfo, info)
+            infoSetters = Sai.util.infoSetters(setInfo, info)
             
             path = map.paths[region]
             scale = Math.min(@w / map.width, @h / map.height)

@@ -180,28 +180,12 @@ Raphael.fn.sai.prim.legend = (x, y, max_width, legend_colors, highlightColors) -
 Raphael.fn.sai.prim.wrappedText = (x, y, w, text='', delimiter=' ', max_lines)    ->
     spacing ?= 1
     spacer = ''
-    #for i in [0...spacing]
-    #    spacer += '\u00a0'
     
     # don't try to draw an empty footnote
     return if text.match(/^\s*$/)
     
     pixels_per_char = 6
     chars_per_line = w / pixels_per_char
-    
-    ###
-    tokens = text.split(delimiter)
-    lines = []
-    line = ''
-    for token in tokens
-        if line.length + token.length > chars_per_line
-            lines.push(line)
-            line = ''
-            break if lines.length is max_lines
-        line += token + spacer
-    
-    if line isnt '' then lines.push(line)
-    ###
     
     lines = []
     idx = 0
@@ -250,23 +234,16 @@ Raphael.fn.sai.prim.info = (x, y, max_width, info) ->
     return set
 
 
-Raphael.fn.sai.prim.hoverShape = (fDraw, attrs, extras, hoverattrs) ->
-    shape = fDraw(this).attr(attrs)
+Raphael.fn.sai.prim.hoverShape = (draw, attrs, extras, hoverattrs) ->
+    shape = draw(this).attr(attrs)
     
-    hoverfuncs = Sai.util.getHoverfuncs(
+    Sai.util.setHover(
         shape,
-        hoverattrs and hoverattrs[0] or {},
-        hoverattrs and hoverattrs[1] or {},
+        hoverattrs[0],
+        hoverattrs[1],
         extras
     )
-    ###
-    shape.hover(
-        hoverfuncs[0],
-        hoverfuncs[1]
-    )
-    ###
-    shape.mouseover(hoverfuncs[0])
-    shape.mouseout(hoverfuncs[1])
+    
     return shape
 
 

@@ -1,5 +1,5 @@
 # colors is a list parallel to coords
-Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, interactive, fSetInfo, extras) ->
+Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, interactive, setInfo, extras) ->
     
     if interactive
         max = min = baseline
@@ -7,7 +7,7 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, interactive, 
             if max < c[1] then max = c[1]
             if min > c[1] then min = c[1]
         totalHeight = (max - min) or 1
-
+    
     width *= .67
     stack = @set()
     prev = [baseline, baseline]
@@ -36,31 +36,25 @@ Raphael.fn.sai.prim.stackedBar = (coords, colors, width, baseline, interactive, 
         )
         
         if interactive
-            hoverfuncs = Sai.util.getHoverfuncs(
-                bar,
-                {'fill-opacity': '0.75'},
-                {'fill-opacity': '1.0'},
-                [
-                    percent = 100 * height / totalHeight
-                    do (percent) ->
-                        () ->
-                            extras[0]?()
-                            fSetInfo({'(selected)': Sai.util.num_abbrev(percent) + '%'}, false)
-                    ,
-                    extras[1]
-                ]
-            )
+            percent = 100 * height / totalHeight
+            extras_0 = extras?[0]
+            extras ?= [null]
+            extras[0] = do (percent, setInfo, extras_0) -> ->
+                extras_0?()
+                setInfo({'(selected)': Sai.util.num_abbrev(percent) + '%'}, false)
             
-            bar.hover(
-                hoverfuncs[0],
-                hoverfuncs[1]
+            Sai.util.setHover(
+                bar,
+                {'fill-opacity': 0.75},
+                {'fill-opacity': 1.0},
+                extras
             )
     
     return stack
 
 
 # colors is a list parallel to coords
-Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, interactive, fSetInfo, extras) ->
+Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, interactive, setInfo, extras) ->
     group = @set()
     barwidth = width / (coords.length + 1)
     offset = ((width - barwidth) / 2)
@@ -81,20 +75,11 @@ Raphael.fn.sai.prim.groupedBar = (coords, colors, width, baseline, interactive, 
             )
     
     if interactive
-        hoverfuncs = Sai.util.getHoverfuncs(
+        Sai.util.setHover(
             group,
-            {
-                'fill-opacity': '0.75'
-            },
-            {
-                'fill-opacity': '1.0'
-            },
+            {'fill-opacity': '0.75'},
+            {'fill-opacity': '1.0'},
             extras
-        )
-        
-        group.hover(
-            hoverfuncs[0],
-            hoverfuncs[1]
         )
     
     return group
