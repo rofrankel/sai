@@ -28,7 +28,7 @@ class Sai.GeoPlot extends Sai.Plot
             color = @getRegionColor(colors, ridx, mainSeries)
             opacity = @getRegionOpacity(ridx, mainSeries)
             
-            infoSetters = Sai.util.infoSetters(setInfo, info)
+            hoverFuncs = @getInfoToggle(setInfo, info)
             
             path = map.paths[region]
             scale = Math.min(@w / map.width, @h / map.height)
@@ -50,14 +50,14 @@ class Sai.GeoPlot extends Sai.Plot
                     },
                     (if interactive
                         [
-                            do (infoSetters) ->
+                            do (hoverFuncs) ->
                                 (target) ->
                                     # opera and IE have a bug where calling toFront() blocks the mouseout event
                                     target.toFront() unless navigator.userAgent.toLowerCase().indexOf('msie') isnt -1 or navigator.userAgent.toLowerCase().indexOf('opera') isnt -1
-                                    infoSetters[0]()
+                                    hoverFuncs[0]()
                             ,
-                            do (infoSetters) ->
-                                infoSetters[1]
+                            do (hoverFuncs) ->
+                                hoverFuncs[1]
                         ]
                     else
                         null),

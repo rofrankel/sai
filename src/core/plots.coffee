@@ -22,3 +22,12 @@ class Sai.Plot
             @r.circle(40, 40, 10).attr('fill', 'blue')
         )
         return this
+    
+    getInfoToggle: (setInfo, info) ->
+        [
+            () ->
+                setInfo(info)
+            ,
+            () ->
+                setInfo()
+        ]
