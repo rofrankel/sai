@@ -146,8 +146,8 @@ class Sai.Chart
         return Math.max.apply(Math, Math.max.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
     
     # takes e.g. groups[group], not just a group name
-    getMin: (data, group) ->
-        return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d? and typeof d is "number") for series in group when data[series]?)
+    getMin: (data, group) =>
+        return Math.min.apply(Math, Math.min.apply(Math, d for d in data[series] when d? and typeof d is "number" and (not @opts.ignoreZeroes or d != 0)) for series in group when data[series]?)
     
     getStackedMax: (data, group) ->
         @stackedMax ?= {}
@@ -491,13 +491,16 @@ class Sai.Chart
             series = seriesNames[i]
             data = (@ndata[series][series][j][1] for j in [0...@ndata[series][series].length] when @ndata[series][series][j]?)
             
+            if @opts.ignoreZeroes
+                data = (d for d in data when d != 0)
+            
             if @bounds?[series]?
                 [min, max] = @bounds[series]
             else
-                dataWithoutNulls = (x for x in @data[series] when x?)
+                dataWithoutNulls = (x for x in @data[series] when x? and (not @opts.ignoreZeroes or x != 0))
                 [min, max] = [Math.min.apply(Math, dataWithoutNulls), Math.max.apply(Math, dataWithoutNulls)]
             
-            yvals =    @getYAxisVals(min, max, true)
+            yvals = @getYAxisVals(min, max, true)
             minLabel = yvals[0]
             maxLabel = yvals[yvals.length - 1]
             color = colors[series]

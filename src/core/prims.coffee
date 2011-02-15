@@ -269,7 +269,7 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low=0, high=1, label, colors=
     buckets = {}
     maxBucket = 0
     
-    for datum in data
+    for datum in data when datum > 0
         idx = Math.min(numBuckets - 1, Math.floor(numBuckets * datum / 1))
         if idx of buckets then buckets[idx] += 1 else buckets[idx] = 1
         maxBucket = Math.max(maxBucket, buckets[idx])

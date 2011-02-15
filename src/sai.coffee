@@ -79,7 +79,7 @@ Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding=0) ->
         g = rgb.g * coeff
         b = rgb.b * coeff
     return {
-        r: r, g: g, b: b,
+        r: Math.max(r, 0), g: Math.max(g, 0), b: Math.max(b, 0),
         str: "rgb(#{r}, #{g}, #{b})"
     }
 

@@ -25,9 +25,6 @@ class Sai.Plot
     
     getInfoToggle: (setInfo, info) ->
         [
-            () ->
-                setInfo(info)
-            ,
-            () ->
-                setInfo()
+            () -> setInfo(info),
+            () -> setInfo()
         ]

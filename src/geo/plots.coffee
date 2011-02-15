@@ -3,10 +3,10 @@
 class Sai.GeoPlot extends Sai.Plot
     
     getRegionColor: (colors, ridx, mainSeries) ->
-        return Sai.util.multiplyColor(colors[mainSeries], @data[mainSeries][ridx]?[1] or 0, @opts.fromWhite, if @opts.fromWhite then 0.2 else 0).str
+        return Sai.util.multiplyColor(colors[mainSeries], Math.max(@data[mainSeries][ridx]?[1] or 0, 0), @opts.fromWhite, if @opts.fromWhite then 0.2 else 0).str
     
     getRegionOpacity: (ridx, mainSeries) ->
-        if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then .15 else 0.25)
+        if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then 0.15 else 0.15)
     
     render: (colors, map, regionSeries, mainSeries, bgcolor, interactive, setInfo) ->
         
@@ -26,6 +26,7 @@ class Sai.GeoPlot extends Sai.Plot
                 info[series] = @rawdata[series][ridx]
             
             color = @getRegionColor(colors, ridx, mainSeries)
+            
             opacity = @getRegionOpacity(ridx, mainSeries)
             
             hoverFuncs = @getInfoToggle(setInfo, info)
@@ -87,4 +88,4 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
         for series of @data
             if @data[series][ridx]?[1]? then return 1
         
-        return 0.25
+        return 0.15

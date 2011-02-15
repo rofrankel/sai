@@ -7,7 +7,10 @@ class Sai.GeoChart extends Sai.Chart
         Math.max.apply(Math, data)
     
     getMin: (data, series) ->
-        Math.min.apply(Math, data)
+        d = data
+        if @opts.ignoreZeroes
+            d = (e for e in d when e != 0)
+        Math.min.apply(Math, d)
     
     normalize: (data) ->
         @ndata = {}
@@ -36,7 +39,6 @@ class Sai.GeoChart extends Sai.Chart
             @bounds[series] = [min, max]
             @ndata[series] = {}
             @ndata[series][series] = ((if data[series][i]? then [i / (data[series].length - 1), ((data[series][i]-min) / (max-min))] else null) for i in [0...data[series].length])
-    
     
     dataGroups: (data) ->
         groups = {
