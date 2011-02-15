@@ -59,11 +59,9 @@ gclosure = (dirs) ->
 
 
 task 'build', 'build Sai', ->
-    # first, compile all .coffee files
-    compile_coffeescript = require('child_process').spawn("coffee", ['-o', targetDir, '-c', sourceDir])
     
-    # now, collect dependencies
     combine_and_minify = ->
+        # collect dependencies
         dependencies = []
         files = fs.readdirSync sourceDir
         for file in files
@@ -79,6 +77,8 @@ task 'build', 'build Sai', ->
             gclosure data.split(/\s+/)
         )
     
+    compile_coffeescript = require('child_process').spawn("coffee", ['-o', targetDir, '-c', sourceDir])
+    compile_coffeescript.stderr.on('data', (data) -> puts data)
     compile_coffeescript.on('exit', combine_and_minify)
 
 task 'clean', 'clean up intermediate JS', ->
