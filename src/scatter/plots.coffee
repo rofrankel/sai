@@ -23,7 +23,7 @@ class Sai.ScatterPlot extends Sai.Plot
             
             if stroke_colors instanceof Array and mappings.stroke_color?
                 stroke_color = Sai.util.colerp(stroke_colors[0], stroke_colors[1], (@data[mappings.stroke_color]?[i]?[1] ? 0))
-            else if colors instanceof Object and mappings.color?
+            else if colors instanceof Object and mappings.stroke_color?
                 stroke_color = stroke_colors[@rawdata[mappings.stroke_color][i]]
             else
                 stroke_color = 'black'
