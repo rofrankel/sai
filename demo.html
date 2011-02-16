@@ -290,8 +290,8 @@
             };
             
             var gini_data = {
-                'Established Markets': [0.550,0.375,0.368,0.415,0.316,0.481,0.432,0.440,0.321,0.394,0.383,0.312,0.429,0.378,0.310,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000],
-                'Developing Markets': [0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.291,0.330,0.258,0.247,0.360,0.269,0.327,0.283,0.343,0.300,0.343,0.360,0.308,0.309,0.258,0.349,0.385,0.258,0.347,0.250,0.337,0.360,0.392,0.249,0.326,0.408,0.352,0.362],
+                'Developing Markets': [0.550,0.375,0.368,0.415,0.316,0.481,0.432,0.440,0.321,0.394,0.383,0.312,0.429,0.378,0.310,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000],
+                'Established Markets': [0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.291,0.330,0.258,0.247,0.360,0.269,0.327,0.283,0.343,0.300,0.343,0.360,0.308,0.309,0.258,0.349,0.385,0.258,0.347,0.250,0.337,0.360,0.392,0.249,0.326,0.408,0.352,0.362],
                 'ISO': ['BR','RU','IN','CN','KR','MX','TR','PH','EG','ID','IR','PK','NG','VN','BD','AT','BE','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LU','NL','NO','PL','PT','SK','ES','SE','CH','GB','IL','JP','CA','US','AU','NZ'],
                 '__MAP__': Sai.data.map.world,
                 '__DEFAULT__': 'Developing Markets',
@@ -321,7 +321,7 @@
             var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, irisData, "", {simple: 0, mappings: scatterMappings, bgcolor: tea, title: "Fisher's Iris Data", colors: irisColors, stroke_colors: [orange, ucla], interactive: true})).render();
             
             var r6 = Raphael("c7", 800, 650);
-            var worldchart = new Sai.ChromaticGeoChart(r6, 0, 650, 800, 650, gini_data, "ISO", {simple: 0, bgcolor: tea, title: "GINI Coefficients - Developing markets", interactive: true, ignoreZeroes: true}).setColors({'Established Markets': ucla, 'Developing Markets': orange}).render();
+            var worldchart = new Sai.ChromaticGeoChart(r6, 0, 650, 800, 650, gini_data, "ISO", {simple: 0, bgcolor: tea, title: "GINI Coefficients - Developing markets", interactive: true, ignoreZeroes: true, fromWhite: true}).setColors({'Established Markets': ucla, 'Developing Markets': orange}).render();
             
             var r7 = Raphael("c8", 400, 350);
             var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, US2008data, "State", {simple: 0, bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(US2008ChromaticColors).render();
