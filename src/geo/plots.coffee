@@ -79,7 +79,7 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
         numSeries = 0
         for series of @data
             numSeries++
-            rgb = Sai.util.multiplyColor(colors[series], Math.max(@data[series][ridx]?[1] or 0, 0), @opts.fromWhite, (if @opts.fromWhite then 0.1 else 0))
+            rgb = Sai.util.multiplyColor(colors[series], Math.max(@data[series][ridx]?[1] or 0, 0), @opts.fromWhite, (if @opts.fromWhite then 0.2 else 0))
             if @opts.fromWhite # use harmonic mean
                 r += 1 / rgb.r
                 g += 1 / rgb.g
