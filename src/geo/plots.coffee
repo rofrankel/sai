@@ -75,18 +75,24 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
     
     getRegionColor: (colors, ridx, mainSeries) ->
         r = g = b = 0
+        inv_r = inv_g = inv_b = 0
         numSeries = 0
         for series of @data
             numSeries++
             rgb = Sai.util.multiplyColor(colors[series], Math.max(@data[series][ridx]?[1] or 0, 0), @opts.fromWhite, (if @opts.fromWhite then 0.1 else 0))
-            r += rgb.r
-            g += rgb.g
-            b += rgb.b
+            if @opts.fromWhite # use harmonic mean
+                r += 1 / rgb.r
+                g += 1 / rgb.g
+                b += 1 / rgb.b
+            else
+                r += rgb.r
+                g += rgb.g
+                b += rgb.b
         
         if @opts.fromWhite
-            r /= numSeries
-            g /= numSeries
-            b /= numSeries
+            r = numSeries / r
+            g = numSeries / g
+            b = numSeries / b
         
         return "rgb(#{r}, #{g}, #{b})"
     
