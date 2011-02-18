@@ -87,6 +87,15 @@ class Sai.ScatterChart extends Sai.Chart
             histogramColors[@opts.mappings.stroke_opacity] = {__LOW__: so_colors[0], __HIGH__: so_colors[1]}
         ###
         
+        if radii instanceof Array and @opts.mappings.radius?
+            [low, high] = @ndata[@opts.mappings.radius]['__YVALS__']
+            radiusLegendWidth = 100
+            radiusLegendHeight = 55
+            @radiusLegend = @r.sai.prim.radiusLegendCont(@x + (@w - radiusLegendWidth) / 2, @y - @padding.bottom, radiusLegendWidth, radiusLegendHeight, @opts.mappings.radius, low, high);
+            @padding.bottom += radiusLegendHeight + 5
+        else if radii instanceof Object and @opts.mappings.radius?
+            0 # alert 'discrete size'
+        
         if histogramSeries.length
             @drawHistogramLegend(histogramSeries, histogramColors)
         
@@ -106,6 +115,7 @@ class Sai.ScatterChart extends Sai.Chart
             @info,
             @footnote,
             @histogramLegend,
+            @radiusLegend,
             @legend
         )
         
@@ -115,3 +125,8 @@ class Sai.ScatterChart extends Sai.Chart
         })
         
         return this
+
+    setPlotCoords: () ->
+        super
+        rlbb = @radiusLegend?.getBBox()
+        @radiusLegend?.translate(@px + @pw/2 - (rlbb.x + rlbb.width/2), 0)

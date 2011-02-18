@@ -22,9 +22,10 @@
     <div id="c3" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c4" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c5" style="width: 400px; height: 400px; float: left;"></div>
-    <div id="c8" style="width: 400px; height: 400px; float: left;"></div>
     <div id="c6" style="width: 800px; height: 650px; float: left;"></div>
     <div id="c7" style="width: 400px; height: 400px; float: left;"></div>
+    <div id="c8" style="width: 400px; height: 400px; float: left;"></div>
+    <div id="c9" style="width: 600px; height: 600px; float: left;"></div>
     <script type="text/javascript">
         create_charts = function() {
             var orange = '#AA5128';
@@ -290,18 +291,43 @@
             };
             
             var gini_data = {
-                'Developing Markets': [0.550,0.375,0.368,0.415,0.316,0.481,0.432,0.440,0.321,0.394,0.383,0.312,0.429,0.378,0.310,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000],
-                'Established Markets': [0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.291,0.330,0.258,0.247,0.360,0.269,0.327,0.283,0.343,0.300,0.343,0.360,0.308,0.309,0.258,0.349,0.385,0.258,0.347,0.250,0.337,0.360,0.392,0.249,0.326,0.408,0.352,0.362],
+                'Emerging Markets': [0.550,0.375,0.368,0.415,0.316,0.481,0.432,0.440,0.321,0.394,0.383,0.312,0.429,0.378,0.310,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000],
+                'Developed Markets': [0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.291,0.330,0.258,0.247,0.360,0.269,0.327,0.283,0.343,0.300,0.343,0.360,0.308,0.309,0.258,0.349,0.385,0.258,0.347,0.250,0.337,0.360,0.392,0.249,0.326,0.408,0.352,0.362],
                 'ISO': ['BR','RU','IN','CN','KR','MX','TR','PH','EG','ID','IR','PK','NG','VN','BD','AT','BE','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LU','NL','NO','PL','PT','SK','ES','SE','CH','GB','IL','JP','CA','US','AU','NZ'],
                 '__MAP__': Sai.data.map.world,
                 '__DEFAULT__': 'Developing Markets',
             };
             
+            var gini_data_scatter = {
+                //'ISO': ['BR','RU','IN','CN','KR','MX','TR','PH','EG','ID','IR','PK','NG','VN','BD','AT','BE','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LU','NL','NO','PL','PT','SK','ES','SE','CH','GB','IL','JP','CA','US','AU','NZ'],
+                'Country': ['Brazil','Russia','India','China','South Korea','Mexico','Turkey','Philippines','Egypt','Indonesia','Iran','Pakistan','Nigeria','Vietnam','Bangladesh','Austria','Belgium','Czech Republic','Denmark','Estonia','Finland','France','Germany','Greece','Hungary','Ireland','Italy','Luxembourg','Netherlands','Norway','Poland','Portugal','Slovakia','Spain','Sweden','Switzerland','United Kingdom','Israel','Japan','Canada','United States','Australia','New Zealand'],
+                'GINI Coefficient': [0.550,0.375,0.368,0.415,0.316,0.481,0.432,0.440,0.321,0.394,0.383,0.312,0.429,0.378,0.310,0.291,0.330,0.258,0.247,0.360,0.269,0.327,0.283,0.343,0.300,0.343,0.360,0.308,0.309,0.258,0.349,0.385,0.258,0.347,0.250,0.337,0.360,0.392,0.249,0.326,0.408,0.352,0.362],
+                'Market type': ['Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Emerging','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed','Developed'],
+                //'GDP (millions)': [2023528,1476912,1430020,5745133,986256,1004042,729051,189061,216830,695059,337901,164792,206664,101987,105402,366259,461331,195232,304555,19220,231982,2555439,3305898,305005,132276,204144,2036687,52433,770312,413511,438884,223700,86262,1374779,444585,522435,2258565,201254,5390897,1563664,14624184,1219722,138003],
+                //'Population': [190732694,141914509,1194140000,1342360000,48501000,112322757,73722988,94013200,79801000,237556363,75078000,171850000,158259000,86930000,150058000,8396760,10827519,10515818,5560628,1340127,5379000,65821885,81802000,11306183,10014324,4470700,60545940,502100,16648800,4939000,38092000,10636888,5433385,46152925,9412851,7782900,61792000,7697600,127370000,34356000,312072000,22564000,4400700],
+                'Population (log10)': [8.28,8.15,9.08,9.13,7.69,8.05,7.87,7.97,7.90,8.38,7.88,8.24,8.20,7.94,8.18,6.92,7.03,7.02,6.75,6.13,6.73,7.82,7.91,7.05,7.00,6.65,7.78,5.70,7.22,6.69,7.58,7.03,6.74,7.66,6.97,6.89,7.79,6.89,8.11,7.54,8.49,7.35,6.64],
+                //'GDP': [2023528000000,1476912000000,1430020000000,5745133000000,986256000000,1004042000000,729051000000,189061000000,216830000000,695059000000,337901000000,164792000000,206664000000,101987000000,105402000000,366259000000,461331000000,195232000000,304555000000,19220000000,231982000000,2555439000000,3305898000000,305005000000,132276000000,204144000000,2036687000000,52433000000,770312000000,413511000000,438884000000,223700000000,86262000000,1374779000000,444585000000,522435000000,2258565000000,201254000000,5390897000000,1563664000000,14624184000000,1219722000000,138003000000],
+                //'GDP (log10)': [12.31,12.17,12.16,12.76,11.99,12.00,11.86,11.28,11.34,11.84,11.53,11.22,11.32,11.01,11.02,11.56,11.66,11.29,11.48,10.28,11.37,12.41,12.52,11.48,11.12,11.31,12.31,10.72,11.89,11.62,11.64,11.35,10.94,12.14,11.65,11.72,12.35,11.30,12.73,12.19,13.17,12.09,11.14],
+                'GDP per capita': [10609.24,10407.05,1197.53,4279.87,20334.76,8938.90,9889.06,2011.00,2717.13,2925.87,4500.67,958.93,1305.86,1173.21,702.41,43619.09,42607.27,18565.56,54769.89,14341.92,43127.35,38823.55,40413.41,26976.83,13208.68,45662.65,33638.70,104427.40,46268.32,83723.63,11521.68,21030.59,15876.29,29787.47,47231.70,67126.01,36551.09,26145.03,42324.70,45513.56,46861.57,54056.11,31359.33]
+            };
+            
+            var gini_scatter_mappings = {
+                color: 'Market type',
+                x: 'GINI Coefficient',
+                y: 'GDP per capita',
+                radius: 'Population (log10)',
+            };
+            
+            var gini_scatter_colors = {
+                'Emerging': orange,
+                'Developed': ucla
+            }
+            
             var badSmallData = {MSFT: [1], "GOOG": ["alert('hi')"], "junk": [null], "AAPL": [2]};
             
             
             var linebreaker = {"category": "line", "title": "", "footnote": "SOURCE: Eurostat", "data": {"oct": ["nov", "dec", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep"], "108.41": [108.54000000000001, 108.88, 108.05, 108.39, 109.37, 109.87, 110.01000000000001, 110.02, 109.65000000000001, null, null]}, "height": 350, "DEFAULT": "108.41", "type": "line", "label": "oct", "optional": {"area": true, "line_size": "2", "axis": {"right": [], "left": ["oct", "108.41"]}}, "width": 350, "color": {"oct": "#429380", "108.41": "#A8502C"}};
-            
+            /*
             var r1 = Raphael("c1", 350, 350);
             var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data2, "Month", {bgcolor: tea, interactive: true, groups: {left: ['AAPL', 'GOOG', 'MSFT'], right: ['AMZN']}}).setColors(colors).render();
             
@@ -317,14 +343,17 @@
             var r5 = Raphael("c5", 350, 350);
             var sbarc = new Sai.BarChart(r5, 0, 350, 350, 350, data2, "Month", {simple: 0, bgcolor: tea, interactive: true, stacked: true, title: "stacked bar chart"}).setColors(colors).render(true);
             
-            var r8 = Raphael("c6", 400, 350);
-            var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, irisData, "", {simple: 0, mappings: scatterMappings, bgcolor: tea, title: "Fisher's Iris Data", colors: irisColors, stroke_colors: [orange, ucla], interactive: true})).render();
+            var r6 = Raphael("c6", 800, 650);
+            var worldchart = new Sai.ChromaticGeoChart(r6, 0, 650, 800, 650, gini_data, "ISO", {simple: 0, bgcolor: tea, title: "GINI Coefficients", interactive: true, ignoreZeroes: true, fromWhite: true}).setColors({'Developed Markets': ucla, 'Emerging Markets': orange}).render();
             
-            var r6 = Raphael("c7", 800, 650);
-            var worldchart = new Sai.ChromaticGeoChart(r6, 0, 650, 800, 650, gini_data, "ISO", {simple: 0, bgcolor: tea, title: "GINI Coefficients - Developing markets", interactive: true, ignoreZeroes: true, fromWhite: true}).setColors({'Established Markets': ucla, 'Developing Markets': orange}).render();
-            
-            var r7 = Raphael("c8", 400, 350);
+            var r7 = Raphael("c7", 400, 350);
             var uschromaticchart = new Sai.ChromaticGeoChart(r7, 0, 350, 400, 350, US2008data, "State", {simple: 0, bgcolor: tea, title: "2008 Election", interactive: true, groupedNormalization: true}).setColors(US2008ChromaticColors).render();
+            
+            var r8 = Raphael("c8", 400, 350);
+            var sp = (new Sai.ScatterChart(r8, 0, 350, 400, 350, irisData, "", {simple: 0, mappings: scatterMappings, bgcolor: tea, title: "Fisher's Iris Data", colors: irisColors, stroke_colors: [orange, ucla], interactive: true})).render();
+            */
+            var r9 = Raphael("c9", 600, 600);
+            var sp = (new Sai.ScatterChart(r9, 0, 600, 600, 600, gini_data_scatter, "", {mappings: gini_scatter_mappings, bgcolor: tea, title: "GINI, GDP per capita, Population in EMs and DMs", colors: gini_scatter_colors, interactive: true})).render();
             
       }
     </script>
