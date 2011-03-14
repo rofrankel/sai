@@ -1,0 +1,8 @@
+body {
+    font-family: helvetica, vedrana, sans-serif;
+}
+
+div#main {
+    width: 640px;
+    margin: auto;
+}

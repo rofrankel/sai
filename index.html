@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/jquery.snippet.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/sai.css" />
+        
+        <script type="text/javascript" src="lib/jquery-1.5.min.js"></script>
+        <script type="text/javascript" src="lib/raphael-min.js"></script>
+        <script type="text/javascript" src="lib/jquery.snippet.min.js"></script>        
+        
+        <script type="text/javascript" src="lib/sai-min.js"></script>
+        <script type="text/javascript" src="data/us.svg.json"></script>
+        <script type="text/javascript" src="data/europe.svg.json"></script>
+        <script type="text/javascript" src="data/world.svg.json"></script>
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("pre.code").snippet("javascript",{style:"acid"});
+            });
+        </script>
+    </head>
+    
+    <body>
+        <div id="main">
+            
+            <h1>Sai.JS - a JavaScript charting library</h1>
+            
+            <div id="desc">
+                <p>
+                    Sai is a vector charting library written in CoffeeScript and
+                    using Raphael.JS for cross-browser rendering (VML in IE<8, SVG
+                    elsewhere).  It is current not open source, though this may
+                    change in the future.
+                </p>
+                <p>
+                    Following are some examples of the kinds of charts Sai can
+                    be used to create.
+                </p>
+            </div>
+            <div id="gallery">
+                
+            </div>
+            <h2>Line</h2>
+            <p>
+                The basic type of chart supported by Sai is the line chart.
+            </p>
+<div id="line_chart_1" />
+<script type="text/javascript">
+    var r1 = Raphael("line_chart_1", 350, 350);
+    var options = {
+        bgcolor: '#EEE',
+        interactive: true,
+        groups: {
+            left: ['Michael', 'Eliezer', 'Jasen'],
+            right: ['Sean']
+        }
+    };
+    var colors = {
+        Michael: 'grey',
+        Eliezer: 'blue',
+        Jasen: 'green',
+        Sean: 'yellow',
+        __RIGHTAXIS__: 'red'
+    };
+    var data = {
+        Michael: [5, 2, 5, 1, 2, 6, 2],
+        Eliezer: [7, 3, 6, 12, 9, 4, 3],
+        Jasen: [3, 2, 5, 2, 5, 2, 1],
+        Sean: [1, 1, 4, 5, 6, 5, 2],
+        Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
+    };
+    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", options);
+    chart.setColors(colors)
+    chart.render();
+</script>
+<pre class="code">
+&lt;!-- create a holder div for the Raphael canvas--&gt;
+&lt;div id="line_chart_1" /&gt;
+&lt;script type="text/javascript"&gt;
+    var r1 = Raphael("line_chart_1", 350, 350);
+    var options = {
+        bgcolor: '#EEE',
+        interactive: true,
+        groups: {
+            left: ['Michael', 'Eliezer', 'Jasen'],
+            right: ['Sean']
+        }
+    };
+    var colors = {
+        Michael: 'grey',
+        Eliezer: 'blue',
+        Jasen: 'green',
+        Sean: 'yellow',
+        __RIGHTAXIS__: 'red'
+    };
+    var data = {
+        Michael: [5, 2, 5, 1, 2, 6, 2],
+        Eliezer: [7, 3, 6, 12, 9, 4, 3],
+        Jasen: [3, 2, 5, 2, 5, 2, 1],
+        Sean: [1, 1, 4, 5, 6, 5, 2],
+        Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
+    };
+    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", options);
+    chart.setColors(colors)
+    chart.render();
+&lt;/script&gt;</pre>
+        </div>
+    </body>
+</html>
