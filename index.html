@@ -46,63 +46,48 @@
             </p>
 <div id="line_chart_1" />
 <script type="text/javascript">
-    var r1 = Raphael("line_chart_1", 350, 350);
-    var options = {
-        bgcolor: '#EEE',
-        interactive: true,
-        groups: {
-            left: ['Michael', 'Eliezer', 'Jasen'],
-            right: ['Sean']
-        }
-    };
+    var r1 = Raphael("line_chart_1", 350, 350); // line_chart_1 is an empty div
     var colors = {
-        Michael: 'grey',
-        Eliezer: 'blue',
-        Jasen: 'green',
-        Sean: 'yellow',
-        __RIGHTAXIS__: 'red'
+        Alice: 'red',
+        Bob: 'blue',
+        Carol: '#0c0',
+        Dave: '#999',
     };
     var data = {
-        Michael: [5, 2, 5, 1, 2, 6, 2],
-        Eliezer: [7, 3, 6, 12, 9, 4, 3],
-        Jasen: [3, 2, 5, 2, 5, 2, 1],
-        Sean: [1, 1, 4, 5, 6, 5, 2],
+        Alice: [5, 2, 5, 1, 2, 6, 2, 4],
+        Bob: [7, 3, 6, 12, 9, 4, 3, 1],
+        Carol: [3, 2, 5, 2, 5, 2, 1, 3],
+        Dave: [1, 1, 4, 5, 6, 5, 2, 3],
         Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
     };
-    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", options);
-    chart.setColors(colors)
+    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month");
+    chart.setColors(colors);
     chart.render();
+    // instaed of the previous three lines, the following would also work:
+    // var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month").setColors(colors).render();
 </script>
 <pre class="code">
-&lt;!-- create a holder div for the Raphael canvas--&gt;
 &lt;div id="line_chart_1" /&gt;
 &lt;script type="text/javascript"&gt;
     var r1 = Raphael("line_chart_1", 350, 350);
-    var options = {
-        bgcolor: '#EEE',
-        interactive: true,
-        groups: {
-            left: ['Michael', 'Eliezer', 'Jasen'],
-            right: ['Sean']
-        }
-    };
     var colors = {
-        Michael: 'grey',
-        Eliezer: 'blue',
-        Jasen: 'green',
-        Sean: 'yellow',
-        __RIGHTAXIS__: 'red'
+        Alice: 'grey',
+        Bob: 'blue',
+        Carol: '#AF280D',
+        Dave: '#c00',
     };
     var data = {
-        Michael: [5, 2, 5, 1, 2, 6, 2],
-        Eliezer: [7, 3, 6, 12, 9, 4, 3],
-        Jasen: [3, 2, 5, 2, 5, 2, 1],
-        Sean: [1, 1, 4, 5, 6, 5, 2],
+        Alice: [5, 2, 5, 1, 2, 6, 2],
+        Bob: [7, 3, 6, 12, 9, 4, 3],
+        Carol: [3, 2, 5, 2, 5, 2, 1],
+        Dave: [1, 1, 4, 5, 6, 5, 2],
         Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
     };
-    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", options);
-    chart.setColors(colors)
+    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month");
+    chart.setColors(colors);
     chart.render();
+    // instaed of the previous three lines, the following would also work:
+    // var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month").setColors(colors).render();
 &lt;/script&gt;</pre>
         </div>
     </body>
