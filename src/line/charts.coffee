@@ -76,40 +76,43 @@ class Sai.LineChart extends Sai.Chart
         
         @dots = @r.set()
         
-        for series of @ndata['all'] when series isnt '__YVALS__'
-            @dots.push(@r.circle(0, 0, 4).attr({'fill': @colors?[series] ? 'black'}).hide())
+        plot_area = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines)
         
-        plot = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines).mousemove(
-            moveDots = (event) =>
+        if @opts.interactive
+            for series of @ndata['all'] when series isnt '__YVALS__'
+                @dots.push(@r.circle(0, 0, 4).attr({'fill': @colors?[series] ? 'black'}).hide())
                 
-                idx = @getIndex(event)
-                
-                info = {}
-                if @data[@__LABELS__]?.length > idx >= 0
-                    info[@__LABELS__] = @data[@__LABELS__][idx]
+            plot_area.mousemove(
+                moveDots = (event) =>
                     
-                    for series of @ndata['all']
-                        if @data[series]? then info[series] = @data[series][idx]
-                
-                @drawInfo(info)
-                
-                i = 0
-                for series of @ndata['all'] when series isnt '__YVALS__'
-                    for plot in @plots when series of plot.dndata
-                        pos = plot.dndata[series][idx]
-                        if pos?
-                            @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront()
-                        else
-                            @dots[i].hide()
-                        i++
-                
-        ).mouseout(
-            (event) =>
-                @drawInfo({}, true)
-                @dots.hide()
-        )
+                    idx = @getIndex(event)
+                    
+                    info = {}
+                    if @data[@__LABELS__]?.length > idx >= 0
+                        info[@__LABELS__] = @data[@__LABELS__][idx]
+                        
+                        for series of @ndata['all']
+                            if @data[series]? then info[series] = @data[series][idx]
+                    
+                    @drawInfo(info)
+                    
+                    i = 0
+                    for series of @ndata['all'] when series isnt '__YVALS__'
+                        for plot in @plots when series of plot.dndata
+                            pos = plot.dndata[series][idx]
+                            if pos?
+                                @dots[i].attr({cx: pos[0], cy: pos[1]}).show().toFront()
+                            else
+                                @dots[i].hide()
+                            i++
+                    
+            ).mouseout(
+                (event) =>
+                    @drawInfo({}, true)
+                    @dots.hide()
+            )
         
-        if @opts.href then plot.attr({
+        if @opts.href then plot_area.attr({
             href: @opts.href
             target: '_blank'
         })
