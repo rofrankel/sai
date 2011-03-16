@@ -5,15 +5,6 @@ class Sai.Chart
         @opts.bgcolor ?= 'white'
         
         @setData(data)
-        
-        init_padding = if @opts.simple then 0 else 5
-        
-        @padding = {
-            left: init_padding
-            right: init_padding
-            top: init_padding
-            bottom: init_padding
-        }
     
     groupsToNullPad: () ->
         return []
@@ -304,7 +295,12 @@ class Sai.Chart
         
         @setPlotCoords()
         
-        return @r.set().push(@haxis).push(@vaxis)
+        @axes = @r.set().push(@haxis).push(@vaxis)
+        
+        @everything ?= @r.set()
+        @everything.push(@axes)
+        
+        return @axes
 
     setPlotCoords: () ->
         @px = @x + @padding.left
@@ -360,6 +356,9 @@ class Sai.Chart
         })
         .scale(scale[0], scale[1], x, y)
         .show()
+        
+        @everything ?= @r.set()
+        @everything.push(@logo)
     
     drawFootnote: (text) ->
         text ?= @opts.footnote ? ''
@@ -370,13 +369,30 @@ class Sai.Chart
         @footnote = @r.sai.prim.wrappedText(@x + @padding.left, @y - @padding.bottom, @w, text, ' ')
         h = @footnote.getBBox().height
         @padding.bottom += h + 10
-        @footnote.translate(0,    -h)
+        @footnote.translate(0, -h)
+        
+        @everything ?= @r.set()
+        @everything.push(@footnote)
     
     render: () ->
+        @everything?.remove()
+        
+        init_padding = if @opts.simple then 0 else 5
+        @padding = {
+            left: init_padding
+            right: init_padding
+            top: init_padding
+            bottom: init_padding
+        }
+        
         if @opts.simple and @renderPlots?
             @renderPlots()
         else
             @renderFull()
+        
+        if @plots
+            @everything ?= @r.set()
+            @everything.push(plot.set) for plot in @plots
         
         return this
     
@@ -429,6 +445,9 @@ class Sai.Chart
         guideline.render({'guideline': '#ccc'})
         
         @guidelines.push(guideline.set)
+        
+        @everything ?= @r.set()
+        @everything.push(@guidelines)
     
     drawLegend: (colors) ->
         colors ?= @colors
@@ -445,12 +464,18 @@ class Sai.Chart
             bbox = @legend.getBBox()
             if @legend.length > 0 then @padding.bottom += bbox.height + 15
             @legend.translate((@w - bbox.width) / 2, 0)
+        
+        @everything ?= @r.set()
+        @everything.push(@legend)
     
     drawTitle: () ->
         if @opts.title?
             @title = @r.text(@x + (@w / 2), @y - @h, @opts.title).attr({'font-size': 20})
             @title.translate(0, @title.getBBox().height / 2)
             @padding.top += @title.getBBox().height + 5
+        
+        @everything ?= @r.set()
+        @everything.push(@title)
     
     # this reserves room for the info thing
     setupInfoSpace: () ->

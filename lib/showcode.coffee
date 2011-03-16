@@ -1,12 +1,3 @@
-options = [
-    {
-        name: '',
-        values: [],
-        description: '',
-        supported_by: [],
-    }
-]
-
 $(document).ready( ->
     $("script.show").each((i, e) ->
         js = $(e).html()

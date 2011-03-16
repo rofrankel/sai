@@ -69,14 +69,14 @@ class Sai.BarChart extends Sai.Chart
         
         @renderPlots()
         
-        everything = @r.set().push(
+        plot_area = @r.set().push(
             @plots,
             @bg,
             @logo,
             @guidelines
         )
         
-        if @opts.href then everything.attr({
+        if @opts.href then plot_area.attr({
             href: @opts.href
             target: '_blank'
         })

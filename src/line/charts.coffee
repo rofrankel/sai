@@ -63,12 +63,12 @@ class Sai.LineChart extends Sai.Chart
             )
     
     renderFull: () ->
-        @drawTitle()
+        _title = @drawTitle()
         @setupInfoSpace()
-        @drawFootnote()
-        @drawLegend()
+        _footnote = @drawFootnote()
+        _legend = @drawLegend()
         saxis = 'right' of @ndata
-        if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
+        _axes = if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
         
         @renderPlots()
         @plotSets = @r.set()
@@ -79,7 +79,7 @@ class Sai.LineChart extends Sai.Chart
         for series of @ndata['all'] when series isnt '__YVALS__'
             @dots.push(@r.circle(0, 0, 4).attr({'fill': @colors?[series] ? 'black'}).hide())
         
-        everything = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines).mousemove(
+        plot = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines).mousemove(
             moveDots = (event) =>
                 
                 idx = @getIndex(event)
@@ -109,7 +109,7 @@ class Sai.LineChart extends Sai.Chart
                 @dots.hide()
         )
         
-        if @opts.href then everything.attr({
+        if @opts.href then plot.attr({
             href: @opts.href
             target: '_blank'
         })

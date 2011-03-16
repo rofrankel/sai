@@ -56,7 +56,7 @@
                             <li>Global, US, and Europe map data provided
                         </ul>
                     </ul>
-                    <li>Everything is an option <em>(**not yet**)</em>
+                    <li>High optionality/configurability
                     <li>Simple usage - just input data and options
                     <li>For developers: Modular and extensible design; easy to add new chart types
                 </ul>
@@ -95,7 +95,7 @@
                 var options = {
                     title: "A simple line chart",
                 }
-                var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", options);
+                var chart = new Sai.BarChart(r1, 0, 350, 350, 350, data, "Month", options);
                 chart.setColors(colors);
                 chart.render();
                 // instead of the previous three lines, the following would also work:
