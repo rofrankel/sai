@@ -7,17 +7,14 @@
         <script type="text/javascript" src="lib/jquery-1.5.min.js"></script>
         <script type="text/javascript" src="lib/raphael-min.js"></script>
         <script type="text/javascript" src="lib/jquery.snippet.min.js"></script>        
+        <script type="text/javascript" src="lib/coffee-script.js"></script>        
         
         <script type="text/javascript" src="lib/sai-min.js"></script>
         <script type="text/javascript" src="data/us.svg.json"></script>
         <script type="text/javascript" src="data/europe.svg.json"></script>
         <script type="text/javascript" src="data/world.svg.json"></script>
         
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("pre.code").snippet("javascript",{style:"acid"});
-            });
-        </script>
+        <script type="text/coffeescript" src="lib/showcode.coffee"></script>
     </head>
     
     <body>
@@ -29,66 +26,81 @@
                 <p>
                     Sai is a vector charting library written in CoffeeScript and
                     using Raphael.JS for cross-browser rendering (VML in IE<8, SVG
-                    elsewhere).  It is current not open source, though this may
-                    change in the future.
+                    elsewhere).
                 </p>
+                <h2>Features</h2>
+                <ul class="feature-list">
+                    <li>Several types of charts
+                    <ul>
+                        <li>Line charts
+                        <ul>
+                            <li>Stacked or regular</li>
+                            <li>Drawn as area or line
+                            <li>Support for dual axes
+                        </ul>
+                        <li>Bar (well, column) charts
+                        <ul>
+                            <li>Grouped or stacked bars
+                        </ul>
+                        <li>Stock (candlestick) charts
+                        <ul>
+                            <li>Support for volume bars
+                            <li>Extra data shown as lines; useful for e.g. moving averages
+                        </ul>
+                        <li>Scatter charts
+                        <ul>
+                            <li>Supports symbolic and continuous variables in several dimensions
+                        </ul>
+                        <li>Geographical charts
+                        <ul>
+                            <li>Global, US, and Europe map data provided
+                        </ul>
+                    </ul>
+                    <li>Everything is an option <em>(**not yet**)</em>
+                    <li>Simple usage - just input data and options
+                    <li>For developers: Modular and extensible design; easy to add new chart types
+                </ul>
+                <h2>Examples</h2>
                 <p>
-                    Following are some examples of the kinds of charts Sai can
-                    be used to create.
+                    Below are some examples of the kinds of charts Sai can
+                    be used to create.  But first, let's set up some simple
+                    data which will be shared by multiple charts:
+                </p>
+                <script type="text/javascript" class="show">
+                    var colors = {
+                        Alice: 'red',
+                        Bob: 'blue',
+                        Carol: '#0c0',
+                        Dave: '#999'
+                    };
+                    var data = {
+                        Alice: [5, 2, 5, 1, 2, 6, 2, 4],
+                        Bob: [7, 3, 6, 12, 9, 4, 3, 1],
+                        Carol: [3, 2, 5, 2, 5, 2, 1, 3],
+                        Dave: [1, 1, 4, 5, 6, 5, 2, 3],
+                        Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
+                    };
+                </script>
+                <p>
+                    There are two simple things worth noting here.  First, <code>colors</code> and <code>data</code> use the same keys.  Second, the data is stored as several parallel lists.
                 </p>
             </div>
-            <div id="gallery">
-                
-            </div>
-            <h2>Line</h2>
+            <h3>Line</h3>
             <p>
-                The basic type of chart supported by Sai is the line chart.
+                One of the simpler types of chart supported by Sai is the line chart.
             </p>
-<div id="line_chart_1" />
-<script type="text/javascript">
-    var r1 = Raphael("line_chart_1", 350, 350); // line_chart_1 is an empty div
-    var colors = {
-        Alice: 'red',
-        Bob: 'blue',
-        Carol: '#0c0',
-        Dave: '#999',
-    };
-    var data = {
-        Alice: [5, 2, 5, 1, 2, 6, 2, 4],
-        Bob: [7, 3, 6, 12, 9, 4, 3, 1],
-        Carol: [3, 2, 5, 2, 5, 2, 1, 3],
-        Dave: [1, 1, 4, 5, 6, 5, 2, 3],
-        Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
-    };
-    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month");
-    chart.setColors(colors);
-    chart.render();
-    // instaed of the previous three lines, the following would also work:
-    // var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month").setColors(colors).render();
-</script>
-<pre class="code">
-&lt;div id="line_chart_1" /&gt;
-&lt;script type="text/javascript"&gt;
-    var r1 = Raphael("line_chart_1", 350, 350);
-    var colors = {
-        Alice: 'grey',
-        Bob: 'blue',
-        Carol: '#AF280D',
-        Dave: '#c00',
-    };
-    var data = {
-        Alice: [5, 2, 5, 1, 2, 6, 2],
-        Bob: [7, 3, 6, 12, 9, 4, 3],
-        Carol: [3, 2, 5, 2, 5, 2, 1],
-        Dave: [1, 1, 4, 5, 6, 5, 2],
-        Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
-    };
-    var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month");
-    chart.setColors(colors);
-    chart.render();
-    // instaed of the previous three lines, the following would also work:
-    // var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month").setColors(colors).render();
-&lt;/script&gt;</pre>
+            <div id="line_chart_holder" class="chart-holder"></div>
+            <script type="text/javascript" class="show">
+                var r1 = Raphael("line_chart_holder", 350, 350); // line_chart_holder is an empty div
+                var options = {
+                    title: "A simple line chart",
+                }
+                var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month", options);
+                chart.setColors(colors);
+                chart.render();
+                // instead of the previous three lines, the following would also work:
+                // var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month").setColors(colors).render();
+            </script>
         </div>
     </body>
 </html>

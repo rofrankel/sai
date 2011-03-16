@@ -1,8 +1,41 @@
 body {
     font-family: helvetica, vedrana, sans-serif;
+    margin: 0px;
 }
 
 div#main {
-    width: 640px;
+    width: 720px;
     margin: auto;
+    background-color: #f6f6f6;
+    padding: 10px 40px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+}
+
+div .chart-holder {
+    text-align: center;
+}
+
+ul.feature-list li {
+    padding-bottom: 25px;   
+}
+
+ul.feature-list li ul li {
+    padding-bottom: 15px;
+}
+
+ul.feature-list li ul li ul li {
+    padding-bottom: 0px;
+}
+
+h1 {
+    text-align: center;
+}
+
+pre.code {
+    width: 90%;
+    margin-left: 5%;
+    margin-bottom: 40px;
+    margin-top: 40px;
 }
