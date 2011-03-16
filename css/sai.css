@@ -3,6 +3,14 @@ body {
     margin: 0px;
 }
 
+a {
+    color: #666;
+}
+
+a:visited {
+    color: #ccc;
+}
+
 div#main {
     width: 720px;
     margin: auto;

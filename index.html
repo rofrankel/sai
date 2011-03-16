@@ -15,6 +15,16 @@
         <script type="text/javascript" src="data/world.svg.json"></script>
         
         <script type="text/coffeescript" src="lib/showcode.coffee"></script>
+        
+        <script type="text/coffeescript">
+            $(document).ready( ->
+                $('a[href="#"]').each((i, e) ->
+                    $(e).click((e) ->
+                        e.preventDefault()
+                    )
+                )
+            )
+        </script>
     </head>
     
     <body>
@@ -24,8 +34,8 @@
             
             <div id="desc">
                 <p>
-                    Sai is a vector charting library written in CoffeeScript and
-                    using Raphael.JS for cross-browser rendering (VML in IE<8, SVG
+                    Sai is a charting library written in <a href="http://coffeescript.org">CoffeeScript</a> and
+                    using <a href="http://raphaeljs.com">Raphael.JS</a> for cross-browser rendering (VML in IE<8, SVG
                     elsewhere).
                 </p>
                 <h2>Features</h2>
@@ -68,10 +78,10 @@
                 </p>
                 <script type="text/javascript" class="show">
                     var colors = {
-                        Alice: 'red',
-                        Bob: 'blue',
-                        Carol: '#0c0',
-                        Dave: '#999'
+                        Alice: '#7C9AFC',
+                        Bob: '#C46A6A',
+                        Carol: '#444E73',
+                        Dave: '#43783A'
                     };
                     var data = {
                         Alice: [5, 2, 5, 1, 2, 6, 2, 4],
@@ -82,25 +92,54 @@
                     };
                 </script>
                 <p>
-                    There are two simple things worth noting here.  First, <code>colors</code> and <code>data</code> use the same keys.  Second, the data is stored as several parallel lists.
+                    There are two simple things worth noting in this code.  First, <code>colors</code> and <code>data</code> use the same keys.  Second, the data is stored as several parallel lists.  Both of these things are requirements of Sai's API.
                 </p>
             </div>
             <h3>Line</h3>
             <p>
-                One of the simpler types of chart supported by Sai is the line chart.
+                One of the most common types of chart supported by Sai is the line chart.  
             </p>
             <div id="line_chart_holder" class="chart-holder"></div>
             <script type="text/javascript" class="show">
-                var r1 = Raphael("line_chart_holder", 350, 350); // line_chart_holder is an empty div
-                var options = {
-                    title: "A simple line chart",
-                }
-                var chart = new Sai.BarChart(r1, 0, 350, 350, 350, data, "Month", options);
-                chart.setColors(colors);
-                chart.render();
-                // instead of the previous three lines, the following would also work:
-                // var chart = new Sai.LineChart(r1, 0, 350, 350, 350, data, "Month").setColors(colors).render();
+                // line_chart_holder is the id of an empty div
+                var r1 = Raphael("line_chart_holder", 400, 400);
+                var line_chart = new Sai.LineChart(r1, 0, 400, 400, 400, data, "Month", {colors: colors});
+                line_chart.render();
             </script>
+            <p>
+                There are a few important things to notice in this code.
+                First, you have to create a Raphael canvas* separately from creating a Sai chart.  This allows you to have one canvas with multiple charts if you so choose.
+                Second, any Sai chart constructor takes a few required arguments.  They are, in order:  Raphael canvas object, x, y, width, height, data, name of x-axis data series.
+                Third, the origin of the chart is the bottom left - so the value you pass for <code>y</code> should not be 0, or the chart will be drawn above the top of the canvas!
+            </p>
+            <p>
+                Some of the features of line charts not displayed here include dual y-axes, user interaction, stacked data, and area plots (as opposed to line plots).
+            </p>
+            <p>
+                * I'm using the term 'canvas' with reference to Raphael because that is the terminology Raphael uses in its own documentation.  Of course, Raphael uses SVG/VML, not HTML Canvas.
+            </p>
+            <h3>Bar</h3>
+            <p>
+                Sai also supports bar (well, column) charts.  This time, let's explore some more options.  First, let's set a title and background color for the chart.  Let's also enable interaction (try mousing over the groups of bars below).
+            </p>
+            <div id="bar_chart_holder" class="chart-holder"></div>
+            <script type="text/javascript" class="show">
+                var r2 = Raphael("bar_chart_holder", 400, 400);
+                var options = {
+                    title: "A simple bar chart",
+                    bgcolor: '#eef',
+                    interactive: 'true',
+                    colors: colors
+                }
+                var bar_chart = new Sai.BarChart(r2, 0, 400, 400, 400, data, "Month", options).render();
+            </script>
+            <p>
+                Note that the call to <code>render()</code> is chained to the chart constructor in this example.  Sai supports jQuery-esque method chaining.
+            </p>
+            <p>
+                You might be wondering why there's a separate method for rendering at all.  The answer is that charts can be rerendered after certain things are updated.  This feature is not currently as robust (nor as efficient) as it is planned to be,
+                but you can at least update colors and redraw the chart by calling render again.  Click <a href="#" onclick="bar_chart.setColor('Alice', 'red').render();">here</a> to change the color of 'Alice' in the bar chart above.
+            </p>
         </div>
     </body>
 </html>
