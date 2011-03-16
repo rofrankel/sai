@@ -3,7 +3,7 @@ class Sai.Chart
     
     constructor: (@r, @x, @y, @w, @h, data, @__LABELS__, @opts={}) ->
         @opts.bgcolor ?= 'white'
-        
+        @colors = @opts.colors
         @setData(data)
     
     groupsToNullPad: () ->

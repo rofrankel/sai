@@ -15,7 +15,7 @@ class Sai.ScatterChart extends Sai.Chart
         
         @setPlotCoords() unless @px?
         
-        colors = @opts.colors ? @colors ? ['black', 'white']
+        colors = @colors ? ['black', 'white']
         stroke_opacity = @opts.stroke_opacity ? [0, 1]
         stroke_colors = @opts.stroke_colors ? ['black', 'black']
         radii = @opts.radius ? [4, 12]
