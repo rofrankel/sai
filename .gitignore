@@ -1,5 +1,5 @@
 *.kpf
 *.txt
 *~
-js
+/js
 *.bak

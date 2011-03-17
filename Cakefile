@@ -5,7 +5,6 @@ coffee = require 'coffee-script'
 
 sourceDir = 'src'
 targetDir = 'js'
-libDir = 'lib'
 mainFile = 'sai.coffee'
 
 VERBOSE = true
@@ -33,7 +32,7 @@ gclosure = (dirs) ->
                     args.push filename
         
         args.push("--js_output_file")
-        args.push(path.join(libDir, "sai-min.js"))
+        args.push("sai-min.js")
         #args.push("--compilation_level")
         #args.push("ADVANCED_OPTIMIZATIONS")
         #args.push("--externs")
@@ -49,7 +48,7 @@ gclosure = (dirs) ->
                     inform "Google Closure finished with code=#{code} and signal=#{signal}"
                 else
                     try
-                        inform "built minified JS, size is " + fs.statSync('lib/sai-min.js').size
+                        inform "built minified JS, size is " + fs.statSync('sai-min.js').size
                     catch err
                         puts "something went wrong: #{err}"
         )
