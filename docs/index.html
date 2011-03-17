@@ -72,9 +72,15 @@
                 </ul>
                 <h2>Examples</h2>
                 <p>
-                    Below are some examples of the kinds of charts Sai can
-                    be used to create.  But first, let's set up some simple
-                    data which will be shared by multiple charts:
+                    See the <a href="gallery.html">gallery</a> for examples.
+                </p>
+                <h2>Documentation</h2>
+                <p>
+                    What follows is an introduction to using Sai. (If this
+                    narrative approach to documentation is really annoying, <a
+                    href="mailto:richard_pub@frankel.tv&subject='The Sai docs
+                    are really annoying'">let me know</a>.) First, let's set up
+                    some simple data which will be shared by multiple charts:
                 </p>
                 <script type="text/javascript" class="show">
                     var colors = {
@@ -92,7 +98,10 @@
                     };
                 </script>
                 <p>
-                    There are two simple things worth noting in this code.  First, <code>colors</code> and <code>data</code> use the same keys.  Second, the data is stored as several parallel lists.  Both of these things are requirements of Sai's API.
+                    There are two simple things worth noting in this code.
+                    First, <code>colors</code> and <code>data</code> use the
+                    same keys. Second, the data is stored as several parallel
+                    lists. Both of these things are requirements of Sai's API.
                 </p>
             </div>
             <h3>Line</h3>
@@ -107,20 +116,38 @@
                 line_chart.render();
             </script>
             <p>
-                There are a few important things to notice in this code.
-                First, you have to create a Raphael canvas* separately from creating a Sai chart.  This allows you to have one canvas with multiple charts if you so choose.
-                Second, any Sai chart constructor takes a few required arguments.  They are, in order:  Raphael canvas object, x, y, width, height, data, name of x-axis data series.
-                Third, the origin of the chart is the bottom left - so the value you pass for <code>y</code> should not be 0, or the chart will be drawn above the top of the canvas!
+                There are a few important things to notice in this code. First,
+                including Sai creates a single global object called
+                <code>Sai</code>; all chart constructors are attached to this
+                object. Second, you have to create a Raphael canvas* separately
+                from creating a chart; Sai does not do it for you. This allows
+                you to have one canvas with multiple charts if you so choose.
+                Third, any Sai chart constructor takes a few required arguments.
+                They are, in order: Raphael canvas object, x, y, width, height,
+                data, name of x-axis data series. Fourth, the origin of the
+                chart is the bottom left - so the value you pass for
+                <code>y</code> should not be 0, or the chart will be drawn above
+                the top of the canvas! Colors are passed in the optional options
+                argument; while you'll probably always want to specify some
+                colors, a chart can be drawn without them, unlike the other
+                arguments shown here.
             </p>
             <p>
-                Some of the features of line charts not displayed here include dual y-axes, user interaction, stacked data, and area plots (as opposed to line plots).
+                Some of the features of line charts not displayed here include
+                dual y-axes, user interaction, stacked data, and area plots (as
+                opposed to line plots).
             </p>
             <p>
-                * I'm using the term 'canvas' with reference to Raphael because that is the terminology Raphael uses in its own documentation.  Of course, Raphael uses SVG/VML, not HTML Canvas.
+                * I'm using the term 'canvas' with reference to Raphael because
+                  that is the terminology Raphael uses in its own documentation.
+                  Of course, Raphael uses SVG/VML, not HTML Canvas.
             </p>
             <h3>Bar</h3>
             <p>
-                Sai also supports bar (well, column) charts.  This time, let's explore some more options.  First, let's set a title and background color for the chart.  Let's also enable interaction (try mousing over the groups of bars below).
+                Sai also supports bar (well, column) charts. This time, let's
+                explore some more options. First, let's set a title and
+                background color for the chart. Let's also enable interaction
+                (try mousing over the groups of bars below).
             </p>
             <div id="bar_chart_holder" class="chart-holder"></div>
             <script type="text/javascript" class="show">
@@ -134,11 +161,29 @@
                 var bar_chart = new Sai.BarChart(r2, 0, 400, 400, 400, data, "Month", options).render();
             </script>
             <p>
-                Note that the call to <code>render()</code> is chained to the chart constructor in this example.  Sai supports jQuery-esque method chaining.
+                Note that the call to <code>render()</code> is chained to the
+                chart constructor in this example. For what it's worth (which is
+                quite possibly not very much), Sai supports jQuery-esque method
+                chaining.
             </p>
             <p>
-                You might be wondering why there's a separate method for rendering at all.  The answer is that charts can be rerendered after certain things are updated.  This feature is not currently as robust (nor as efficient) as it is planned to be,
-                but you can at least update colors and redraw the chart by calling render again.  Click <a href="#" onclick="bar_chart.setColor('Alice', 'red').render();">here</a> to change the color of 'Alice' in the bar chart above.
+                You might be wondering why there's a separate method for
+                rendering at all. The answer is that charts can be rerendered
+                after certain things are updated. This feature is not currently
+                as robust (nor as efficient) as it is planned to be, but you can
+                at least update colors and redraw the chart by calling render
+                again. Click <a href="#" onclick="bar_chart.setColor('Alice',
+                'red').render();">here</a> to change the color of 'Alice' in the
+                bar chart above.  Changing colors can be done with the setColor
+                and setColors methods.  The former takes two strings (name of
+                data series, color string) and the latter takes an object
+                containing the new color mappings.  So the following two calls
+                are equivalent:
+                
+<pre class="code">
+bar_chart.setColor('Alice', 'red').render();
+bar_chart.setColors({'Alice', 'red'}).render();
+</pre>
             </p>
         </div>
     </body>
