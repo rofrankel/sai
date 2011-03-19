@@ -11,6 +11,17 @@ a:visited {
     color: #ccc;
 }
 
+table#nav {
+    width: 75%;
+    margin: 20px auto;
+    overflow: hidden;
+}
+
+table#nav td {
+    font-size: 20px;
+    text-align: center;
+}
+
 div#main {
     width: 720px;
     margin: auto;

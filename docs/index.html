@@ -35,75 +35,99 @@
             <div id="desc">
                 <p>
                     Sai is a charting library written in <a href="http://coffeescript.org">CoffeeScript</a> and
-                    using <a href="http://raphaeljs.com">Raphael.JS</a> for cross-browser rendering (VML in IE<8, SVG
-                    elsewhere).
-                </p>
-                <h2>Features</h2>
-                <ul class="feature-list">
-                    <li>Several types of charts
-                    <ul>
-                        <li>Line charts
-                        <ul>
-                            <li>Stacked or regular</li>
-                            <li>Drawn as area or line
-                            <li>Support for dual axes
-                        </ul>
-                        <li>Bar (well, column) charts
-                        <ul>
-                            <li>Grouped or stacked bars
-                        </ul>
-                        <li>Stock (candlestick) charts
-                        <ul>
-                            <li>Support for volume bars
-                            <li>Extra data shown as lines; useful for e.g. moving averages
-                        </ul>
-                        <li>Scatter charts
-                        <ul>
-                            <li>Supports symbolic and continuous variables in several dimensions
-                        </ul>
-                        <li>Geographical charts
-                        <ul>
-                            <li>Global, US, and Europe map data provided
-                        </ul>
-                    </ul>
-                    <li>High optionality/configurability
-                    <li>Simple usage - just input data and options
-                    <li>For developers: Modular and extensible design; easy to add new chart types
-                </ul>
-                <h2>Examples</h2>
-                <p>
-                    See the <a href="gallery.html">gallery</a> for examples.
-                </p>
-                <h2>Documentation</h2>
-                <p>
-                    What follows is an introduction to using Sai. (If this
-                    narrative approach to documentation is really annoying, <a
-                    href="mailto:richard_pub@frankel.tv&subject='The Sai docs
-                    are really annoying'">let me know</a>.) First, let's set up
-                    some simple data which will be shared by multiple charts:
-                </p>
-                <script type="text/javascript" class="show">
-                    var colors = {
-                        Alice: '#7C9AFC',
-                        Bob: '#C46A6A',
-                        Carol: '#444E73',
-                        Dave: '#43783A'
-                    };
-                    var data = {
-                        Alice: [5, 2, 5, 1, 2, 6, 2, 4],
-                        Bob: [7, 3, 6, 12, 9, 4, 3, 1],
-                        Carol: [3, 2, 5, 2, 5, 2, 1, 3],
-                        Dave: [1, 1, 4, 5, 6, 5, 2, 3],
-                        Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
-                    };
-                </script>
-                <p>
-                    There are two simple things worth noting in this code.
-                    First, <code>colors</code> and <code>data</code> use the
-                    same keys. Second, the data is stored as several parallel
-                    lists. Both of these things are requirements of Sai's API.
+                    using <a href="http://raphaeljs.com">Raphael.JS</a> for cross-browser rendering.
                 </p>
             </div>
+            <table id="nav">
+                <tr>
+                    <td>
+                        <a href="#download">Download</a>
+                    </td>
+                    <td>
+                        <a href="#features">Features</a>
+                    </td>
+                    <td>
+                        <a href="#examples">Examples</a>
+                    </td>
+                    <td>
+                        <a href="#documentation">Documentation</a>
+                    </td>
+                </tr>
+            </table>
+            <a name="download"><h2>Download</h2></a>
+            <p>
+                Minified JS: TODO
+            </p>
+            <p>
+                Source: TODO
+            </p>
+            <a name="features"><h2>Features</h2></a>
+            <ul class="feature-list">
+                <li>Several types of charts
+                <ul>
+                    <li>Line charts
+                    <ul>
+                        <li>Stacked or regular</li>
+                        <li>Drawn as area or line
+                        <li>Support for dual axes
+                    </ul>
+                    <li>Bar (well, column) charts
+                    <ul>
+                        <li>Grouped or stacked bars
+                    </ul>
+                    <li>Stock (candlestick) charts
+                    <ul>
+                        <li>Support for volume bars
+                        <li>Extra data shown as lines; useful for e.g. moving averages
+                    </ul>
+                    <li>Scatter charts
+                    <ul>
+                        <li>Supports symbolic and continuous variables in several dimensions
+                    </ul>
+                    <li>Geographical charts
+                    <ul>
+                        <li>Global, US, and Europe map data provided
+                    </ul>
+                </ul>
+                <li>High optionality/configurability
+                <li>Simple usage - just input data and options
+                <li>For developers: Modular and extensible design; easy to add new chart types
+            </ul>
+            <a name="examples"><h2>Examples</h2></a>
+            <p>
+                See the <a href="gallery.html">gallery</a> for examples.
+            </p>
+            <a name="documentation"><h2>Documentation</h2></a>
+            <p>
+                What follows is an introduction to using Sai. (If this
+                approach to documentation doesn't work for you, please
+                <a href="mailto:richard_pub@frankel.tv?subject=The%20Sai%20docs%20are%20annoying">
+                let me know</a>.) First, let's set up some simple data which
+                will be shared by multiple charts:
+            </p>
+            <script type="text/javascript" class="show">
+                var data = {
+                    Alice: [5, 2, 5, 1, 2, 6, 2, 4],
+                    Bob: [7, 3, 6, 12, 9, 4, 3, 1],
+                    Carol: [3, 2, 5, 2, 5, 2, 1, 3],
+                    Dave: [1, 1, 4, 5, 6, 5, 2, 3],
+                    Month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August']
+                };
+                var colors = {
+                    Alice: '#74BF10',
+                    Bob: '#E6E80C',
+                    Carol: '#E9980C',
+                    Dave: '#E9450C'
+                };
+            </script>
+            <p>
+                There are two simple things worth noting in this code.
+                First, the data is stored as an object containing several
+                parallel lists - this is the format expected by Sai. Second,
+                <code>colors</code> and <code>data</code> use the same keys;
+                this is how Sai knows which color to associate with which
+                series.
+            </p>
             <h3>Line</h3>
             <p>
                 One of the most common types of chart supported by Sai is the line chart.  
@@ -154,7 +178,7 @@
                 var r2 = Raphael("bar_chart_holder", 400, 400);
                 var options = {
                     title: "A simple bar chart",
-                    bgcolor: '#eef',
+                    bgcolor: '#000',
                     interactive: 'true',
                     colors: colors
                 }
@@ -173,16 +197,16 @@
                 as robust (nor as efficient) as it is planned to be, but you can
                 at least update colors and redraw the chart by calling render
                 again. Click <a href="#" onclick="bar_chart.setColor('Alice',
-                'red').render();">here</a> to change the color of 'Alice' in the
-                bar chart above.  Changing colors can be done with the setColor
-                and setColors methods.  The former takes two strings (name of
-                data series, color string) and the latter takes an object
-                containing the new color mappings.  So the following two calls
-                are equivalent:
+                '#1074BF').render();">here</a> to change the color of 'Alice' in
+                the bar chart above. Changing colors can be done with the
+                setColor and setColors methods. The former takes two strings
+                (name of data series, color string) and the latter takes an
+                object containing the new color mappings. So the following two
+                calls are equivalent:
                 
 <pre class="code">
-bar_chart.setColor('Alice', 'red').render();
-bar_chart.setColors({'Alice', 'red'}).render();
+bar_chart.setColor('Alice', '#1074BF').render();
+bar_chart.setColors({'Alice', '#1074BF'}).render();
 </pre>
             </p>
         </div>
