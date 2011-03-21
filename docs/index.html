@@ -25,6 +25,7 @@
                 )
             )
         </script>
+        <title>Sai charting library</title>
     </head>
     
     <body>
@@ -95,7 +96,10 @@
             </ul>
             <a name="examples"><h2>Examples</h2></a>
             <p>
-                See the <a href="gallery.html">gallery</a> for examples.
+                See the <a href="gallery.html">gallery</a> for examples.  Want
+                to submit a chart for the gallery?  Click
+                <a href="mailto:richard_pub@frankel.tv?subject=Sai%20gallery%20submission">
+                here</a>.
             </p>
             <a name="documentation"><h2>Documentation</h2></a>
             <p>
@@ -208,6 +212,63 @@
 bar_chart.setColor('Alice', '#1074BF').render();
 bar_chart.setColors({'Alice', '#1074BF'}).render();
 </pre>
+            <p>
+                There <em>is</em> a limit on how many bars can be shown in a
+                single chart, obviously, since a bar of less than one pixel
+                isn't visible. If you render a chart with too many bars, an
+                error message will be drawn to the canvas. Switching from
+                grouped bars to stacked bars can save you some horizontal space;
+                if that's still not enough, reduce the number of data points you
+                have (e.g. by sampling one of every five data points) or use a
+                line chart instead.
+            </p>
+            <h3>Stock</h3>
+            <p>
+                One of two domain-specific chart types supported by Sai is the
+                stock (candlestick) chart. See
+                <a href="http://en.wikipedia.org/wiki/File:Candle_definition_en.svg">
+                Wikipedia</a> for an explanation of the candlestick.
+            </p>
+            <div id="stock_chart_holder" class="chart-holder"></div>
+            <script type="text/javascript" class="show">
+                var msft_data = {
+                    'Open': [24.74,24.8,24.93,24.65,24.97,25.25,25.06,25.46,25.11,25.4,25.92,25.92,25.69,25.6,25.91],
+                    'Close': [24.78,25,24.86,25,25.2,25.2,25.3,25.26,25.3,25.77,25.69,25.94,25.55,25.83,25.75],
+                    'High': [24.95,25.05,25.17,25.09,25.27,25.35,25.38,25.48,25.37,25.82,26.25,26.11,25.82,26.16,25.96],
+                    'Low': [24.66,24.65,24.81,24.64,24.86,24.95,25.06,25.1,25.1,25.29,25.64,25.66,25.52,25.6,25.69],
+                    'Volume': [49900235,46258757,54304284,42810156,44718408,50055778,42431643,68016403,28878663,61378342,60544519,56310695,50161051,44363585,39050278],
+                    '5-day moving average': [,,,,,24.968,25.052,25.112,25.192,25.252,25.366,25.464,25.592,25.65,25.756],
+                    'Date': ['9-Sep-09','10-Sep-09','11-Sep-09','14-Sep-09','15-Sep-09','16-Sep-09','17-Sep-09','18-Sep-09','21-Sep-09','22-Sep-09','23-Sep-09','24-Sep-09','25-Sep-09','28-Sep-09','29-Sep-09'],
+                };
+                
+                var r3 = Raphael("stock_chart_holder", 400, 400);
+                var options = {
+                    title: "Microsoft, September '09",
+                    interactive: 'true',
+                    colors: {'5-day moving average': '#3333AA'}
+                }
+                var stock_chart = new Sai.StockChart(r3, 0, 400, 400, 400, msft_data, "Date", options).render();
+            </script>
+            <p>
+                We have to define our data a little differenly for a stock
+                chart; stock charts expect at least four series named
+                <code>open</code>, <code>close</code>, <code>high</code>, and
+                <code>low</code> (case insensitive). This is because four data
+                points are required to draw each candlestick. In addition, a
+                series named <code>vol</code> or <code>volume</code> will be
+                used to draw volume bars at the bottom of the chart, if
+                included. Any other series will be drawn as lines - this is
+                useful for e.g. moving averages.
+            </p>
+            <p>
+                The colors of the candlesticks and volume bars can be controlled
+                by setting colors with the following keys: <code>__UP__</code>,
+                <code>__DOWN__</code>, <code>__VOL_UP__</code>,
+                <code>__VOL_DOWN__</code>. Set a color for <code>__GLOW__</code> to
+                set the color of the gradient which highlights the user's mouse
+                position. If you don't set any colors, the colors will default
+                to the standard red/black (with a rusty orange color for the
+                highlight bar).
             </p>
         </div>
     </body>

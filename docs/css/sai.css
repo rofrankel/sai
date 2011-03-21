@@ -58,3 +58,10 @@ pre.code {
     margin-bottom: 40px;
     margin-top: 40px;
 }
+
+code {
+    background-color: 'white';
+    border: 1px solid lightgrey;
+    padding: 2px;
+    
+}
