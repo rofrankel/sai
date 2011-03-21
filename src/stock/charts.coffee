@@ -35,10 +35,10 @@ class Sai.StockChart extends Sai.Chart
         volume_name = @semanticRenames['volume'] ? 'volume'
         
         @colors ?= {}
-        @colors['up'] ?= 'black'
-        @colors['down'] ?= 'red'
-        @colors['vol_up'] ?= '#666666'
-        @colors['vol_down'] ?= '#cc6666'
+        @colors['__UP__'] ?= 'black'
+        @colors['__DOWN__'] ?= 'red'
+        @colors['__VOL_UP__'] ?= '#666666'
+        @colors['__VOL_DOWN__'] ?= '#cc6666'
         
         # @drawLegend({up: @colors.up, down: @colors.down})
         
@@ -88,7 +88,7 @@ class Sai.StockChart extends Sai.Chart
                     vol,
                     rawdata)
                 )
-                .render(true, @normalizedHeight(0, 'volume'), {'up': @colors['vol_up'], 'down': @colors['vol_down']})
+                .render(true, @normalizedHeight(0, 'volume'), {'up': @colors['__VOL_UP__'], 'down': @colors['__VOL_DOWN__']})
                 .set
             )
         
@@ -117,9 +117,10 @@ class Sai.StockChart extends Sai.Chart
                 avgNdata[series] = @ndata['prices'][series]
         
         @plots.push(
-            (new Sai.LinePlot(@r,
-                                                @px, @py, @pw, @ph,
-                                                avgNdata))
+            (new Sai.LinePlot(
+                @r,
+                @px, @py, @pw, @ph,
+                avgNdata))
             .render(@colors)
             .set
         )
@@ -147,38 +148,39 @@ class Sai.StockChart extends Sai.Chart
         @renderPlots()
         
         glow_width = @pw / (@data[@__LABELS__].length - 1)
+        glow_color = @colors['__GLOW__'] ? '#DDAA99'
         @glow = @r.rect(@px - (glow_width / 2), @py - @ph, glow_width, @ph)
-                            .attr({fill: "0-#{@opts.bgcolor}-#DDAA99-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
-                            .toBack()
-                            .hide()
-        
+                    .attr({fill: "0-#{@opts.bgcolor}-#{glow_color}-#{@opts.bgcolor}", 'stroke-width': 0, 'stroke-opacity': 0})
+                    .toBack()
+                    .hide()
         @bg.toBack()
         
-        everything = @r.set().push(@bg, @plots, @logo, @glow, @guidelines).mousemove(
-            moveGlow = (event) =>
-                
-                idx = @getIndex(event)
-                
-                info = {}
-                
-                if @data[@__LABELS__][idx]? then info[@__LABELS__] = @data[@__LABELS__][idx]
-                
-                notNull = false
-                for series of @ndata['prices'] when not (series.match('^__') or series is @__LABELS__)
-                    if @data[series]?[idx]?
-                        info[series] = @data[series][idx]
+        if @opts.interactive
+            everything = @r.set().push(@bg, @plots, @logo, @glow, @guidelines).mousemove(
+                moveGlow = (event) =>
+                    
+                    idx = @getIndex(event)
+                    
+                    info = {}
+                    
+                    if @data[@__LABELS__][idx]? then info[@__LABELS__] = @data[@__LABELS__][idx]
+                    
+                    notNull = false
+                    for series of @ndata['prices'] when not (series.match('^__') or series is @__LABELS__)
+                        if @data[series]?[idx]?
+                            info[series] = @data[series][idx]
+                            notNull = true
+                    if @data[volume_name]?[idx]?
+                        info[volume_name] = @data[volume_name][idx]
                         notNull = true
-                if @data[volume_name]?[idx]?
-                    info[volume_name] = @data[volume_name][idx]
-                    notNull = true
-                @drawInfo(info)
-                if notNull
-                    @glow.attr({x: @px + (glow_width * (idx - 0.5))}).show()
-                
-        ).mouseout(
-            (event) =>
-                @drawInfo({}, true)
-                @glow.hide()
-        )
+                    @drawInfo(info)
+                    if notNull
+                        @glow.attr({x: @px + (glow_width * (idx - 0.5))}).show()
+                    
+            ).mouseout(
+                (event) =>
+                    @drawInfo({}, true)
+                    @glow.hide()
+            )
         
         return this

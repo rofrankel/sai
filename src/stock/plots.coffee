@@ -4,8 +4,8 @@ class Sai.CandlestickPlot extends Sai.Plot
         
         @set.remove()
         
-        cup = colors?['up'] or 'black'
-        cdown = colors?['down'] or 'red'
+        cup = colors?['__UP__'] or 'black'
+        cdown = colors?['__DOWN__'] or 'red'
         
         for i in [0...@dndata['open'].length]
             
