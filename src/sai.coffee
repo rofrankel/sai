@@ -1,6 +1,13 @@
 `Sai = {};` # create a global Sai object
 Sai.util = {}
 
+# for maps
+Sai.data ?= {}
+Sai.data.map ?= {}
+
+Raphael.fn.sai ?= {}
+
+
 Sai.util.round = (x, step) ->
     return parseFloat((Math.round(x / step) * step).toFixed(Math.max(0, Math.ceil(-1 * Math.log(step) / Math.LN10))))
 
@@ -124,7 +131,6 @@ Sai.util.reflectColor = (color, mirror) ->
     
     return "rgb(#{rgb.r}, #{rgb.g}, #{rgb.b})"
 
-
 Sai.util.setHover = (target, attrOn, attrOff, extras) ->
     return target.hover(
         () ->
@@ -136,10 +142,17 @@ Sai.util.setHover = (target, attrOn, attrOff, extras) ->
             extras?[1]?(target)
     )
 
+# generate HSL colors with aesthetically pleasing distribution
+# adapted from http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
+Sai.util.n_colors = (n, start=(-> 0), bounds={'saturation': [.25, .75], 'lightness': [.25, .75]}) ->
+    colors = []
+    hue = start()
+    inv_phi = 0.6180339887498948
+    for i in [0...n]
+        saturation = bounds['saturation'][0] + Math.random() * (bounds['saturation'][1] - bounds['saturation'][0])
+        lightness = bounds['lightness'][0] + Math.random() * (bounds['lightness'][1] - bounds['lightness'][0])
+        colors.push("hsl(#{hue}, #{saturation}, #{lightness})")
+        hue = (hue + inv_phi) % 1
+    
+    return colors
 
-# for maps
-Sai.data ?= {}
-Sai.data.map ?= {}
-
-
-Raphael.fn.sai ?= {}

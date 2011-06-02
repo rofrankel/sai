@@ -3,8 +3,20 @@ class Sai.Chart
     
     constructor: (@r, @x, @y, @w, @h, data, @__LABELS__, @opts={}) ->
         @opts.bgcolor ?= 'white'
-        @colors = @opts.colors
+        @colors = @opts['colors'] ? @random_colors(data)
         @setData(data)
+    
+    random_colors: (data) ->
+        n = 0
+        n++ for series of data
+        colors_list = Sai.util.n_colors(n, Math.random)
+        colors = {}
+        pos = 0
+        
+        for series of data
+            colors[series] = colors_list[pos++]
+        
+        return colors
     
     groupsToNullPad: () ->
         return []
