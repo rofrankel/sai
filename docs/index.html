@@ -66,26 +66,26 @@
             <ul class="feature-list">
                 <li>Several types of charts
                 <ul>
-                    <li>Line charts
+                    <li><a href="#line">Line charts</a>
                     <ul>
                         <li>Stacked or regular</li>
                         <li>Drawn as area or line
                         <li>Support for dual axes
                     </ul>
-                    <li>Bar (well, column) charts
+                    <li><a href="#bar">Bar (well, column) charts</a>
                     <ul>
                         <li>Grouped or stacked bars
                     </ul>
-                    <li>Stock (candlestick) charts
+                    <li><a href="#stock">Stock (candlestick) charts</a>
                     <ul>
                         <li>Support for volume bars
                         <li>Extra data shown as lines; useful for e.g. moving averages
                     </ul>
-                    <li>Scatter charts
+                    <li><a href="#scatter">Scatter charts</a>
                     <ul>
                         <li>Supports symbolic and continuous variables in several dimensions
                     </ul>
-                    <li>Geographical charts
+                    <li><a href="#geo">Geographical charts</a>
                     <ul>
                         <li>Global, US, and Europe map data provided
                     </ul>
@@ -138,7 +138,7 @@
                 this is how Sai knows which color to associate with which
                 series.
             </p>
-            <h4>Line</h4>
+            <a name="line"><h4>Line</h4></a>
             <p>
                 One of the most common types of chart supported by Sai is the line chart.  
             </p>
@@ -176,7 +176,7 @@
                   that is the terminology Raphael uses in its own documentation.
                   Of course, Raphael uses SVG/VML, not HTML Canvas.
             </p>
-            <h4>Bar</h4>
+            <a name="bar"><h4>Bar</h4></a>
             <p>
                 Sai also supports bar (well, column) charts. This time, let's
                 explore some more options. First, let's set a title and
@@ -230,7 +230,7 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                 have (e.g. by sampling one of every five data points) or use a
                 line chart instead.
             </p>
-            <h4>Stock</h4>
+            <a name="stock"><h4>Stock</h4></a>
             <p>
                 One of two domain-specific chart types supported by Sai is the
                 stock (candlestick) chart. See
@@ -278,7 +278,7 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                 to the standard red/black (with a rusty orange color for the
                 highlight bar) shown above.
             </p>
-            <h4>Geographical</h4>
+            <a name="geo"><h4>Geographical</h4></a>
             <p>
                 The second type of domain-specific chart supported by Sai is the
                 geographical chart. A geographical chart requires path data; Sai
