@@ -24,7 +24,7 @@ table#nav td {
 
 div#main {
     width: 720px;
-    margin: auto;
+    margin: 15px auto 15px;
     background-color: #f6f6f6;
     padding: 10px 40px;
     -webkit-border-radius: 30px;
@@ -63,5 +63,4 @@ code {
     background-color: 'white';
     border: 1px solid lightgrey;
     padding: 2px;
-    
 }
