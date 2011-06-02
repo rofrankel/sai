@@ -294,19 +294,24 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                 number of series (2-3) and choose non-overlapping colors for
                 them (e.g. red, green, and blue, or blue and yellow).
             </p>
+            <div id="geo_chart_holder" class="chart-holder"></div>
             <script type="text/javascript" class="show">
-            var bank_closure_data = {
-                "data": {
-                    State: ["AL", "AR", "AZ", "CA", "CO", "CT", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "MI", "MN", "MO", "MS", "NC", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "PR", "SC", "SD", "TN", "TX", "UT", "VA", "WA", "WI", "WV", "WY"],
-                    Bank failures: [88972.0, 68149.0, 354693.0, 1090963.0, 111040.0, 19183.0, 1592168.0, 1730800.0, 21029.0, 27732.0, 34396.0, 858718.0, 10100.0, 47333.0, 57068.0, 46006.0, 26619.0, 161969.0, 321766.0, 352161.0, 198252.0, 15814.0, 62476.0, 34772.0, 34264.0, 180270.0, 67777.0, 382206.0, 228082.0, 141121.0, 21509.0, 193623.0, 94115.0, 90362.0, 120033.0, 34103.0, 9961.0, 231792.0, 163928.0, 64206.0, 325889.0, 58572.0, 6782.0, 22754.0]
+                var bank_closure_data = {
+                    "State": ["AL", "AR", "AZ", "CA", "CO", "CT", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "MI", "MN", "MO", "MS", "NC", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "PR", "SC", "SD", "TN", "TX", "UT", "VA", "WA", "WI", "WV", "WY"],
+                    "Bank failures": [88972.0, 68149.0, 354693.0, 1090963.0, 111040.0, 19183.0, 1592168.0, 1730800.0, 21029.0, 27732.0, 34396.0, 858718.0, 10100.0, 47333.0, 57068.0, 46006.0, 26619.0, 161969.0, 321766.0, 352161.0, 198252.0, 15814.0, 62476.0, 34772.0, 34264.0, 180270.0, 67777.0, 382206.0, 228082.0, 141121.0, 21509.0, 193623.0, 94115.0, 90362.0, 120033.0, 34103.0, 9961.0, 231792.0, 163928.0, 64206.0, 325889.0, 58572.0, 6782.0, 22754.0],
+                    "__MAP__": Sai.data.map.us,
+                    __DEFAULT__: "Bank failures",
                 };
-            
-            var bank_options = {
-                title: "US bank failures by Size and State",
-                footnote: "SOURCE: http://www2.fdic.gov/qbp/index.asp",
-                colors: {"State": "#429380", "Bank failures": "#a8502c"}
-                DEFAULT: "Bank failures",
-            };
+                
+                var bank_options = {
+                    title: "US bank failures by size and state",
+                    footnote: "SOURCE: http://www2.fdic.gov/qbp/index.asp",
+                    colors: {"State": "#429380", "Bank failures": "#a8502c"},
+                    interactive: true,
+                    fromWhite: true,
+                };
+                var r4 = Raphael("geo_chart_holder", 400, 400);
+                var stock_chart = new Sai.GeoChart(r4, 0, 400, 400, 400, bank_closure_data, "State", bank_options).render();
             </script>
             
             <a name="documentation-options"><h3>Options</h3></a>
