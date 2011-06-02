@@ -17,9 +17,9 @@ class Sai.GeoPlot extends Sai.Plot
         for i in [0...regions.length]
             ri[regions[i]] = i
         
-        for region of map.paths
+        for region of map['regions']
             ridx = ri[region]
-            name = map.name[region]
+            name = map['regions'][region]['name']
             
             info = {region: name ? region}
             for series of @rawdata when series isnt regionSeries
@@ -30,8 +30,8 @@ class Sai.GeoPlot extends Sai.Plot
             
             hoverFuncs = @getInfoToggle(setInfo, info)
             
-            path = map.paths[region]
-            scale = Math.min(@w / map.width, @h / map.height)
+            path = map['regions'][region]['path']
+            scale = Math.min(@w / map['width'], @h / map['height'])
             region_x = @x
             region_y = @y - @h
             
