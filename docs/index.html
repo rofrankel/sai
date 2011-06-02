@@ -103,11 +103,17 @@
             </p>
             <a name="documentation"><h2>Documentation</h2></a>
             <p>
-                What follows is an introduction to using Sai. (If this
-                approach to documentation doesn't work for you, please
-                <a href="mailto:richard_pub@frankel.tv?subject=The%20Sai%20docs%20are%20annoying">
-                let me know</a>.) First, let's set up some simple data which
-                will be shared by multiple charts:
+                The documentation is broken up into three sections. First, an <a
+                href="#documentation-usage">introduction to using Sai</a>.
+                Second, <a href="#documentation-options">a list of options</a>
+                you can use when creating a chart. Third, <a
+                href="#documentation-source">a brief explanation of the Sai
+                source</a>.
+            </p>
+            <a name="documentation-usage"><h3>Usage</h3></a>
+            <p>
+                First, let's set up some simple data which will be shared by
+                multiple charts:
             </p>
             <script type="text/javascript" class="show">
                 var data = {
@@ -132,7 +138,7 @@
                 this is how Sai knows which color to associate with which
                 series.
             </p>
-            <h3>Line</h3>
+            <h4>Line</h4>
             <p>
                 One of the most common types of chart supported by Sai is the line chart.  
             </p>
@@ -170,7 +176,7 @@
                   that is the terminology Raphael uses in its own documentation.
                   Of course, Raphael uses SVG/VML, not HTML Canvas.
             </p>
-            <h3>Bar</h3>
+            <h4>Bar</h4>
             <p>
                 Sai also supports bar (well, column) charts. This time, let's
                 explore some more options. First, let's set a title and
@@ -200,13 +206,15 @@
                 after certain things are updated. This feature is not currently
                 as robust (nor as efficient) as it is planned to be, but you can
                 at least update colors and redraw the chart by calling render
-                again. Click <a href="#" onclick="bar_chart.setColor('Alice',
-                '#1074BF').render();">here</a> to change the color of 'Alice' in
-                the bar chart above. Changing colors can be done with the
-                setColor and setColors methods. The former takes two strings
+                again; this redraws the whole chart but doesn't reprocess the
+                data. Click
+                <a href="#"onclick="bar_chart.setColor('Alice','#1074BF').render();">
+                here</a> to change the color of 'Alice' in the bar chart above.
+                Changing colors can be done with the <code>setColor</code> and
+                <code>setColors</code> methods. The former takes two strings
                 (name of data series, color string) and the latter takes an
-                object containing the new color mappings. So the following two
-                calls are equivalent:
+                object containing the updated color mappings. So the following
+                two calls are equivalent:
                 
 <pre class="code">
 bar_chart.setColor('Alice', '#1074BF').render();
@@ -222,11 +230,11 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                 have (e.g. by sampling one of every five data points) or use a
                 line chart instead.
             </p>
-            <h3>Stock</h3>
+            <h4>Stock</h4>
             <p>
                 One of two domain-specific chart types supported by Sai is the
                 stock (candlestick) chart. See
-                <a href="http://en.wikipedia.org/wiki/File:Candle_definition_en.svg">
+                <a href="http://en.wikipedia.org/wiki/Candlestick_chart">
                 Wikipedia</a> for an explanation of the candlestick.
             </p>
             <div id="stock_chart_holder" class="chart-holder"></div>
@@ -268,7 +276,46 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                 set the color of the gradient which highlights the user's mouse
                 position. If you don't set any colors, the colors will default
                 to the standard red/black (with a rusty orange color for the
-                highlight bar).
+                highlight bar) shown above.
+            </p>
+            <h4>Geographical</h4>
+            <p>
+                The second type of domain-specific chart supported by Sai is the
+                geographical chart. A geographical chart requires path data; Sai
+                includes path data for the US, Europe, and for the entire world.
+                Path data is formatted as follows: 
+            </p>
+            <p>
+                There are actually two types of geographical charts - regular
+                and "chromatic". Regular geographical charts support switching
+                the displayed data series by clicking that series' histogram.
+                Chromatic geographical charts combine the color values of each
+                data series at once; this works best when you have a small
+                number of series (2-3) and choose non-overlapping colors for
+                them (e.g. red, green, and blue, or blue and yellow).
+            </p>
+            <script type="text/javascript" class="show">
+            var bank_closure_data = {
+                "data": {
+                    State: ["AL", "AR", "AZ", "CA", "CO", "CT", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "MI", "MN", "MO", "MS", "NC", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "PR", "SC", "SD", "TN", "TX", "UT", "VA", "WA", "WI", "WV", "WY"],
+                    Bank failures: [88972.0, 68149.0, 354693.0, 1090963.0, 111040.0, 19183.0, 1592168.0, 1730800.0, 21029.0, 27732.0, 34396.0, 858718.0, 10100.0, 47333.0, 57068.0, 46006.0, 26619.0, 161969.0, 321766.0, 352161.0, 198252.0, 15814.0, 62476.0, 34772.0, 34264.0, 180270.0, 67777.0, 382206.0, 228082.0, 141121.0, 21509.0, 193623.0, 94115.0, 90362.0, 120033.0, 34103.0, 9961.0, 231792.0, 163928.0, 64206.0, 325889.0, 58572.0, 6782.0, 22754.0]
+                };
+            
+            var bank_options = {
+                title: "US bank failures by Size and State",
+                footnote: "SOURCE: http://www2.fdic.gov/qbp/index.asp",
+                colors: {"State": "#429380", "Bank failures": "#a8502c"}
+                DEFAULT: "Bank failures",
+            };
+            </script>
+            
+            <a name="documentation-options"><h3>Options</h3></a>
+            <p>
+                Todo
+            </p>
+            <a name="documentation-source"><h3>Source</h3></a>
+            <p>
+                Todo
             </p>
         </div>
     </body>
