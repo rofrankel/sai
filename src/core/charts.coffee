@@ -13,7 +13,7 @@ class Sai.Chart
         colors = {}
         pos = 0
         
-        for series of data
+        for series of data when not series.match('^__')
             colors[series] = colors_list[pos++]
         
         return colors
