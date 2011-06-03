@@ -32,6 +32,10 @@ div#main {
     border-radius: 30px;
 }
 
+#main ul li {
+    margin-bottom: 0.5em;
+}
+
 div .chart-holder {
     text-align: center;
 }

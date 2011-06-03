@@ -11,8 +11,6 @@
         
         <script type="text/javascript" src="../sai-min.js"></script>
         <script type="text/javascript" src="../data/us.svg.json"></script>
-        <script type="text/javascript" src="../data/europe.svg.json"></script>
-        <script type="text/javascript" src="../data/world.svg.json"></script>
         
         <script type="text/coffeescript" src="js/showcode.coffee"></script>
         
@@ -298,16 +296,17 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
             <div id="geo_chart_holder" class="chart-holder"></div>
             <script type="text/javascript" class="show">
                 var bank_closure_data = {
-                    "State": ["AL", "AR", "AZ", "CA", "CO", "CT", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "MI", "MN", "MO", "MS", "NC", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "PR", "SC", "SD", "TN", "TX", "UT", "VA", "WA", "WI", "WV", "WY"],
-                    "Bank failures": [88972.0, 68149.0, 354693.0, 1090963.0, 111040.0, 19183.0, 1592168.0, 1730800.0, 21029.0, 27732.0, 34396.0, 858718.0, 10100.0, 47333.0, 57068.0, 46006.0, 26619.0, 161969.0, 321766.0, 352161.0, 198252.0, 15814.0, 62476.0, 34772.0, 34264.0, 180270.0, 67777.0, 382206.0, 228082.0, 141121.0, 21509.0, 193623.0, 94115.0, 90362.0, 120033.0, 34103.0, 9961.0, 231792.0, 163928.0, 64206.0, 325889.0, 58572.0, 6782.0, 22754.0],
+                    "State": ["AL", "AR", "AZ", "CA", "CO", "CT", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "MI", "MN", "MO", "MS", "NC", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "SC", "SD", "TN", "TX", "UT", "VA", "WA", "WI", "WV", "WY", "VT", "ME", "AK", "MT", "ND"],
+                    "Bank failures": [88972.0, 68149.0, 354693.0, 1090963.0, 111040.0, 19183.0, 1592168.0, 1730800.0, 21029.0, 27732.0, 34396.0, 858718.0, 10100.0, 47333.0, 57068.0, 46006.0, 26619.0, 161969.0, 321766.0, 352161.0, 198252.0, 15814.0, 62476.0, 34772.0, 34264.0, 180270.0, 67777.0, 382206.0, 228082.0, 141121.0, 21509.0, 193623.0, 94115.0, 120033.0, 34103.0, 9961.0, 231792.0, 163928.0, 64206.0, 325889.0, 58572.0, 6782.0, 22754.0, null, null, null, null, null],
+                    "Unemployment (%)": [9.3, 7.7, 9.3, 11.9, 8.8, 9.1, 10.8, 9.9, 6.1, 6.0, 9.6, 8.7, 8.2, 6.7, 10.0, 8.1, 7.8, 6.8, 10.2, 6.5, 8.9, 10.4, 9.7, 4.2, 4.9, 9.3, 7.6, 12.5, 7.9, 8.6, 5.6, 9.6, 7.5, 9.8, 4.9, 9.6, 8.0, 7.4, 6.1, 9.1, 7.3, 8.8, 6.0, 5.3, 7.6, 7.3, 7.3, 3.3],
                     "__MAP__": Sai.data.map.us,
-                    __DEFAULT__: "Bank failures",
+                    "__DEFAULT__": "Bank failures",
                 };
                 
                 var bank_options = {
-                    title: "US bank failures by size and state",
-                    footnote: "SOURCE: http://www2.fdic.gov/qbp/index.asp",
-                    colors: {"State": "#429380", "Bank failures": "#a8502c"},
+                    title: "Bank failures, unemployment by state",
+                    footnote: "SOURCE: http://www2.fdic.gov/qbp/index.asp, Wikipedia",
+                    colors: {"State": "#429380", "Bank failures": "#a8502c", "Unemployment (%)": "#253460"},
                     interactive: true,
                     fromWhite: true,
                 };
@@ -315,7 +314,60 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                 var stock_chart = new Sai.GeoChart(r4, 0, 400, 400, 400, bank_closure_data, "State", bank_options).render();
             </script>
             <p>
-                TODO: explain
+                Some things worth paying attention to:
+            </p>
+            <ul>
+                <li>
+                    There's no x-axis, but there is a similar 'key' series, in
+                    this case state ISO codes. This is passed into the GeoChart
+                    constructor in the same way that the name of the x-axis
+                    series is passed in for other chart types.
+                </li>
+                <li>
+                    There are two 'meta' parameters included in the here. One is
+                    a JSON variable containing the actual map data (more on that
+                    below) and the other specifies which data series is
+                    displayed by default.
+                </li>
+                <li>
+                    In addition to one series at a time being shown on the map,
+                    the distribution of values for each series is shown as a
+                    histogram below. Clicking a histogram will change which
+                    series is shown on the map (try it above).
+                </li>
+                <li>
+                    Some values are missing for the 'Bank failures' series.
+                    That's fine - just insert a <code>null</code> in place of
+                    the missing value, to keep the values in each list parallel.
+                    Sai will fade out those regions when the 'Bank failures'
+                    series is being displayed.
+                </li>
+            </ul>
+            <p>
+                The format for map data is as follows:
+<pre class="code">
+{
+    'width': (integer),
+    'height': (integer),
+    'regions': {
+        {'name': (string), 'path': (SVG path string)},
+        ...
+    }
+}
+</pre>
+                See
+                <a href="https://github.com/rofrankel/sai/blob/master/data/us.svg.json">
+                data/us.svg.json</a> for an example. The width and height are
+                just for the sake of the SVG path data - Sai will scale the map
+                down appropriately. Sai includes map data for the US, Europe,
+                and the whole world - in data/us.svg.json, data/europe.svg.json,
+                and data/world.svg.json, respectively. The map data are bound to
+                Sai.data.map.us, Sai.data.map.europe, and Sai.data.map.world,
+                respectively. To use them (or your own map data), just include
+                the appropriate JS file after including Sai, and then pass in
+                the map data object as the <code>__MAP__</code> meta parameter
+                of the data argument to the chart constructor, as in the
+                example.
             </p>
             <a name="scatter"><h4>Scatter</h4></a>
             <p>
