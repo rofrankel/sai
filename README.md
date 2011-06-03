@@ -3,4 +3,4 @@ Sai.JS
 
 A charting library written in CoffeeScript and rendered with Raphael.JS.
 
-Still a work in progress.  Docs will be at http://saijs.com; currently at http://rofrankel.github.com/sai/docs/.
+Still a work in progress.  Docs will be at http://saijs.com.
