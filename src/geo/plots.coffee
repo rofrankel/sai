@@ -3,10 +3,10 @@
 class Sai.GeoPlot extends Sai.Plot
     
     getRegionColor: (colors, ridx, mainSeries) ->
-        return Sai.util.multiplyColor(colors[mainSeries], Math.max(@data[mainSeries][ridx]?[1] or 0, 0), @opts.fromWhite, (if @opts.fromWhite then 0.2 else 0)).str
+        return Sai.util.multiplyColor(colors[mainSeries], Math.max(@data[mainSeries][ridx]?[1] or 0, 0), @opts.fromBlack, (if @opts.fromBlack then 0 else 0.2)).str
     
     getRegionOpacity: (ridx, mainSeries) ->
-        if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromWhite then 0.15 else 0.15)
+        if @data[mainSeries][ridx]?[1]? then 1 else (if @opts.fromBlack then 0.15 else 0.15)
     
     render: (colors, map, regionSeries, mainSeries, bgcolor, interactive, setInfo) ->
         
@@ -44,7 +44,7 @@ class Sai.GeoPlot extends Sai.Plot
                     ,
                     {
                         'fill': color
-                        'stroke': if @opts.fromWhite then 'black' else bgcolor
+                        'stroke': if @opts.fromBlack then bgcolor else 'black'
                         'stroke-width': 0.5
                         'opacity': opacity
                     },
@@ -61,7 +61,7 @@ class Sai.GeoPlot extends Sai.Plot
                         ]
                     else
                         null),
-                    if interactive then [{'fill-opacity': .75, 'stroke-width': (if @opts.fromWhite then 1.5 else 0.5)}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
+                    if interactive then [{'fill-opacity': .75, 'stroke-width': (if @opts.fromBlack then 0.5 else 1.5)}, {'fill-opacity': 1, 'stroke-width': 0.5}] else null
                 )
             )
             
@@ -79,17 +79,17 @@ class Sai.ChromaticGeoPlot extends Sai.GeoPlot
         numSeries = 0
         for series of @data
             numSeries++
-            rgb = Sai.util.multiplyColor(colors[series], Math.max(@data[series][ridx]?[1] or 0, 0), @opts.fromWhite, (if @opts.fromWhite then 0.2 else 0))
-            if @opts.fromWhite # use harmonic mean
-                r += 1 / rgb.r
-                g += 1 / rgb.g
-                b += 1 / rgb.b
-            else
+            rgb = Sai.util.multiplyColor(colors[series], Math.max(@data[series][ridx]?[1] or 0, 0), @opts.fromBlack, (if @opts.fromBlack then 0 else 0.2))
+            if @opts.fromBlack
                 r += rgb.r
                 g += rgb.g
                 b += rgb.b
+            else # use harmonic mean
+                r += 1 / rgb.r
+                g += 1 / rgb.g
+                b += 1 / rgb.b
         
-        if @opts.fromWhite
+        if not @opts.fromBlack
             r = numSeries / r
             g = numSeries / g
             b = numSeries / b

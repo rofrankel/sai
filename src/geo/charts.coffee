@@ -87,7 +87,7 @@ class Sai.GeoChart extends Sai.Chart
             @px, @py, @pw, @ph,
             ndata,
             @data,
-            {fromWhite: @opts.fromWhite}
+            {fromBlack: @opts.fromBlack}
         ))
         .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries ? @data['__DEFAULT__'], @opts.bgcolor, @opts.interactive and not @opts.simple, @drawInfo)
         

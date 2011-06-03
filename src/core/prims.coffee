@@ -247,7 +247,7 @@ Raphael.fn.sai.prim.hoverShape = (draw, attrs, extras, hoverattrs) ->
     return shape
 
 
-Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low=0, high=1, label, colors=['black', 'white'], bgcolor='white', fromWhite, numBuckets=10) ->
+Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low=0, high=1, label, colors=['black', 'white'], bgcolor='white', fromBlack, numBuckets=10) ->
     set = @set()
     
     set.push(
@@ -287,15 +287,15 @@ Raphael.fn.sai.prim.histogram = (x, y, w, h, data, low=0, high=1, label, colors=
         
         set.push(
             if colors.length is 1
-                fill = Sai.util.multiplyColor(colors[0], (parseInt(bucket) + 0.5) / numBuckets, fromWhite, 0.2).str
+                fill = Sai.util.multiplyColor(colors[0], (parseInt(bucket) + 0.5) / numBuckets, fromBlack, 0.2).str
             else
                 fill = Sai.util.colerp(colors[0], colors[1], (parseInt(bucket) + 0.5) / numBuckets)
             
             @rect(x + ((parseInt(bucket) + 0.2) * bw), y - bh, bw * .6, bh)
             .attr({
                 'fill': fill,
-                'stroke-width': if fromWhite then .35 else 0,
-                'stroke-opacity': if fromWhite then 1 else 0,
+                'stroke-width': if fromBlack then 0 else .35,
+                'stroke-opacity': if fromBlack then 0 else 1,
                 'stroke': '#000000'
             })
         )

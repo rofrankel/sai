@@ -307,8 +307,7 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                     title: "Bank failures, unemployment by state",
                     footnote: "SOURCE: http://www2.fdic.gov/qbp/index.asp, Wikipedia",
                     colors: {"State": "#429380", "Bank failures": "#a8502c", "Unemployment (%)": "#253460"},
-                    interactive: true,
-                    fromWhite: true,
+                    interactive: true
                 };
                 var r4 = Raphael("geo_chart_holder", 400, 400);
                 var stock_chart = new Sai.GeoChart(r4, 0, 400, 400, 400, bank_closure_data, "State", bank_options).render();

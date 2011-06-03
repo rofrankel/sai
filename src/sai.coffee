@@ -74,18 +74,18 @@ Sai.util.transformCoords = (evt, canvas) ->
         {x: evt.x, y: evt.y}
 
 
-Sai.util.multiplyColor = (colorStr, coeff, fromWhite, padding=0, verbose=false) ->
+Sai.util.multiplyColor = (colorStr, coeff, fromBlack, padding=0, verbose=false) ->
     coeff = padding + (1.0 - padding) * coeff
     rgb = Raphael.getRGB(colorStr)
     
-    if fromWhite
-        r = rgb.r + ((255 - rgb.r) * (1.0 - coeff))
-        g = rgb.g + ((255 - rgb.g) * (1.0 - coeff))
-        b = rgb.b + ((255 - rgb.b) * (1.0 - coeff))
-    else
+    if fromBlack
         r = rgb.r * coeff
         g = rgb.g * coeff
         b = rgb.b * coeff
+    else
+        r = rgb.r + ((255 - rgb.r) * (1.0 - coeff))
+        g = rgb.g + ((255 - rgb.g) * (1.0 - coeff))
+        b = rgb.b + ((255 - rgb.b) * (1.0 - coeff))
     
     return {
         r: Math.max(r, 0), g: Math.max(g, 0), b: Math.max(b, 0),

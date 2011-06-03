@@ -552,7 +552,7 @@ class Sai.Chart
                     series,
                     if typeof color is 'object' then [color.__LOW__, color.__HIGH__] else [color],
                     'white',
-                    @opts.fromWhite
+                    @opts.fromBlack
                 )
             )
             
