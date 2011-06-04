@@ -461,8 +461,60 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                 TODO
             </p>
             <a name="documentation-source"><h3>Source</h3></a>
+            <h4>Code structure</h4>
             <p>
-                TODO
+                Sai's source can be found at <a
+                href="https://github.com/rofrankel/sai/tree/master/src">src/</a>.
+                There is a <code>sai.coffee</code> file which does some
+                initialization and also contains some utility methods. There are
+                also a number of directories, each of which has four files -
+                <code>dependencies</code>, <code>charts.coffee</code>,
+                <code>plots.coffee</code>, and <code>prims.coffee</code>.
+            </p>
+            <p>
+                <code>dependencies</code> contains one directory name per line,
+                each of which is another chart type on which this chart type
+                depends. For example, stream graphs depend on line charts,
+                because they are a modification thereof. Building with the
+                included Cakefile will do a topological sort of each folder in
+                <code>src/</code> based on the contents of these dependencies
+                files, to ensure that the resulting JS is concatenated in a
+                valid order before being minified.
+            </p>
+            <p>
+                The other three files, <code>charts.coffee</code>,
+                <code>plots.coffee</code>, and <code>prims.coffee</code>,
+                correspond to the three types of entities from which Sai charts
+                are composed. <em>Charts</em> represent a full data
+                visualization, with all the trimmings, and these are what we
+                create in the examples above. <em>Plots</em> are the part of a
+                chart in which data are actually represented - informally, the
+                part inside the axes, though this doesn't apply in the case of
+                geographical charts. A chart might include one or more plots,
+                plus axes, a title, a footer, etc. Stock charts are composed of
+                up to three plots (a candlestick plot, a bar plot (for volume
+                bars), and a line plot (for any other data series, e.g. moving
+                averages)). <em>Prims</em> are the building blocks of plots - a
+                candlestick, a stacked bar (as in stacked bar charts), a group
+                of bars (as in grouped bar charts), etc. When compiling, a
+                folder's prims, plots, and charts are concatenated, in that
+                order.
+            </p>
+            <p>
+                In addition to directories for each chart type, there is the the
+                <code>core</code> directory, which has some abstract types and
+                non-chart-specific primitives. Every chart type in Sai depends
+                on at least <code>core</code>.
+            </p>
+            <p>
+                Map data can be found at <a
+                href="https://github.com/rofrankel/sai/tree/master/data">data/</a>.
+            </p>
+            <h4>Building Sai</h4>
+            <p>
+                Just run <code>cake build</code>. You'll need <a
+                href="http://nodejs.org">Node</a> and <a
+                href="http://coffeescript.org">CoffeeScript</a> installed.
             </p>
         </div>
     </body>
