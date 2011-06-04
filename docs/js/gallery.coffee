@@ -1,8 +1,8 @@
 data = {
-    'AAPL': [1, 2, 0, 0, 4, 7, 5, 1, -4, -2, -.1, null],
-    'AMZN': [4, 5, 12, 1, -3, "hello", -6, 6, 4, null, null, null],
-    'GOOG': [7, 4, 1, 11, 2, 2, 3, 0, 0, 0, 2, 3],
-    'MSFT': [null, null, null, 1, " 5 ", 6, 3, 8, 3, 4, 7, 1],
+    'Alice': [1, 2, 0, 0, 4, 7, 5, 1, -4, -2, -.1, null],
+    'Bob': [4, 5, 12, 1, -3, "hello", -6, 6, 4, null, null, null],
+    'Carol': [7, 4, 1, 11, 2, 2, 3, 0, 0, 0, 2, 3],
+    'Dave': [null, null, null, 1, " 5 ", 6, 3, 8, 3, 4, 7, 1],
     'Month': ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
 }
 
