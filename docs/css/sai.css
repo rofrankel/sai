@@ -43,7 +43,8 @@ div .chart-holder {
 }
 
 ul.feature-list li {
-    padding-bottom: 25px;   
+    padding-bottom: 25px;
+    margin-bottom: auto !important;
 }
 
 ul.feature-list li ul li {
