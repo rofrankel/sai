@@ -324,7 +324,7 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
                     interactive: true
                 };
                 var r4 = Raphael("geo_chart_holder", 400, 400);
-                var stock_chart = new Sai.GeoChart(r4, 0, 400, 400, 400, bank_closure_data, "State", bank_options).render();
+                var geo_chart = new Sai.GeoChart(r4, 0, 400, 400, 400, bank_closure_data, "State", bank_options).render();
             </script>
             <p>
                 Some things worth paying attention to:
@@ -388,7 +388,69 @@ bar_chart.setColors({'Alice', '#1074BF'}).render();
             </p>
             <a name="scatter"><h4>Scatter</h4></a>
             <p>
-                TODO
+                Scatter charts are probably the most complicated type of chart
+                offered by Sai, allowing you to map arbitrary data series to
+                x-position, y-position, radius, color, stroke color, and stroke
+                opacity. See <code>iris_options['mappings']</code> in the
+                example below.
+            </p>
+            <div id="scatter_chart_holder" class="chart-holder"></div>
+            <script type="text/javascript" class="show">
+                var iris_data = {
+                    'Sepal length': [5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9,5.4,4.8,4.8,4.3,5.8,5.7,5.4,5.1,5.7,5.1,5.4,5.1,4.6,5.1,4.8,5,5,5.2,5.2,4.7,4.8,5.4,5.2,5.5,4.9,5,5.5,4.9,4.4,5.1,5,4.5,4.4,5,5.1,4.8,5.1,4.6,5.3,5,7,6.4,6.9,5.5,6.5,5.7,6.3,4.9,6.6,5.2,5,5.9,6,6.1,5.6,6.7,5.6,5.8,6.2,5.6,5.9,6.1,6.3,6.1,6.4,6.6,6.8,6.7,6,5.7,5.5,5.5,5.8,6,5.4,6,6.7,6.3,5.6,5.5,5.5,6.1,5.8,5,5.6,5.7,5.7,6.2,5.1,5.7,6.3,5.8,7.1,6.3,6.5,7.6,4.9,7.3,6.7,7.2,6.5,6.4,6.8,5.7,5.8,6.4,6.5,7.7,7.7,6,6.9,5.6,7.7,6.3,6.7,7.2,6.2,6.1,6.4,7.2,7.4,7.9,6.4,6.3,6.1,7.7,6.3,6.4,6,6.9,6.7,6.9,5.8,6.8,6.7,6.7,6.3,6.5,6.2,5.9],
+                    'Sepal width': [3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1,3.7,3.4,3,3,4,4.4,3.9,3.5,3.8,3.8,3.4,3.7,3.6,3.3,3.4,3,3.4,3.5,3.4,3.2,3.1,3.4,4.1,4.2,3.1,3.2,3.5,3.1,3,3.4,3.5,2.3,3.2,3.5,3.8,3,3.8,3.2,3.7,3.3,3.2,3.2,3.1,2.3,2.8,2.8,3.3,2.4,2.9,2.7,2,3,2.2,2.9,2.9,3.1,3,2.7,2.2,2.5,3.2,2.8,2.5,2.8,2.9,3,2.8,3,2.9,2.6,2.4,2.4,2.7,2.7,3,3.4,3.1,2.3,3,2.5,2.6,3,2.6,2.3,2.7,3,2.9,2.9,2.5,2.8,3.3,2.7,3,2.9,3,3,2.5,2.9,2.5,3.6,3.2,2.7,3,2.5,2.8,3.2,3,3.8,2.6,2.2,3.2,2.8,2.8,2.7,3.3,3.2,2.8,3,2.8,3,2.8,3.8,2.8,2.8,2.6,3,3.4,3.1,3,3.1,3.1,3.1,2.7,3.2,3.3,3,2.5,3,3.4,3],
+                    'Petal length': [1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5,1.5,1.6,1.4,1.1,1.2,1.5,1.3,1.4,1.7,1.5,1.7,1.5,1,1.7,1.9,1.6,1.6,1.5,1.4,1.6,1.6,1.5,1.5,1.4,1.5,1.2,1.3,1.5,1.3,1.5,1.3,1.3,1.3,1.6,1.9,1.4,1.6,1.4,1.5,1.4,4.7,4.5,4.9,4,4.6,4.5,4.7,3.3,4.6,3.9,3.5,4.2,4,4.7,3.6,4.4,4.5,4.1,4.5,3.9,4.8,4,4.9,4.7,4.3,4.4,4.8,5,4.5,3.5,3.8,3.7,3.9,5.1,4.5,4.5,4.7,4.4,4.1,4,4.4,4.6,4,3.3,4.2,4.2,4.2,4.3,3,4.1,6,5.1,5.9,5.6,5.8,6.6,4.5,6.3,5.8,6.1,5.1,5.3,5.5,5,5.1,5.3,5.5,6.7,6.9,5,5.7,4.9,6.7,4.9,5.7,6,4.8,4.9,5.6,5.8,6.1,6.4,5.6,5.1,5.6,6.1,5.6,5.5,4.8,5.4,5.6,5.1,5.1,5.9,5.7,5.2,5,5.2,5.4,5.1],
+                    'Petal width': [0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1,0.2,0.2,0.1,0.1,0.2,0.4,0.4,0.3,0.3,0.3,0.2,0.4,0.2,0.5,0.2,0.2,0.4,0.2,0.2,0.2,0.2,0.4,0.1,0.2,0.1,0.2,0.2,0.1,0.2,0.2,0.3,0.3,0.2,0.6,0.4,0.3,0.2,0.2,0.2,0.2,1.4,1.5,1.5,1.3,1.5,1.3,1.6,1,1.3,1.4,1,1.5,1,1.4,1.3,1.4,1.5,1,1.5,1.1,1.8,1.3,1.5,1.2,1.3,1.4,1.4,1.7,1.5,1,1.1,1,1.2,1.6,1.5,1.6,1.5,1.3,1.3,1.3,1.2,1.4,1.2,1,1.3,1.2,1.3,1.3,1.1,1.3,2.5,1.9,2.1,1.8,2.2,2.1,1.7,1.8,1.8,2.5,2,1.9,2.1,2,2.4,2.3,1.8,2.2,2.3,1.5,2.3,2,2,1.8,2.1,1.8,1.8,1.8,2.1,1.6,1.9,2,2.2,1.5,1.4,2.3,2.4,1.8,1.8,2.1,2.4,2.3,1.9,2.3,2.5,2.3,1.9,2,2.3,1.8],
+                    'Species': ['Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-setosa','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-versicolor','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica','Iris-virginica'],
+                };
+                
+                var iris_options = {
+                    title: "Fisher's Iris Data",
+                    footnote: "SOURCE: Wikipedia",
+                    mappings: {
+                        'color': 'Species',
+                        'x': 'Sepal length',
+                        'y': 'Petal width',
+                        'radius': 'Petal length',
+                        'stroke_color': 'Sepal width',
+                    },
+                    colors: {'Iris-setosa': "#AA5128", 'Iris-versicolor': "#CABC5C", 'Iris-virginica': "#B3A4B7"},
+                    stroke_colors: ['#eee', '#333'],
+                    interactive: true
+                };
+                
+                var r5 = Raphael("scatter_chart_holder", 500, 600);
+                var scatter_chart = new Sai.ScatterChart(r5, 0, 600, 500, 600, iris_data, "", iris_options).render();
+            </script>
+            <p>
+                Something unique here is that we have a data series composed of
+                strings that is not a 'key' series, 'Species'. This series is
+                symbolic rather than numeric. We happen to be mapping it to
+                color in this example, because it makes a prettier chart, but we
+                could have mapped it to x, y, radius, stroke color, or stroke
+                opacity as well. For numeric (regular) series, you can
+                optionally pass in an array containing min and max values,
+                respectively, between which to interpolate. These should be two
+                numbers for sizes and opacities, and color strings for color
+                values. <code>stroke_colors</code>, above, is an example of
+                this. For symbolic series, you can pass in an object mapping
+                symbolic values to numeric or color values, as appropriate.
+                <code>colors</code>, above, is an example of this.
+            </p>
+            <p>
+                While colors and stroke_colors are specified, we are using Sai's
+                default radii. We could have specified radii via the
+                <code>radii</code> option, passing in a two-item array of
+                numeric (pixel) values - e.g. <code>[5, 15]</code>.
+            </p>
+            <p>
+                There are some shortcomings in the legends for scatter charts.
+                Currently, stroke opacities and symbolic radii don't have any
+                legend, the legend for numeric radii is kind of ugly, and the
+                whole thing is a bit messy. I'd love to hear suggestions for
+                improvements to this part of Sai: <a
+                href="mailto:richard@frankel.tv?subject=[Sai]%20Scatter%20chart%20legend%20suggestions">email
+                me</a>.
             </p>
             <a name="stream"><h4>Stream</h4></a>
             <p>
