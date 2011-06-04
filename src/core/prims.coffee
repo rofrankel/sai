@@ -239,8 +239,8 @@ Raphael.fn.sai.prim.hoverShape = (draw, attrs, extras, hoverattrs) ->
     
     Sai.util.setHover(
         shape,
-        hoverattrs[0],
-        hoverattrs[1],
+        hoverattrs?[0],
+        hoverattrs?[1],
         extras
     )
     
