@@ -149,7 +149,11 @@
                 parallel lists - this is the format expected by Sai. Second,
                 <code>colors</code> and <code>data</code> use the same keys;
                 this is how Sai knows which color to associate with which
-                series.
+                series. You don't have to specify colors - if you don't, Sai
+                will choose a random but aesthetically-pleasing (I hope!) and
+                visually distinct set of colors, using a variant of the method
+                described <a
+                href="http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/">here</a>.
             </p>
             <a name="line"><h4>Line</h4></a>
             <p>
@@ -174,10 +178,8 @@
                 data, name of x-axis data series. Fourth, the origin of the
                 chart is the bottom left - so the value you pass for
                 <code>y</code> should not be 0, or the chart will be drawn above
-                the top of the canvas! Colors are passed in the optional options
-                argument; while you'll probably always want to specify some
-                colors, a chart can be drawn without them, unlike the other
-                arguments shown here.
+                the top of the canvas! Colors are optional, so they are passed
+                in the optional options argument.
             </p>
             <p>
                 Some of the features of line charts not displayed here include
