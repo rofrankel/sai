@@ -73,7 +73,7 @@ class Sai.ScatterChart extends Sai.Chart
         else
             legend_colors ?= {}
             draw_legend = true
-            for c of colors
+            for c of stroke_colors
                 legend_colors[c] = stroke_colors[c]
         
         ###
@@ -99,7 +99,7 @@ class Sai.ScatterChart extends Sai.Chart
             @drawHistogramLegend(histogramSeries, histogramColors)
         
         if draw_legend
-            @drawLegend(colors)
+            @drawLegend(legend_colors)
         
         @__LABELS__ = '__XVALS__'
         @data.__XVALS__ = @ndata[@opts.mappings.x]['__YVALS__']
