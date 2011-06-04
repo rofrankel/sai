@@ -369,7 +369,7 @@ class Sai.Chart
         
         if @plots
             @everything ?= @r.set()
-            @everything.push(plot.set) for plot in @plots
+            @everything.push(plot) for plot in @plots
         
         return this
     

@@ -1,7 +1,6 @@
 class Sai.GeoChart extends Sai.Chart
     
     plotType: Sai.GeoPlot
-    interactiveHistogram: true
     
     getMax: (data, series) ->
         Math.max.apply(Math, data)
@@ -51,7 +50,7 @@ class Sai.GeoChart extends Sai.Chart
         
         return groups
     
-    setupHistogramInteraction: (histogram, series) ->    
+    setupHistogramInteraction: (histogram, series) ->
         histogram.click( () => @renderPlots(series) )
         drawInfo = @drawInfo
         Sai.util.setHover(
@@ -89,6 +88,9 @@ class Sai.GeoChart extends Sai.Chart
         ))
         .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries ? @data['__DEFAULT__'], @opts.bgcolor, @opts.interactive and not @opts.simple, @drawInfo)
         
+        @plots ?= @r.set()
+        @plots.push(@geoPlot.set)
+        
         return this
     
     default_info: () ->
@@ -107,14 +109,14 @@ class Sai.GeoChart extends Sai.Chart
         
         @renderPlots()
         
-        everything = @r.set().push(
+        plot_area_everything = @r.set().push(
             @geoPlot.set,
             @bg,
             @info,
             @footnote
         )
         
-        if @opts.href then everything.attr({
+        if @opts.href then plot_area_everything.attr({
             href: @opts.href
             target: '_blank'
         })
@@ -125,7 +127,6 @@ class Sai.GeoChart extends Sai.Chart
 class Sai.ChromaticGeoChart extends Sai.GeoChart
     
     plotType: Sai.ChromaticGeoPlot
-    interactiveHistogram: false
     
     default_info: () ->
         {}
