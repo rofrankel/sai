@@ -56,10 +56,12 @@ class Sai.ScatterChart extends Sai.Chart
         
         histogramSeries = []
         histogramColors = {}
+        histogramLabels = []
         
         if colors instanceof Array
             histogramSeries.push(@opts.mappings.color)
             histogramColors[@opts.mappings.color] = {__LOW__: colors[0], __HIGH__: colors[1]}
+            histogramLabels.push(null)
         else
             legend_colors ?= {}
             draw_legend = true
@@ -67,9 +69,9 @@ class Sai.ScatterChart extends Sai.Chart
                 legend_colors[c] = colors[c]
         
         if stroke_colors instanceof Array
-            0
-            # histogramSeries.push(@opts.mappings.stroke_color)
-            # histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
+            histogramSeries.push(@opts.mappings.stroke_color)
+            histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
+            histogramLabels.push("#{@opts.mappings.stroke_color} (stroke)")
         else
             legend_colors ?= {}
             draw_legend = true
@@ -96,7 +98,7 @@ class Sai.ScatterChart extends Sai.Chart
             0
         
         if histogramSeries.length
-            @drawHistogramLegend(histogramSeries, histogramColors)
+            @drawHistogramLegend(histogramSeries, histogramColors, histogramLabels)
         
         if draw_legend
             @drawLegend(legend_colors)

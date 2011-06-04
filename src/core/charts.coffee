@@ -478,7 +478,7 @@ class Sai.Chart
         tx = Sai.util.transformCoords(evt, @r.canvas).x
         return Math.round((@data[@__LABELS__].length - 1) * (tx - @px) / @pw)
     
-    drawHistogramLegend: (seriesNames, colors) ->
+    drawHistogramLegend: (seriesNames, colors, labels) ->
         colors ?= @colors
         
         @histogramLegend = @r.set()
@@ -511,7 +511,7 @@ class Sai.Chart
                     data,
                     minLabel,
                     maxLabel,
-                    series,
+                    labels?[i] ? series,
                     if typeof color is 'object' then [color.__LOW__, color.__HIGH__] else [color],
                     'white',
                     @opts.fromBlack
