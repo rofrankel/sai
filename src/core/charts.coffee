@@ -516,7 +516,7 @@ class Sai.Chart
                     maxLabel,
                     labels?[i] ? series,
                     if typeof color is 'object' then [color.__LOW__, color.__HIGH__] else [color],
-                    'white',
+                    @opts.bgcolor ? 'white',
                     @opts.fromBlack
                 )
             )
