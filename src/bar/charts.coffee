@@ -20,6 +20,7 @@ class Sai.BarChart extends Sai.Chart
     renderPlots: () ->
         @setPlotCoords() unless @px?
         
+        @drawLogo()
         @drawBG()
         
         if @tooMuchData()
@@ -71,6 +72,7 @@ class Sai.BarChart extends Sai.Chart
         plot_area = @r.set().push(
             @plots,
             @bg,
+            @logo,
             @guidelines
         )
         

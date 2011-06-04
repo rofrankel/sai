@@ -20,6 +20,7 @@ class Sai.ScatterChart extends Sai.Chart
         stroke_colors = @opts.stroke_colors ? ['black', 'black']
         radii = @opts.radius ? [4, 12]
         
+        @drawLogo()
         @drawBG()
         
         ndata = {}
@@ -110,6 +111,7 @@ class Sai.ScatterChart extends Sai.Chart
         everything = @r.set().push(
             @plots,
             @bg,
+            @logo,
             @info,
             @footnote,
             @histogramLegend,
