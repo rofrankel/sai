@@ -16,7 +16,6 @@ class Sai.LineChart extends Sai.Chart
         @setPlotCoords() unless @px?
         
         @drawBG()
-        @drawLogo()
         saxis = 'right' of @ndata
         ndata = if @opts.stacked? then @stackedNdata else @ndata
         plotType = if @opts.area then Sai.AreaPlot else Sai.LinePlot
@@ -76,7 +75,7 @@ class Sai.LineChart extends Sai.Chart
         
         @dots = @r.set()
         
-        plot_area = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines)
+        plot_area = @r.set().push(@bg, @plotSets, @dots, @guidelines)
         
         if @opts.interactive
             for series of @ndata['all'] when series isnt '__YVALS__'

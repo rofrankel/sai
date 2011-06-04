@@ -42,7 +42,6 @@ class Sai.StockChart extends Sai.Chart
         
         # @drawLegend({up: @colors.up, down: @colors.down})
         
-        @drawLogo()
         @drawBG()
         
         unless @ndata.prices? and open_name of @ndata.prices and close_name of @ndata.prices and high_name of @ndata.prices and low_name of @ndata.prices 
@@ -156,7 +155,7 @@ class Sai.StockChart extends Sai.Chart
         @bg.toBack()
         
         if @opts.interactive
-            everything = @r.set().push(@bg, @plots, @logo, @glow, @guidelines).mousemove(
+            everything = @r.set().push(@bg, @plots, @glow, @guidelines).mousemove(
                 moveGlow = (event) =>
                     
                     idx = @getIndex(event)

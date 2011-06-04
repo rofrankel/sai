@@ -72,11 +72,9 @@ class Sai.GeoChart extends Sai.Chart
         @setPlotCoords() unless @px?
         
         @bg?.remove()
-        @logo?.remove()
         @geoPlot?.set.remove()
         
         @drawBG()
-        @drawLogo()
         
         ndata = {}
         for series of @ndata
@@ -112,7 +110,6 @@ class Sai.GeoChart extends Sai.Chart
         everything = @r.set().push(
             @geoPlot.set,
             @bg,
-            @logo,
             @info,
             @footnote
         )
