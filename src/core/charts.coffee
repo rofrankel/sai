@@ -333,6 +333,9 @@ class Sai.Chart
             @pw? and @pw or @w,
             @ph? and @ph or @h
         ).attr({fill: @opts.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
+        
+        @everything ?= @r.set()
+        @everything.push(@bg)
     
     drawFootnote: (text) ->
         text ?= @opts.footnote ? ''
