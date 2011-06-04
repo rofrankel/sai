@@ -11,15 +11,17 @@ a:visited {
     color: #ccc;
 }
 
-table#nav {
+#nav {
     width: 75%;
     margin: 20px auto;
     overflow: hidden;
+    display: table;
 }
 
-table#nav td {
+#nav div {
     font-size: 20px;
     text-align: center;
+    display: table-cell;
 }
 
 div#main {
