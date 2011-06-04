@@ -93,7 +93,7 @@ class Sai.ScatterChart extends Sai.Chart
             @radiusLegend = @r.sai.prim.radiusLegendCont(@x + (@w - radiusLegendWidth) / 2, @y - @padding.bottom, radiusLegendWidth, radiusLegendHeight, @opts.mappings.radius, yvals[0], yvals[yvals.length - 1]);
             @padding.bottom += radiusLegendHeight + 5
         else if radii instanceof Object and @opts.mappings.radius?
-            0 # alert 'discrete size'
+            0
         
         if histogramSeries.length
             @drawHistogramLegend(histogramSeries, histogramColors)
