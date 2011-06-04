@@ -29,7 +29,7 @@ class Sai.LineChart extends Sai.Chart
             if @ndata.all['__YVALS__'][0] < 0
                 @drawGuideline(0, 'all')
         
-        @plots = []
+        @plots ?= @r.set()
         
         if saxis
             if ndata.left?
@@ -40,6 +40,7 @@ class Sai.LineChart extends Sai.Chart
                         ndata['left'],
                     ))
                     .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @getBaseline('left'))
+                    .set
                 )
             
             if ndata.right?
@@ -50,6 +51,7 @@ class Sai.LineChart extends Sai.Chart
                         ndata['right'],
                     ))
                     .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @getBaseline('right'))
+                    .set
                 )
         else
             @plots.push(
@@ -59,6 +61,7 @@ class Sai.LineChart extends Sai.Chart
                     ndata['all'],
                 ))
                 .render(@colors, @opts.lineWidth ? 2, @opts.stacked, @getBaseline('all'))
+                .set
             )
     
     renderFull: () ->
