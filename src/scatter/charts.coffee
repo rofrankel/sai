@@ -110,7 +110,7 @@ class Sai.ScatterChart extends Sai.Chart
             yvals = @ndata[@opts.mappings.radius]['__YVALS__']
             radiusLegendWidth = 100
             radiusLegendHeight = 55
-            @radiusLegend = @r.sai.prim.radiusLegendCont(@x + (@w - radiusLegendWidth) / 2, @y - @padding.bottom, radiusLegendWidth, radiusLegendHeight, @opts.mappings.radius, yvals[0], yvals[yvals.length - 1]);
+            @radiusLegend = @r.sai.prim.radiusLegendCont(@x + (@w - radiusLegendWidth) / 2, @y - @padding.bottom, radiusLegendWidth, radiusLegendHeight, @opts.mappings.radius, yvals[0], yvals[yvals.length - 1], @opts.bgcolor);
             @padding.bottom += radiusLegendHeight + 5
         else if radii instanceof Object and @opts.mappings.radius?
             0
