@@ -11,15 +11,26 @@ class Sai.ScatterChart extends Sai.Chart
         
         return groups
     
+    get_colors: (series) ->
+        # make a crappy guess about whether it's a symbolic data series or not
+        return unless series?
+        if typeof @data[series]?[0] is 'number'
+            return Sai.util.n_colors(2)
+        else
+            keys = {}
+            for val in @data[series]
+                if val not of keys then keys[val] = 1
+            return @random_colors(keys)
+    
+    set_defaults: () ->
+        @opts.colors ?=  @get_colors(@opts.mappings.color) ? ['black', 'white']
+        @opts.stroke_opacity ?= [0, 1]
+        @opts.stroke_colors ?= @get_colors(@opts.mappings.stroke_color) ? ['black', 'black']
+        @opts.radii ?= [4, 12]
+    
     renderPlots: () ->
         
         @setPlotCoords() unless @px?
-        
-        colors = @colors ? ['black', 'white']
-        stroke_opacity = @opts.stroke_opacity ? [0, 1]
-        stroke_colors = @opts.stroke_colors ? ['black', 'black']
-        radii = @opts.radius ? [4, 12]
-        
         @drawBG()
         
         ndata = {}
@@ -27,6 +38,8 @@ class Sai.ScatterChart extends Sai.Chart
             ndata[series] = @ndata[series][series]
         
         @plots = @r.set()
+        
+        @set_defaults()
         
         @plots.push(
             (new Sai.ScatterPlot(
@@ -38,7 +51,13 @@ class Sai.ScatterChart extends Sai.Chart
                 ndata,
                 @data)
             )
-            .render(@opts.mappings, colors, radii, stroke_opacity, stroke_colors, @opts.interactive and not @opts.simple, @drawInfo)
+            .render(@opts.mappings,
+                    @opts.colors,
+                    @opts.radii,
+                    @opts.stroke_opacity,
+                    @opts.stroke_colors,
+                    @opts.interactive and not @opts.simple,
+                    @drawInfo)
             .set
         )
         
@@ -49,15 +68,14 @@ class Sai.ScatterChart extends Sai.Chart
         @setupInfoSpace()
         @drawFootnote()
         
-        colors = @opts.colors ? @colors ? ['black', 'white']
-        stroke_opacity = @opts.stroke_opacity ? [0, 1]
-        stroke_colors = @opts.stroke_colors ? ['black', 'black']
-        radii = @opts.radius ? [4, 12]
+        @set_defaults()
         
         histogramSeries = []
         histogramColors = {}
         histogramLabels = []
         legend_colors = {}
+        
+        {colors, radii, stroke_opacity, stroke_colors} = @opts
         
         if colors instanceof Array
             histogramSeries.push(@opts.mappings.color)
