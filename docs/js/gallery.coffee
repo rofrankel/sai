@@ -92,3 +92,6 @@ Sai.gallery = {
 for i in [0...Sai.gallery.charts.length]
     chart = Sai.gallery.draw(i, Sai.gallery.gallery, 183.3 * (i % 4), 150 + 183.3 * (Math.floor(i / 4)), 150, 150, {simple: true})
     chart.everything.click(do (i) -> -> Sai.gallery.draw(i, Sai.gallery.showcase, 0, 400, 400, 400))
+
+if (which = window.location.href.match(/[?&]show=(\d+)/)?[1])?
+    Sai.gallery.draw(parseInt(which), Sai.gallery.showcase, 0, 400, 400, 400)
