@@ -180,11 +180,28 @@
                 you to have one canvas with multiple charts if you so choose.
                 Third, any Sai chart constructor takes a few required arguments.
                 They are, in order: Raphael canvas object, x, y, width, height,
-                data, name of x-axis data series. Fourth, the origin of the
-                chart is the bottom left - so the value you pass for
+                data, name of 'key' data series.
+            </p>
+            <p>
+                The origin of the chart is the bottom left, but the origin of an
+                SVG drawing is the top left - so the value you pass for
                 <code>y</code> should not be 0, or the chart will be drawn above
-                the top of the canvas! Colors are optional, so they are passed
-                in the optional options argument.
+                the top of the canvas! If you want to start drawing the chart at
+                the bottom of the Raphael canvas, then pass in the height of the
+                Raphael canvas for the 'y' value.  (For an example of when you might <em>not</em> not do this, see <a href="gallery.html">the gallery</a>.)
+            </p>
+            <p>
+                The 'key' data series isn't plotted - rather, it is treated as
+                symbolic (as opposed to numeric) data to help the chart map the
+                data onto an axis or map. Most chart types use the 'key' series
+                as the values of the x-axis; geographical charts use it to map
+                values to regions of a map (see <a href="#geo">the section on
+                geographical charts</a> for more). Scatter charts don't use this
+                value at all - you can pass in the empty string.
+            </p>
+            <p>
+                Colors are optional, so they are passed in the optional options
+                argument.
             </p>
             <p>
                 Some of the features of line charts not displayed here include
@@ -194,7 +211,7 @@
             <p>
                 * I'm using the term 'canvas' with reference to Raphael because
                   that is the terminology Raphael uses in its own documentation.
-                  Of course, Raphael uses SVG/VML, not HTML Canvas.
+                  Of course, Raphael uses SVG/VML, not Canvas.
             </p>
             <a name="bar"><h4>Bar</h4></a>
             <p>
