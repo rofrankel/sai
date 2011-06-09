@@ -88,8 +88,7 @@ class Sai.GeoChart extends Sai.Chart
         ))
         .render(@colors or {}, @data['__MAP__'], @__LABELS__, mainSeries ? @data['__DEFAULT__'], @opts.bgcolor, @opts.interactive and not @opts.simple, @drawInfo)
         
-        @plots ?= @r.set()
-        @plots.push(@geoPlot.set)
+        @plots.push(@geoPlot)
         
         return this
     

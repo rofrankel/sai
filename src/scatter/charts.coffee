@@ -37,8 +37,6 @@ class Sai.ScatterChart extends Sai.Chart
         for series of @ndata
             ndata[series] = @ndata[series][series]
         
-        @plots = @r.set()
-        
         @set_defaults()
         
         @plots.push(
@@ -50,15 +48,15 @@ class Sai.ScatterChart extends Sai.Chart
                 @ph,
                 ndata,
                 @data)
+            ).render(
+                @opts.mappings,
+                @opts.colors,
+                @opts.radii,
+                @opts.stroke_opacity,
+                @opts.stroke_colors,
+                @opts.interactive and not @opts.simple,
+                @drawInfo
             )
-            .render(@opts.mappings,
-                    @opts.colors,
-                    @opts.radii,
-                    @opts.stroke_opacity,
-                    @opts.stroke_colors,
-                    @opts.interactive and not @opts.simple,
-                    @drawInfo)
-            .set
         )
         
         return this
@@ -128,7 +126,7 @@ class Sai.ScatterChart extends Sai.Chart
         @renderPlots()
         
         everything = @r.set().push(
-            @plots,
+            @plotSets(),
             @bg,
             @info,
             @footnote,

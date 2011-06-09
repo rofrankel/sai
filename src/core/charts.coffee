@@ -351,6 +351,11 @@ class Sai.Chart
         @everything ?= @r.set()
         @everything.push(@footnote)
     
+    plotSets: () ->
+        plotSets = @r.set()
+        plotSets.push(plot.set) for plot in @plots
+        return plotSets
+    
     render: () ->
         @everything?.remove()
         
@@ -362,14 +367,13 @@ class Sai.Chart
             bottom: init_padding
         }
         
+        @plots = []
         if @opts.simple and @renderPlots?
             @renderPlots()
         else
             @renderFull()
         
-        if @plots
-            @everything ?= @r.set()
-            @everything.push(plot) for plot in @plots
+        @everything.push(@plotSets())
         
         return this
     
