@@ -111,7 +111,7 @@ Sai.gallery = {
     charts: charts
     
     showcase: Raphael('showcase', 400, 400)
-    gallery: Raphael('gallery', 700, 183.3 * Math.ceil(charts.length / 3))
+    gallery: Raphael('gallery', 700, 183.3 * Math.ceil(charts.length / 4))
 }
 
 for i in [0...Sai.gallery.charts.length]
