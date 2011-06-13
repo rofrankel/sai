@@ -333,6 +333,9 @@ class Sai.Chart
             @pw? and @pw or @w,
             @ph? and @ph or @h
         ).attr({fill: @opts.bgcolor, 'stroke-width': 0, 'stroke-opacity': 0}).toBack()
+        
+        @everything ?= @r.set()
+        @everything.push(@bg)
     
     logoPos: () ->
         w = 150
@@ -386,6 +389,11 @@ class Sai.Chart
         @everything ?= @r.set()
         @everything.push(@footnote)
     
+    plotSets: () ->
+        plotSets = @r.set()
+        plotSets.push(plot.set) for plot in @plots
+        return plotSets
+    
     render: () ->
         @everything?.remove()
         
@@ -397,14 +405,13 @@ class Sai.Chart
             bottom: init_padding
         }
         
+        @plots = []
         if @opts.simple and @renderPlots?
             @renderPlots()
         else
             @renderFull()
         
-        if @plots
-            @everything ?= @r.set()
-            @everything.push(plot.set) for plot in @plots
+        @everything.push(@plotSets())
         
         return this
     
@@ -516,7 +523,7 @@ class Sai.Chart
         tx = Sai.util.transformCoords(evt, @r.canvas).x
         return Math.round((@data[@__LABELS__].length - 1) * (tx - @px) / @pw)
     
-    drawHistogramLegend: (seriesNames, colors) ->
+    drawHistogramLegend: (seriesNames, colors, labels) ->
         colors ?= @colors
         
         @histogramLegend = @r.set()
@@ -549,9 +556,9 @@ class Sai.Chart
                     data,
                     minLabel,
                     maxLabel,
-                    series,
+                    labels?[i] ? series,
                     if typeof color is 'object' then [color.__LOW__, color.__HIGH__] else [color],
-                    'white',
+                    @opts.bgcolor ? 'white',
                     @opts.fromBlack
                 )
             )

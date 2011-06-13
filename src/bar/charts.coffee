@@ -32,7 +32,6 @@ class Sai.BarChart extends Sai.Chart
             for yval in @ndata['all']['__YVALS__'].slice(1, @ndata['all']['__YVALS__'].length - 1)
                 @drawGuideline(yval)
         
-        @plots = @r.set()
         data = {}
         rawdata = {}
         rawdata[@__LABELS__] = @data[@__LABELS__]
@@ -56,7 +55,6 @@ class Sai.BarChart extends Sai.Chart
                 rawdata)
             )
             .render(@opts.stacked?, @normalizedHeight(0, 'all'), @colors, @opts.interactive and not @opts.simple, @drawInfo, @__LABELS__)
-            .set
         )
     
     
@@ -70,7 +68,7 @@ class Sai.BarChart extends Sai.Chart
         @renderPlots()
         
         plot_area = @r.set().push(
-            @plots,
+            @plotSets(),
             @bg,
             @logo,
             @guidelines

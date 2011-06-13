@@ -30,8 +30,6 @@ class Sai.LineChart extends Sai.Chart
             if @ndata.all['__YVALS__'][0] < 0
                 @drawGuideline(0, 'all')
         
-        @plots = []
-        
         if saxis
             if ndata.left?
                 @plots.push(
@@ -71,12 +69,10 @@ class Sai.LineChart extends Sai.Chart
         _axes = if saxis then @addAxes(['left', 'right']) else @addAxes(['all'])
         
         @renderPlots()
-        @plotSets = @r.set()
-        @plotSets.push(plot.set) for plot in @plots
         
         @dots = @r.set()
         
-        plot_area = @r.set().push(@bg, @plotSets, @dots, @logo, @guidelines)
+        plot_area = @r.set().push(@bg, @plotSets(), @dots, @logo, @guidelines)
         
         if @opts.interactive
             for series of @ndata['all'] when series isnt '__YVALS__'

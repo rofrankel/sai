@@ -52,8 +52,6 @@ class Sai.StockChart extends Sai.Chart
         if @ndata.prices['__YVALS__'][0] < 0
             @drawGuideline(0, 'prices')
         
-        @plots = @r.set()
-        
         vol = {
             'up': []
             'down': []
@@ -89,7 +87,6 @@ class Sai.StockChart extends Sai.Chart
                     rawdata)
                 )
                 .render(true, @normalizedHeight(0, 'volume'), {'up': @colors['__VOL_UP__'], 'down': @colors['__VOL_DOWN__']})
-                .set
             )
         
         @plots.push(
@@ -107,7 +104,6 @@ class Sai.StockChart extends Sai.Chart
                 rawdata)
             )
             .render(@colors, Math.min(5, (@pw / @ndata['prices'][open_name].length) - 2))
-            .set
         )
         
         
@@ -122,7 +118,6 @@ class Sai.StockChart extends Sai.Chart
                 @px, @py, @pw, @ph,
                 avgNdata))
             .render(@colors)
-            .set
         )
     
     renderFull: () ->
@@ -156,7 +151,7 @@ class Sai.StockChart extends Sai.Chart
         @bg.toBack()
         
         if @opts.interactive
-            everything = @r.set().push(@bg, @plots, @logo, @glow, @guidelines).mousemove(
+            everything = @r.set().push(@bg, @plotSets(), @logo, @glow, @guidelines).mousemove(
                 moveGlow = (event) =>
                     
                     idx = @getIndex(event)

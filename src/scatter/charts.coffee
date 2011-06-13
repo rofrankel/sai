@@ -11,14 +11,26 @@ class Sai.ScatterChart extends Sai.Chart
         
         return groups
     
+    get_colors: (series) ->
+        # make a crappy guess about whether it's a symbolic data series or not
+        return unless series?
+        if typeof @data[series]?[0] is 'number'
+            return Sai.util.n_colors(2)
+        else
+            keys = {}
+            for val in @data[series]
+                if val not of keys then keys[val] = 1
+            return @random_colors(keys)
+    
+    set_defaults: () ->
+        @opts.colors ?=  @get_colors(@opts.mappings.color) ? ['black', 'white']
+        @opts.stroke_opacity ?= [0, 1]
+        @opts.stroke_colors ?= @get_colors(@opts.mappings.stroke_color) ? ['black', 'black']
+        @opts.radii ?= [4, 12]
+    
     renderPlots: () ->
         
         @setPlotCoords() unless @px?
-        
-        colors = @colors ? ['black', 'white']
-        stroke_opacity = @opts.stroke_opacity ? [0, 1]
-        stroke_colors = @opts.stroke_colors ? ['black', 'black']
-        radii = @opts.radius ? [4, 12]
         
         @drawLogo()
         @drawBG()
@@ -27,7 +39,7 @@ class Sai.ScatterChart extends Sai.Chart
         for series of @ndata
             ndata[series] = @ndata[series][series]
         
-        @plots = @r.set()
+        @set_defaults()
         
         @plots.push(
             (new Sai.ScatterPlot(
@@ -38,9 +50,15 @@ class Sai.ScatterChart extends Sai.Chart
                 @ph,
                 ndata,
                 @data)
+            ).render(
+                @opts.mappings,
+                @opts.colors,
+                @opts.radii,
+                @opts.stroke_opacity,
+                @opts.stroke_colors,
+                @opts.interactive and not @opts.simple,
+                @drawInfo
             )
-            .render(@opts.mappings, colors, radii, stroke_opacity, stroke_colors, @opts.interactive and not @opts.simple, @drawInfo)
-            .set
         )
         
         return this
@@ -50,32 +68,33 @@ class Sai.ScatterChart extends Sai.Chart
         @setupInfoSpace()
         @drawFootnote()
         
-        colors = @opts.colors ? @colors ? ['black', 'white']
-        stroke_opacity = @opts.stroke_opacity ? [0, 1]
-        stroke_colors = @opts.stroke_colors ? ['black', 'black']
-        radii = @opts.radius ? [4, 12]
+        @set_defaults()
         
         histogramSeries = []
         histogramColors = {}
+        histogramLabels = []
+        legend_colors = {}
+        
+        {colors, radii, stroke_opacity, stroke_colors} = @opts
         
         if colors instanceof Array
             histogramSeries.push(@opts.mappings.color)
             histogramColors[@opts.mappings.color] = {__LOW__: colors[0], __HIGH__: colors[1]}
+            histogramLabels.push(null)
         else
-            legend_colors ?= {}
             draw_legend = true
             for c of colors
                 legend_colors[c] = colors[c]
         
-        if stroke_colors instanceof Array
-            0
-            # histogramSeries.push(@opts.mappings.stroke_color)
-            # histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
-        else
-            legend_colors ?= {}
-            draw_legend = true
-            for c of colors
-                legend_colors[c] = stroke_colors[c]
+        if @opts.mappings.stroke_color
+            if stroke_colors instanceof Array
+                histogramSeries.push(@opts.mappings.stroke_color)
+                histogramColors[@opts.mappings.stroke_color] = {__LOW__: stroke_colors[0], __HIGH__: stroke_colors[1]}
+                histogramLabels.push("#{@opts.mappings.stroke_color} (stroke)")
+            else
+                draw_legend = true
+                for c of stroke_colors
+                    legend_colors[c] = stroke_colors[c]
         
         ###
         if @opts.mappings.stroke_opacity
@@ -91,16 +110,16 @@ class Sai.ScatterChart extends Sai.Chart
             yvals = @ndata[@opts.mappings.radius]['__YVALS__']
             radiusLegendWidth = 100
             radiusLegendHeight = 55
-            @radiusLegend = @r.sai.prim.radiusLegendCont(@x + (@w - radiusLegendWidth) / 2, @y - @padding.bottom, radiusLegendWidth, radiusLegendHeight, @opts.mappings.radius, yvals[0], yvals[yvals.length - 1]);
+            @radiusLegend = @r.sai.prim.radiusLegendCont(@x + (@w - radiusLegendWidth) / 2, @y - @padding.bottom, radiusLegendWidth, radiusLegendHeight, @opts.mappings.radius, yvals[0], yvals[yvals.length - 1], @opts.bgcolor);
             @padding.bottom += radiusLegendHeight + 5
         else if radii instanceof Object and @opts.mappings.radius?
-            0 # alert 'discrete size'
+            0
         
         if histogramSeries.length
-            @drawHistogramLegend(histogramSeries, histogramColors)
+            @drawHistogramLegend(histogramSeries, histogramColors, histogramLabels)
         
         if draw_legend
-            @drawLegend(colors)
+            @drawLegend(legend_colors)
         
         @__LABELS__ = '__XVALS__'
         @data.__XVALS__ = @ndata[@opts.mappings.x]['__YVALS__']
@@ -109,7 +128,7 @@ class Sai.ScatterChart extends Sai.Chart
         @renderPlots()
         
         everything = @r.set().push(
-            @plots,
+            @plotSets(),
             @bg,
             @logo,
             @info,
