@@ -94,8 +94,8 @@ charts = [
             'interactive': true
             'colors': {
                 'Israel': '#00c'
-                'Asia': '#cc0'
-                'Africa': '#c00'
+                'Asia': '#c00'
+                'Africa': '#cc0'
                 'Europe-America': '#ccc'
             }
         }
